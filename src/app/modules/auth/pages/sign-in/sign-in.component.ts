@@ -4,6 +4,8 @@ import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgIf } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { AuthService } from '../../services/auth.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-sign-in',
@@ -16,8 +18,9 @@ export class SignInComponent implements OnInit {
   form!: FormGroup;
   submitted = false;
   passwordTextType!: boolean;
+  errorMessage="Invalid input data";
 
-  constructor(private readonly _formBuilder: FormBuilder, private readonly _router: Router) {}
+  constructor(private readonly _formBuilder: FormBuilder, private readonly _router: Router, private authService: AuthService) {}
 
   onClick() {
     console.log('Button clicked');
@@ -25,8 +28,8 @@ export class SignInComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this._formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      username: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$_])[A-Za-z\d@$_]{8,}$/)]],
     });
   }
 
@@ -40,13 +43,26 @@ export class SignInComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    const { email, password } = this.form.value;
+    
+    const loginData = this.form.value;
 
-    // stop here if form is invalid
     if (this.form.invalid) {
       return;
     }
-
-    this._router.navigate(['/']);
+    
+    this.errorMessage="";
+    
+    this.authService.signIn(loginData).subscribe (
+      response=>{
+        console.log(response);
+        localStorage.setItem(environment.TALLY_TOKEN, JSON.stringify(response));
+        this._router.navigate(['/']);
+      },errorRes=>{
+        if(errorRes.error && errorRes.error.message){
+          this.errorMessage = errorRes.error.message;
+          console.log(errorRes.error);
+        }
+      }
+    )
   }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { MenuService } from '../layout/services/menu.service';
 
 @Component({
     selector: 'app-auth',
@@ -10,7 +11,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
     imports: [AngularSvgIconModule, RouterOutlet],
 })
 export class AuthComponent implements OnInit {
-  constructor() {}
+  constructor(public menuService: MenuService) {}
 
   ngOnInit(): void {}
 }

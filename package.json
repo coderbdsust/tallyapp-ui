@@ -1,12 +1,12 @@
 {
   "name": "tallykhata-ui",
-  "displayName": "Angular Tailwind",
+  "displayName": "Tally Khata",
   "version": "0.9.1",
   "description": "Angular & Tailwind CSS Admin Dashboard Starter Kit, Free and Open Source",
-  "homepage": "https://github.com/lannodev/angular-tailwind#readme",
+  "homepage": "https://github.com/coderbdsust/tallykhata-ui#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lannodev/angular-tailwind.git"
+    "url": "git+https://github.com/coderbdsust/tallykhata-ui.git"
   },
   "keywords": [
     "angular",
@@ -16,7 +16,7 @@
     "dark mode",
     "open source"
   ],
-  "author": "Luciano Oliveira <me@lanno.dev>",
+  "author": "Biswajit Debnath <biswajit.sust@gmail.com>",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -40,11 +40,14 @@
     "@angular/platform-browser": "^18.1.0",
     "@angular/platform-browser-dynamic": "^18.1.0",
     "@angular/router": "^18.1.0",
+    "@fortawesome/fontawesome-free": "5.15.3",
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@tailwindcss/forms": "^0.5.2",
     "@tailwindcss/typography": "^0.5.4",
     "angular-svg-icon": "^13.0.0",
     "apexcharts": "^3.35.3",
+    "chart.js": "^4.4.7",
+    "flowbite": "^2.5.2",
     "ng-apexcharts": "^1.7.1",
     "ngx-sonner": "^2.0.1",
     "rxjs": "~7.4.0",

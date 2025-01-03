@@ -4,6 +4,8 @@
 
 export const environment = {
   production: false,
+  tallyURL: 'http://localhost:8080',
+  TALLY_TOKEN:"TALLY_TOKEN"
 };
 
 /*

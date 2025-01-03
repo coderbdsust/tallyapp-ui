@@ -41,12 +41,7 @@ export class ProfileMenuComponent implements OnInit {
     {
       title: 'Your Profile',
       icon: './assets/icons/heroicons/outline/user-circle.svg',
-      link: '/profile',
-    },
-    {
-      title: 'Settings',
-      icon: './assets/icons/heroicons/outline/cog-6-tooth.svg',
-      link: '/settings',
+      link: '/dashboard/profile',
     },
     {
       title: 'Log out',

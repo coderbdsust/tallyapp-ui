@@ -10,6 +10,8 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'components', pathMatch: 'full' },
       { path: 'table', component: TableComponent },
+      { path: 'app-property', component: TableComponent },
+      { path: 'registered-user', component: TableComponent },
       { path: '**', redirectTo: 'errors/404' },
     ],
   },

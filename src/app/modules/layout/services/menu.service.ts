@@ -84,6 +84,10 @@ export class MenuService implements OnDestroy {
     });
   }
 
+  public getAppTitle(): string {
+    return "Tally Khata";
+  }
+
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
   }

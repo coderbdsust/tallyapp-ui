@@ -1,23 +1,66 @@
-<form class="my-10 space-y-6">
+<form class="my-10 space-y-6" (ngSubmit)="onSubmit()">
   <div class="text-center">
-    <h2 class="mb-1 text-3xl font-semibold text-foreground">Two Step Verification</h2>
-    <p class="text-sm text-muted-foreground">Enter the verification code we sent to</p>
-    <div class="mt-2 text-lg text-muted-foreground">******2289</div>
+    <h2 class="mb-1 text-3xl font-semibold text-foreground">OTP for Verification</h2>
+    <p class="text-sm text-muted-foreground">Enter the verification code we sent to your email</p>
   </div>
 
   <div class="grid grid-cols-6">
-    @for (item of inputs; track $index) {
-    <input
+      <input
+      [(ngModel)]="inputs[0]"
+      name="input0"
       placeholder=""
       maxlength="1"
+      #inputRef="ngModel"
       class="h-10 w-10 rounded-md border border-border bg-background text-center text-muted-foreground outline-none focus:border-primary sm:h-14 sm:w-14" />
-    }
+
+      <input
+      [(ngModel)]="inputs[1]"
+      name="input1"
+      placeholder=""
+      maxlength="1"
+      #inputRef="ngModel"
+      class="h-10 w-10 rounded-md border border-border bg-background text-center text-muted-foreground outline-none focus:border-primary sm:h-14 sm:w-14" />
+
+      <input
+      [(ngModel)]="inputs[2]"
+      name="input2"
+      placeholder=""
+      maxlength="1"
+      #inputRef="ngModel"
+      class="h-10 w-10 rounded-md border border-border bg-background text-center text-muted-foreground outline-none focus:border-primary sm:h-14 sm:w-14" />
+
+      <input
+      [(ngModel)]="inputs[3]"
+      name="input3"
+      placeholder=""
+      maxlength="1"
+      #inputRef="ngModel"
+      class="h-10 w-10 rounded-md border border-border bg-background text-center text-muted-foreground outline-none focus:border-primary sm:h-14 sm:w-14" />
+
+      <input
+      [(ngModel)]="inputs[4]"
+      name="input4"
+      placeholder=""
+      maxlength="1"
+      #inputRef="ngModel"
+      class="h-10 w-10 rounded-md border border-border bg-background text-center text-muted-foreground outline-none focus:border-primary sm:h-14 sm:w-14" />
+
+      <input
+      [(ngModel)]="inputs[5]"
+      name="input5"
+      placeholder=""
+      maxlength="1"
+      #inputRef="ngModel"
+      class="h-10 w-10 rounded-md border border-border bg-background text-center text-muted-foreground outline-none focus:border-primary sm:h-14 sm:w-14" />
+
+  </div>
+
+  <div *ngIf="submitted" class="is__invalid-error">
+    <div *ngIf="errorMessage != ''">{{ errorMessage }}</div>
   </div>
 
   <!-- Submit Button -->
   <div>
-    <app-button routerLink="/dashboard" full impact="bold" tone="primary" shape="rounded" size="medium">
-      Submit
-    </app-button>
+    <app-button full impact="bold" tone="primary" shape="rounded" size="medium"> Submit </app-button>
   </div>
 </form>
