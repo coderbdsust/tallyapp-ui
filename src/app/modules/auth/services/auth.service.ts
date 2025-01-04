@@ -1,46 +1,118 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {environment} from '../../../../environments/environment';
+import { environment } from '../../../../environments/environment';
+import { catchError, tap, BehaviorSubject } from 'rxjs';
+import { CommonService } from './common.service';
+import { Router } from '@angular/router';
+import { ErrorResponse } from 'src/app/shared/models/error-response';
 
-export interface TokenResponse {
-  accessToken:string,
-  refreshToken:string
+export interface AuthUser {
+  accessToken: string;
+  refreshToken: string;
+  expireTime: Date;
+  fullName: string;
+  username: string;
+  email: string;
+  role: string;
 }
-
 export interface SignUpResponse {
-  id:string,
-  username:string,
-  email:string,
-  mobileNo:string,
-  fullName:string,
-  dateOfBirth:string
+  id: string;
+  username: string;
+  email: string;
+  mobileNo: string;
+  fullName: string;
+  dateOfBirth: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class AuthService {
+export class AuthService extends CommonService {
+  user = new BehaviorSubject<AuthUser | null>(null);
+  logoutTimer: any;
 
-  constructor(private http:HttpClient) { }
-
-  signUp(signUpData:any) {
-    return this.http.post<SignUpResponse>(
-      `${environment.tallyURL}/auth/v1/register`,
-      signUpData
-    )
+  constructor(private http: HttpClient, private router: Router) {
+    super();
   }
 
-  signIn(signInData:any){
-    return this.http.post<TokenResponse>(
-      `${environment.tallyURL}/auth/v1/login`,
-      signInData
-    )
+  signUp(signUpData: any) {
+    return this.http
+      .post<SignUpResponse>(`${environment.tallyURL}/auth/v1/register`, signUpData)
+      .pipe(catchError(this.mapErrorResponse));
   }
 
-  verifyUser(verifyData:any) {
-    return this.http.post(
-      `${environment.tallyURL}/auth/v1/verify`,
-      verifyData
-    )
+  signIn(signInData: any) {
+    return this.http.post<AuthUser>(`${environment.tallyURL}/auth/v1/login`, signInData).pipe(
+      catchError(this.mapErrorResponse),
+      tap((authUser) => {
+        const payload = this.decodeToken(authUser.accessToken);
+        if (payload != null) {
+          authUser.expireTime = new Date(payload.exp * 1000);
+          authUser.fullName = payload.fullName || '';
+          authUser.username = payload.sub || '';
+          authUser.email = payload.email || '';
+          authUser.role = payload?.authorities?.[0] || '';
+          localStorage.setItem(environment.TALLY_APP, JSON.stringify(authUser));
+          
+          let expireDuration = authUser.expireTime.getTime()-new Date().getTime();
+          this.autoLogout(expireDuration);
+          this.user.next(authUser);
+        } else {
+          this.user.next(null);
+        }
+      }),
+    );
+  }
+
+  verifyUser(verifyData: any) {
+    return this.http.post(`${environment.tallyURL}/auth/v1/verify`, verifyData).pipe(catchError(this.mapErrorResponse));
+  }
+
+  logout() {
+    this.user.next(null);
+    this.http.post(`${environment.tallyURL}/auth/v1/logout`, {}).subscribe(
+      (response) => {
+        this.router.navigate(['/auth/sign-in']);
+        localStorage.removeItem(environment.TALLY_APP);
+        this.showToastSuccess('Logout successfully');
+      },
+      (error) => {
+        this.router.navigate(['/auth/sign-in']);
+        localStorage.removeItem(environment.TALLY_APP);
+        if (error instanceof ErrorResponse) {
+          this.showToastError(error.message);
+        } else {
+          this.showToastError('An unknown error occurred');
+        }
+      },
+    );
+
+    if (this.logoutTimer) {
+      clearTimeout(this.logoutTimer);
+    }
+    this.logoutTimer = null;
+  }
+
+  autoLogin() {
+    const userData = localStorage.getItem(environment.TALLY_APP);
+    if (!userData) return;
+    const cachedAuthUser: AuthUser = this.mapToAuthUser(JSON.parse(userData));
+    let expireDuration = cachedAuthUser.expireTime.getTime()-new Date().getTime();
+    this.autoLogout(expireDuration);
+    this.user.next(cachedAuthUser);
+  }
+
+  autoLogout(duration: number) {
+    console.log(duration);
+    this.logoutTimer = setTimeout(() => {
+      this.logout();
+    }, duration);
+  }
+
+  private mapToAuthUser(parsedData: any): AuthUser {
+    return {
+      ...parsedData,
+      expireTime: new Date(parsedData.expireTime),
+    };
   }
 }

@@ -27,9 +27,10 @@
               Username
             </label>
             <input
+              readonly
               type="text"
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              value="lucky.jesse"
+              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              value="{{userProfile.username}}"
             />
           </div>
         </div>
@@ -42,9 +43,10 @@
               Email address
             </label>
             <input
+              readonly
               type="email"
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              value="jesse@example.com"
+              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              value="{{userProfile.email}}"
             />
           </div>
         </div>
@@ -59,7 +61,37 @@
             <input
               type="text"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              value="Biswajit Debnath"
+              value="{{userProfile.fullName}}"
+            />
+          </div>
+        </div>
+        <div class="w-full lg:w-6/12 px-4">
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+              htmlFor="grid-password"
+            >
+              Date of Birth
+            </label>
+            <input
+              type="text"
+              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              value="{{userProfile.dateOfBirth}}"
+            />
+          </div>
+        </div>
+        <div class="w-full lg:w-6/12 px-4">
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+              htmlFor="grid-password"
+            >
+              Mobile No
+            </label>
+            <input
+              type="text"
+              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              value="{{userProfile.mobileNo}}"
             />
           </div>
         </div>
@@ -74,7 +106,73 @@
             <input
               type="text"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              value="Admin"
+              value="{{userProfile.roles[0]}}"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap">
+        <div class="w-full lg:w-3/12 px-4">
+          <div class="relative w-full mb-3">
+              <label
+                class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                htmlFor="grid-password"
+              >
+                Account Enabled
+              </label>
+              <input
+                ng-disabled="true"
+                type="checkbox"
+                class="ml-10 border-2 border-rose-500"
+                [checked]="userProfile.enabled"
+              />
+          </div>
+        </div>
+        <div class="w-full lg:w-3/12 px-4">
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+              htmlFor="grid-password"
+            >
+              Account Locked
+            </label>
+            <input
+              readonly
+              type="checkbox"
+              class="ml-10 border-2 border-rose-500"
+              [checked]="userProfile.accountLocked"
+            />
+          </div>
+        </div>
+        <div class="w-full lg:w-3/12 px-4">
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+              htmlFor="grid-password"
+            >
+              Mobile No Verified
+            </label>
+            <input
+              readonly
+              type="checkbox"
+              class="ml-10 border-2 border-rose-500"
+              [checked]="userProfile.mobileNoVerified"
+            />
+          </div>
+        </div>
+        <div class="w-full lg:w-3/12 px-4">
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+              htmlFor="grid-password"
+            >
+              TFA Enabled
+            </label>
+            <input
+              readonly
+              type="checkbox"
+              class="ml-10 border-2 border-rose-500"
+              [checked]="userProfile.tfaEnabled"
             />
           </div>
         </div>
@@ -83,7 +181,7 @@
       <hr class="mt-6 border-b-1 border-blueGray-300" />
 
       <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
-        Contact Information
+        Contact Address
       </h6>
       <div class="flex flex-wrap">
         <div class="w-full lg:w-12/12 px-4">
@@ -97,7 +195,7 @@
             <input
               type="text"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
+              value=""
             />
           </div>
         </div>
@@ -112,7 +210,7 @@
             <input
               type="email"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              value="New York"
+              value=""
             />
           </div>
         </div>
@@ -127,7 +225,7 @@
             <input
               type="text"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              value="United States"
+              value=""
             />
           </div>
         </div>
@@ -142,35 +240,8 @@
             <input
               type="text"
               class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              value="Postal Code"
+              value=""
             />
-          </div>
-        </div>
-      </div>
-
-      <hr class="mt-6 border-b-1 border-blueGray-300" />
-
-      <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
-        About Me
-      </h6>
-      <div class="flex flex-wrap">
-        <div class="w-full lg:w-12/12 px-4">
-          <div class="relative w-full mb-3">
-            <label
-              class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-              htmlFor="grid-password"
-            >
-              About me
-            </label>
-            <textarea
-              type="text"
-              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-              rows="4"
-            >
-                  A beautiful UI Kit and Admin for Angular & Tailwind CSS. It is Free
-                  and Open Source.
-                </textarea
-            >
           </div>
         </div>
       </div>

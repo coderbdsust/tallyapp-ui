@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from 'src/app/shared/components/button/button.component';
 import { NgClass, NgIf, NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { ErrorResponse } from 'src/app/shared/models/error-response';
 
 @Component({
   selector: 'app-two-steps',
@@ -53,11 +54,13 @@ export class TwoStepsComponent implements OnInit {
     this.authService.verifyUser(verification).subscribe (
       response => {
         this._router.navigate([`/auth/sign-in`]);
+        this.authService.showToastSuccess(`User successfully verified, Please login`);
       },
       errorRes => {
-        console.log(errorRes);
-        if(errorRes.error.message){
-          this.errorMessage=errorRes.error.message;
+        if(errorRes instanceof ErrorResponse){
+          this.errorMessage = errorRes.message || '';
+        }else{
+          this.errorMessage="An unknown error occurred";
         }
       }
     )

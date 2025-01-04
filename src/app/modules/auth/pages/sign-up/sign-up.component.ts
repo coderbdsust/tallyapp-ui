@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ButtonComponent } from 'src/app/shared/components/button/button.component';
 import { NgClass, NgIf, NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { ErrorResponse } from 'src/app/shared/models/error-response';
 
 @Component({
   selector: 'app-sign-up',
@@ -35,10 +36,7 @@ export class SignUpComponent implements OnInit {
     { id: 12, value: "Dec", fullName: "December" },
   ];
   years!:number[];
-  // day!:number;
-  // month!:string;
-  // year!:number;
-  errorMessage="Invalid input data";
+  errorMessage="";
 
   constructor(private readonly _formBuilder: FormBuilder, private readonly _router: Router, private authService: AuthService) {}
 
@@ -107,8 +105,7 @@ export class SignUpComponent implements OnInit {
       return ;
     }   
 
-    if(!signUpData.password === signUpData.confirmPassword) {
-      console.log(`Password and Confirm Password didn't matched`);
+    if(signUpData.password != signUpData.confirmPassword) {
       this.errorMessage=`Password and Confirm Password didn't matched`;
       return ;
     }
@@ -119,14 +116,11 @@ export class SignUpComponent implements OnInit {
 
     this.authService.signUp(signUpData).subscribe (
       response => {
-        console.log(response);
         this._router.navigate([`/auth/account-activation/${response.username}`]);
+        this.authService.showToastSuccess(`New user created successfully, Please check email and verify with OTP`);
       },
       errorRes => {
-        console.log(errorRes);
-        if(errorRes.error.message){
-          this.errorMessage=errorRes.error.message;
-        }
+        this.authService.showToastErrorResponse(errorRes);
       }
     )
    

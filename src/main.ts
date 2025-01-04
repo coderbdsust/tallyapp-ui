@@ -1,11 +1,13 @@
 import { enableProdMode, importProvidersFrom } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { environment } from './environments/environment';
 import { AppComponent } from './app/app.component';
 import { AppRoutingModule } from './app/app-routing.module';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { AuthInterceptorService } from './app/core/interceptor/auth-interceptor.service';
+import { AuthService } from './app/modules/auth/services/auth.service';
 
 if (environment.production) {
   enableProdMode();
@@ -16,7 +18,13 @@ if (environment.production) {
 }
 
 bootstrapApplication(AppComponent, {
-  providers: [importProvidersFrom(BrowserModule, AppRoutingModule), provideAnimations()],
+  providers: [
+      importProvidersFrom(BrowserModule, AppRoutingModule),
+      provideAnimations(),
+      provideHttpClient(withInterceptorsFromDi()),
+      {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi:true },
+      AuthService
+    ],
 }).catch((err) => console.error(err));
 
 function selfXSSWarning() {

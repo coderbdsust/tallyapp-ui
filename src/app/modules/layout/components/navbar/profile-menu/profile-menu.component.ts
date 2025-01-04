@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { ClickOutsideDirective } from '../../../../../shared/directives/click-outside.directive';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ThemeService } from '../../../../../core/services/theme.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { AuthService } from 'src/app/modules/auth/services/auth.service';
+import { ErrorResponse } from 'src/app/shared/models/error-response';
+import { toast } from 'ngx-sonner';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-profile-menu',
@@ -12,6 +16,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   styleUrls: ['./profile-menu.component.scss'],
   standalone: true,
   imports: [ClickOutsideDirective, NgClass, RouterLink, AngularSvgIconModule],
+
   animations: [
     trigger('openClose', [
       state(
@@ -83,7 +88,7 @@ export class ProfileMenuComponent implements OnInit {
 
   public themeMode = ['light', 'dark'];
 
-  constructor(public themeService: ThemeService) {}
+  constructor(public themeService: ThemeService, private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {}
 
@@ -103,4 +108,9 @@ export class ProfileMenuComponent implements OnInit {
       return { ...theme, color: color };
     });
   }
+
+  onLogout() {
+    this.authService.logout();
+  }
+  
 }

@@ -6,6 +6,8 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { AuthService } from '../../services/auth.service';
 import { environment } from 'src/environments/environment';
+import {catchError, map} from 'rxjs/operators';
+import { ErrorResponse } from 'src/app/shared/models/error-response';
 
 @Component({
   selector: 'app-sign-in',
@@ -18,7 +20,7 @@ export class SignInComponent implements OnInit {
   form!: FormGroup;
   submitted = false;
   passwordTextType!: boolean;
-  errorMessage="Invalid input data";
+  errorMessage="";
 
   constructor(private readonly _formBuilder: FormBuilder, private readonly _router: Router, private authService: AuthService) {}
 
@@ -53,16 +55,13 @@ export class SignInComponent implements OnInit {
     this.errorMessage="";
     
     this.authService.signIn(loginData).subscribe (
-      response=>{
-        console.log(response);
-        localStorage.setItem(environment.TALLY_TOKEN, JSON.stringify(response));
+      response => {
         this._router.navigate(['/']);
-      },errorRes=>{
-        if(errorRes.error && errorRes.error.message){
-          this.errorMessage = errorRes.error.message;
-          console.log(errorRes.error);
-        }
+        this.authService.showToastSuccess(`Welcome`);
+      },errorRes => {
+        this.authService.showToastErrorResponse(errorRes);
       }
     )
+
   }
 }
