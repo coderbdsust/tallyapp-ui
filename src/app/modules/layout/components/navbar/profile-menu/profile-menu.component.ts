@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { NgClass } from '@angular/common';
-import { ClickOutsideDirective } from '../../../../../shared/directives/click-outside.directive';
+import { ClickOutsideDirective } from '../../../../../common/directives/click-outside.directive';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ThemeService } from '../../../../../core/services/theme.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
-import { ErrorResponse } from 'src/app/shared/models/error-response';
-import { toast } from 'ngx-sonner';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-profile-menu',
@@ -47,6 +44,11 @@ export class ProfileMenuComponent implements OnInit {
       title: 'Your Profile',
       icon: './assets/icons/heroicons/outline/user-circle.svg',
       link: '/dashboard/profile',
+    },
+    {
+      title: 'Change Password',
+      icon: './assets/icons/heroicons/outline/wrench.svg',
+      link: '/dashboard/change-password',
     },
     {
       title: 'Log out',

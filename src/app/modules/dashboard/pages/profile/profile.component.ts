@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/modules/auth/services/common.service';
 import { UserprofileService } from 'src/app/modules/auth/services/userprofile.service';
 import { UserProfile } from './profile.model';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-profile',
@@ -17,6 +18,7 @@ export class ProfileComponent implements OnInit {
   constructor(private userProfileService: UserprofileService, private commonService: CommonService) {}
 
   ngOnInit(): void {
+    initFlowbite();
     this.loadUserProfile();
   }
 

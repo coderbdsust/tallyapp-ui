@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import {
-  ActivatedRouteSnapshot,
   CanActivate,
-  GuardResult,
-  MaybeAsync,
-  Router,
+  ActivatedRouteSnapshot,
   RouterStateSnapshot,
+  Router,
+  UrlTree,
 } from '@angular/router';
-import { map, take, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 
 @Injectable({
@@ -16,14 +16,19 @@ import { AuthService } from 'src/app/modules/auth/services/auth.service';
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): MaybeAsync<GuardResult> {
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean | UrlTree> {
     return this.authService.user.pipe(
       take(1),
       map((user) => {
-        const auth = !!user;
-        if (auth) return auth;
-        return this.router.createUrlTree(['/auth/sign-in']);
-      }),
+        if (user) {
+          return true;
+        } else {
+          return this.router.createUrlTree(['/auth/sign-in']);
+        }
+      })
     );
   }
 }

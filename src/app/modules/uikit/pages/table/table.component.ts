@@ -8,7 +8,7 @@ import { TableFooterComponent } from './components/table-footer/table-footer.com
 import { TableRowComponent } from './components/table-row/table-row.component';
 import { TableActionComponent } from './components/table-action/table-action.component';
 import { toast } from 'ngx-sonner';
-import { dummyData } from 'src/app/shared/dummy/user.dummy';
+import { dummyData } from 'src/app/common/dummy/user.dummy';
 import { TableFilterService } from './services/table-filter.service';
 
 @Component({

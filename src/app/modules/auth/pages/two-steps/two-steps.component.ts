@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink, ActivatedRoute, Params } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { ButtonComponent } from 'src/app/shared/components/button/button.component';
+import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { NgClass, NgIf, NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { ErrorResponse } from 'src/app/shared/models/error-response';
 
 @Component({
   selector: 'app-two-steps',
@@ -14,7 +13,7 @@ import { ErrorResponse } from 'src/app/shared/models/error-response';
   imports: [FormsModule, RouterLink, ButtonComponent, NgClass, NgIf, NgFor],
 })
 export class TwoStepsComponent implements OnInit {
-  constructor(private readonly _router: Router, private acRoute:ActivatedRoute, private authService: AuthService) {}
+  constructor(private readonly _router: Router, private acRoute: ActivatedRoute, private authService: AuthService) {}
 
   public inputs: string[] = Array(6).fill('');
   submitted = false;
@@ -22,8 +21,7 @@ export class TwoStepsComponent implements OnInit {
   username: string = '';
 
   ngOnInit(): void {
-    this.acRoute.params.subscribe((params: Params) => this.username = params['username']);
-
+    this.acRoute.params.subscribe((params: Params) => (this.username = params['username']));
   }
 
   isNumeric(value: string): boolean {
@@ -45,24 +43,20 @@ export class TwoStepsComponent implements OnInit {
     }
 
     const verification = {
-      "username":this.username,
-      "otpCode":otp
-    }
-    
-    this.errorMessage="";
+      username: this.username,
+      otpCode: otp,
+    };
 
-    this.authService.verifyUser(verification).subscribe (
-      response => {
+    this.errorMessage = '';
+
+    this.authService.verifyUser(verification).subscribe({
+      next: (response) => {
         this._router.navigate([`/auth/sign-in`]);
         this.authService.showToastSuccess(`User successfully verified, Please login`);
       },
-      errorRes => {
-        if(errorRes instanceof ErrorResponse){
-          this.errorMessage = errorRes.message || '';
-        }else{
-          this.errorMessage="An unknown error occurred";
-        }
-      }
-    )
+      error: (error) => {
+        this.authService.showToastErrorResponse(error);
+      },
+    });
   }
 }

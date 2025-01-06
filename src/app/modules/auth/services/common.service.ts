@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import {  throwError } from 'rxjs';
-import { ErrorResponse } from 'src/app/shared/models/error-response';
+import { ErrorResponse } from 'src/app/common/models/error-response';
 import { jwtDecode } from 'jwt-decode';
 import { toast } from 'ngx-sonner';
 
@@ -60,7 +60,7 @@ export class CommonService {
   }
 
   showToastErrorResponse(errorResponse: ErrorResponse) {
-    const msg = 'Error';
+    const msg = `Error`;
     toast.error(msg, {
       position: 'bottom-right',
       description: errorResponse.message,

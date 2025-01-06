@@ -3,11 +3,11 @@ import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } 
 import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgIf } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { ButtonComponent } from '../../../../common/components/button/button.component';
 import { AuthService } from '../../services/auth.service';
 import { environment } from 'src/environments/environment';
-import {catchError, map} from 'rxjs/operators';
-import { ErrorResponse } from 'src/app/shared/models/error-response';
+import {catchError, map, take} from 'rxjs/operators';
+import { ErrorResponse } from 'src/app/common/models/error-response';
 
 @Component({
   selector: 'app-sign-in',
@@ -54,14 +54,16 @@ export class SignInComponent implements OnInit {
     
     this.errorMessage="";
     
-    this.authService.signIn(loginData).subscribe (
-      response => {
+    this.authService.signIn(loginData).subscribe({
+      next: (response) => {
         this._router.navigate(['/']);
-        this.authService.showToastSuccess(`Welcome`);
-      },errorRes => {
+        this.authService.showToastSuccess(`Welcome ${response.fullName}`);
+      },
+      error: (errorRes) => {
         this.authService.showToastErrorResponse(errorRes);
-      }
-    )
+      },
+    });
+    
 
   }
 }

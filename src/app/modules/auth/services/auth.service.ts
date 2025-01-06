@@ -1,10 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { catchError, tap, BehaviorSubject } from 'rxjs';
+import { catchError, tap, BehaviorSubject, Observable } from 'rxjs';
 import { CommonService } from './common.service';
 import { Router } from '@angular/router';
-import { ErrorResponse } from 'src/app/shared/models/error-response';
+import { ErrorResponse } from 'src/app/common/models/error-response';
 
 export interface AuthUser {
   accessToken: string;
@@ -70,23 +70,9 @@ export class AuthService extends CommonService {
 
   logout() {
     this.user.next(null);
-    this.http.post(`${environment.tallyURL}/auth/v1/logout`, {}).subscribe(
-      (response) => {
-        this.router.navigate(['/auth/sign-in']);
-        localStorage.removeItem(environment.TALLY_APP);
-        this.showToastSuccess('Logout successfully');
-      },
-      (error) => {
-        this.router.navigate(['/auth/sign-in']);
-        localStorage.removeItem(environment.TALLY_APP);
-        if (error instanceof ErrorResponse) {
-          this.showToastError(error.message);
-        } else {
-          this.showToastError('An unknown error occurred');
-        }
-      },
-    );
-
+    localStorage.removeItem(environment.TALLY_APP);
+    location.reload();
+    this.showToastSuccess('Logout successfully');
     if (this.logoutTimer) {
       clearTimeout(this.logoutTimer);
     }

@@ -3,10 +3,10 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ButtonComponent } from 'src/app/shared/components/button/button.component';
+import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { NgClass, NgIf, NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { ErrorResponse } from 'src/app/shared/models/error-response';
+import { ErrorResponse } from 'src/app/common/models/error-response';
 
 @Component({
   selector: 'app-sign-up',
@@ -114,15 +114,15 @@ export class SignUpComponent implements OnInit {
     
     this.errorMessage="";
 
-    this.authService.signUp(signUpData).subscribe (
-      response => {
+    this.authService.signUp(signUpData).subscribe({
+      next: (response) => {
         this._router.navigate([`/auth/account-activation/${response.username}`]);
         this.authService.showToastSuccess(`New user created successfully, Please check email and verify with OTP`);
       },
-      errorRes => {
-        this.authService.showToastErrorResponse(errorRes);
-      }
-    )
+      error: (error) => {
+        this.authService.showToastErrorResponse(error);
+      },
+    });
    
   }
 }

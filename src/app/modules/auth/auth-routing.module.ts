@@ -6,6 +6,7 @@ import { NewPasswordComponent } from './pages/new-password/new-password.componen
 import { SignInComponent } from './pages/sign-in/sign-in.component';
 import { SignUpComponent } from './pages/sign-up/sign-up.component';
 import { TwoStepsComponent } from './pages/two-steps/two-steps.component';
+import { LoginResolve } from 'src/app/core/resolver/login-resolve';
 
 const routes: Routes = [
   {
@@ -13,11 +14,31 @@ const routes: Routes = [
     component: AuthComponent,
     children: [
       { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
-      { path: 'sign-in', component: SignInComponent, data: { returnUrl: window.location.pathname } },
-      { path: 'sign-up', component: SignUpComponent },
-      { path: 'forgot-password', component: ForgotPasswordComponent },
-      { path: 'new-password', component: NewPasswordComponent },
-      { path: 'account-activation/:username', component: TwoStepsComponent },
+      {
+        path: 'sign-in',
+        component: SignInComponent,
+        data: { returnUrl: window.location.pathname },
+        resolve: { ready: LoginResolve },
+      },
+      { 
+        path: 'sign-up',
+        component: SignUpComponent,
+        resolve: { ready: LoginResolve }
+       },
+      { 
+        path: 'forgot-password',
+        component: ForgotPasswordComponent,
+        resolve: { ready: LoginResolve }
+       },
+      { path: 'new-password',
+        component: NewPasswordComponent,
+        resolve: { ready: LoginResolve }
+      },
+      { 
+        path: 'account-activation/:username',
+        component: TwoStepsComponent,
+        resolve: { ready: LoginResolve }
+       },
       { path: '**', redirectTo: 'sign-in', pathMatch: 'full' },
     ],
   },

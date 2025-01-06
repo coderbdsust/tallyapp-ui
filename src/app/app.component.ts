@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ThemeService } from './core/services/theme.service';
 import { RouterOutlet } from '@angular/router';
 import { NgClass } from '@angular/common';
-import { ResponsiveHelperComponent } from './shared/components/responsive-helper/responsive-helper.component';
+import { ResponsiveHelperComponent } from './common/components/responsive-helper/responsive-helper.component';
 import { NgxSonnerToaster } from 'ngx-sonner';
 import { AuthService } from './modules/auth/services/auth.service';
 
