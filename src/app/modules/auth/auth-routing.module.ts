@@ -35,7 +35,7 @@ const routes: Routes = [
         resolve: { ready: LoginResolve }
       },
       { 
-        path: 'account-activation/:username',
+        path: 'account-activation',
         component: TwoStepsComponent,
         resolve: { ready: LoginResolve }
        },

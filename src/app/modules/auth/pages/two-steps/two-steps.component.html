@@ -1,4 +1,4 @@
-<form class="my-10 space-y-6" (ngSubmit)="onSubmit()">
+<form class="my-4 space-y-6" (ngSubmit)="onSubmit()">
   <div class="text-center">
     <h2 class="mb-1 text-3xl font-semibold text-foreground">OTP for Verification</h2>
     <p class="text-sm text-muted-foreground">Enter the verification code we sent to your email</p>
@@ -64,3 +64,11 @@
     <app-button full impact="bold" tone="primary" shape="rounded" size="medium"> Submit </app-button>
   </div>
 </form>
+<div class="flex items-center justify-between text-sm text-muted-foreground">
+  <app-button routerLink="/auth/sign-in" impact="none" tone="primary" shape="rounded" size="small">
+    Sign In
+  </app-button>
+  <app-button (click)="resendOTP()" impact="none" tone="primary" shape="rounded" size="small">
+    Resend OTP
+  </app-button>
+</div>

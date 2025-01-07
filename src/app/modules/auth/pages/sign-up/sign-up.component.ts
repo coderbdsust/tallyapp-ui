@@ -116,7 +116,7 @@ export class SignUpComponent implements OnInit {
 
     this.authService.signUp(signUpData).subscribe({
       next: (response) => {
-        this._router.navigate([`/auth/account-activation/${response.username}`]);
+        this._router.navigateByUrl(`/auth/account-activation`,{state:{userKey:response.username}});
         this.authService.showToastSuccess(`New user created successfully, Please check email and verify with OTP`);
       },
       error: (error) => {

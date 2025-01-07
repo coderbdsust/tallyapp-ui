@@ -1,28 +1,10 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { catchError, tap, BehaviorSubject, Observable } from 'rxjs';
 import { CommonService } from './common.service';
 import { Router } from '@angular/router';
-import { ErrorResponse } from 'src/app/common/models/error-response';
-
-export interface AuthUser {
-  accessToken: string;
-  refreshToken: string;
-  expireTime: Date;
-  fullName: string;
-  username: string;
-  email: string;
-  role: string;
-}
-export interface SignUpResponse {
-  id: string;
-  username: string;
-  email: string;
-  mobileNo: string;
-  fullName: string;
-  dateOfBirth: string;
-}
+import { ApiResponse, AuthUser, SignUpResponse } from './auth.model';
 
 @Injectable({
   providedIn: 'root',
@@ -68,6 +50,12 @@ export class AuthService extends CommonService {
     return this.http.post(`${environment.tallyURL}/auth/v1/verify`, verifyData).pipe(catchError(this.mapErrorResponse));
   }
 
+  resendAccountVerificationOTP(username:any) {
+    return this.http
+    .post<ApiResponse>(`${environment.tallyURL}/auth/v1/resend-account-verification-otp`, username)
+    .pipe(catchError(this.mapErrorResponse));
+  }
+
   logout() {
     this.user.next(null);
     localStorage.removeItem(environment.TALLY_APP);
@@ -89,7 +77,6 @@ export class AuthService extends CommonService {
   }
 
   autoLogout(duration: number) {
-    console.log(duration);
     this.logoutTimer = setTimeout(() => {
       this.logout();
     }, duration);

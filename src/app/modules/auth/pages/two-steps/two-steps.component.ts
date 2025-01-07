@@ -13,7 +13,13 @@ import { AuthService } from '../../services/auth.service';
   imports: [FormsModule, RouterLink, ButtonComponent, NgClass, NgIf, NgFor],
 })
 export class TwoStepsComponent implements OnInit {
-  constructor(private readonly _router: Router, private acRoute: ActivatedRoute, private authService: AuthService) {}
+  constructor(private readonly _router: Router, private acRoute: ActivatedRoute, private authService: AuthService) {
+    const currentNav = this._router.getCurrentNavigation();
+    this.username = currentNav?.extras?.state?.["userKey"];
+    if(!this.username){
+      this._router.navigate([`/auth/sign-in`]);
+    }
+  }
 
   public inputs: string[] = Array(6).fill('');
   submitted = false;
@@ -21,12 +27,29 @@ export class TwoStepsComponent implements OnInit {
   username: string = '';
 
   ngOnInit(): void {
-    this.acRoute.params.subscribe((params: Params) => (this.username = params['username']));
   }
 
   isNumeric(value: string): boolean {
     const regex = /^[0-9]+$/;
     return regex.test(value);
+  }
+
+  resendOTP() {
+    let user: any = {};
+    user.username = this.username;
+    this.authService.resendAccountVerificationOTP(user).subscribe({
+      next: (response) => {
+        if (response.businessCode == 301) {
+          this._router.navigate([`/auth/sign-in`]);
+          this.authService.showToastSuccess(`${response.message}`);
+        } else {
+          this.authService.showToastSuccess(`${response.message}`);
+        }
+      },
+      error: (error) => {
+        this.authService.showToastErrorResponse(error);
+      },
+    });
   }
 
   onSubmit() {
