@@ -9,9 +9,14 @@ const routes: Routes = [
     loadChildren: () => import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
   },
   {
-    path: 'components',
+    path: 'admin',
     component: LayoutComponent,
-    loadChildren: () => import('../uikit/uikit.module').then((m) => m.UikitModule),
+    loadChildren: () => import('../admin/admin.module').then((m) => m.AdminModule),
+  },
+  {
+    path: 'user',
+    component: LayoutComponent,
+    loadChildren: () => import('../user/user.module').then((m) => m.UserModule),
   },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'error/404' },

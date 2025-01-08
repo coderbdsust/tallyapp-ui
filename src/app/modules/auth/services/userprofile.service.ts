@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { CommonService } from './common.service';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
-import { UserProfile } from '../../dashboard/pages/profile/profile.model';
+import { UserProfile } from '../../user/profile/profile.model';
 
 @Injectable({
   providedIn: 'root'

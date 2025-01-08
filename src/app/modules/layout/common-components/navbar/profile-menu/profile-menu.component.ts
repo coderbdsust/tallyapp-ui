@@ -43,12 +43,12 @@ export class ProfileMenuComponent implements OnInit {
     {
       title: 'Your Profile',
       icon: './assets/icons/heroicons/outline/user-circle.svg',
-      link: '/dashboard/profile',
+      link: '/user/profile',
     },
     {
       title: 'Change Password',
       icon: './assets/icons/heroicons/outline/wrench.svg',
-      link: '/dashboard/change-password',
+      link: '/user/change-password',
     },
     {
       title: 'Log out',

@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-uikit',
+  selector: 'app-admin',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './uikit.component.html',
-  styleUrl: './uikit.component.scss',
+  templateUrl: './admin.component.html',
+  styleUrl: './admin.component.scss',
 })
-export class UikitComponent {}
+export class AdminComponent {}

@@ -26,8 +26,8 @@ export class Menu {
           label: 'Settings',
           route: '/settings',
           children: [
-            { label: 'App Properties', route: '/components/app-property' },
-            { label: 'Registered User', route: '/components/registered-user' }
+            { label: 'App Properties', route: '/admin/app-property' },
+            { label: 'Registered User', route: '/admin/registered-user' }
           ]
         }
       ],

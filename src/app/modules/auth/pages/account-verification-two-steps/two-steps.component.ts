@@ -39,7 +39,7 @@ export class TwoStepsComponent implements OnInit {
     user.username = this.username;
     this.authService.resendAccountVerificationOTP(user).subscribe({
       next: (response) => {
-        if (response.businessCode == 301) {
+        if (response.businessCode == 601) {
           this._router.navigate([`/auth/sign-in`]);
           this.authService.showToastSuccess(`${response.message}`);
         } else {
