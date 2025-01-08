@@ -29,13 +29,15 @@ export class TableComponent implements OnInit {
   users = signal<User[]>([]);
 
   constructor(private http: HttpClient, private filterService: TableFilterService) {
-    this.http.get<User[]>('https://freetestapi.com/api/v1/users?limit=8').subscribe({
-      next: (data) => this.users.set(data),
-      error: (error) => {
-        this.users.set(dummyData);
-        this.handleRequestError(error);
-      },
-    });
+    this.users.set(dummyData);
+
+    // this.http.get<User[]>('https://freetestapi.com/api/v1/users?limit=8').subscribe({
+    //   next: (data) => this.users.set(data),
+    //   error: (error) => {
+       
+    //     this.handleRequestError(error);
+    //   },
+    // });
   }
 
   public toggleUsers(checked: boolean) {

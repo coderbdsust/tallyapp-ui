@@ -1,0 +1,22 @@
+<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
+  <app-table-action [totalRows]="totalRows"  [currentRows]="currentRows"></app-table-action>
+  <div
+    class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+    <table
+      class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+      <thead class="border border-muted/20 text-xs text-muted-foreground bg-gray-100">
+        <tr app-table-header (onCheck)="toggleProperties($event)"></tr>
+      </thead>
+      <tbody>
+        @for (appProperty of filteredAppProperties(); track $index) {
+        <tr class="hover:bg-card/50" app-table-row [appProperty]="appProperty"></tr>
+        } @empty {
+        <tr>
+          <td class="py-4 text-center text-sm" colspan="7">No app properties found</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <app-table-footer></app-table-footer>
+</div>

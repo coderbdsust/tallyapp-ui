@@ -1,0 +1,22 @@
+<ng-container>
+  <td class="text-center">
+    <button
+      class="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-card hover:text-foreground">
+      <svg-icon src="./assets/icons/heroicons/outline/ellipsis-vertical.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
+    </button>
+  </td>
+  <!-- <td class="text-center">
+    <input
+      [(ngModel)]="appProperty.selected"
+      class="checkbox checkbox-sm"
+      data-datatable-row-check="true"
+      type="checkbox"
+      value="{{appProperty.id}}" />
+  </td> -->
+  <td>{{ appProperty.profile }}</td>
+  <td class="text-sm font-normal text-foreground hover:text-primary">{{ appProperty.appKey }}</td>
+  <td>
+    {{ appProperty.appValue }}
+  </td>
+
+</ng-container>
