@@ -1,22 +1,141 @@
 <div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
-  <app-table-action [totalRows]="totalRows"  [currentRows]="currentRows"></app-table-action>
+    <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
+      <h3 class="text-sm font-medium text-muted-foreground">Showing {{currentRows}} of {{totalRows}} rows</h3>
+      <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap items-center justify-between gap-2  px-8 text-xs text-muted-foreground">
+          <div class="order-2 flex items-center gap-2 md:order-1">
+            Show
+            <select class="w-16 p-2"  name="rowSize" (change)="onSelectChange($event)">
+              <option value="10" selected>10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="-1">All</option>
+            </select>
+            per page
+          </div>
+        </div>
+        <div class="flex">
+          <label class="relative text-muted-foreground">
+            <div class="absolute left-2.5 top-2.5">
+              <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
+            </div>
+            <input
+              name="search"
+              class="py-2 pl-8 pr-2"
+              placeholder="Search App Key"
+              type="text"
+              value=""
+              (input)="onSearchChange($event)" />
+          </label>
+        </div>
+      </div>
+    </div>
   <div
     class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
     <table
       class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
-      <thead class="border border-muted/20 text-xs text-muted-foreground bg-gray-100">
-        <tr app-table-header (onCheck)="toggleProperties($event)"></tr>
+      <thead class="border border-muted/20 text-xs text-muted-foreground bg-black-100 text-white">
+         <tr>
+            <th class="w-[10px]"></th>
+            <!-- <th class="w-[20px] font-bold">
+              <input (change)="toggle($event)" class="checkbox checkbox-sm" data-datatable-check="true" type="checkbox" />
+            </th> -->
+            <th class="min-w-[50px]">Profile</th>
+            <th class="min-w-[100px] font-black">App Key</th>
+            <th class="min-w-[120px]">App Value</th>
+         </tr>
       </thead>
       <tbody>
-        @for (appProperty of filteredAppProperties(); track $index) {
-        <tr class="hover:bg-card/50" app-table-row [appProperty]="appProperty"></tr>
-        } @empty {
-        <tr>
+        <tr
+          *ngFor="let appProperty of pageResponse()?.content;"
+          class="hover:bg-card/50  gap-4">
+         
+            <td class="text-center">
+              <button
+                class="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-card hover:text-foreground">
+                <svg-icon src="./assets/icons/heroicons/outline/ellipsis-vertical.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
+              </button>
+            </td>
+            <td>{{ appProperty.profile }}</td>
+            <td class="hover:text-red-400">{{ appProperty.appKey }}</td>
+            <td>
+              {{ appProperty.appValue }}
+            </td>
+        
+        </tr>
+        <tr *ngIf="pageResponse()?.content?.length === 0">
           <td class="py-4 text-center text-sm" colspan="7">No app properties found</td>
         </tr>
-        }
       </tbody>
     </table>
   </div>
-  <app-table-footer></app-table-footer>
+  <!-- <div class="flex flex-wrap items-center justify-end gap-2 py-3 px-5 text-xs text-muted-foreground">
+    <div class="order-1 flex items-center gap-4 md:order-2">
+      <span>1-10 of 100</span>
+      <div class="inline-flex items-center gap-1">
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50"
+          disabled>
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
+        </button>
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md bg-muted-foreground/10 text-sm">
+          1
+        </button>
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10">
+          2
+        </button>
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10">
+          3
+        </button>
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10">
+          ...
+        </button>
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
+        </button>
+      </div>
+    </div>
+  </div>   -->
+  <div class="flex flex-wrap items-center justify-end gap-2 py-3 px-5 text-xs text-muted-foreground">
+    <div class="order-1 flex items-center gap-4 md:order-2">
+      <!-- Display range of items -->
+      <span>{{ startIndex }}-{{ endIndex }} of {{ this.totalRows }}</span>
+  
+      <!-- Pagination buttons -->
+      <div class="inline-flex items-center gap-1">
+        <!-- Previous button -->
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50"
+          [disabled]="first"
+          (click)="goToPreviousPage()">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        </button>
+  
+        <!-- Page buttons -->
+        <button
+          *ngFor="let page of getPagesArray(); let i = index"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm"
+          [ngClass]="{
+            'bg-gray-200': i ===this.currentPage,
+            'hover:bg-muted-foreground/10': i !== this.currentPage
+          }"
+          (click)="goToPage(i)">
+          {{ i + 1 }}
+        </button>
+
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50"
+          [disabled]="last"
+          (click)="goToNextPage()">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  
 </div>

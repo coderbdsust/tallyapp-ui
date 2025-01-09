@@ -30,6 +30,7 @@ export class AuthInterceptorService implements HttpInterceptor {
             } else if (error.status === 401) {
               // Handle unauthorized access (e.g., token expired)
               console.error('Unauthorized access:', error);
+              // this.authService.logout();
               this.router.navigate(['/auth/sign-in']); // Redirect to login page
             }
             return throwError(() => error);
