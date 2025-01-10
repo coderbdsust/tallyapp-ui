@@ -37,7 +37,40 @@ export class AuthService extends CommonService {
           localStorage.setItem(environment.TALLY_APP, JSON.stringify(authUser));
           
           let expireDuration = authUser.expireTime.getTime()-new Date().getTime();
-          this.autoLogout(expireDuration);
+          //this.autoLogout(expireDuration);
+          this.user.next(authUser);
+        } else {
+          this.user.next(null);
+        }
+      }),
+    );
+  }
+
+  refreshToken() {
+
+    const userData = localStorage.getItem(environment.TALLY_APP);
+    let refreshToken;
+    if (!userData) {
+      refreshToken = {};
+    }else{
+      const cachedAuthUser: AuthUser = this.mapToAuthUser(JSON.parse(userData));
+      refreshToken = {refreshToken: cachedAuthUser.refreshToken};
+    }
+    
+    return this.http.post<AuthUser>(`${environment.tallyURL}/auth/v1/refresh-token`, refreshToken).pipe(
+      catchError(this.mapErrorResponse),
+      tap((authUser) => {
+        const payload = this.decodeToken(authUser.accessToken);
+        if (payload != null) {
+          authUser.expireTime = new Date(payload.exp * 1000);
+          authUser.fullName = payload.fullName || '';
+          authUser.username = payload.sub || '';
+          authUser.email = payload.email || '';
+          authUser.role = payload?.authorities?.[0] || '';
+          localStorage.setItem(environment.TALLY_APP, JSON.stringify(authUser));
+          
+          let expireDuration = authUser.expireTime.getTime()-new Date().getTime();
+          //this.autoLogout(expireDuration);
           this.user.next(authUser);
         } else {
           this.user.next(null);
@@ -72,15 +105,15 @@ export class AuthService extends CommonService {
     if (!userData) return;
     const cachedAuthUser: AuthUser = this.mapToAuthUser(JSON.parse(userData));
     let expireDuration = cachedAuthUser.expireTime.getTime()-new Date().getTime();
-    this.autoLogout(expireDuration);
+   // this.autoLogout(expireDuration);
     this.user.next(cachedAuthUser);
   }
 
-  autoLogout(duration: number) {
-    this.logoutTimer = setTimeout(() => {
-      this.logout();
-    }, duration);
-  }
+  // autoLogout(duration: number) {
+  //   this.logoutTimer = setTimeout(() => {
+  //     this.logout();
+  //   }, duration);
+  // }
 
   private mapToAuthUser(parsedData: any): AuthUser {
     return {

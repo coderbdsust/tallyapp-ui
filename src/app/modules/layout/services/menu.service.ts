@@ -1,43 +1,58 @@
-import { Injectable, OnDestroy, signal } from '@angular/core';
+import { Injectable, OnDestroy, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Menu } from 'src/app/core/constants/menu';
 import { MenuItem, SubMenuItem } from 'src/app/core/models/menu.model';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MenuService implements OnDestroy {
+export class MenuService implements OnDestroy, OnInit {
   private _showSidebar = signal(true);
   private _showMobileMenu = signal(false);
   private _pagesMenu = signal<MenuItem[]>([]);
   private _subscription = new Subscription();
 
-  constructor(private router: Router) {
-    /** Set dynamic menu */
-    this._pagesMenu.set(Menu.pages);
-
-    let sub = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        /** Expand menu base on active route */
-        this._pagesMenu().forEach((menu) => {
-          let activeGroup = false;
-          menu.items.forEach((subMenu) => {
-            const active = this.isActive(subMenu.route);
-            subMenu.expanded = active;
-            subMenu.active = active;
-            if (active) activeGroup = true;
-            if (subMenu.children) {
-              this.expand(subMenu.children);
-            }
-          });
-          menu.active = activeGroup;
-        });
-      }
-    });
-    this._subscription.add(sub);
+  constructor(private router: Router, private authService: AuthService) {
+    this.initialize();
   }
 
+  ngOnInit(): void {
+   this.initialize();
+  }
+
+  private initialize() {    
+    this.authService.user.subscribe((authUser=>{
+
+      if (authUser?.role.includes('ADMIN')) {
+        this._pagesMenu.set(Menu.adminPages);
+      } else {
+        this._pagesMenu.set(Menu.userPages);
+      }
+
+      let sub = this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          /** Expand menu base on active route */
+          this._pagesMenu().forEach((menu) => {
+            let activeGroup = false;
+            menu.items.forEach((subMenu) => {
+              const active = this.isActive(subMenu.route);
+              subMenu.expanded = active;
+              subMenu.active = active;
+              if (active) activeGroup = true;
+              if (subMenu.children) {
+                this.expand(subMenu.children);
+              }
+            });
+            menu.active = activeGroup;
+          });
+        }
+      });
+      this._subscription.add(sub);
+    }));
+
+  }
   get showSideBar() {
     return this._showSidebar();
   }
@@ -85,7 +100,7 @@ export class MenuService implements OnDestroy {
   }
 
   public getAppTitle(): string {
-    return "Tally Khata";
+    return 'Tally Khata';
   }
 
   ngOnDestroy(): void {

@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
+
+  private refreshingToken : boolean = false;
   constructor(private authService: AuthService, private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -23,15 +25,23 @@ export class AuthInterceptorService implements HttpInterceptor {
         return next.handle(modifiedReq).pipe (
           catchError((error: HttpErrorResponse) => {
             if (error.status === 0 || error.error?.message?.includes('Connection refused')) {
-              // Handle connection refused or network error
-              console.error('Connection refused or network error:', error);
               this.authService.logout();
-              // this.router.navigate(['/auth/sign-in']); // Redirect to login page
-            } else if (error.status === 401) {
-              // Handle unauthorized access (e.g., token expired)
-              console.error('Unauthorized access:', error);
-              // this.authService.logout();
-              this.router.navigate(['/auth/sign-in']); // Redirect to login page
+            } else if (error.status === 401 && !this.refreshingToken) {
+              this.refreshingToken=true;
+              this.authService.refreshToken().subscribe({
+                next:(authUser)=>{
+                  this.refreshingToken=false;
+                  this.authService.showToastSuccess(`Your token refreshed again`);
+                },
+                error:(error)=>{
+                  this.refreshingToken=false;
+                  this.authService.logout();
+                  this.router.navigate(['/auth/sign-in']); 
+                }
+              })
+            }else if (error.status === 403) {
+              console.error('Permission denied:', error);
+              this.router.navigate(['/errors/403']);
             }
             return throwError(() => error);
           })

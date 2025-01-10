@@ -19,4 +19,10 @@ export class AppPropertiesService extends CommonService {
       .get<PageResponse<AppProperties>>(`${environment.tallyURL}/app-property/v1/list?page=${page}&size=${size}&search=${search}`)
       .pipe(catchError(this.mapErrorResponse));
   }
+
+  public editAppProperties(appProperty: AppProperties){
+    return this.http
+    .put<AppProperties>(`${environment.tallyURL}/app-property/v1/edit`, appProperty)
+    .pipe(catchError(this.mapErrorResponse));
+  }
 }

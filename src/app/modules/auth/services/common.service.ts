@@ -60,7 +60,7 @@ export class CommonService {
   }
 
   showToastErrorResponse(errorResponse: ErrorResponse) {
-    const msg = `Error`;
+    const msg = errorResponse?.status+"";
     toast.error(msg, {
       position: 'bottom-right',
       description: errorResponse.message,
@@ -74,7 +74,7 @@ export class CommonService {
 
   showToastSuccess(message: any) {
     const msg = 'Success';
-    toast.success(msg, {
+    toast.success('', {
       position: 'bottom-right',
       description: message,
       action: {

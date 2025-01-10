@@ -1,0 +1,62 @@
+<div [ngClass]="isModalOpen ? 'flex' : 'hidden'" id="crud-modal" tabindex="-1" aria-hidden="true"
+  class="fixed inset-0 z-50 justify-center items-center w-full h-full bg-black bg-opacity-50">
+
+  <div class="relative p-4 w-full max-w-md">
+    <!-- Modal content -->
+    <div class="relative bg-white rounded shadow dark:bg-gray-700">
+      <!-- Modal header -->
+      <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          Edit App Property
+        </h3>
+        <button type="button"
+          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          (click)="closeModal()">
+          <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+          </svg>
+          <span class="sr-only">Close</span>
+        </button>
+      </div>
+      <!-- Modal body -->
+      <form class="p-4 md:p-5" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="grid gap-4 mb-4 grid-cols-2">
+          <div class="col-span-2">
+            <label for="id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">App Key ID</label>
+            <input formControlName="id" readonly type="text" name="id" id="id"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+              value="{{appProperty?appProperty.id:''}}">
+          </div>
+          <div class="col-span-2">
+            <label for="appKey" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">App Key</label>
+            <input readonly formControlName="appKey" type="text" name="appKey" id="appKey"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" required
+              value="{{appProperty?appProperty.appKey:''}}">
+          </div>
+
+          <div class="col-span-2">
+            <label for="appValue" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">App Value</label>
+            <textarea id="appValue" formControlName="appValue" value="{{appProperty?appProperty.appValue:''}}"
+              name="appValue" rows="4" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border p-2.5"
+              required>
+            </textarea>
+            <div *ngIf="submitted && f['appValue'].errors" class="is__invalid-error">
+              <div *ngIf="f['appValue'].errors['required']">Required field</div>
+            </div>
+          </div>
+          <div class="col-span-2">
+            <label for="profile" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Profile</label>
+            <input readonly type="text" formControlName="profile" value="{{appProperty?appProperty.profile:''}}"
+              name="profile" id="profile"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" required>
+          </div>
+        </div>
+
+        <div>
+          <app-button full impact="bold" tone="primary" shape="rounded" size="medium">Update</app-button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

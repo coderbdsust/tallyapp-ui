@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  tallyURL: 'http://localhost:8080',
+  tallyURL: 'http://localhost:8080/tallykhata',
   TALLY_APP:"TALLY_INFO"
 };
 

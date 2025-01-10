@@ -13,7 +13,7 @@ import { initFlowbite } from 'flowbite';
 })
 export class ProfileComponent implements OnInit {
 
-  userProfile!: UserProfile;
+  userProfile: UserProfile | undefined;
   
   constructor(private userProfileService: UserprofileService, private commonService: CommonService) {}
 
@@ -26,7 +26,6 @@ export class ProfileComponent implements OnInit {
     this.userProfileService.getUserProfile().subscribe(
       (response) => {
         this.userProfile = response;
-        console.log(this.userProfile);
       },
       (error) => {
         this.commonService.showToastErrorResponse(error);

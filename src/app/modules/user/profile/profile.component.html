@@ -15,7 +15,7 @@
         </div>
         <div class="text-center mt-12">
           <h3 class="text-xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
-            {{userProfile.fullName}}
+            {{userProfile?.fullName}}
           </h3>
           <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
             <i class="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
@@ -67,7 +67,7 @@
                 </label>
                 <input readonly type="text"
                   class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  value="{{userProfile.username}}" />
+                  value="{{userProfile?.username}}" />
               </div>
             </div>
             <div class="w-full lg:w-6/12 px-4">
@@ -77,7 +77,7 @@
                 </label>
                 <input readonly type="email"
                   class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  value="{{userProfile.email}}" />
+                  value="{{userProfile?.email}}" />
               </div>
             </div>
             <div class="w-full lg:w-6/12 px-4">
@@ -87,7 +87,7 @@
                 </label>
                 <input type="text"
                   class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  value="{{userProfile.fullName}}" />
+                  value="{{userProfile?.fullName}}" />
               </div>
             </div>
             <div class="w-full lg:w-6/12 px-4">
@@ -106,7 +106,7 @@
                       datepicker 
                       datepicker-autohide 
                       type="text" 
-                      value="{{userProfile.dateOfBirth}}"
+                      value="{{userProfile?.dateOfBirth}}"
                       datepicker-format="yyyy-mm-dd"
                       class="pl-8 bg-white border border-gray-300 text-black text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" 
                       placeholder="Select Birthdate">
@@ -121,7 +121,7 @@
                 </label>
                 <input type="text"
                   class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  value="{{userProfile.mobileNo}}" />
+                  value="{{userProfile?.mobileNo}}" />
               </div>
             </div>
             <div class="w-full lg:w-6/12 px-4">
@@ -132,7 +132,8 @@
                 <input type="text"
                   readonly
                   class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  value="{{userProfile.roles[0]}}" />
+                  value="{{userProfile?.roles?.[0]}}"
+                 />
               </div>
             </div>
           </div>
@@ -143,7 +144,7 @@
                   Mobile No Verified
                 </label>
                 <input readonly type="checkbox" class="ml-10 border-2 border-rose-500"
-                  [checked]="userProfile.mobileNoVerified" />
+                  [checked]="userProfile?.mobileNoVerified" />
               </div>
             </div>
             <div class="w-full lg:w-3/12 px-4">
@@ -152,7 +153,7 @@
                   TFA Enabled
                 </label>
                 <input readonly type="checkbox" class="ml-10 border-2 border-rose-500"
-                  [checked]="userProfile.tfaEnabled" />
+                  [checked]="userProfile?.tfaEnabled" />
               </div>
             </div>
           </div>
