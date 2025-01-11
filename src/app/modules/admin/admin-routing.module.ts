@@ -4,6 +4,7 @@ import { AdminComponent } from './admin.component';
 import { TableComponent } from './pages/table/table.component';
 import { AppPropertiesComponent } from './pages/app-properties/app-properties.component';
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
+import { RegisteredUserComponent } from './pages/registered-user/registered-user.component';
 
 const routes: Routes = [
   {
@@ -11,11 +12,10 @@ const routes: Routes = [
     component: AdminComponent,
     canActivate:[AuthGuard],
     children: [
-      { path: '', redirectTo: 'components', pathMatch: 'full' },
+      { path: '', redirectTo: 'app-property', pathMatch: 'full' },
       { path: 'table', component: TableComponent },
       { path: 'app-property', component: AppPropertiesComponent },
-      { path: 'registered-user', component: TableComponent },
-      { path: '**', redirectTo: 'errors/404' },
+      { path: 'registered-user', component: RegisteredUserComponent }
     ],
   },
 ];

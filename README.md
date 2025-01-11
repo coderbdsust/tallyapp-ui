@@ -3,7 +3,9 @@
 </p>
 
 <p>
-  <img alt="Preview" src="src/assets/preview/preview.gif">
+  <img alt="Preview" src="img/dashboard.png">
+  <img alt="Preview" src="img/change-app-property.png">
+  <img alt="Preview" src="img/control-user.png">
 </p>
 
 #### Versions
@@ -13,18 +15,17 @@
 #### Features
 
 - [x] Sidebar
-- [x] Dark Theme
 - [x] Navbar
 - [x] Footer
 - [x] Auth Module
-- [x] Dashboard Module
 - [x] Standalone components
 - [x] Angular Signals
-- [x] Multi Theme
-- [x] Tests E2E
-- [ ] Guards
-- [ ] Animations
-- [ ] Jasmine to Jest
+- [x] Guards
+- [x] User Controls
+- [x] Modify App Property
+- [ ] Create Organization
+- [ ] Assign Employee
+- [ ] Dashboard Module
 
 #### Commands
 

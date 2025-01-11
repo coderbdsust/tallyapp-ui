@@ -30,7 +30,7 @@ export class Menu {
           route: '/dashboard',
           children: [
             { label: 'Nfts', route: '/dashboard/nfts' },
-            { label: 'Stats', route: '/dashboard/stats' },
+            { label: 'Statistics', route: '/dashboard/statistics' },
           ],
         }
       ],

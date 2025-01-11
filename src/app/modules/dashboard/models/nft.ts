@@ -1,11 +1,15 @@
 export interface Nft {
   id: number;
   title: string;
-  last_bid?: number;
-  price: number;
+  startAt?:string;
   creator?: string;
   avatar?: string;
-  instant_price?: number;
-  ending_in?: string;
   image: string;
+  ending_in?:string;
+  last_bid?:number;
+  price?:number;
+  instant_price?:number;
+  topEmployee?:string;
+  topEmployeeMonth?:string;
+  totalEmployee?:number;
 }
