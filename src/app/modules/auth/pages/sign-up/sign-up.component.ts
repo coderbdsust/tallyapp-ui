@@ -6,7 +6,6 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { NgClass, NgIf, NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { ErrorResponse } from 'src/app/common/models/error-response';
 
 @Component({
   selector: 'app-sign-up',

@@ -47,7 +47,6 @@ export class AuthService extends CommonService {
   }
 
   refreshToken() {
-
     const userData = localStorage.getItem(environment.TALLY_APP);
     let refreshToken;
     if (!userData) {
@@ -73,6 +72,7 @@ export class AuthService extends CommonService {
           //this.autoLogout(expireDuration);
           this.user.next(authUser);
         } else {
+          console.log('invalid refreshed user');
           this.user.next(null);
         }
       }),

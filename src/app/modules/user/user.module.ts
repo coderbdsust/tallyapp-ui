@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 
 
-import { UserprofileService } from '../auth/services/userprofile.service';
+import { UserprofileService } from './service/userprofile.service';
 import { UserRoutingModule } from './user-routing.module';
 
 @NgModule({

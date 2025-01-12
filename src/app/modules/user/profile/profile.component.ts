@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/modules/auth/services/common.service';
-import { UserprofileService } from 'src/app/modules/auth/services/userprofile.service';
+import { UserprofileService } from 'src/app/modules/user/service/userprofile.service';
 import { UserProfile } from './profile.model';
 import { initFlowbite } from 'flowbite';
 

@@ -45,7 +45,7 @@ export class EditAppPropertiesComponent implements OnInit{
   }
 
   saveAppProperty(property:any){
-    console.log(property);
+    this.appPropertiesService.showToastError('Not implemeneted');
   }
 
   ngOnChanges() {
@@ -53,7 +53,6 @@ export class EditAppPropertiesComponent implements OnInit{
   }
 
   get f() {
-    console.log('controls');
     return this.form.controls;
   }
 

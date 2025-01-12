@@ -13,6 +13,7 @@ export class CommonService {
   constructor() { }
 
   mapErrorResponse(errorRes: HttpErrorResponse) {
+    
     const errorMessage = 'An unknown error occurred';
 
     if (!errorRes.error || !errorRes.error.message) {

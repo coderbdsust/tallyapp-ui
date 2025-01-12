@@ -50,8 +50,20 @@ export class RegisteredUserComponent {
     this.authService.showToastError('Not implemented');
   }
 
-  assignUser(user:any){
+  assignUser(user: any) {
     this.authService.showToastError('Not implemented');
+  }
+
+  forceLogout(user: any) {
+    let username = { username: user.username };
+    this.registerUserService.forceLogout(username).subscribe({
+      next: (response) => {
+        this.registerUserService.showToastSuccess(response.message);
+      },
+      error: (error) => {
+        this.registerUserService.showToastErrorResponse(error);
+      },
+    });
   }
 
   private loadRegisteredUsers(page: number, size: number, search: string) {
@@ -105,7 +117,7 @@ export class RegisteredUserComponent {
 
   onVerificationChange(event: Event, user: RegisteredUser) {
     const checkbox = event.target as HTMLInputElement;
-    this.registerUserService.showToastError(`You can't change verification status`);
+    this.registerUserService.showToastError(`You can't change verification status, It's view only`);
   }
 
   onAccountLocked(event: Event, user: RegisteredUser) {
