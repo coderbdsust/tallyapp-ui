@@ -47,6 +47,7 @@
     "angular-svg-icon": "^13.0.0",
     "apexcharts": "^3.35.3",
     "chart.js": "^4.4.7",
+    "check-password-strength": "^2.0.10",
     "flowbite": "^2.5.2",
     "jwt-decode": "^4.0.0",
     "ng-apexcharts": "^1.7.1",

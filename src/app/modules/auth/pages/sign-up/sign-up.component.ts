@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { NgClass, NgIf, NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { passwordStrength } from 'check-password-strength'
 
 @Component({
   selector: 'app-sign-up',
@@ -36,6 +37,7 @@ export class SignUpComponent implements OnInit {
   ];
   years!:number[];
   errorMessage="";
+  passwordStrength: number= 0;
 
   constructor(private readonly _formBuilder: FormBuilder, private readonly _router: Router, private authService: AuthService) {}
 
@@ -54,6 +56,15 @@ export class SignUpComponent implements OnInit {
       confirmPassword: ['', [Validators.required,Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$_])[A-Za-z\d@$_]{8,}$/)]]
       //acceptTerm: ['', Validators.required]
     });
+  }
+  
+  onPasswordInput(event: Event) {
+      const password = (event.target as HTMLInputElement).value;
+      if (password.length > 0) {
+        this.passwordStrength = passwordStrength(password).id+1;
+      } else {
+        this.passwordStrength = 0;
+      }
   }
 
   initYears(){
