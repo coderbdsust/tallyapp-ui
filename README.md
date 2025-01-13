@@ -5,7 +5,7 @@
 <p>
   <img alt="Preview" src="img/dashboard.png">
   <img alt="Preview" src="img/change-app-property.png">
-  <img alt="Preview" src="img/control-user.png">
+  <img alt="Preview" src="img/user-management-01.png">
 </p>
 
 #### Versions

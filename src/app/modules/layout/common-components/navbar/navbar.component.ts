@@ -18,6 +18,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
     ],
 })
 export class NavbarComponent implements OnInit {
+  
   constructor(public menuService: MenuService) {}
 
   ngOnInit(): void {}

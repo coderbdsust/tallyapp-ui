@@ -16,6 +16,7 @@ import { NgClass } from '@angular/common';
     ],
 })
 export class NavbarMobileComponent implements OnInit {
+
   constructor(public menuService: MenuService) {}
 
   ngOnInit(): void {}

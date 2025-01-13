@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { Menu } from 'src/app/core/constants/menu';
 import { MenuItem, SubMenuItem } from 'src/app/core/models/menu.model';
 import { AuthService } from '../../auth/services/auth.service';
+import packageJson from '../../../../../package.json';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,8 @@ export class MenuService implements OnDestroy, OnInit {
   private _showMobileMenu = signal(false);
   private _pagesMenu = signal<MenuItem[]>([]);
   private _subscription = new Subscription();
+  public appJson: any = packageJson;
+  
 
   constructor(private router: Router, private authService: AuthService) {
     this.initialize();
@@ -99,8 +102,8 @@ export class MenuService implements OnDestroy, OnInit {
     });
   }
 
-  public getAppTitle(): string {
-    return 'Tally Khata';
+  public getAppTitle():string{
+    return this.appJson.displayName;
   }
 
   ngOnDestroy(): void {

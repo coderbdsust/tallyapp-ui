@@ -54,7 +54,7 @@
                     <th class="w-[10px]">Verified</th>
                     <th class="w-[10px]">Account Locked</th>
                     <th class="w-[10px]">Force Logout</th>
-                    <th class="w-[10px]">Assign</th>
+                    <!-- <th class="w-[10px]">Assign</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -112,13 +112,13 @@
                           </a>
                         </div>
                       </td>
-                    <td class="text-center">
+                    <!-- <td class="text-center">
                         <div class="flex items-center gap-4">
                           <a (click)="assignUser(user)" class="hover:text-red-700">
                             <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-5 w-5 hover:h-7 w-7'"> </svg-icon>
                           </a>
                         </div>
-                      </td>
+                      </td> -->
                 </tr>
                 <tr *ngIf="pageResponse()?.content?.length === 0">
                     <td class="py-4 text-center text-sm" colspan="7">No registered users found</td>
