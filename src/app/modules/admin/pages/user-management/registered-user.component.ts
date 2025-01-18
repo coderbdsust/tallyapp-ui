@@ -87,7 +87,8 @@ export class RegisteredUserComponent {
   onSearchChange(event: Event) {
     const input = (event.target as HTMLInputElement).value;
     this.search = input;
-    this.loadRegisteredUsers(0, this.selectedRows, this.search);
+    if(this.search.length>3)
+      this.loadRegisteredUsers(0, this.selectedRows, this.search);
   }
 
   onSelectChange(event: Event) {

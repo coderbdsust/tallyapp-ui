@@ -61,8 +61,8 @@ export class CommonService {
   }
 
   showToastErrorResponse(errorResponse: ErrorResponse) {
-    const msg = errorResponse?.status+"";
-    toast.error(msg, {
+    //const msg = errorResponse?.status+"";
+    toast.error('', {
       position: 'bottom-right',
       description: errorResponse.message,
       action: {

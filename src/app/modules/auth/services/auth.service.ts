@@ -89,6 +89,24 @@ export class AuthService extends CommonService {
     .pipe(catchError(this.mapErrorResponse));
   }
 
+  forgotPasswordByEmail(email:any) {
+    return this.http
+    .post<ApiResponse>(`${environment.tallyURL}/auth/v1/forgot-password-by-email`, email)
+    .pipe(catchError(this.mapErrorResponse));
+  }
+
+  forgotPasswordOTPValidityByEmail(emailWIthOTP:any) {
+    return this.http
+    .post<ApiResponse>(`${environment.tallyURL}/auth/v1/forgot-password-otp-validity`, emailWIthOTP)
+    .pipe(catchError(this.mapErrorResponse));
+  }
+
+  resetPasswordWithEmail(resetPassword:any) {
+    return this.http
+    .post<ApiResponse>(`${environment.tallyURL}/auth/v1/reset-password`, resetPassword)
+    .pipe(catchError(this.mapErrorResponse));
+  }
+
   logout() {
     this.user.next(null);
     localStorage.removeItem(environment.TALLY_APP);

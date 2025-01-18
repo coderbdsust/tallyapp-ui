@@ -6,17 +6,17 @@ import { NgClass, NgIf, NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-two-steps',
-  templateUrl: './two-steps.component.html',
-  styleUrls: ['./two-steps.component.scss'],
+  selector: 'app-forgot-password-verification-otp',
+  templateUrl: './forgot-password-verification-otp.component.html',
+  styleUrls: ['./forgot-password-verification-otp.component.scss'],
   standalone: true,
-  imports: [FormsModule, RouterLink, ButtonComponent, NgClass, NgIf, NgFor],
+  imports: [FormsModule, RouterLink, ButtonComponent, NgIf],
 })
-export class TwoStepsComponent implements OnInit {
+export class ForgotPasswordVerificationOtpComponent implements OnInit {
   constructor(private readonly _router: Router, private acRoute: ActivatedRoute, private authService: AuthService) {
     const currentNav = this._router.getCurrentNavigation();
-    this.username = currentNav?.extras?.state?.["userKey"];
-    if(!this.username){
+    this.email = currentNav?.extras?.state?.["userKey"];
+    if(!this.email){
       this._router.navigate([`/auth/sign-in`]);
     }
   }
@@ -24,7 +24,7 @@ export class TwoStepsComponent implements OnInit {
   public inputs: string[] = Array(6).fill('');
   submitted = false;
   errorMessage = 'Please give a OTP';
-  username: string = '';
+  email: string = '';
 
   ngOnInit(): void {
   }
@@ -57,15 +57,10 @@ export class TwoStepsComponent implements OnInit {
 
   resendOTP() {
     let user: any = {};
-    user.username = this.username;
-    this.authService.resendAccountVerificationOTP(user).subscribe({
+    user.email = this.email;
+    this.authService.forgotPasswordByEmail(user).subscribe({
       next: (response) => {
-        if (response.businessCode == 601) {
-          this._router.navigate([`/auth/sign-in`]);
-          this.authService.showToastSuccess(`${response.message}`);
-        } else {
-          this.authService.showToastSuccess(`${response.message}`);
-        }
+        this.authService.showToastSuccess(`${response.message}`);
       },
       error: (error) => {
         this.authService.showToastErrorResponse(error);
@@ -87,16 +82,16 @@ export class TwoStepsComponent implements OnInit {
     }
 
     const verification = {
-      username: this.username,
+      email: this.email,
       otpCode: otp,
     };
 
     this.errorMessage = '';
 
-    this.authService.verifyUser(verification).subscribe({
+    this.authService.forgotPasswordOTPValidityByEmail(verification).subscribe({
       next: (response) => {
-        this._router.navigate([`/auth/sign-in`]);
-        this.authService.showToastSuccess(`User successfully verified, Please login`);
+        this._router.navigateByUrl(`/auth/new-password`,{state:{userKey:verification.email, userOtp: verification.otpCode}});
+        //this.authService.showToastSuccess(`An OTP is sent to email, Please check email to reset password`);
       },
       error: (error) => {
         this.authService.showToastErrorResponse(error);
