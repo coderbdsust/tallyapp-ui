@@ -5,11 +5,8 @@
         <div class="flex flex-wrap justify-center items-center">
           <div class="w-full px-4 flex justify-center items-center">
             <div class="relative flex justify-center items-center h-40 w-40">
-              <img 
-                alt="profile photo" 
-                src="assets/img/profile-male.jpg" 
-                class="shadow-xl rounded-full h-32 w-32 border-none"
-              />
+              <img alt="profile photo" src="assets/img/profile-male.jpg"
+                class="shadow-xl rounded-full h-32 w-32 border-none" />
             </div>
           </div>
         </div>
@@ -94,34 +91,55 @@
               <div class="relative w-full mb-3">
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="grid-password">
                   Date of Birth
-                </label>                  
-                  <div class="relative max-w-sm">
-                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none pl-2">
-                      <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                      </svg>
-                    </div>
-                    <input 
-                      id="datepicker-autohide" 
-                      datepicker 
-                      datepicker-autohide 
-                      type="text" 
-                      value="{{userProfile?.dateOfBirth}}"
-                      datepicker-format="yyyy-mm-dd"
-                      class="pl-8 bg-white border border-gray-300 text-black text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" 
-                      placeholder="Select Birthdate">
+                </label>
+                <div class="relative max-w-sm">
+                  <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none pl-2">
+                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20">
+                      <path
+                        d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                    </svg>
                   </div>
-                  
+                  <input id="datepicker-autohide" datepicker datepicker-autohide type="text"
+                    value="{{userProfile?.dateOfBirth}}" datepicker-format="yyyy-mm-dd"
+                    class="pl-8 bg-white border border-gray-300 text-black text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+                    placeholder="Select Birthdate">
+                </div>
+
               </div>
             </div>
-            <div class="w-full lg:w-6/12 px-4">
-              <div class="relative w-full mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="grid-password">
-                  Mobile No
-                </label>
-                <input type="text"
-                  class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  value="{{userProfile?.mobileNo}}" />
+            <div class="w-full lg:w-6/12">
+              <div class="flex flex-wrap">
+                <div class="w-full lg:w-8/12 px-4">
+                  <div class="relative w-full mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="grid-password">
+                      Mobile No
+                    </label>
+                    <input type="text"
+                      class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      value="{{userProfile?.mobileNo}}" />
+                  </div>
+
+                </div>
+                <div class="w-full lg:w-4/12 px-4">
+                  <!-- <div class="relative w-full mb-2 bg-red-300">
+                    <label class="block uppercase bg-green-300 text-blueGray-600 text-xs text-center font-bold mb-2" htmlFor="grid-password">
+                      Mobile Verified
+                    </label>
+                    <input type="checkbox" class="justify-center text-center border-2 border-rose-500"
+                      [checked]="userProfile?.mobileNoVerified" />
+                  </div> -->
+
+                  <div class="relative w-full mb-2">
+                    <label class="block uppercase text-blueGray-600 text-xs text-center font-bold mb-2" htmlFor="grid-password">
+                      Mobile Verified
+                    </label>
+                    <div class="flex justify-center">
+                      <input type="checkbox" class="border-2 border-rose-500" [checked]="userProfile?.mobileNoVerified" />
+                    </div>
+                  </div>
+                  
+                </div>
               </div>
             </div>
             <div class="w-full lg:w-6/12 px-4">
@@ -129,31 +147,9 @@
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="grid-password">
                   Role
                 </label>
-                <input type="text"
-                  readonly
+                <input type="text" readonly
                   class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  value="{{userProfile?.roles?.[0]}}"
-                 />
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-wrap">
-            <div class="w-full lg:w-3/12 px-4">
-              <div class="relative w-full mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="grid-password">
-                  Mobile No Verified
-                </label>
-                <input readonly type="checkbox" class="ml-10 border-2 border-rose-500"
-                  [checked]="userProfile?.mobileNoVerified" />
-              </div>
-            </div>
-            <div class="w-full lg:w-3/12 px-4">
-              <div class="relative w-full mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="grid-password">
-                  TFA Enabled
-                </label>
-                <input readonly type="checkbox" class="ml-10 border-2 border-rose-500"
-                  [checked]="userProfile?.tfaEnabled" />
+                  value="{{userProfile?.roles?.[0]}}" />
               </div>
             </div>
           </div>

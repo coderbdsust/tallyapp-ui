@@ -8,6 +8,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AuthInterceptorService } from './app/core/interceptor/auth-interceptor.service';
 import { AuthService } from './app/modules/auth/services/auth.service';
+import { LoaderService } from './app/core/services/loader.service';
 
 if (environment.production) {
   enableProdMode();
@@ -23,7 +24,8 @@ bootstrapApplication(AppComponent, {
       provideAnimations(),
       provideHttpClient(withInterceptorsFromDi()),
       {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi:true },
-      AuthService
+      AuthService,
+      LoaderService
     ],
 }).catch((err) => console.error(err));
 
