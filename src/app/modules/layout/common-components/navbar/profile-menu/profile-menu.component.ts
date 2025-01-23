@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { NgClass } from '@angular/common';
+import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { ClickOutsideDirective } from '../../../../../common/directives/click-outside.directive';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ThemeService } from '../../../../../core/services/theme.service';
@@ -12,7 +12,7 @@ import { AuthService } from 'src/app/modules/auth/services/auth.service';
   templateUrl: './profile-menu.component.html',
   styleUrls: ['./profile-menu.component.scss'],
   standalone: true,
-  imports: [ClickOutsideDirective, NgClass, RouterLink, AngularSvgIconModule],
+  imports: [ClickOutsideDirective, NgClass, RouterLink, AngularSvgIconModule,CommonModule, NgIf],
 
   animations: [
     trigger('openClose', [
@@ -90,7 +90,7 @@ export class ProfileMenuComponent implements OnInit {
 
   public themeMode = ['light', 'dark'];
 
-  constructor(public themeService: ThemeService, private authService: AuthService, private router: Router) {}
+  constructor(public themeService: ThemeService, public authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {}
 

@@ -1,19 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import {  throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { ErrorResponse } from 'src/app/common/models/error-response';
 import { jwtDecode } from 'jwt-decode';
 import { toast } from 'ngx-sonner';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CommonService {
-
-  constructor() { }
+  constructor() {}
 
   mapErrorResponse(errorRes: HttpErrorResponse) {
-    
     const errorMessage = 'An unknown error occurred';
 
     if (!errorRes.error || !errorRes.error.message) {
@@ -23,11 +21,11 @@ export class CommonService {
         errorMessage,
         errorRes.error?.name || 'Unknown',
         errorRes.url || '',
-        [], 
+        [],
       );
       return throwError(() => errorResponse);
     }
-    
+
     const errorResponse = new ErrorResponse(
       new Date(errorRes.error.timestamp).toISOString(),
       errorRes.status,
@@ -61,16 +59,19 @@ export class CommonService {
   }
 
   showToastErrorResponse(errorResponse: ErrorResponse) {
-    //const msg = errorResponse?.status+"";
-    toast.error('', {
-      position: 'bottom-right',
-      description: errorResponse.message,
-      action: {
-        label: 'Close',
-        onClick: () => console.log('Action!'),
-      },
-      actionButtonStyle: 'background-color:#DC2626; color:white;',
-    });
+    if (errorResponse.status !== 401) {
+      toast.error('', {
+        position: 'bottom-right',
+        description: errorResponse.message,
+        action: {
+          label: 'Close',
+          onClick: () => console.log('Action!'),
+        },
+        actionButtonStyle: 'background-color:#DC2626; color:white;',
+      });
+    } else {
+      console.log(errorResponse);
+    }
   }
 
   showToastSuccess(message: any) {
@@ -84,5 +85,18 @@ export class CommonService {
       },
       actionButtonStyle: 'background-color: #006400; color:white;',
     });
+  }
+
+  isValidDate(year: number, month: number, day: number): boolean {
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  }
+
+  formatDate(y: number, m: number, d: number): string {
+    const date = new Date(y, m - 1, d);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }

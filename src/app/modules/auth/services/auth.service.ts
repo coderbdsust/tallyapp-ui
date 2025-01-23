@@ -11,6 +11,7 @@ import { ApiResponse, AuthUser, SignUpResponse } from './auth.model';
 })
 export class AuthService extends CommonService {
   user = new BehaviorSubject<AuthUser | null>(null);
+  user$ = this.user.asObservable();
   logoutTimer: any;
 
   constructor(private http: HttpClient, private router: Router) {

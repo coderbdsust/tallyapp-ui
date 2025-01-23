@@ -20,7 +20,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       exhaustMap((user) => {
         if (!user) {
           return next.handle(req).pipe(
-            delay(1000),
+            delay(500),
             finalize(() => {
               this.loaderService.loadingOff();
             }),
@@ -29,7 +29,7 @@ export class AuthInterceptorService implements HttpInterceptor {
 
         const modifiedReq = this.addAuthorizationHeader(req, user.accessToken);
         return next.handle(modifiedReq).pipe(
-          delay(1000),
+          delay(500),
           catchError((error: HttpErrorResponse) => this.handleError(error, req, next)),
           finalize(() => {
             this.loaderService.loadingOff();

@@ -81,25 +81,6 @@ export class SignUpComponent implements OnInit {
     this.passwordTextType = !this.passwordTextType;
   }
 
-  isValidDate(year: number, month: number, day: number): boolean {
-    const date = new Date(year, month - 1, day);
-    console.log(date);
-    return (
-      date.getFullYear() === year &&
-      date.getMonth() === month - 1 &&
-      date.getDate() === day
-    );
-  }
-
-
-  formatDate(y: number, m: number, d: number ): string {
-    const date = new Date(y, m-1, d);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
-    const day = date.getDate().toString().padStart(2, '0')
-    return `${year}-${month}-${day}`;
-  }
-
   onSubmit() {
    
     this.submitted = true;
@@ -110,7 +91,7 @@ export class SignUpComponent implements OnInit {
       return;
     }
     
-    if(!this.isValidDate(signUpData.year, signUpData.month, signUpData.day)){
+    if(!this.authService.isValidDate(signUpData.year, signUpData.month, signUpData.day)){
       this.errorMessage="Date of Birth is not valid";
       return ;
     }   
@@ -120,7 +101,7 @@ export class SignUpComponent implements OnInit {
       return ;
     }
     
-    signUpData.dateOfBirth = this.formatDate(signUpData.year, signUpData.month, signUpData.day);
+    signUpData.dateOfBirth = this.authService.formatDate(signUpData.year, signUpData.month, signUpData.day);
     
     this.errorMessage="";
 

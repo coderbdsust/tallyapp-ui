@@ -23,9 +23,9 @@
       <!-- <div class="w-10 shrink-0">
         <img class="rounded-md" src="https://avatars.githubusercontent.com/u/7193568?s=400&u=a4be0a7048b7eed595a6444e246508df83664eff&v=4" alt="" />
       </div> -->
-      <div class="overflow-hidden px-2 text-sm font-semibold text-foreground">
-        Biswajit Debnath
-        <p class="truncate text-ellipsis text-xs font-semibold text-muted-foreground">coder.bd</p>
+      <div class="overflow-hidden px-2 text-sm font-semibold text-foreground" *ngIf="this.authService.user$ | async as authUser;">
+        {{ authUser.fullName }}
+        <p class="truncate text-ellipsis text-xs font-semibold text-muted-foreground">{{authUser.username}}</p>
       </div>
     </div>
 

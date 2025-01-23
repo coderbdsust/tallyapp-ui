@@ -164,41 +164,22 @@
 /** Plugins **/
 @import './assets/styles/apexchart.scss';
 
-@keyframes dots1 {
-  0% {
-    transform: scale(0);
-  }
-  100% {
-    transform: scale(1);
-  }
+.loader {
+  --d:22px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  color: #FFFFFF;
+  box-shadow: 
+    calc(1*var(--d))      calc(0*var(--d))     0 0,
+    calc(0.707*var(--d))  calc(0.707*var(--d)) 0 1px,
+    calc(0*var(--d))      calc(1*var(--d))     0 2px,
+    calc(-0.707*var(--d)) calc(0.707*var(--d)) 0 3px,
+    calc(-1*var(--d))     calc(0*var(--d))     0 3.5px,
+    calc(-0.707*var(--d)) calc(-0.707*var(--d))0 4px,
+    calc(0*var(--d))      calc(-1*var(--d))    0 4.5px;
+  animation: l27 1s infinite steps(8);
 }
-
-@keyframes dots2 {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(24px, 0);
-  }
-}
-
-@keyframes dots3 {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(0);
-  }
-}
-
-.animate-dots1 {
-  animation: dots1 0.6s infinite cubic-bezier(0, 1, 1, 0);
-}
-
-.animate-dots2 {
-  animation: dots2 0.6s infinite cubic-bezier(0, 1, 1, 0);
-}
-
-.animate-dots3 {
-  animation: dots3 0.6s infinite cubic-bezier(0, 1, 1, 0);
+@keyframes l27 {
+  100% {transform: rotate(1turn)}
 }
