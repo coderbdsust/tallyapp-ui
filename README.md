@@ -3,9 +3,9 @@
 </p>
 
 <p>
-  <img alt="Preview" src="img/dashboard.png">
-  <img alt="Preview" src="img/change-app-property.png">
-  <img alt="Preview" src="img/user-management-v1.png">
+  <img alt="Preview" src="img/dashboard-v1.png">
+  <img alt="Preview" src="img/app-property-v1.png">
+  <img alt="Preview" src="img/user-management-v2.png">
   <img alt="Preview" src="img/user-profile-v1.png">
 </p>
 
