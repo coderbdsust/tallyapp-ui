@@ -1,18 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/modules/auth/services/common.service';
 import { UserprofileService } from 'src/app/modules/user/service/userprofile.service';
 import { Address, ShortProfile, UserProfile } from './profile.model';
 import { initFlowbite } from 'flowbite';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { ButtonComponent } from 'src/app/common/components/button/button.component';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, RouterLink, AngularSvgIconModule, NgClass, NgIf, NgFor, ButtonComponent],
+  imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
@@ -26,7 +26,6 @@ export class ProfileComponent implements OnInit {
     private userProfileService: UserprofileService,
     private commonService: CommonService,
     private readonly _formBuilder: FormBuilder,
-    private readonly _router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -77,6 +76,13 @@ export class ProfileComponent implements OnInit {
   // Helper to get shortProfileList FormArray
   get shortProfileList(): FormArray {
     return this.userProfileForm.get('shortProfileList') as FormArray;
+  }
+
+  onDateChange(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const selectedDate = inputElement.value;
+    console.log(selectedDate);
+    this.userProfileForm.get('dateOfBirth')?.setValue(selectedDate);
   }
 
   setAddresses(addressList: Address[]): void {
@@ -140,8 +146,21 @@ export class ProfileComponent implements OnInit {
     return !!(control && control.invalid && (control.dirty || control.touched));
   }
 
+  getFormArrayErrors(formArray: FormArray, fieldErrors: { [key: string]: string }): string[] {
+    const errors: string[] = [];
+    formArray.controls.forEach((control, index) => {
+      Object.keys(fieldErrors).forEach((field) => {
+        if (control.get(field)?.hasError(fieldErrors[field])) {
+          errors.push(`${fieldErrors[field]} error at index ${index}.`);
+        }
+      });
+    });
+    return errors;
+  }
+
   // Add address
   addAddress(): void {
+    this.submitted = false;
     this.addressList.push(this.createAddressForm());
   }
 
@@ -164,6 +183,7 @@ export class ProfileComponent implements OnInit {
 
   // Add short profile
   addShortProfile(): void {
+    this.submitted = false;
     this.shortProfileList.push(this.createShortProfileForm());
   }
 
@@ -208,44 +228,49 @@ export class ProfileComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
 
-    console.log(this.userProfileForm.value);
-
     if (this.userProfileForm.invalid) {
       this.commonService.showToastError('Please fill up the form');
       return;
     }
 
     const userProfile = this.userProfileForm.value;
-    
+
     const shortProfiles: ShortProfile[] = (this.userProfileForm.get('shortProfileList') as FormArray).getRawValue();
 
     const addressList: Address[] = (this.userProfileForm.get('addressList') as FormArray).getRawValue();
 
-    if (shortProfiles && shortProfiles.length > 0) {
-      this.userProfileService.addShortProfiles(shortProfiles).subscribe({
-        next: (response) => {
-          console.log(response);
-        },
-        error: (error) => {
-          this.userProfileService.showToastErrorResponse(error);
-        },
-      });
-    }
+    const apiCalls = [];
 
-    if (addressList && addressList.length > 0) {
-      this.userProfileService.addAddresses(addressList).subscribe({
-        next: (response) => {
-          console.log(response);
-        },
-        error: (error) => {
-          this.userProfileService.showToastErrorResponse(error);
-        },
-      });
-    }
+    // Add `addShortProfiles` call if shortProfiles is not empty
 
-    this.userProfileService.updateUserProfile(userProfile).subscribe({
-      next: (response) => {
-        this.userProfile = response;
+    apiCalls.push(this.userProfileService.addShortProfiles(shortProfiles));
+
+    // Add `addAddresses` call if addressList is not empty
+    apiCalls.push(this.userProfileService.addAddresses(addressList));
+
+    // Always include `updateUserProfile`
+    apiCalls.push(this.userProfileService.updateUserProfile(userProfile));
+
+    forkJoin(apiCalls).subscribe({
+      next: ([shortProfileResponse, addressResponse, userProfileResponse]) => {
+        if (this.userProfile) {
+          // Update `shortProfileList` if a response is received
+          if (shortProfileResponse) {
+            this.userProfile.shortProfileList = shortProfileResponse as ShortProfile[];
+          }
+
+          // Update `addressList` if a response is received
+          if (addressResponse) {
+            this.userProfile.addressList = addressResponse as Address[];
+          }
+
+          // Update the entire userProfile object with the final response
+          this.userProfile = {
+            ...this.userProfile,
+            ...(userProfileResponse as UserProfile),
+          };
+        }
+        this.userProfileService.showToastSuccess(`${this.userProfile?.fullName} your profile updated`);
       },
       error: (error) => {
         this.userProfileService.showToastErrorResponse(error);
