@@ -9,7 +9,7 @@ import { AuthService } from 'src/app/modules/auth/services/auth.service';
 @Component({
   selector: 'app-edit-app-properties',
   standalone: true,
-  imports: [NgClass, NgIf, FormsModule, ReactiveFormsModule, NgClass, ButtonComponent],
+  imports: [NgClass, NgIf, FormsModule, ReactiveFormsModule, ButtonComponent],
   templateUrl: './edit-app-properties.component.html',
   styleUrl: './edit-app-properties.component.scss'
 })

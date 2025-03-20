@@ -8,11 +8,12 @@ import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Va
 import { Router } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { forkJoin } from 'rxjs';
+import { ButtonComponent } from 'src/app/common/components/button/button.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor],
+  imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor,ButtonComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
@@ -270,7 +271,7 @@ export class ProfileComponent implements OnInit {
             ...(userProfileResponse as UserProfile),
           };
         }
-        this.userProfileService.showToastSuccess(`${this.userProfile?.fullName} your profile updated`);
+        this.userProfileService.showToastSuccess(`${this.userProfile?.fullName}, profile updated`);
       },
       error: (error) => {
         this.userProfileService.showToastErrorResponse(error);

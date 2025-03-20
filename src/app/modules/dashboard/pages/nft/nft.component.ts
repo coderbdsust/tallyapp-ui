@@ -27,16 +27,16 @@ export class NftComponent implements OnInit {
     this.nft = [
       {
         id: 34356771,
-        title: 'New Udayan Furniture Mart',
-        creator: 'Shanti Bhusan Debnath',
+        title: 'Shop Name',
+        creator: 'Creator Name',
         startAt: '8am Morning',
         image: './assets/furniture/furniture-01.png',
         avatar: './assets/avatars/avt-01.jpg',
       },
       {
         id: 34356771,
-        title: 'New Udayan Furniture Mart',
-        creator: 'Shanti Bhusan Debnath',
+        title: 'Shop Name',
+        creator: 'Creator Name',
         startAt: '8am Morning',
         image: './assets/furniture/furniture-01.png',
         avatar: './assets/avatars/avt-01.jpg',
@@ -45,8 +45,8 @@ export class NftComponent implements OnInit {
       },
       {
         id: 34356771,
-        title: 'New Udayan Furniture Mart',
-        creator: 'Shanti Bhusan Debnath',
+        title: 'Shop Name',
+        creator: 'Creator Name',
         startAt: '8am Morning',
         image: './assets/furniture/furniture-01.png',
         avatar: './assets/avatars/avt-01.jpg',

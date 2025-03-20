@@ -6,6 +6,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ThemeService } from '../../../../../core/services/theme.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
+import { map, take } from 'rxjs';
 
 @Component({
   selector: 'app-profile-menu',
@@ -39,7 +40,34 @@ import { AuthService } from 'src/app/modules/auth/services/auth.service';
 })
 export class ProfileMenuComponent implements OnInit {
   public isOpen = false;
-  public profileMenu = [
+
+  public menuItem: { title: string; icon: string; link: string }[] = [];
+
+  public logoutItem = {
+    title: 'Log out',
+    icon: './assets/icons/heroicons/outline/logout.svg',
+    link: '/auth',
+  };
+
+  public profileMenuAdmin = [
+    {
+      title: 'My Profile',
+      icon: './assets/icons/heroicons/outline/user-circle.svg',
+      link: '/user/profile',
+    },
+    {
+      title: 'My Organization',
+      icon: './assets/icons/heroicons/outline/office.svg',
+      link: '/organization/detail',
+    },
+    {
+      title: 'Change Password',
+      icon: './assets/icons/heroicons/outline/wrench.svg',
+      link: '/user/change-password',
+    }
+  ];
+
+  public profileMenuUser = [
     {
       title: 'My Profile',
       icon: './assets/icons/heroicons/outline/user-circle.svg',
@@ -49,12 +77,7 @@ export class ProfileMenuComponent implements OnInit {
       title: 'Change Password',
       icon: './assets/icons/heroicons/outline/wrench.svg',
       link: '/user/change-password',
-    },
-    {
-      title: 'Log out',
-      icon: './assets/icons/heroicons/outline/logout.svg',
-      link: '/auth',
-    },
+    }
   ];
 
   public themeColors = [
@@ -92,7 +115,9 @@ export class ProfileMenuComponent implements OnInit {
 
   constructor(public themeService: ThemeService, public authService: AuthService, private router: Router) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getMenu();
+  }
 
   public toggleMenu(): void {
     this.isOpen = !this.isOpen;
@@ -114,5 +139,17 @@ export class ProfileMenuComponent implements OnInit {
   onLogout() {
     this.authService.logout();
   }
+
+
+  public getMenu(): void {
+    this.authService.user.pipe(
+      take(1),
+      map(user => (user?.role === 'ROLE_ADMIN' ? this.profileMenuAdmin : this.profileMenuUser))
+    ).subscribe(menu => {
+      this.menuItem = menu; // Assign the resolved menu array
+    });
+  }
+  
+  
   
 }

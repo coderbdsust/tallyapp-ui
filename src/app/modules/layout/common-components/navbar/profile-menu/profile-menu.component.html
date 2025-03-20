@@ -34,25 +34,21 @@
     <ul class="my-2 mx-4 flex flex-col">
 
       <li
-        routerLink="{{ profileMenu[0].link }}"
-        :key="0"
+        *ngFor="let menu of menuItem; let i = index"
+        [routerLink]="menu.link"
+        [attr.key]="i"
         class="inline-flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-card hover:text-primary">
-        <svg-icon src="{{ profileMenu[0].icon }}" [svgClass]="'h-5 w-5 text-muted-foreground/50'"> </svg-icon>
-        {{ profileMenu[0].title }}
-      </li>
-      <li
-      routerLink="{{ profileMenu[1].link }}"
-      :key="1"
-      class="inline-flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-card hover:text-primary">
-      <svg-icon src="{{ profileMenu[1].icon }}" [svgClass]="'h-5 w-5 text-muted-foreground/50'"> </svg-icon>
-      {{ profileMenu[1].title }}
+        <svg-icon [src]="menu.icon" [svgClass]="'h-5 w-5 text-muted-foreground/50'"> </svg-icon>
+        {{ menu.title }}
     </li>
+
+
       <li
-      (click)="onLogout()"
-      :key="3"
-      class="inline-flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-card hover:text-primary">
-      <svg-icon src="{{ profileMenu[2].icon }}" [svgClass]="'h-5 w-5 text-muted-foreground/50'"> </svg-icon>
-      {{ profileMenu[2].title }}
+        (click)="onLogout()"
+        :key="2"
+        class="inline-flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-card hover:text-primary">
+        <svg-icon src="{{ logoutItem.icon }}" [svgClass]="'h-5 w-5 text-muted-foreground/50'"> </svg-icon>
+        {{ logoutItem.title }}
     </li>
       
     </ul>

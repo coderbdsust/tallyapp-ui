@@ -49,9 +49,15 @@
         <div class="rounded-t bg-gray-100 mb-0 px-6 py-6">
           <div class="text-center flex justify-between">
             <h6 class="text-blueGray-700 text-xl font-bold">My Profile</h6>
-            <button class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground">
-              <p>Update</p>
-            </button>
+              <app-button 
+                full
+                [disabled]="userProfileForm.invalid" 
+                impact="bold" 
+                tone="primary" 
+                shape="rounded" 
+                size="medium">
+                Update
+            </app-button>
           </div>
         </div>
         <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
