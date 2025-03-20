@@ -137,5 +137,5 @@
 
 <app-assign-organization #assignOrganizationModal [organization]="organization"></app-assign-organization>
 
-<app-add-organization></app-add-organization>
+<app-add-organization (orgEmitter)="onAddOrganization($event)"></app-add-organization>
 

@@ -1,16 +1,12 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, signal, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Output, signal, ViewChild } from '@angular/core';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { AppProperties } from '../../admin/pages/app-properties/app-properties.model';
 import { AuthService } from '../../auth/services/auth.service';
 import { EditAppPropertiesComponent } from '../../admin/pages/app-properties/modal/edit-app-properties.component';
 import { AppPropertiesService } from '../../admin/pages/app-properties/service/app-properties.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Drawer } from 'flowbite';
-import type { DrawerOptions, DrawerInterface } from 'flowbite';
-import type { InstanceOptions } from 'flowbite';
-import { Router } from '@angular/router';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { OrganizationService } from '../service/organization.service';
 import { AssignOrganizationComponent } from "../assign-organization/assign-organization.component";
@@ -50,6 +46,7 @@ export class OrganizationDetailComponent {
   submitted = false;
   errorMessage = '';
   organization!: Organization;
+
 
   constructor(
     private appPropService: AppPropertiesService,
@@ -159,10 +156,13 @@ export class OrganizationDetailComponent {
     this.assignOrganizationModal.openModal();
   }
 
+  onAddOrganization(org:Organization){
+    this.organization = org;
+  }
+
   private loadOrganization() {
     this.orgService.getOrganizations().subscribe({
       next: (organizations) => {
-        //console.log(organizations);
         if (organizations && organizations.length > 0) {
           let org = organizations[0];
           this.organization = org;

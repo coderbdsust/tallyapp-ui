@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -19,6 +19,7 @@ import { OrgDrawerService } from '../service/org-drawer.service';
   styleUrl: './add-organization.component.scss',
 })
 export class AddOrganizationComponent {
+  @Output() public orgEmitter = new EventEmitter<Organization>();
   organization!: Organization;
   $orgDrawerTargetEl: any;
   orgForm!: FormGroup;
@@ -100,9 +101,8 @@ export class AddOrganizationComponent {
   private loadOrganization() {
     this.orgService.getOrganizations().subscribe({
       next: (organizations) => {
-        //console.log(organizations);
         if (organizations && organizations.length > 0) {
-          let org = organizations[0];
+          const org = organizations[0];
           this.organization = org;
           this.orgForm.patchValue({
             id: org.id,
@@ -139,6 +139,7 @@ export class AddOrganizationComponent {
   closeOrganization() {
     this.drawer?.hide();
     this.submitted = false;
+    this.orgDrawerService.closeDrawer();
   }
 
   get f() {
@@ -158,10 +159,12 @@ export class AddOrganizationComponent {
 
     this.orgService.addOrganization(organizationData).subscribe({
       next: (org) => {
+        this.orgEmitter.emit(org);
         this.orgForm.patchValue({
           id: org.id,
         });
         this.orgService.showToastSuccess('Organization saved successfully');
+        this.closeOrganization();
       },
       error: (error) => {
         this.orgService.showToastErrorResponse(error);
