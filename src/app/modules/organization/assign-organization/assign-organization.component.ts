@@ -63,6 +63,10 @@ export class AssignOrganizationComponent implements OnChanges {
 
   onSearchKeyType(event: Event) {
     const searchKey = (event.target as HTMLSelectElement).value;
+    if(searchKey && searchKey.length<5){
+      this.orgService.showToastInfo("Please type atleast five (5) characters");
+      return;
+    }
     this.fetchUsers(searchKey);
   }
 
@@ -71,7 +75,7 @@ export class AssignOrganizationComponent implements OnChanges {
   }
 
   fetchUsers(searchKey:String){
-    if (searchKey && searchKey.length > 4) {
+
         this.orgService.searchUsersForOrganization(searchKey).subscribe({
           next: (userList) => {
             this.allUsers = userList.map(i=>({
@@ -83,7 +87,7 @@ export class AssignOrganizationComponent implements OnChanges {
             console.log(errRes);
           },
         });
-      }
+      
   }
 
   onSubmit() {

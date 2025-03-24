@@ -36,7 +36,7 @@
                         </svg-icon>
                     </div>
                     <input name="search" class="py-2 pl-8 pr-2" placeholder="Search User" type="text" value=""
-                        (input)="onSearchChange($event)" />
+                        (keydown.enter)="onSearchChange($event)" />
                 </label>
             </div>
         </div>

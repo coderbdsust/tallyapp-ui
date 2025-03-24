@@ -1,18 +1,20 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Output, signal, ViewChild } from '@angular/core';
 import { PageResponse } from 'src/app/common/models/page-response';
-import { AppProperties } from '../../admin/pages/app-properties/app-properties.model';
 import { AuthService } from '../../auth/services/auth.service';
 import { EditAppPropertiesComponent } from '../../admin/pages/app-properties/modal/edit-app-properties.component';
 import { AppPropertiesService } from '../../admin/pages/app-properties/service/app-properties.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { OrganizationService } from '../service/organization.service';
-import { AssignOrganizationComponent } from "../assign-organization/assign-organization.component";
+import { AssignOrganizationComponent } from '../assign-organization/assign-organization.component';
 import { Organization } from '../service/organization.model';
-import { AddOrganizationComponent } from "../add-organization/add-organization.component";
+import { AddOrganizationComponent } from '../add-organization/add-organization.component';
 import { OrgDrawerService } from '../service/org-drawer.service';
+import { AddEmployeeComponent } from '../add-employee/add-employee.component';
+import { EmployeeService } from '../service/employee.service';
+import { Employee } from '../service/employee.model';
 
 @Component({
   selector: 'app-organization-detail',
@@ -23,16 +25,17 @@ import { OrgDrawerService } from '../service/org-drawer.service';
     ReactiveFormsModule,
     CommonModule,
     ButtonComponent,
-    EditAppPropertiesComponent,
     AssignOrganizationComponent,
-    AddOrganizationComponent
-],
+    AddOrganizationComponent,
+    AddEmployeeComponent,
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './organization-detail.component.html',
   styleUrl: './organization-detail.component.scss',
 })
 export class OrganizationDetailComponent {
-  pageResponse = signal<PageResponse<AppProperties> | null>(null);
+  @ViewChild('employeeDrawer') employeeDrawer!: AddEmployeeComponent;
+  pageResponse = signal<PageResponse<Employee> | null>(null);
   selectedRows: number = 10;
   totalRows: number = 0;
   totalPages: number = 0;
@@ -42,40 +45,39 @@ export class OrganizationDetailComponent {
   pagesArray: number[] = [];
   @ViewChild('addEmployeeModal', { static: false }) addEmployeeModal!: EditAppPropertiesComponent;
   @ViewChild('assignOrganizationModal', { static: false }) assignOrganizationModal!: AssignOrganizationComponent;
-  appProperty!: AppProperties;
+  // employee!: Employee;
   submitted = false;
   errorMessage = '';
   organization!: Organization;
-
 
   constructor(
     private appPropService: AppPropertiesService,
     private authService: AuthService,
     private orgService: OrganizationService,
-    private orgDrawerService: OrgDrawerService
-  ) {}
+    private empService: EmployeeService,
+    private orgDrawerService: OrgDrawerService ) {}
 
   ngOnInit(): void {
-    this.loadAppProperties(this.currentPage, this.selectedRows, this.search);
     this.loadOrganization();
   }
 
-  handleEdit(appProperty: AppProperties) {
-    this.appProperty = appProperty;
-    this.addEmployeeModal.openModal();
+  editEmployee(selectedEmployee: Employee) {
+    this.employeeDrawer.openEmployeeDrawer(selectedEmployee);
   }
 
-  handleDelete(appProperty: AppProperties) {
-    this.authService.showToastError('Not implemented');
+  deleteEmployee(selectedEmployee: Employee) {
+    this.empService.deleteEmployee(selectedEmployee.id).subscribe({
+      next:(response)=>{
+        console.log(response);
+      },error:(errRes)=>{
+        this.empService.showToastErrorResponse(errRes);
+      }
+    });
   }
 
-  addProperty() {
-    this.authService.showToastError('Not implemented');
-  }
-
-  private loadAppProperties(page: number, size: number, search: string) {
+  private loadEmployeeByOrganization(orgId:string, page: number, size: number, search: string) {
     this.loading = true;
-    this.appPropService.getAppProperties(page, size, search).subscribe({
+    this.empService.getEmployeesByOrganization(orgId, page, size, search).subscribe({
       next: (response) => {
         this.pageResponse.set(response);
         this.currentPage = response.pageNo;
@@ -92,15 +94,16 @@ export class OrganizationDetailComponent {
   }
 
   onSearchChange(event: Event) {
-    const input = (event.target as HTMLInputElement).value;
-    this.search = input;
-    this.loadAppProperties(0, this.selectedRows, this.search);
+    this.orgService.showToastInfo('Not implemented');
+    // const input = (event.target as HTMLInputElement).value;
+    // this.search = input;
+    // this.loadEmployeeByOrganization(this.organization.id, 0, this.selectedRows, this.search);
   }
 
   onSelectChange(event: Event) {
     const rows = parseInt((event.target as HTMLSelectElement).value, 10);
     this.selectedRows = rows === -1 ? this.totalRows || 0 : rows;
-    this.loadAppProperties(0, this.selectedRows, this.search);
+    this.loadEmployeeByOrganization(this.organization.id, 0, this.selectedRows, this.search);
   }
 
   get startIndex(): number {
@@ -141,7 +144,7 @@ export class OrganizationDetailComponent {
   }
 
   private updatePagination() {
-    this.loadAppProperties(this.currentPage, this.selectedRows, this.search);
+    this.loadEmployeeByOrganization(this.organization.id, this.currentPage, this.selectedRows, this.search);
   }
 
   private updatePagesArray() {
@@ -152,13 +155,51 @@ export class OrganizationDetailComponent {
     return this.pagesArray;
   }
 
-  assignOrganization(){
+  assignOrganization() {
     this.assignOrganizationModal.openModal();
   }
 
-  onAddOrganization(org:Organization){
+  onAddOrganization(org: Organization) {
     this.organization = org;
   }
+
+  onAddEmployee(emp:Employee){
+    // this.employee = emp;
+    this.updateEmployee(emp);
+    
+  }
+
+  // Function to add or update an Employee and recalculate pagination
+updateEmployee(updatedEmployee: Employee) {
+  this.pageResponse.update((prev) => {
+    if (!prev) return null; // If null, return as is
+
+    let updatedContent = prev.content.map(emp =>
+      emp.id === updatedEmployee.id ? updatedEmployee : emp
+    );
+
+    // If the employee doesn't exist, add them
+    const isExisting = prev.content.some(emp => emp.id === updatedEmployee.id);
+    if (!isExisting) {
+      updatedContent = [...prev.content, updatedEmployee];
+    }
+
+    // Recalculate pagination values
+    const totalElements = updatedContent.length;
+    const totalPages = Math.ceil(totalElements / prev.size);
+    const first = prev.pageNo === 0;
+    const last = prev.pageNo >= totalPages - 1;
+
+    return {
+      ...prev,
+      content: updatedContent,
+      totalElements,
+      totalPages,
+      first,
+      last
+    };
+  });
+}
 
   private loadOrganization() {
     this.orgService.getOrganizations().subscribe({
@@ -166,14 +207,18 @@ export class OrganizationDetailComponent {
         if (organizations && organizations.length > 0) {
           let org = organizations[0];
           this.organization = org;
+          this.loadEmployeeByOrganization(org.id, 0, 10, '');
         }
       },
       error: () => {},
     });
   }
 
-  openOrganization(){
+  openOrganizationDrawer() {
     this.orgDrawerService.openDrawer();
   }
-    
+
+  openEmployeeDrawer() {
+    this.employeeDrawer.openEmployeeDrawer();
+  }
 }

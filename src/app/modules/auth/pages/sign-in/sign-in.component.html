@@ -63,7 +63,15 @@
   </div>
 
   <div>
-    <app-button full impact="bold" tone="primary" shape="rounded" size="medium">Sign in</app-button>
+    <app-button full 
+        impact="bold" 
+        tone="primary" 
+        shape="rounded" 
+        size="medium"
+        [disabled]="form.invalid"
+        >
+        Sign in
+    </app-button>
   </div>
 
   <div class="flex items-center justify-between text-sm text-muted-foreground">

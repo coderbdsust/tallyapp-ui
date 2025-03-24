@@ -58,6 +58,19 @@ export class CommonService {
     });
   }
 
+  showToastInfo(message: any) {
+    const msg = 'Info';
+    toast.info(msg, {
+      position: 'bottom-right',
+      description: message,
+      action: {
+        label: 'Close',
+        onClick: () => console.log('Action!'),
+      },
+      actionButtonStyle: 'background-color:#DC2626; color:white;',
+    });
+  }
+
   showToastErrorResponse(errorResponse: ErrorResponse) {
     if (errorResponse.status !== 401) {
       toast.error('', {
