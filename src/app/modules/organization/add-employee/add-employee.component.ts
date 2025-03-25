@@ -127,7 +127,7 @@ export class AddEmployeeComponent {
     //this.initializeEmpForm(true);
   }
 
-  openEmployeeDrawer(employee:Employee|null=null) {
+  openDrawer(employee:Employee|null=null) {
     console.log('Open Employee Drawer');
     this.initializeEmpForm(employee);
     this.drawer?.show();

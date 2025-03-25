@@ -75,7 +75,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let emp of pageResponse()?.content; let i = index" class="gap-4 hover:bg-card/50">
+        <tr *ngFor="let emp of pageResponse?.content; let i = index" class="gap-4 hover:bg-card/50">
           <td>{{ emp.fullName }}</td>
           <td>{{ emp.dateOfBirth }}</td>
           <td>{{ emp.mobileNo }}</td>
@@ -96,8 +96,8 @@
             </div>
           </td>
         </tr>
-        <tr *ngIf="pageResponse()?.content?.length === 0">
-          <td class="py-4 text-center text-sm" colspan="7">No app properties found</td>
+        <tr *ngIf="pageResponse?.content?.length === 0">
+          <td class="py-4 text-center text-sm" colspan="7">No employee found</td>
         </tr>
       </tbody>
     </table>
