@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { RegisteredUser } from './registered-user.model';
 import { RegisterUserService } from './service/register-user.service';
 import { EditAppPropertiesComponent } from '../app-properties/modal/edit-app-properties.component';
+import { PaginatedComponent } from 'src/app/common/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-registered-user',
@@ -15,20 +16,14 @@ import { EditAppPropertiesComponent } from '../app-properties/modal/edit-app-pro
   templateUrl: './registered-user.component.html',
   styleUrl: './registered-user.component.scss',
 })
-export class RegisteredUserComponent {
-  pageResponse = signal<PageResponse<RegisteredUser> | null>(null);
-  selectedRows: number = 10;
-  totalRows: number = 0;
-  totalPages: number = 0;
-  currentPage: number = 0;
+export class RegisteredUserComponent extends PaginatedComponent<RegisteredUser>{
   search: string = '';
   loading: boolean = false;
-  pagesArray: number[] = [];
   @ViewChild('modal', { static: false }) modal!: EditAppPropertiesComponent;
   registeredUser!: RegisteredUser;
   roles: string[] = [];
 
-  constructor(private registerUserService: RegisterUserService, private authService: AuthService) {}
+  constructor(private registerUserService: RegisterUserService, private authService: AuthService) {super();}
 
   ngOnInit(): void {
     this.loadAllRoles();
@@ -70,7 +65,7 @@ export class RegisteredUserComponent {
     this.loading = true;
     this.registerUserService.getRegisteredUsers(page, size, search).subscribe({
       next: (response) => {
-        this.pageResponse.set(response);
+        this.pageResponse = response;
         this.currentPage = response.pageNo;
         this.totalRows = response.totalElements;
         this.totalPages = response.totalPages;
@@ -87,8 +82,7 @@ export class RegisteredUserComponent {
   onSearchChange(event: Event) {
     const input = (event.target as HTMLInputElement).value;
     this.search = input;
-    if(this.search.length>3)
-      this.loadRegisteredUsers(0, this.selectedRows, this.search);
+    this.loadRegisteredUsers(0, this.selectedRows, this.search);
   }
 
   onSelectChange(event: Event) {
@@ -138,22 +132,6 @@ export class RegisteredUserComponent {
     });
   }
 
-  get startIndex(): number {
-    return this.currentPage * this.selectedRows + 1;
-  }
-
-  get endIndex(): number {
-    return Math.min(this.startIndex + this.selectedRows - 1, this.totalRows);
-  }
-
-  get first(): boolean {
-    return this.currentPage === 0;
-  }
-
-  get last(): boolean {
-    return this.currentPage === this.totalPages - 1;
-  }
-
   goToPreviousPage() {
     if (!this.first) {
       this.currentPage--;
@@ -179,11 +157,4 @@ export class RegisteredUserComponent {
     this.loadRegisteredUsers(this.currentPage, this.selectedRows, this.search);
   }
 
-  private updatePagesArray() {
-    this.pagesArray = Array.from({ length: this.totalPages }, (_, index) => index);
-  }
-
-  getPagesArray(): number[] {
-    return this.pagesArray;
-  }
 }

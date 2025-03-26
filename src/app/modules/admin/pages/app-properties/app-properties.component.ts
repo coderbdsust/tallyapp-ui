@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { EditAppPropertiesComponent } from './modal/edit-app-properties.component';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
+import { PaginatedComponent } from 'src/app/common/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-app-properties',
@@ -16,19 +17,13 @@ import { AuthService } from 'src/app/modules/auth/services/auth.service';
   templateUrl: './app-properties.component.html',
   styleUrl: './app-properties.component.scss',
 })
-export class AppPropertiesComponent implements OnInit {
-  pageResponse = signal<PageResponse<AppProperties> | null>(null);
-  selectedRows: number = 10;
-  totalRows: number = 0;
-  totalPages: number = 0;
-  currentPage: number = 0;
+export class AppPropertiesComponent extends PaginatedComponent<AppProperties> implements OnInit  {
   search: string = '';
   loading: boolean = false;
-  pagesArray: number[] = [];
   @ViewChild('modal', { static: false }) modal!: EditAppPropertiesComponent;
   appProperty!: AppProperties;
 
-  constructor(private appPropService: AppPropertiesService, private authService:AuthService) {}
+  constructor(private appPropService: AppPropertiesService, private authService:AuthService) {super();}
 
   ngOnInit(): void {
     this.loadAppProperties(this.currentPage, this.selectedRows, this.search);
@@ -51,7 +46,7 @@ export class AppPropertiesComponent implements OnInit {
     this.loading = true;
     this.appPropService.getAppProperties(page, size, search).subscribe({
       next: (response) => {
-        this.pageResponse.set(response);
+        this.pageResponse = response;
         this.currentPage = response.pageNo;
         this.totalRows = response.totalElements;
         this.totalPages = response.totalPages;
@@ -75,22 +70,6 @@ export class AppPropertiesComponent implements OnInit {
     const rows = parseInt((event.target as HTMLSelectElement).value, 10);
     this.selectedRows = rows === -1 ? this.totalRows || 0 : rows;
     this.loadAppProperties(0, this.selectedRows, this.search);
-  }
-
-  get startIndex(): number {
-    return this.currentPage * this.selectedRows + 1;
-  }
-
-  get endIndex(): number {
-    return Math.min(this.startIndex + this.selectedRows - 1, this.totalRows);
-  }
-
-  get first(): boolean {
-    return this.currentPage === 0;
-  }
-
-  get last(): boolean {
-    return this.currentPage === this.totalPages - 1;
   }
 
   goToPreviousPage() {
@@ -117,12 +96,5 @@ export class AppPropertiesComponent implements OnInit {
   private updatePagination() {
     this.loadAppProperties(this.currentPage, this.selectedRows, this.search);
   }
-
-  private updatePagesArray() {
-    this.pagesArray = Array.from({ length: this.totalPages }, (_, index) => index);
-  }
-
-  getPagesArray(): number[] {
-    return this.pagesArray;
-  }
+  
 }

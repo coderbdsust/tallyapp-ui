@@ -14,7 +14,9 @@
 </div>
 <div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
   <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
-    <h3 class="text-sm font-medium text-muted-foreground">Showing {{selectedRows>totalRows?totalRows:selectedRows}} of {{totalRows}} rows</h3>
+    <h3 class="text-sm font-medium text-muted-foreground">
+      <span>Showing {{ startIndex }}-{{ endIndex }} of {{ this.totalRows }} rows</span>
+    </h3>
     <div class="flex flex-wrap gap-2">
       <div class="flex flex-wrap items-center justify-between gap-2  px-8 text-xs text-muted-foreground">
         <div class="order-2 flex items-center gap-2 md:order-1">
@@ -52,7 +54,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let appProperty of pageResponse()?.content; let i = index" class="hover:bg-card/50  gap-4">
+        <tr *ngFor="let appProperty of pageResponse?.content; let i = index" class="hover:bg-card/50  gap-4">
           <td>{{ appProperty.profile }}</td>
           <td class="hover:text-red-400">{{ appProperty.appKey }}</td>
           <td >
@@ -70,7 +72,7 @@
             </div>
           </td>
         </tr>
-        <tr *ngIf="pageResponse()?.content?.length === 0">
+        <tr *ngIf="pageResponse?.content?.length === 0">
           <td class="py-4 text-center text-sm" colspan="7">No app properties found</td>
         </tr>
       </tbody>
@@ -78,9 +80,6 @@
   </div>
   <div class="flex flex-wrap items-center justify-end gap-2 py-3 px-5 text-xs text-muted-foreground">
     <div class="order-1 flex items-center gap-4 md:order-2">
-      <!-- Display range of items -->
-      <span>{{ startIndex }}-{{ endIndex }} of {{ this.totalRows }}</span>
-
       <!-- Pagination buttons -->
       <div class="inline-flex items-center gap-1">
         <!-- Previous button -->

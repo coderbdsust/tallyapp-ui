@@ -27,7 +27,7 @@
 <div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
   <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
     <h3 class="text-sm font-medium text-muted-foreground">
-      Showing {{ selectedRows > totalRows ? totalRows : selectedRows }} of {{ totalRows }} rows
+      Showing <span>{{ startIndex }}-{{ endIndex }} of {{ this.totalRows }}</span> rows
     </h3>
     <div class="flex flex-wrap gap-2">
       <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
@@ -103,10 +103,7 @@
     </table>
   </div>
   <div class="flex flex-wrap items-center justify-end gap-2 py-3 px-5 text-xs text-muted-foreground">
-    <div class="order-1 flex items-center gap-4 md:order-2">
-      <!-- Display range of items -->
-      <span>{{ startIndex }}-{{ endIndex }} of {{ this.totalRows }}</span>
-
+    <div class="order-1 flex items-center gap-4 md:order-2">     
       <!-- Pagination buttons -->
       <div class="inline-flex items-center gap-1">
         <!-- Previous button -->
