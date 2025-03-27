@@ -1,5 +1,4 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
-import { PageResponse } from 'src/app/common/models/page-response';
 import { EditAppPropertiesComponent } from '../../admin/pages/app-properties/modal/edit-app-properties.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -27,7 +26,7 @@ import { WordPipe } from 'src/app/common/pipes/word.pipe';
     AddOrganizationComponent,
     AddEmployeeComponent,
     WordPipe
-  ],
+],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './organization-detail.component.html',
   styleUrl: './organization-detail.component.scss',
