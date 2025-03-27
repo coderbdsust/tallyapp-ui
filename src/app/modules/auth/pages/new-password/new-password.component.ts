@@ -4,13 +4,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { AuthService } from '../../services/auth.service';
-import { NgClass, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-new-password',
     templateUrl: './new-password.component.html',
     styleUrls: ['./new-password.component.scss'],
-    imports: [FormsModule, AngularSvgIconModule, ButtonComponent, ReactiveFormsModule, RouterLink, NgClass, NgIf]
+    imports: [FormsModule, AngularSvgIconModule, ButtonComponent, ReactiveFormsModule, RouterLink, NgIf]
 })
 export class NewPasswordComponent implements OnInit {
 

@@ -4,14 +4,12 @@ import { NftAuctionsTableComponent } from '../../components/nft/nft-auctions-tab
 import { NftChartCardComponent } from '../../components/nft/nft-chart-card/nft-chart-card.component';
 import { NftSingleCardComponent } from '../../components/nft/nft-single-card/nft-single-card.component';
 import { NftDualCardComponent } from '../../components/nft/nft-dual-card/nft-dual-card.component';
-import { NftHeaderComponent } from '../../components/nft/nft-header/nft-header.component';
 import { NftSingleCardEmployeeComponent } from '../../components/nft/nft-single-card-employee/nft-single-card-employee.component';
 
 @Component({
     selector: 'app-nft',
     templateUrl: './nft.component.html',
     imports: [
-        NftHeaderComponent,
         NftDualCardComponent,
         NftSingleCardComponent,
         NftSingleCardEmployeeComponent,

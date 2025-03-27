@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink, ActivatedRoute, Params } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { NgClass, NgIf, NgFor } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-two-steps',
     templateUrl: './two-steps.component.html',
     styleUrls: ['./two-steps.component.scss'],
-    imports: [FormsModule, RouterLink, ButtonComponent, NgClass, NgIf, NgFor]
+    imports: [FormsModule, RouterLink, ButtonComponent, NgIf]
 })
 export class TwoStepsComponent implements OnInit {
   constructor(private readonly _router: Router, private acRoute: ActivatedRoute, private authService: AuthService) {
