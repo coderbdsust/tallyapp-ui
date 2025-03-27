@@ -6,11 +6,10 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { NgClass, NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss'],
-  standalone: true,
-  imports: [NgClass, NgIf, AngularSvgIconModule, SidebarMenuComponent],
+    selector: 'app-sidebar',
+    templateUrl: './sidebar.component.html',
+    styleUrls: ['./sidebar.component.scss'],
+    imports: [NgClass, NgIf, AngularSvgIconModule, SidebarMenuComponent]
 })
 export class SidebarComponent implements OnInit {
 

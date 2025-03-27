@@ -6,10 +6,9 @@ import { Organization } from 'src/app/modules/organization/service/organization.
 import { Router } from '@angular/router';
 
 @Component({
-  selector: '[nft-dual-card]',
-  templateUrl: './nft-dual-card.component.html',
-  standalone: true,
-  imports: [NgStyle, CurrencyPipe],
+    selector: '[nft-dual-card]',
+    templateUrl: './nft-dual-card.component.html',
+    imports: [NgStyle, CurrencyPipe]
 })
 export class NftDualCardComponent implements OnInit {
   @Input() nft: Nft = <Nft>{};

@@ -2,10 +2,9 @@ import { NgClass } from "@angular/common";
 import { Component, OnInit, Input } from "@angular/core";
 
 @Component({
-  selector: "app-card-stats",
-  templateUrl: "./card-stats.component.html",
-  standalone: true,
-  imports:[NgClass]
+    selector: "app-card-stats",
+    templateUrl: "./card-stats.component.html",
+    imports: [NgClass]
 })
 export class CardStatsComponent implements OnInit {
   @Input()

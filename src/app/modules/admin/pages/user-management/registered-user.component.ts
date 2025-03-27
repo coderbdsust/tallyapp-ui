@@ -10,11 +10,10 @@ import { EditAppPropertiesComponent } from '../app-properties/modal/edit-app-pro
 import { PaginatedComponent } from 'src/app/common/components/pagination/pagination.component';
 
 @Component({
-  selector: 'app-registered-user',
-  standalone: true,
-  imports: [AngularSvgIconModule, FormsModule, CommonModule],
-  templateUrl: './registered-user.component.html',
-  styleUrl: './registered-user.component.scss',
+    selector: 'app-registered-user',
+    imports: [AngularSvgIconModule, FormsModule, CommonModule],
+    templateUrl: './registered-user.component.html',
+    styleUrl: './registered-user.component.scss'
 })
 export class RegisteredUserComponent extends PaginatedComponent<RegisteredUser>{
   search: string = '';

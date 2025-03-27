@@ -4,8 +4,7 @@ import { RouterOutlet } from '@angular/router';
 @Component({
     selector: 'app-user',
     templateUrl: './user.component.html',
-    standalone: true,
-    imports: [RouterOutlet],
+    imports: [RouterOutlet]
 })
 export class UserComponent implements OnInit {
   constructor() {}

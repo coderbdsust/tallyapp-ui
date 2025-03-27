@@ -8,11 +8,10 @@ import { AuthService } from './modules/auth/services/auth.service';
 import { LoaderComponent } from "./modules/loader/loader.component";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  standalone: true,
-  imports: [NgClass, RouterOutlet, ResponsiveHelperComponent, NgxSonnerToaster, LoaderComponent]
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    imports: [NgClass, RouterOutlet, ResponsiveHelperComponent, NgxSonnerToaster, LoaderComponent]
 })
 export class AppComponent implements OnInit {
   constructor(public themeService: ThemeService, private authService: AuthService) {}

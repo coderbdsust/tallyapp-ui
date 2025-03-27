@@ -7,20 +7,19 @@ import { OrganizationService } from '../service/organization.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
-  selector: 'app-assign-organization',
-  standalone: true,
-  imports: [
-    NgClass,
-    NgIf,
-    FormsModule,
-    CommonModule,
-    ReactiveFormsModule,
-    ButtonComponent,
-    NgSelectComponent,
-  ],
-   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './assign-organization.component.html',
-  styleUrl: './assign-organization.component.scss',
+    selector: 'app-assign-organization',
+    imports: [
+        NgClass,
+        NgIf,
+        FormsModule,
+        CommonModule,
+        ReactiveFormsModule,
+        ButtonComponent,
+        NgSelectComponent,
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    templateUrl: './assign-organization.component.html',
+    styleUrl: './assign-organization.component.scss'
 })
 export class AssignOrganizationComponent implements OnChanges {
   @Input() organization!: Organization;

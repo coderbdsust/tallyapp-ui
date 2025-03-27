@@ -15,21 +15,20 @@ import { PaginatedComponent } from 'src/app/common/components/pagination/paginat
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 
 @Component({
-  selector: 'app-organization-detail',
-  standalone: true,
-  imports: [
-    AngularSvgIconModule,
-    FormsModule,
-    ReactiveFormsModule,
-    CommonModule,
-    AssignOrganizationComponent,
-    AddOrganizationComponent,
-    AddEmployeeComponent,
-    WordPipe
-],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './organization-detail.component.html',
-  styleUrl: './organization-detail.component.scss',
+    selector: 'app-organization-detail',
+    imports: [
+        AngularSvgIconModule,
+        FormsModule,
+        ReactiveFormsModule,
+        CommonModule,
+        AssignOrganizationComponent,
+        AddOrganizationComponent,
+        AddEmployeeComponent,
+        WordPipe
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    templateUrl: './organization-detail.component.html',
+    styleUrl: './organization-detail.component.scss'
 })
 export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
   @ViewChild('employeeDrawer') employeeDrawer!: AddEmployeeComponent;

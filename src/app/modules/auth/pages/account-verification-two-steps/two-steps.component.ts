@@ -6,11 +6,10 @@ import { NgClass, NgIf, NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-two-steps',
-  templateUrl: './two-steps.component.html',
-  styleUrls: ['./two-steps.component.scss'],
-  standalone: true,
-  imports: [FormsModule, RouterLink, ButtonComponent, NgClass, NgIf, NgFor],
+    selector: 'app-two-steps',
+    templateUrl: './two-steps.component.html',
+    styleUrls: ['./two-steps.component.scss'],
+    imports: [FormsModule, RouterLink, ButtonComponent, NgClass, NgIf, NgFor]
 })
 export class TwoStepsComponent implements OnInit {
   constructor(private readonly _router: Router, private acRoute: ActivatedRoute, private authService: AuthService) {

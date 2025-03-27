@@ -10,7 +10,6 @@ import { NftSingleCardEmployeeComponent } from '../../components/nft/nft-single-
 @Component({
     selector: 'app-nft',
     templateUrl: './nft.component.html',
-    standalone: true,
     imports: [
         NftHeaderComponent,
         NftDualCardComponent,
@@ -18,7 +17,7 @@ import { NftSingleCardEmployeeComponent } from '../../components/nft/nft-single-
         NftSingleCardEmployeeComponent,
         NftChartCardComponent,
         NftAuctionsTableComponent,
-    ],
+    ]
 })
 export class NftComponent implements OnInit {
   nft: Array<Nft>;

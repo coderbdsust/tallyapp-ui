@@ -11,11 +11,10 @@ import { UserprofileService } from 'src/app/modules/user/service/userprofile.ser
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 
 @Component({
-  selector: 'app-sign-up',
-  templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.scss'],
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, RouterLink, AngularSvgIconModule, NgClass, NgIf, NgFor, ButtonComponent, WordPipe],
+    selector: 'app-sign-up',
+    templateUrl: './sign-up.component.html',
+    styleUrls: ['./sign-up.component.scss'],
+    imports: [FormsModule, ReactiveFormsModule, RouterLink, AngularSvgIconModule, NgClass, NgIf, NgFor, ButtonComponent, WordPipe]
 })
 export class SignUpComponent implements OnInit {
     

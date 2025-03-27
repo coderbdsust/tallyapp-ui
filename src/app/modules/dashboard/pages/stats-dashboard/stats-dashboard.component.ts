@@ -6,17 +6,16 @@ import { CardLineChartComponent } from '../../components/cards/card-line-chart/c
 import { CardBarChartComponent } from '../../components/cards/card-bar-chart/card-bar-chart.component';
 
 @Component({
-  selector: 'app-stats-dashboard',
-  standalone: true,
+    selector: 'app-stats-dashboard',
     imports: [
-    CardPageVisitsComponent,
-    CardSocialTrafficComponent,
-    CardLineChartComponent,
-    CardBarChartComponent,
-    HeaderStatsComponent
-],
-  templateUrl: './stats-dashboard.component.html',
-  styleUrl: './stats-dashboard.component.scss'
+        CardPageVisitsComponent,
+        CardSocialTrafficComponent,
+        CardLineChartComponent,
+        CardBarChartComponent,
+        HeaderStatsComponent
+    ],
+    templateUrl: './stats-dashboard.component.html',
+    styleUrl: './stats-dashboard.component.scss'
 })
 export class StatsDashboardComponent {
 

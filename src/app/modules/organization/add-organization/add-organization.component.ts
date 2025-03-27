@@ -11,12 +11,11 @@ import { Organization } from '../service/organization.model';
 import { OrgDrawerService } from '../service/org-drawer.service';
 
 @Component({
-  selector: 'app-add-organization',
-  standalone: true,
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, ButtonComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './add-organization.component.html',
-  styleUrl: './add-organization.component.scss',
+    selector: 'app-add-organization',
+    imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, ButtonComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    templateUrl: './add-organization.component.html',
+    styleUrl: './add-organization.component.scss'
 })
 export class AddOrganizationComponent {
   @Output() public orgEmitter = new EventEmitter<Organization>();

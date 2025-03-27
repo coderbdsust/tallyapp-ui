@@ -12,11 +12,10 @@ import { AuthService } from '../../auth/services/auth.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 
 @Component({
-  selector: 'app-profile',
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, ButtonComponent, WordPipe],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss',
+    selector: 'app-profile',
+    imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, ButtonComponent, WordPipe],
+    templateUrl: './profile.component.html',
+    styleUrl: './profile.component.scss'
 })
 export class ProfileComponent implements OnInit {
   userProfile: UserProfile | undefined;

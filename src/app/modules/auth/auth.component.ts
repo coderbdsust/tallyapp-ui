@@ -7,8 +7,7 @@ import { MenuService } from '../layout/services/menu.service';
     selector: 'app-auth',
     templateUrl: './auth.component.html',
     styleUrls: ['./auth.component.scss'],
-    standalone: true,
-    imports: [AngularSvgIconModule, RouterOutlet],
+    imports: [AngularSvgIconModule, RouterOutlet]
 })
 export class AuthComponent implements OnInit {
   constructor(public menuService: MenuService) {}

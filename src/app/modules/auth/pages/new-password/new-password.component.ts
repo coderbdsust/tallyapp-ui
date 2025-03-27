@@ -7,11 +7,10 @@ import { AuthService } from '../../services/auth.service';
 import { NgClass, NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-new-password',
-  templateUrl: './new-password.component.html',
-  styleUrls: ['./new-password.component.scss'],
-  standalone: true,
-  imports: [FormsModule, AngularSvgIconModule, ButtonComponent, ReactiveFormsModule, RouterLink, NgClass, NgIf],
+    selector: 'app-new-password',
+    templateUrl: './new-password.component.html',
+    styleUrls: ['./new-password.component.scss'],
+    imports: [FormsModule, AngularSvgIconModule, ButtonComponent, ReactiveFormsModule, RouterLink, NgClass, NgIf]
 })
 export class NewPasswordComponent implements OnInit {
 

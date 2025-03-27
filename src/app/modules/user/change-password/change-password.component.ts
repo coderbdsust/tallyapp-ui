@@ -8,11 +8,10 @@ import { UserprofileService } from '../service/userprofile.service';
 import { passwordStrength } from 'check-password-strength'
 
 @Component({
-  selector: 'app-change-password',
-  standalone: true,
-  imports: [FormsModule, AngularSvgIconModule, ButtonComponent, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, NgClass],
-  templateUrl: './change-password.component.html',
-  styleUrl: './change-password.component.scss',
+    selector: 'app-change-password',
+    imports: [FormsModule, AngularSvgIconModule, ButtonComponent, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, NgClass],
+    templateUrl: './change-password.component.html',
+    styleUrl: './change-password.component.scss'
 })
 export class ChangePasswordComponent implements OnInit {
 this: any;

@@ -6,11 +6,10 @@ import { NgClass, NgIf, NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-forgot-password-verification-otp',
-  templateUrl: './forgot-password-verification-otp.component.html',
-  styleUrls: ['./forgot-password-verification-otp.component.scss'],
-  standalone: true,
-  imports: [FormsModule, RouterLink, ButtonComponent, NgIf],
+    selector: 'app-forgot-password-verification-otp',
+    templateUrl: './forgot-password-verification-otp.component.html',
+    styleUrls: ['./forgot-password-verification-otp.component.scss'],
+    imports: [FormsModule, RouterLink, ButtonComponent, NgIf]
 })
 export class ForgotPasswordVerificationOtpComponent implements OnInit {
   constructor(private readonly _router: Router, private acRoute: ActivatedRoute, private authService: AuthService) {

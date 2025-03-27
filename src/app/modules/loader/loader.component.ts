@@ -4,11 +4,10 @@ import { Observable } from 'rxjs';
 import { LoaderService } from 'src/app/core/services/loader.service';
 
 @Component({
-  selector: 'app-loader',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './loader.component.html',
-  styleUrl: './loader.component.scss'
+    selector: 'app-loader',
+    imports: [CommonModule],
+    templateUrl: './loader.component.html',
+    styleUrl: './loader.component.scss'
 })
 export class LoaderComponent {
 

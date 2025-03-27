@@ -12,12 +12,11 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 
 @Component({
-  selector: 'app-add-employee',
-  standalone: true,
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, ButtonComponent, WordPipe],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './add-employee.component.html',
-  styleUrl: './add-employee.component.scss',
+    selector: 'app-add-employee',
+    imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, ButtonComponent, WordPipe],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    templateUrl: './add-employee.component.html',
+    styleUrl: './add-employee.component.scss'
 })
 export class AddEmployeeComponent {
   @Output() public employeeEmitter = new EventEmitter<Employee>();

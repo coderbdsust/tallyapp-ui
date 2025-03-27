@@ -10,12 +10,11 @@ import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { PaginatedComponent } from 'src/app/common/components/pagination/pagination.component';
 
 @Component({
-  selector: 'app-app-properties',
-  standalone: true,
-  imports: [AngularSvgIconModule, FormsModule, CommonModule, EditAppPropertiesComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './app-properties.component.html',
-  styleUrl: './app-properties.component.scss',
+    selector: 'app-app-properties',
+    imports: [AngularSvgIconModule, FormsModule, CommonModule, EditAppPropertiesComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    templateUrl: './app-properties.component.html',
+    styleUrl: './app-properties.component.scss'
 })
 export class AppPropertiesComponent extends PaginatedComponent<AppProperties> implements OnInit  {
   search: string = '';

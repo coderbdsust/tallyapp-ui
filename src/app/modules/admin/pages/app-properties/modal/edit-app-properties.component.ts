@@ -7,11 +7,10 @@ import { AppPropertiesService } from '../service/app-properties.service';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 
 @Component({
-  selector: 'app-edit-app-properties',
-  standalone: true,
-  imports: [NgClass, NgIf, FormsModule, ReactiveFormsModule, ButtonComponent],
-  templateUrl: './edit-app-properties.component.html',
-  styleUrl: './edit-app-properties.component.scss'
+    selector: 'app-edit-app-properties',
+    imports: [NgClass, NgIf, FormsModule, ReactiveFormsModule, ButtonComponent],
+    templateUrl: './edit-app-properties.component.html',
+    styleUrl: './edit-app-properties.component.scss'
 })
 export class EditAppPropertiesComponent implements OnInit{
 
