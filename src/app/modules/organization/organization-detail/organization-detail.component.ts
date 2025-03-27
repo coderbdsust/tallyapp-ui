@@ -13,6 +13,7 @@ import { AddEmployeeComponent } from '../add-employee/add-employee.component';
 import { EmployeeService } from '../service/employee.service';
 import { Employee } from '../service/employee.model';
 import { PaginatedComponent } from 'src/app/common/components/pagination/pagination.component';
+import { WordPipe } from 'src/app/common/pipes/word.pipe';
 
 @Component({
   selector: 'app-organization-detail',
@@ -25,6 +26,7 @@ import { PaginatedComponent } from 'src/app/common/components/pagination/paginat
     AssignOrganizationComponent,
     AddOrganizationComponent,
     AddEmployeeComponent,
+    WordPipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './organization-detail.component.html',

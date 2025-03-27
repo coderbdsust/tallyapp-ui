@@ -67,11 +67,12 @@
           <th>Full Name</th>
           <th>Date or Birth</th>
           <th>Mobile No</th>
-          <th>Status</th>
           <th>Employee Type</th>
           <th>Billing Type</th>
           <th>Billing Rate</th>
           <th>Daily Allowance</th>
+          <th>Status</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -79,11 +80,11 @@
           <td>{{ emp.fullName }}</td>
           <td>{{ emp.dateOfBirth }}</td>
           <td>{{ emp.mobileNo }}</td>
-          <td>{{ emp.status }}</td>
-          <td>{{ emp.employeeType }}</td>
-          <td>{{ emp.employeeBillingType }}</td>
+          <td>{{ emp.employeeType | word}}</td>
+          <td>{{ emp.employeeBillingType | word }}</td>
           <td>{{ emp.billingRate }}</td>
           <td>{{ emp.dailyAllowance }}</td>
+          <td>{{ emp.status | word }}</td>
           <td class="text-center">
             <div class="flex items-center gap-4">
               <a (click)="editEmployee(emp)" class="hover:text-red-700">

@@ -47,6 +47,12 @@ export class AuthService extends CommonService {
     );
   }
 
+  getGenderList() {
+      return this.http
+        .get<String[]>(`${environment.tallyURL}/auth/v1/gender-list`)
+        .pipe(catchError(this.mapErrorResponse));
+  }
+
   refreshToken() {
     const userData = localStorage.getItem(environment.TALLY_APP);
     let refreshToken;
@@ -127,12 +133,6 @@ export class AuthService extends CommonService {
    // this.autoLogout(expireDuration);
     this.user.next(cachedAuthUser);
   }
-
-  // autoLogout(duration: number) {
-  //   this.logoutTimer = setTimeout(() => {
-  //     this.logout();
-  //   }, duration);
-  // }
 
   private mapToAuthUser(parsedData: any): AuthUser {
     return {

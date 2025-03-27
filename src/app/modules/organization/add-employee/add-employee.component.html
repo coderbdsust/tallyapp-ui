@@ -194,7 +194,7 @@
                 class="peer block w-full appearance-none border border-b-2 border-gray-200 bg-transparent py-2.5 px-0 indent-4 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400">
                 <option value=-1>Select Employee Type</option>
                 <ng-container *ngFor="let status of empTypeList; let i = index">
-                  <option [value]="status">{{ status }}</option>
+                  <option [value]="status">{{ status | word }}</option>
                 </ng-container>
               </select>
 
@@ -217,7 +217,7 @@
                 class="peer block w-full appearance-none border border-b-2 border-gray-200 bg-transparent py-2.5 px-0 indent-4 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400">
                 <option value=-1>Select Employee Status</option>
                 <ng-container *ngFor="let status of empStatusList; let i = index">
-                  <option [value]="status">{{ status }}</option>
+                  <option [value]="status">{{ status | word }}</option>
                 </ng-container>
               </select>
               <label
@@ -240,7 +240,7 @@
                 class="peer block w-full appearance-none border border-b-2 border-gray-200 bg-transparent py-2.5 px-0 indent-4 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400">
                 <option value=-1>Select Billing Type</option>
                 <ng-container *ngFor="let status of empBillingTypeList; let i = index">
-                  <option [value]="status">{{ status }}</option>
+                  <option [value]="status">{{ status | word}}</option>
                 </ng-container>
               </select>
 

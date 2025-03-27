@@ -19,7 +19,7 @@ export class UserprofileService extends CommonService {
       .get<UserProfile>(`${environment.tallyURL}/users/v1/profile`)
       .pipe(catchError(this.mapErrorResponse));
   }
-
+  
   updateUserProfile(userProfile: UserProfile) {
     return this.http
       .put<UserProfile>(`${environment.tallyURL}/users/v1/profile`, userProfile)

@@ -62,26 +62,28 @@
         <div *ngIf="f['username'].errors['required']">Required field</div>
       </div>
     </div>
-    <!-- <div class="form__group">
+    <div class="form__group">
       <div class="relative">
-        <input
-          type="text"
-          id="mobileNo"
-          class="peer block"
-          placeholder=" "
-          [ngClass]="{ 'is__invalid-input': submitted && f['mobileNo'].errors }"
-          formControlName="mobileNo" />
+
+        <select id="gender" name="gender" formControlName="gender"
+          class="py-2.5 px-0 indent-4 w-full text-sm rounded bg-white border border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+            <option value="-1" >Select Gender</option>
+            <ng-container *ngFor="let gender of genderList; let i = index;">
+              <option [value]="gender">{{gender | word}}
+              </option>
+            </ng-container>
+        </select> 
+
         <label
-          for="mobileNo"
+          for="gender"
           class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-          Mobile Number
+          Gender
         </label>
       </div>
-      <div *ngIf="submitted && f['mobileNo'].errors" class="is__invalid-error">
-        <div *ngIf="f['mobileNo'].errors['required']">Required field</div>
-        <div *ngIf="f['mobileNo'].errors['pattern']">Enter a valid mobile number</div>
+      <div *ngIf="submitted && f['gender'].errors" class="is__invalid-error">
+        <div *ngIf="f['gender'].errors['required']">Required field</div>
       </div>
-    </div> -->
+    </div>
     <div class="form__group">
       <div class="relative">
         <div class="flex gap-4">
@@ -142,10 +144,6 @@
           </div>
         </div>
       </div>
-
-      <!-- <div *ngIf="submitted && f['dateOfBirth'].errors" class="is__invalid-error">
-        <div *ngIf="f['dateOfBirth'].errors['required']">Required field</div>
-      </div> -->
     </div>
     <div class="form__group">
       <div class="relative">
@@ -224,19 +222,6 @@
       </div>
     </div>
   </div>
-
-  <!-- <div class="flex items-center justify-between space-x-3">
-    <div class="form__group">
-      <div class="flex items-center gap-1">
-        <input id="acceptTerm" type="checkbox" formControlName="acceptTerm" />
-        <label for="acceptTerm" class="ml-2 block text-sm text-muted-foreground"> I accept the </label>
-        <app-button impact="none" tone="primary" shape="rounded" size="small"> terms </app-button>
-      </div>
-      <div *ngIf="submitted && f['acceptTerm'].errors" class="is__invalid-error">
-        <div *ngIf="f['acceptTerm'].errors['required']">Required field</div>
-      </div>
-    </div>
-  </div> -->
 
   <div *ngIf="submitted" class="is__invalid-error">
     <div *ngIf="errorMessage != ''">{{ errorMessage }}</div>

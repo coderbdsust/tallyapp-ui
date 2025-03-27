@@ -1,37 +1,40 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/modules/auth/services/common.service';
 import { UserprofileService } from 'src/app/modules/user/service/userprofile.service';
 import { Address, ShortProfile, UserProfile } from './profile.model';
 import { initFlowbite } from 'flowbite';
 import { NgFor, NgIf } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { forkJoin } from 'rxjs';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
+import { AuthService } from '../../auth/services/auth.service';
+import { WordPipe } from 'src/app/common/pipes/word.pipe';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor,ButtonComponent],
+  imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, ButtonComponent, WordPipe],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit {
   userProfile: UserProfile | undefined;
-  genderList: string[] = ['Male', 'Female', 'Rather not to say', 'Custom'];
+  genderList: String[] = [];
   userProfileForm!: FormGroup;
   submitted = false;
 
   constructor(
     private userProfileService: UserprofileService,
     private commonService: CommonService,
+    private authService:AuthService,
     private readonly _formBuilder: FormBuilder,
   ) {}
 
   ngOnInit(): void {
     initFlowbite();
     this.loadUserProfile();
+    this.loadGenderList();
     this.userProfileForm = this.createUserProfileForm();
   }
 
@@ -224,6 +227,18 @@ export class ProfileComponent implements OnInit {
         this.commonService.showToastErrorResponse(error);
       },
     );
+  }
+
+  loadGenderList() {
+    this.authService.getGenderList().subscribe({
+      next: (genderList) => {
+        console.log(genderList);
+        this.genderList = genderList;
+      },
+      error: (error) => {
+        this.commonService.showToastErrorResponse(error);
+      },
+    });
   }
 
   onSubmit() {

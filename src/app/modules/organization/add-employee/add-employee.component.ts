@@ -9,11 +9,12 @@ import { OrganizationService } from '../service/organization.service';
 import { Employee } from '../service/employee.model';
 import { EmployeeService } from '../service/employee.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { WordPipe } from 'src/app/common/pipes/word.pipe';
 
 @Component({
   selector: 'app-add-employee',
   standalone: true,
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, ButtonComponent, NgSelectComponent],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, ButtonComponent, WordPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-employee.component.html',
   styleUrl: './add-employee.component.scss',

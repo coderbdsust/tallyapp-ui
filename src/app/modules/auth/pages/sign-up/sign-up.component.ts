@@ -7,13 +7,15 @@ import { ButtonComponent } from 'src/app/common/components/button/button.compone
 import { NgClass, NgIf, NgFor } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { passwordStrength } from 'check-password-strength'
+import { UserprofileService } from 'src/app/modules/user/service/userprofile.service';
+import { WordPipe } from 'src/app/common/pipes/word.pipe';
 
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.scss'],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, RouterLink, AngularSvgIconModule, NgClass, NgIf, NgFor, ButtonComponent],
+  imports: [FormsModule, ReactiveFormsModule, RouterLink, AngularSvgIconModule, NgClass, NgIf, NgFor, ButtonComponent, WordPipe],
 })
 export class SignUpComponent implements OnInit {
     
@@ -36,6 +38,7 @@ export class SignUpComponent implements OnInit {
     { id: 12, value: "Dec", fullName: "December" },
   ];
   years!:number[];
+  genderList:String[]=[];
   errorMessage="";
   passwordStrength: number= 0;
 
@@ -47,14 +50,17 @@ export class SignUpComponent implements OnInit {
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       username: ['', Validators.required],
-      // mobileNo: ['', [Validators.required,  Validators.pattern(/^01[3-9]\d{8}$/), Validators.minLength(11), Validators.maxLength(11)]],
-      // dateOfBirth: ['', Validators.required],
+      gender: ['', Validators.required],
       day:['', Validators.required],
       month:['', Validators.required],
       year:['', Validators.required],
       password: ['', [Validators.required,Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$_])[A-Za-z\d@$_]{8,}$/)]],
       confirmPassword: ['', [Validators.required,Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$_])[A-Za-z\d@$_]{8,}$/)]]
-      //acceptTerm: ['', Validators.required]
+    });
+    this.authService.getGenderList().subscribe({
+      next: (response) => {
+        this.genderList=response;
+      }
     });
   }
   

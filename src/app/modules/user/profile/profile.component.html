@@ -144,9 +144,9 @@
 
                   <select id="gender" name="gender" formControlName="gender"
                     class="py-2.5 px-0 indent-4 w-full text-sm rounded bg-white border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                    <option value="-1" >Change Gender</option>
+                    <option value="-1" >Select Gender</option>
                     <ng-container *ngFor="let gender of genderList; let i = index;">
-                      <option [value]="gender.toLowerCase()" [selected]="gender.toLowerCase() == userProfile?.gender">{{gender}}
+                      <option [value]="gender" [selected]="gender == userProfile?.gender">{{gender | word}}
                       </option>
                     </ng-container>
                   </select>  
