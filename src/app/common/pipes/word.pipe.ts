@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true
 })
 export class WordPipe implements PipeTransform {
-  transform(word: String): String {
+  transform(word: string|String): String {
     if (!word) return word;
     word = word.replace(/_/g, ' '); // Replaces all underscores
     let words = word.split(' ');
