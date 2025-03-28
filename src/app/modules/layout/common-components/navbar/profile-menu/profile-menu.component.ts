@@ -7,12 +7,14 @@ import { ThemeService } from '../../../../../core/services/theme.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { map, take } from 'rxjs';
+import { WordPipe } from 'src/app/common/pipes/word.pipe';
+import { RolePipe } from 'src/app/common/pipes/role.pipe';
 
 @Component({
     selector: 'app-profile-menu',
     templateUrl: './profile-menu.component.html',
     styleUrls: ['./profile-menu.component.scss'],
-    imports: [ClickOutsideDirective, NgClass, RouterLink, AngularSvgIconModule, CommonModule, NgIf],
+    imports: [ClickOutsideDirective, NgClass, RouterLink, AngularSvgIconModule, CommonModule, NgIf, RolePipe],
     animations: [
         trigger('openClose', [
             state('open', style({
