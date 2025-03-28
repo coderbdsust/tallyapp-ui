@@ -13,22 +13,24 @@ import { EmployeeService } from '../service/employee.service';
 import { Employee } from '../service/employee.model';
 import { PaginatedComponent } from 'src/app/common/components/pagination/pagination.component';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
 
 @Component({
-    selector: 'app-organization-detail',
-    imports: [
-        AngularSvgIconModule,
-        FormsModule,
-        ReactiveFormsModule,
-        CommonModule,
-        AssignOrganizationComponent,
-        AddOrganizationComponent,
-        AddEmployeeComponent,
-        WordPipe
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    templateUrl: './organization-detail.component.html',
-    styleUrl: './organization-detail.component.scss'
+  selector: 'app-organization-detail',
+  imports: [
+    AngularSvgIconModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    AssignOrganizationComponent,
+    AddOrganizationComponent,
+    AddEmployeeComponent,
+    WordPipe,
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  templateUrl: './organization-detail.component.html',
+  styleUrl: './organization-detail.component.scss',
 })
 export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
   @ViewChild('employeeDrawer') employeeDrawer!: AddEmployeeComponent;
@@ -44,6 +46,7 @@ export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
     private orgService: OrganizationService,
     private empService: EmployeeService,
     private orgDrawerService: OrgDrawerService,
+    public dialog: MatDialog,
   ) {
     super();
   }
@@ -57,14 +60,23 @@ export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
   }
 
   deleteEmployee(selectedEmployee: Employee) {
-    this.empService.deleteEmployee(selectedEmployee.id).subscribe({
-      next: (response) => {
-        this.removeFromPage(selectedEmployee.id, 'id');
-        this.empService.showToastSuccess(response.message);
-      },
-      error: (errRes) => {
-        this.empService.showToastErrorResponse(errRes);
-      },
+    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+      width: '350px',
+      data: { message: `Are you sure you want to delete ${selectedEmployee.fullName}?` },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.empService.deleteEmployee(selectedEmployee.id).subscribe({
+          next: (response) => {
+            this.removeFromPage(selectedEmployee.id, 'id');
+            this.empService.showToastSuccess(response.message);
+          },
+          error: (errRes) => {
+            this.empService.showToastErrorResponse(errRes);
+          },
+        });
+      }
     });
   }
 
