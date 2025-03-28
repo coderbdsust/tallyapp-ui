@@ -9,6 +9,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { AuthInterceptorService } from './app/core/interceptor/auth-interceptor.service';
 import { AuthService } from './app/modules/auth/services/auth.service';
 import { LoaderService } from './app/core/services/loader.service';
+import { provideAngularSvgIcon } from 'angular-svg-icon';
 
 if (environment.production) {
   enableProdMode();
@@ -25,7 +26,8 @@ bootstrapApplication(AppComponent, {
       provideHttpClient(withInterceptorsFromDi()),
       {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi:true },
       AuthService,
-      LoaderService
+      LoaderService,
+      provideAngularSvgIcon()
     ],
 }).catch((err) => console.error(err));
 
