@@ -58,7 +58,7 @@
           <td>{{ appProperty.profile }}</td>
           <td class="hover:text-red-400">{{ appProperty.appKey }}</td>
           <td >
-            {{ appProperty.appValue }}
+            {{ appProperty.appValue | truncate: 40 }}
           </td>
           <td class="text-center">
             <div class="flex items-center gap-4">

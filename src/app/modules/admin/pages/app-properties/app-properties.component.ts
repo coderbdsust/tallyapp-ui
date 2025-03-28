@@ -4,14 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { AppProperties } from './app-properties.model';
 import { AppPropertiesService } from './service/app-properties.service';
 import { CommonModule } from '@angular/common';
-import { PageResponse } from 'src/app/common/models/page-response';
 import { EditAppPropertiesComponent } from './modal/edit-app-properties.component';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { PaginatedComponent } from 'src/app/common/components/pagination/pagination.component';
+import { TruncatePipe } from 'src/app/common/pipes/truncate.pipe';
 
 @Component({
     selector: 'app-app-properties',
-    imports: [AngularSvgIconModule, FormsModule, CommonModule, EditAppPropertiesComponent],
+    imports: [AngularSvgIconModule, FormsModule, CommonModule, EditAppPropertiesComponent, TruncatePipe],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     templateUrl: './app-properties.component.html',
     styleUrl: './app-properties.component.scss'
