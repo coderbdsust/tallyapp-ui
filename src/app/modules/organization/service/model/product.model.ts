@@ -11,6 +11,7 @@ export interface Product {
     imageUrl: string
     sold: boolean
     soldDate: string,
+    createdDate: string,
     madeBy: Employee
   }
   

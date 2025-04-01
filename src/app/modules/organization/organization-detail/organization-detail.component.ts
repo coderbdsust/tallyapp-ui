@@ -4,17 +4,17 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { OrganizationService } from '../service/organization.service';
-import { AssignOrganizationComponent } from '../assign-organization/assign-organization.component';
+import { AssignOrganizationComponent } from '../modal/assign-organization/assign-organization.component';
 import { Organization } from '../service/model/organization.model';
-import { AddOrganizationComponent } from '../add-organization/add-organization.component';
 import { OrgDrawerService } from '../service/org-drawer.service';
-import { AddEmployeeComponent } from '../add-employee/add-employee.component';
+import { AddEmployeeComponent } from '../drawer/add-employee/add-employee.component';
 import { EmployeeService } from '../service/employee.service';
 import { Employee } from '../service/model/employee.model';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
+import { AddOrganizationComponent } from '../drawer/add-organization/add-organization.component';
 
 @Component({
   selector: 'app-organization-detail',

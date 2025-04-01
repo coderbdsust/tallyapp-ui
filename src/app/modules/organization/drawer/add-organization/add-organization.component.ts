@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { OrganizationService } from '../service/organization.service';
 import { DrawerInterface, DrawerOptions, InstanceOptions } from 'flowbite';
 import { Drawer } from 'flowbite';
-import { Organization } from '../service/model/organization.model';
-import { OrgDrawerService } from '../service/org-drawer.service';
+import { Organization } from '../../service/model/organization.model';
+import { OrganizationService } from '../../service/organization.service';
+import { OrgDrawerService } from '../../service/org-drawer.service';
+
 
 @Component({
     selector: 'app-add-organization',

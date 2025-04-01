@@ -2,8 +2,8 @@ import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, Input, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { Organization, UserForOrganization } from '../service/model/organization.model';
-import { OrganizationService } from '../service/organization.service';
+import { Organization, UserForOrganization } from '../../service/model/organization.model';
+import { OrganizationService } from '../../service/organization.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
