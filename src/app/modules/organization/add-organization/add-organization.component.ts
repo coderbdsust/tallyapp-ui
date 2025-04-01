@@ -7,7 +7,7 @@ import { ButtonComponent } from 'src/app/common/components/button/button.compone
 import { OrganizationService } from '../service/organization.service';
 import { DrawerInterface, DrawerOptions, InstanceOptions } from 'flowbite';
 import { Drawer } from 'flowbite';
-import { Organization } from '../service/organization.model';
+import { Organization } from '../service/model/organization.model';
 import { OrgDrawerService } from '../service/org-drawer.service';
 
 @Component({
@@ -63,8 +63,8 @@ export class AddOrganizationComponent {
       if(state)
         this.openOrganization();
     });
-
     this.$orgDrawerTargetEl = document.getElementById('drawer-organization') as HTMLElement;
+    this.$orgDrawerTargetEl.classList.remove('hidden');
     this.drawer = new Drawer(this.$orgDrawerTargetEl, this.orgDrawerOptions, this.orgDrawerInstanceOptions);
     this.drawer.hide();
     this.initializeOrgForm();

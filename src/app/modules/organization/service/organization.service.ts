@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { CommonService } from '../../auth/services/common.service';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
-import { Organization, UserForOrganization } from './organization.model';
+import { Organization, UserForOrganization } from './model/organization.model';
 import { Router } from '@angular/router';
 import { ApiResponse } from '../../auth/services/auth.model';
 

@@ -6,7 +6,7 @@ import { AppPropertiesService } from './service/app-properties.service';
 import { CommonModule } from '@angular/common';
 import { EditAppPropertiesComponent } from './modal/edit-app-properties.component';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
-import { PaginatedComponent } from 'src/app/common/components/pagination/pagination.component';
+import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
 import { TruncatePipe } from 'src/app/common/pipes/truncate.pipe';
 
 @Component({

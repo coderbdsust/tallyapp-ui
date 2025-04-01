@@ -40,9 +40,18 @@ export class Menu {
       separator: false,
       items: [
         {
+          icon: 'assets/icons/heroicons/outline/office.svg',
+          label: 'Organization',
+          route: '/organization',
+          children: [
+            { label: 'Organization', route: '/organization/detail' },
+            { label: 'Product', route: '/organization/product/list' }
+          ]
+        },
+        {
           icon: 'assets/icons/heroicons/outline/cog.svg',
           label: 'Settings',
-          route: '/settings',
+          route: '/admin',
           children: [
             { label: 'App Properties', route: '/admin/app-property' },
             { label: 'User Management', route: '/admin/user-management' }

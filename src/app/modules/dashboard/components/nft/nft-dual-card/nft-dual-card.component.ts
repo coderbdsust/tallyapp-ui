@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Nft } from '../../../models/nft';
 import { NgStyle } from '@angular/common';
 import { OrganizationService } from 'src/app/modules/organization/service/organization.service';
-import { Organization } from 'src/app/modules/organization/service/organization.model';
+import { Organization } from 'src/app/modules/organization/service/model/organization.model';
 import { Router } from '@angular/router';
 
 @Component({

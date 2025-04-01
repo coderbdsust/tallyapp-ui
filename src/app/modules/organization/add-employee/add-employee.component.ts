@@ -3,10 +3,10 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output } from '
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { Organization } from '../service/organization.model';
+import { Organization } from '../service/model/organization.model';
 import { Drawer, DrawerInterface, DrawerOptions, InstanceOptions } from 'flowbite';
 import { OrganizationService } from '../service/organization.service';
-import { Employee } from '../service/employee.model';
+import { Employee } from '../service/model/employee.model';
 import { EmployeeService } from '../service/employee.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
@@ -62,6 +62,7 @@ export class AddEmployeeComponent {
 
   ngOnInit(): void {
     this.$empDrawerTargetEl = document.getElementById('drawer-employee') as HTMLElement;
+    this.$empDrawerTargetEl.classList.remove('hidden');
     this.drawer = new Drawer(this.$empDrawerTargetEl, this.empDrawerOptions, this.empDrawerInstanceOptions);
     this.drawer.hide();
     this.initializeEmpForm();

@@ -4,6 +4,7 @@ export interface AuthUser {
   expireTime: Date;
   fullName: string;
   username: string;
+  organizationId: string;
   email: string;
   role: string;
 }

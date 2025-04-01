@@ -2,24 +2,16 @@ import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, Input, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { Organization, UserForOrganization } from '../service/organization.model';
+import { Organization, UserForOrganization } from '../service/model/organization.model';
 import { OrganizationService } from '../service/organization.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
-    selector: 'app-assign-organization',
-    imports: [
-        NgClass,
-        NgIf,
-        FormsModule,
-        CommonModule,
-        ReactiveFormsModule,
-        ButtonComponent,
-        NgSelectComponent,
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    templateUrl: './assign-organization.component.html',
-    styleUrl: './assign-organization.component.scss'
+  selector: 'app-assign-organization',
+  imports: [NgClass, NgIf, FormsModule, CommonModule, ReactiveFormsModule, ButtonComponent, NgSelectComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  templateUrl: './assign-organization.component.html',
+  styleUrl: './assign-organization.component.scss',
 })
 export class AssignOrganizationComponent implements OnChanges {
   @Input() organization!: Organization;
@@ -54,16 +46,15 @@ export class AssignOrganizationComponent implements OnChanges {
   get f() {
     return this.form.controls;
   }
-  
+
   trackByUserId(index: number, user: any): number {
-    console.log(`${user.id} - ${index}`);
     return user.id;
   }
 
   onSearchKeyType(event: Event) {
     const searchKey = (event.target as HTMLSelectElement).value;
-    if(searchKey && searchKey.length<5){
-      this.orgService.showToastInfo("Please type atleast five (5) characters");
+    if (searchKey && searchKey.length < 5) {
+      this.orgService.showToastInfo('Please type atleast five (5) characters');
       return;
     }
     this.fetchUsers(searchKey);
@@ -73,20 +64,18 @@ export class AssignOrganizationComponent implements OnChanges {
     return `${user.fullName} (${user.email})`;
   }
 
-  fetchUsers(searchKey:String){
-
-        this.orgService.searchUsersForOrganization(searchKey).subscribe({
-          next: (userList) => {
-            this.allUsers = userList.map(i=>({
-              id:i.id,
-              label:i.fullName+" ("+i.email+")"
-            }));
-          },
-          error: (errRes) => {
-            console.log(errRes);
-          },
-        });
-      
+  fetchUsers(searchKey: String) {
+    this.orgService.searchUsersForOrganization(searchKey).subscribe({
+      next: (userList) => {
+        this.allUsers = userList.map((i) => ({
+          id: i.id,
+          label: i.fullName + ' (' + i.email + ')',
+        }));
+      },
+      error: (errRes) => {
+        console.log(errRes);
+      },
+    });
   }
 
   onSubmit() {

@@ -7,7 +7,7 @@ import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { RegisteredUser } from './registered-user.model';
 import { RegisterUserService } from './service/register-user.service';
 import { EditAppPropertiesComponent } from '../app-properties/modal/edit-app-properties.component';
-import { PaginatedComponent } from 'src/app/common/components/pagination/pagination.component';
+import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
 
 @Component({
     selector: 'app-registered-user',
