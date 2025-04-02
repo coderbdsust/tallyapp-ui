@@ -7,7 +7,6 @@ import { DrawerInterface, DrawerOptions, InstanceOptions } from 'flowbite';
 import { Drawer } from 'flowbite';
 import { Organization } from '../../service/model/organization.model';
 import { OrganizationService } from '../../service/organization.service';
-import { OrgDrawerService } from '../../service/org-drawer.service';
 
 
 @Component({
@@ -53,16 +52,10 @@ export class AddOrganizationComponent {
 
   constructor(
     private readonly _formBuilder: FormBuilder,
-    private orgService: OrganizationService,
-    private orgDrawerService: OrgDrawerService
+    private orgService: OrganizationService
   ) {}
 
   ngOnInit(): void {
-    this.orgDrawerService.drawerState$.subscribe(state => {
-      console.log('Drawer state : '+state);
-      if(state)
-        this.openOrganization();
-    });
     this.$orgDrawerTargetEl = document.getElementById('drawer-organization') as HTMLElement;
     this.$orgDrawerTargetEl.classList.remove('hidden');
     this.drawer = new Drawer(this.$orgDrawerTargetEl, this.orgDrawerOptions, this.orgDrawerInstanceOptions);
@@ -70,75 +63,41 @@ export class AddOrganizationComponent {
     this.initializeOrgForm();
   }
 
-  private initializeOrgForm() {
+  private initializeOrgForm(org:Organization | null = null) {
     this.orgForm = this._formBuilder.group({
-      id: [''],
-      orgName: ['', Validators.required],
-      orgRegNumber: ['', Validators.required],
-      orgTinNumber: ['', Validators.required],
-      orgVatNumber: ['', Validators.required],
-      orgOpenAt: ['', Validators.required],
-      orgOpenInWeek: ['', Validators.required],
-      orgOpeningTitle: ['', Validators.required],
-      owner: ['', Validators.required],
-      orgEmail: ['', [Validators.required, Validators.email]],
+      id: [org?.id],
+      orgName: [org?.orgName, Validators.required],
+      orgRegNumber: [org?.orgRegNumber, Validators.required],
+      orgTinNumber: [org?.orgTinNumber, Validators.required],
+      orgVatNumber: [org?.orgVatNumber, Validators.required],
+      orgOpenAt: [org?.orgOpenAt, Validators.required],
+      orgOpenInWeek: [org?.orgOpenInWeek, Validators.required],
+      orgOpeningTitle: [org?.orgOpeningTitle, Validators.required],
+      owner: [org?.owner, Validators.required],
+      orgEmail: [org?.orgEmail, [Validators.required, Validators.email]],
       orgMobileNo: [
-        '',
+        org?.orgMobileNo,
         [Validators.required, Validators.pattern(/^01[3-9]\d{8}$/), Validators.minLength(11), Validators.maxLength(11)],
       ],
-      since: ['', Validators.required],
-      image: [''],
-      avatar: [''],
-      orgAddressLine: ['', [Validators.required]],
-      orgAddressCity: ['', [Validators.required]],
-      orgAddressPostcode: ['', [Validators.required]],
-      orgAddressCountry: ['', [Validators.required]],
+      since: [org?.since, Validators.required],
+      image: [org?.image],
+      avatar: [org?.avatar],
+      orgAddressLine: [org?.orgAddressLine, [Validators.required]],
+      orgAddressCity: [org?.orgAddressCity, [Validators.required]],
+      orgAddressPostcode: [org?.orgAddressPostcode, [Validators.required]],
+      orgAddressCountry: [org?.orgAddressCountry, [Validators.required]],
       status: ['ACTIVE', [Validators.required]],
     });
   }
 
-  private loadOrganization() {
-    this.orgService.getOrganizations().subscribe({
-      next: (organizations) => {
-        if (organizations && organizations.length > 0) {
-          const org = organizations[0];
-          this.organization = org;
-          this.orgForm.patchValue({
-            id: org.id,
-            orgName: org.orgName,
-            orgRegNumber: org.orgRegNumber,
-            orgTinNumber: org.orgTinNumber,
-            orgVatNumber: org.orgVatNumber,
-            orgOpenAt: org.orgOpenAt,
-            orgOpenInWeek: org.orgOpenInWeek,
-            orgOpeningTitle: org.orgOpeningTitle,
-            owner: org.owner,
-            orgEmail: org.orgEmail,
-            orgMobileNo: org.orgMobileNo,
-            since: org.since,
-            image: org.image,
-            avatar: org.avatar,
-            orgAddressLine: org.orgAddressLine,
-            orgAddressCity: org.orgAddressCity,
-            orgAddressPostcode: org.orgAddressPostcode,
-            orgAddressCountry: org.orgAddressCountry,
-            status: org.status,
-          });
-        }
-      },
-      error: () => {},
-    });
-  }
-
-  openOrganization() {
-    this.loadOrganization();
+  openDrawer(organization: Organization | null = null) {
+    this.initializeOrgForm(organization);
     this.drawer?.show();
   }
 
-  closeOrganization() {
+  closeDrawer() {
     this.drawer?.hide();
     this.submitted = false;
-    this.orgDrawerService.closeDrawer();
   }
 
   get f() {
@@ -163,7 +122,7 @@ export class AddOrganizationComponent {
           id: org.id,
         });
         this.orgService.showToastSuccess('Organization saved successfully');
-        this.closeOrganization();
+        this.closeDrawer();
       },
       error: (error) => {
         this.orgService.showToastErrorResponse(error);

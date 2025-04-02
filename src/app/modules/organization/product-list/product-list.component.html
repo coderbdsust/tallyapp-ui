@@ -66,7 +66,37 @@
         </thead>
         <tbody>
           <tr *ngFor="let p of pageResponse?.content; let i = index" class="gap-4 hover:bg-card/50">
-            <td>{{ p.name }}</td>
+            <td class="relative">
+              <div class="flex items-center gap-2.5 group">
+                <!-- Avatar -->
+                <img 
+                  [src]="p.imageUrl || 'https://placehold.co/400'" 
+                  alt="user avatar" 
+                  class="h-9 w-9 shrink-0 rounded-full"
+                />
+            
+                <!-- Name -->
+                <div class="flex flex-col">
+                  <a class="text-sm font-semibold text-foreground hover:text-primary" href="#">
+                    {{ p.name }}
+                  </a>
+                </div>
+            
+                <!-- Hover Image Preview (Fix for table cutting issue) -->
+                <div 
+                  class="absolute left-12 top-0 w-32 h-32 bg-white shadow-lg rounded-lg border border-gray-300 p-1
+                         opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
+                         z-50"
+                >
+                  <img 
+                    [src]="p.imageUrl || 'https://placehold.co/400'" 
+                    alt="Preview" 
+                    class="w-full h-full object-cover rounded-lg"
+                  >
+                </div>
+              </div>
+            </td>
+            
             <td>{{ p.employeeCost }}</td>
             <td>{{ p.productionCost }}</td>
             <td>{{ p.sellingPrice}}</td>
@@ -125,4 +155,4 @@
       </div>
     </div>
   </div>
-  <app-add-product #addProductModal (productListModifiedEmitter)="productListRefresh($event)"></app-add-product>
+  <app-add-product #addProductModal (modifiedEmitter)="productListRefresh($event)"></app-add-product>

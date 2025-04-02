@@ -2,11 +2,10 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { EditAppPropertiesComponent } from '../../admin/pages/app-properties/modal/edit-app-properties.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { OrganizationService } from '../service/organization.service';
 import { AssignOrganizationComponent } from '../modal/assign-organization/assign-organization.component';
 import { Organization } from '../service/model/organization.model';
-import { OrgDrawerService } from '../service/org-drawer.service';
 import { AddEmployeeComponent } from '../drawer/add-employee/add-employee.component';
 import { EmployeeService } from '../service/employee.service';
 import { Employee } from '../service/model/employee.model';
@@ -27,6 +26,7 @@ import { AddOrganizationComponent } from '../drawer/add-organization/add-organiz
     AddOrganizationComponent,
     AddEmployeeComponent,
     WordPipe,
+    NgIf
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './organization-detail.component.html',
@@ -34,6 +34,7 @@ import { AddOrganizationComponent } from '../drawer/add-organization/add-organiz
 })
 export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
   @ViewChild('employeeDrawer') employeeDrawer!: AddEmployeeComponent;
+  @ViewChild('organizationDrawer') organizationDrawer!: AddOrganizationComponent;
   @ViewChild('addEmployeeModal', { static: false }) addEmployeeModal!: EditAppPropertiesComponent;
   @ViewChild('assignOrganizationModal', { static: false }) assignOrganizationModal!: AssignOrganizationComponent;
   search: string = '';
@@ -45,7 +46,6 @@ export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
   constructor(
     private orgService: OrganizationService,
     private empService: EmployeeService,
-    private orgDrawerService: OrgDrawerService,
     public dialog: MatDialog,
   ) {
     super();
@@ -161,7 +161,7 @@ export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
   }
 
   openOrganizationDrawer() {
-    this.orgDrawerService.openDrawer();
+    this.organizationDrawer.openDrawer(this.organization);
   }
 
   openEmployeeDrawer() {

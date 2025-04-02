@@ -21,7 +21,7 @@ export class AddProductComponent {
   orgId: string | null = null;
   allEmployees:any = [];
   isEdit=false;
-  @Output() productListModifiedEmitter = new EventEmitter<Boolean>();
+  @Output() modifiedEmitter = new EventEmitter<Boolean>();
 
   constructor(
     private readonly _formBuilder: FormBuilder,
@@ -44,7 +44,7 @@ export class AddProductComponent {
       next: (response) => {
         this.allEmployees = response.content.map((employee) => ({
           id: employee.id,
-          fullName: `${employee.fullName}`,
+          fullName: `${employee.fullName}`
         }));
       }
     });
@@ -52,7 +52,6 @@ export class AddProductComponent {
   }
 
   private initializeForm(product:Product| null = null) {
-    console.log(product?.madeBy);
     this.form = this._formBuilder.group({
       id: [product?.id],
       name: [product?.name, [Validators.required]],
@@ -99,12 +98,11 @@ export class AddProductComponent {
     const product = this.form.value;
     this.submitted = false;
     if (this.isEdit) {
-      product.madeBy = product.madeBy.id;
       this.productService.editProduct(product.id, product).subscribe({
         next: (response) => {
           this.productService.showToastSuccess('Product updated successfully');
           this.closeModal();
-          this.productListModifiedEmitter.emit(true);
+          this.modifiedEmitter.emit(true);
         },
         error: (error) => {
           this.productService.showToastError(error);
@@ -116,7 +114,7 @@ export class AddProductComponent {
         next: (response) => {
           this.productService.showToastSuccess('Product added successfully');
           this.closeModal();
-          this.productListModifiedEmitter.emit(true);
+          this.modifiedEmitter.emit(true);
         },
         error: (error) => {
           this.productService.showToastError(error);
