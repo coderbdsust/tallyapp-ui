@@ -42,6 +42,7 @@ export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
   submitted = false;
   errorMessage = '';
   organization!: Organization;
+  allOrganizations: Organization[] = [];
 
   constructor(
     private orgService: OrganizationService,
@@ -110,6 +111,12 @@ export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
     this.loadEmployeeByOrganization(this.organization.id, 0, this.selectedRows, this.search);
   }
 
+  onSelectOrganization(event:Event){
+    const orgId = (event.target as HTMLSelectElement).value;
+    this.organization = this.allOrganizations.find(org => org.id === orgId) || this.organization;
+    this.loadEmployeeByOrganization(this.organization.id, 0, this.selectedRows, this.search);
+  }
+
   goToPreviousPage() {
     if (!this.first) {
       this.currentPage--;
@@ -150,6 +157,7 @@ export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
   private loadOrganization() {
     this.orgService.getOrganizations().subscribe({
       next: (organizations) => {
+        this.allOrganizations = organizations;
         if (organizations && organizations.length > 0) {
           let org = organizations[0];
           this.organization = org;

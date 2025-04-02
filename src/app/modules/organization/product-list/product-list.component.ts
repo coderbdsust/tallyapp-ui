@@ -8,7 +8,8 @@ import { ProductService } from '../service/product.service';
 import { OrganizationService } from '../service/organization.service';
 import { Organization } from '../service/model/organization.model';
 import { MatDialog } from '@angular/material/dialog';
-import { AddProductComponent } from "../modal/add-product/add-product.component";
+import { AddProductComponent } from '../modal/add-product/add-product.component';
+import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'app-product-list',
@@ -23,12 +24,11 @@ export class ProductListComponent extends PaginatedComponent<Product> {
   submitted = false;
   errorMessage = '';
   organization!: Organization;
-  
 
   constructor(
     private productService: ProductService,
     private orgService: OrganizationService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
   ) {
     super();
   }
@@ -46,7 +46,7 @@ export class ProductListComponent extends PaginatedComponent<Product> {
           this.loadProducts(org.id, this.currentPage, this.selectedRows, this.search);
         }
       },
-      error: () => {},
+      error: (error) => {console.log(error);}
     });
   }
 
@@ -69,33 +69,38 @@ export class ProductListComponent extends PaginatedComponent<Product> {
   }
 
   editProduct(selectedProduct: Product) {
-    // Logic to edit product
     this.addProductModal.openModal(selectedProduct, this.organization.id);
-    
   }
 
   deleteProduct(selectedProduct: Product) {
-    // Logic to delete product
-    this.productService.showToastInfo('Not implemented');
+    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+      width: '350px',
+      data: { message: `Are you sure you want to delete ${selectedProduct.name}?` },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.productService.deleteProduct(selectedProduct.id).subscribe({
+          next: (response) => {
+            this.removeFromPage(selectedProduct.id, 'id');
+            this.productService.showToastSuccess(response.message);
+          },
+          error: (errRes) => {
+            this.productService.showToastErrorResponse(errRes);
+          },
+        });
+      }
+    });
   }
 
   addProduct() {
-    // this.productService.showToastInfo('Not implemented');
-    // Logic to add product
     this.addProductModal.openModal(null, this.organization.id);
-  }
-  assignProduct() {
-    // Logic to assign product
-  }
-  searchProducts() {
-    // Logic to search products
   }
 
   onSearchChange(event: Event) {
-    this.productService.showToastInfo('Not implemented');
-    // const input = (event.target as HTMLInputElement).value;
-    // this.search = input;
-    // this.loadProducts(this.organization.id, 0, this.selectedRows, this.search);
+    const input = (event.target as HTMLInputElement).value;
+    this.search = input;
+    this.loadProducts(this.organization.id, 0, this.selectedRows, this.search);
   }
 
   onSelectChange(event: Event) {
@@ -129,8 +134,8 @@ export class ProductListComponent extends PaginatedComponent<Product> {
     this.loadProducts(this.organization.id, this.currentPage, this.selectedRows, this.search);
   }
 
-  productListRefresh(status:Boolean) {
-    if(status) {
+  productListRefresh(status: Boolean) {
+    if (status) {
       this.loadProducts(this.organization.id, this.currentPage, this.selectedRows, this.search);
     }
   }

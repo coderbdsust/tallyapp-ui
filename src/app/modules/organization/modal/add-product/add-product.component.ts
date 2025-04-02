@@ -98,6 +98,8 @@ export class AddProductComponent {
     const product = this.form.value;
     this.submitted = false;
     if (this.isEdit) {
+      if(product.madeBy.id)
+          product.madeBy = product.madeBy.id;
       this.productService.editProduct(product.id, product).subscribe({
         next: (response) => {
           this.productService.showToastSuccess('Product updated successfully');

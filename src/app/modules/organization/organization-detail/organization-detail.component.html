@@ -18,6 +18,7 @@
         *ngIf="organization"
         class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
         (click)="assignOrganization()">
+        <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4'"></svg-icon>
         <p>Add Owner To Organization</p>
       </button>
 
@@ -27,6 +28,20 @@
         <p  *ngIf="organization">Edit Organization</p>
         <p  *ngIf="!organization">Add Organization</p>
       </button>
+
+        <div class="w-80">
+          <div class="relative">
+            <select
+              id="orgId"
+              (click)="onSelectOrganization($event)"
+              class="py-1.5 pl-4 pr-2 peer block w-full appearance-none border border-b-4 border-purple-500 bg-transparent  px-0 indent-4 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400">
+              <option value=-1>Select Organization</option>
+              <ng-container *ngFor="let org of allOrganizations; let i = index">
+                <option [value]="org.id" selected="organization.id==org.id">{{ org.orgName}}</option>
+              </ng-container>
+            </select>
+          </div>
+        </div>
     </div>
   </div>
 </div>
@@ -48,6 +63,9 @@
           per page
         </div>
       </div>
+
+
+      
       <div class="flex">
         <label class="relative text-muted-foreground">
           <div class="absolute left-2.5 top-2.5">
@@ -70,6 +88,7 @@
       class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
       <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
         <tr>
+          <th># No</th>
           <th>Full Name</th>
           <th>Date or Birth</th>
           <th>Mobile No</th>
@@ -83,6 +102,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let emp of pageResponse?.content; let i = index" class="gap-4 hover:bg-card/50">
+          <td>{{ i + startIndex}}</td>
           <td>{{ emp.fullName }}</td>
           <td>{{ emp.dateOfBirth }}</td>
           <td>{{ emp.mobileNo }}</td>
