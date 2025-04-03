@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CommonService } from '../../auth/services/common.service';
 import { environment } from 'src/environments/environment';
-import { catchError } from 'rxjs';
+import { BehaviorSubject, catchError } from 'rxjs';
 import { Organization, UserForOrganization } from './model/organization.model';
 import { Router } from '@angular/router';
 import { ApiResponse } from '../../auth/services/auth.model';
@@ -12,8 +12,23 @@ import { ApiResponse } from '../../auth/services/auth.model';
 })
 export class OrganizationService extends CommonService {
 
+  selectedOrganization = new BehaviorSubject<Organization | null>(null);
+
+  organization$ = this.selectedOrganization.asObservable();
+
   constructor(private http: HttpClient, private router: Router) {
     super();
+    this.selectedOrganization.next(this.getSelectedOrganization());
+  }
+
+  public setOrganization(org: Organization | null) {
+    localStorage.setItem(environment.TALLY_ORGANIZATION, JSON.stringify(org));
+    this.selectedOrganization.next(org);
+  }
+
+  getSelectedOrganization(): Organization | null {
+    const storedOrg = localStorage.getItem(environment.TALLY_ORGANIZATION);
+    return storedOrg ? JSON.parse(storedOrg) : null;
   }
 
   public getOrganizations() {

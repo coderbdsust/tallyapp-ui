@@ -53,7 +53,12 @@ export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
   }
 
   ngOnInit(): void {
-    this.loadOrganization();
+    this.orgService.organization$.subscribe((org) => {
+      if(org) {
+        this.organization = org;
+        this.loadEmployeeByOrganization(org.id, this.currentPage, this.selectedRows, this.search);
+      }
+    });
   }
 
   editEmployee(selectedEmployee: Employee) {
@@ -148,28 +153,20 @@ export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
 
   onAddOrganization(org: Organization) {
     this.organization = org;
+    this.allOrganizations.push(org);
   }
 
   onAddEmployee(emp: Employee) {
     this.updateInPage(emp, 'id');
   }
 
-  private loadOrganization() {
-    this.orgService.getOrganizations().subscribe({
-      next: (organizations) => {
-        this.allOrganizations = organizations;
-        if (organizations && organizations.length > 0) {
-          let org = organizations[0];
-          this.organization = org;
-          this.loadEmployeeByOrganization(org.id, this.currentPage, this.selectedRows, this.search);
-        }
-      },
-      error: () => {},
-    });
-  }
-
-  openOrganizationDrawer() {
-    this.organizationDrawer.openDrawer(this.organization);
+  openOrganizationDrawer(isEdit:Boolean) {
+    if (isEdit) {
+      this.organizationDrawer.openDrawer(this.organization);
+    } else {
+      this.organizationDrawer.openDrawer();
+    }
+    
   }
 
   openEmployeeDrawer() {

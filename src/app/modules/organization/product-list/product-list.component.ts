@@ -34,22 +34,14 @@ export class ProductListComponent extends PaginatedComponent<Product> {
   }
 
   ngOnInit(): void {
-    this.loadOrganization();
-  }
-
-  private loadOrganization() {
-    this.orgService.getOrganizations().subscribe({
-      next: (organizations) => {
-        if (organizations && organizations.length > 0) {
-          let org = organizations[0];
-          this.organization = org;
-          this.loadProducts(org.id, this.currentPage, this.selectedRows, this.search);
-        }
-      },
-      error: (error) => {console.log(error);}
+    this.orgService.organization$.subscribe((org) => {
+      if(org) {
+        this.organization = org;
+        this.loadProducts(org.id, this.currentPage, this.selectedRows, this.search);
+      }
     });
   }
-
+  
   loadProducts(orgId: string, page: number, size: number, search: string) {
     this.loading = true;
     this.productService.getProductByOrganization(orgId, this.currentPage, this.selectedRows, this.search).subscribe({

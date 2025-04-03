@@ -117,6 +117,7 @@ export class AuthService extends CommonService {
   logout() {
     this.user.next(null);
     localStorage.removeItem(environment.TALLY_APP);
+    localStorage.removeItem(environment.TALLY_ORGANIZATION);
     location.reload();
     this.showToastSuccess('Logout successfully');
     if (this.logoutTimer) {

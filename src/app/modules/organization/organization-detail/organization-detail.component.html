@@ -5,43 +5,31 @@
   </div>
   <div class="inline-block space-x-4">
     <div class="flex items-center justify-center gap-4">
-      
-      <button
-        *ngIf="organization"
+
+      <button *ngIf="organization"
         class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
         (click)="openEmployeeDrawer()">
         <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4'"></svg-icon>
         <p>Add Employee</p>
       </button>
 
-      <button
-        *ngIf="organization"
+      <button *ngIf="organization"
         class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
         (click)="assignOrganization()">
         <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4'"></svg-icon>
         <p>Add Owner To Organization</p>
       </button>
 
-      <button
-        class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
-        (click)="openOrganizationDrawer()">
-        <p  *ngIf="organization">Edit Organization</p>
-        <p  *ngIf="!organization">Add Organization</p>
+      <button *ngIf="organization" class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
+      (click)="openOrganizationDrawer(true)">
+        <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+     </button>
+
+      <button class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
+        (click)="openOrganizationDrawer(false)">
+        <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4'"></svg-icon>
       </button>
 
-        <div class="w-80">
-          <div class="relative">
-            <select
-              id="orgId"
-              (click)="onSelectOrganization($event)"
-              class="py-1.5 pl-4 pr-2 peer block w-full appearance-none border border-b-4 border-purple-500 bg-transparent  px-0 indent-4 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400">
-              <option value=-1>Select Organization</option>
-              <ng-container *ngFor="let org of allOrganizations; let i = index">
-                <option [value]="org.id" selected="organization.id==org.id">{{ org.orgName}}</option>
-              </ng-container>
-            </select>
-          </div>
-        </div>
     </div>
   </div>
 </div>
@@ -65,18 +53,13 @@
       </div>
 
 
-      
+
       <div class="flex">
         <label class="relative text-muted-foreground">
           <div class="absolute left-2.5 top-2.5">
             <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
           </div>
-          <input
-            name="search"
-            class="py-2 pl-8 pr-2"
-            placeholder="Search"
-            type="text"
-            value=""
+          <input name="search" class="py-2 pl-8 pr-2" placeholder="Search" type="text" value=""
             (keydown.enter)="onSearchChange($event)" />
         </label>
       </div>
@@ -130,33 +113,28 @@
     </table>
   </div>
   <div class="flex flex-wrap items-center justify-end gap-2 py-3 px-5 text-xs text-muted-foreground">
-    <div class="order-1 flex items-center gap-4 md:order-2">     
+    <div class="order-1 flex items-center gap-4 md:order-2">
       <!-- Pagination buttons -->
       <div class="inline-flex items-center gap-1">
         <!-- Previous button -->
         <button
           class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50"
-          [disabled]="first"
-          (click)="goToPreviousPage()">
+          [disabled]="first" (click)="goToPreviousPage()">
           <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'"></svg-icon>
         </button>
 
         <!-- Page buttons -->
-        <button
-          *ngFor="let page of getPagesArray(); let i = index"
-          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm"
-          [ngClass]="{
+        <button *ngFor="let page of getPagesArray(); let i = index"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm" [ngClass]="{
             'bg-gray-200': i === this.currentPage,
             'hover:bg-muted-foreground/10': i !== this.currentPage
-          }"
-          (click)="goToPage(i)">
+          }" (click)="goToPage(i)">
           {{ i + 1 }}
         </button>
 
         <button
           class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50"
-          [disabled]="last"
-          (click)="goToNextPage()">
+          [disabled]="last" (click)="goToNextPage()">
           <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'"></svg-icon>
         </button>
       </div>
@@ -168,9 +146,6 @@
 
 <app-add-organization #organizationDrawer (orgEmitter)="onAddOrganization($event)"></app-add-organization>
 
-<app-add-employee 
-  #employeeDrawer
-  (employeeEmitter)="onAddEmployee($event)" 
-  [organization]="organization" >
+<app-add-employee #employeeDrawer (employeeEmitter)="onAddEmployee($event)" [organization]="organization">
 
 </app-add-employee>

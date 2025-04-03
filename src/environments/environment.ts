@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   tallyURL: 'http://localhost:8080/tallyapp',
-  TALLY_APP:"TALLY_INFO"
+  TALLY_APP:"TALLY_CREDENTIALS",
+  TALLY_ORGANIZATION:"TALLY_ORGANIZATION",
 };
 
 /*

@@ -15,21 +15,14 @@ export class NftDualCardComponent implements OnInit {
   org: Organization | undefined;
 
   constructor(public orgService: OrganizationService, private readonly _router: Router) {
-    this.loadOrganizations();
+
   }
 
-  ngOnInit(): void {}
-
-  private loadOrganizations() {
-    this.orgService.getOrganizations().subscribe({
-      next: (organizations) => {
-        if(organizations  && organizations.length>0){
-          this.org = organizations[0];
-        }
-      },
-      error: (err) => {
-        this.orgService.mapErrorResponse(err);
-      },
+  ngOnInit(): void {
+    this.orgService.organization$.subscribe((org) => {
+      if(org) {
+        this.org = org;
+      }
     });
   }
 
