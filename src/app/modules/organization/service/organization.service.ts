@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { CommonService } from '../../auth/services/common.service';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, catchError } from 'rxjs';
-import { Organization, UserForOrganization } from './model/organization.model';
+import { Organization, OrganizationTopEmployee, UserForOrganization } from './model/organization.model';
 import { Router } from '@angular/router';
 import { ApiResponse } from '../../auth/services/auth.model';
 
@@ -58,6 +58,18 @@ export class OrganizationService extends CommonService {
   public addUsersToOrganization(orgId:String, userIds: String[]) {
     return this.http
       .post<ApiResponse>(`${environment.tallyURL}/organization/v1/add-users-to-organization/${orgId}`, userIds)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public getOrganizationTopEmployee(orgId: string) {
+    return this.http
+      .get<OrganizationTopEmployee>(`${environment.tallyURL}/organization/v1/${orgId}/top-employee`)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public getTotalEmployeeByOrganization(orgId: string) {
+    return this.http
+      .get<Number>(`${environment.tallyURL}/organization/v1/${orgId}/total-employee`)
       .pipe(catchError(this.mapErrorResponse));
   }
 }

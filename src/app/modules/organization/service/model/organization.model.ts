@@ -28,3 +28,10 @@ export interface UserForOrganization {
     fullName:string;
     email:string;
 }
+
+export interface OrganizationTopEmployee {
+  fullName:string;
+  dateOfBirth:string;
+  mobileNo:string;
+  profileImage:string;
+}

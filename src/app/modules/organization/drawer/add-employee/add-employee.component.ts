@@ -101,6 +101,7 @@ export class AddEmployeeComponent {
         orgId: [this.organization?.id],
         orgName: [this.organization?.orgName],
         fullName: [employee?.fullName, Validators.required],
+        profileImage: [employee?.profileImage],
         dateOfBirth: [employee?.dateOfBirth, Validators.required],
         mobileNo: [
           employee?.mobileNo,
