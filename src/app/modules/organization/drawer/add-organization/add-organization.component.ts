@@ -28,16 +28,7 @@ export class AddOrganizationComponent {
     bodyScrolling: true,
     edge: false,
     edgeOffset: '',
-    backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-30',
-    onHide: () => {
-      // console.log('drawer is hidden');
-    },
-    onShow: () => {
-      // console.log('drawer is shown');
-    },
-    onToggle: () => {
-      // console.log('drawer has been toggled');
-    },
+    backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-30'
   };
 
   // instance options object

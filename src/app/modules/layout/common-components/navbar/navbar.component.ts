@@ -28,7 +28,7 @@ export class NavbarComponent implements OnInit {
   constructor(public menuService: MenuService, public orgService: OrganizationService) { }
 
   ngOnInit(): void {
-    
+
     this.orgService.organization$.subscribe((org) => {  
       if(org) {
         this.organzation = org;
@@ -47,7 +47,10 @@ export class NavbarComponent implements OnInit {
   loadOrganizations() {
     this.orgService.getOrganizations().subscribe({
       next: (response) => {
-        this.allOrganizations = response; 
+        this.allOrganizations = response;
+        if(this.allOrganizations && this.allOrganizations.length>0 && this.orgService.getSelectedOrganization() === null) {
+          this.orgService.setOrganization(this.allOrganizations[0]);
+        }
       },
       error: (error) => {
         console.error('Error loading organizations:', error);

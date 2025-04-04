@@ -11,8 +11,8 @@ const routes: Routes = [
     component: DashboardComponent,
     canActivate:[AuthGuard],
     children: [
-      { path: '', redirectTo: 'nfts', pathMatch: 'full' },
-      { path: 'nfts', component: NftComponent },
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: 'home', component: NftComponent },
       { path: 'statistics', component: StatsDashboardComponent },
       { path: '**', redirectTo: 'errors/404' },
     ],

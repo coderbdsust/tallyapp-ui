@@ -11,7 +11,7 @@ export class Menu {
           label: 'Dashboard',
           route: '/dashboard',
           children: [
-            { label: 'Nfts', route: '/dashboard/nfts' },
+            { label: 'Home', route: '/dashboard/home' },
             { label: 'Statistics', route: '/dashboard/statistics' },
           ],
         }
@@ -29,7 +29,7 @@ export class Menu {
           label: 'Dashboard',
           route: '/dashboard',
           children: [
-            { label: 'Nfts', route: '/dashboard/nfts' },
+            { label: 'Home', route: '/dashboard/home' },
             { label: 'Statistics', route: '/dashboard/statistics' },
           ],
         }
@@ -44,7 +44,7 @@ export class Menu {
           label: 'Organization',
           route: '/organization',
           children: [
-            { label: 'Organization', route: '/organization/detail' },
+            { label: 'My Organization', route: '/organization/detail' },
             { label: 'Product', route: '/organization/product/list' }
           ]
         },
