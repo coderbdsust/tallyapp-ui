@@ -1,14 +1,11 @@
 export interface AuthUser {
-  accessToken: string;
-  refreshToken: string;
-  expireTime: Date;
+  accessTokenExpiry: Date;
+  refreshTokenExpiry: Date;
   fullName: string;
   username: string;
-  organizationId: string;
   email: string;
   role: string;
 }
-
 export interface SignUpResponse {
   id: string;
   username: string;

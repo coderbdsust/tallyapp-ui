@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { catchError, tap, BehaviorSubject, Observable } from 'rxjs';
+import { catchError, tap, BehaviorSubject, Observable, of } from 'rxjs';
 import { CommonService } from './common.service';
 import { Router } from '@angular/router';
 import { ApiResponse, AuthUser, SignUpResponse } from './auth.model';
@@ -10,7 +10,7 @@ import { ApiResponse, AuthUser, SignUpResponse } from './auth.model';
   providedIn: 'root',
 })
 export class AuthService extends CommonService {
-  user = new BehaviorSubject<AuthUser | null>(null);
+  user = new BehaviorSubject<AuthUser | null | undefined>(undefined);
   user$ = this.user.asObservable();
   logoutTimer: any;
 
@@ -28,17 +28,7 @@ export class AuthService extends CommonService {
     return this.http.post<AuthUser>(`${environment.tallyURL}/auth/v1/login`, signInData).pipe(
       catchError(this.mapErrorResponse),
       tap((authUser) => {
-        const payload = this.decodeToken(authUser.accessToken);
-        if (payload != null) {
-          authUser.expireTime = new Date(payload.exp * 1000);
-          authUser.fullName = payload.fullName || '';
-          authUser.username = payload.sub || '';
-          authUser.email = payload.email || '';
-          authUser.role = payload?.authorities?.[0] || '';
-          localStorage.setItem(environment.TALLY_APP, JSON.stringify(authUser));
-          
-          let expireDuration = authUser.expireTime.getTime()-new Date().getTime();
-          //this.autoLogout(expireDuration);
+        if (authUser != null) {
           this.user.next(authUser);
         } else {
           this.user.next(null);
@@ -47,43 +37,40 @@ export class AuthService extends CommonService {
     );
   }
 
-  getGenderList() {
-      return this.http
-        .get<String[]>(`${environment.tallyURL}/auth/v1/gender-list`)
-        .pipe(catchError(this.mapErrorResponse));
-  }
-
-  refreshToken() {
-    const userData = localStorage.getItem(environment.TALLY_APP);
-    let refreshToken;
-    if (!userData) {
-      refreshToken = {};
-    }else{
-      const cachedAuthUser: AuthUser = this.mapToAuthUser(JSON.parse(userData));
-      refreshToken = {refreshToken: cachedAuthUser.refreshToken};
-    }
-    
-    return this.http.post<AuthUser>(`${environment.tallyURL}/auth/v1/refresh-token`, refreshToken).pipe(
+  refreshToken() {    
+    return this.http.post<AuthUser>(`${environment.tallyURL}/auth/v1/refresh-token`, {}).pipe(
       catchError(this.mapErrorResponse),
       tap((authUser) => {
-        const payload = this.decodeToken(authUser.accessToken);
-        if (payload != null) {
-          authUser.expireTime = new Date(payload.exp * 1000);
-          authUser.fullName = payload.fullName || '';
-          authUser.username = payload.sub || '';
-          authUser.email = payload.email || '';
-          authUser.role = payload?.authorities?.[0] || '';
-          localStorage.setItem(environment.TALLY_APP, JSON.stringify(authUser));
-          
-          let expireDuration = authUser.expireTime.getTime()-new Date().getTime();
-          //this.autoLogout(expireDuration);
+        if (authUser != null) {
           this.user.next(authUser);
         } else {
-          console.log('invalid refreshed user');
+          console.log('Invalid refreshed user');
           this.user.next(null);
         }
       }),
     );
+  }
+
+
+  autoLogin(): void {
+    this.refreshToken().subscribe({
+      next: (authUser) => {
+        console.log('Session restored');
+        this.user.next(authUser);
+      },
+      error: (err) => {
+        console.warn('Refresh token invalid or expired, forcing logout');
+        this.logout(); // Optional: clear state if needed
+      },
+    });
+  }
+  
+  
+  
+  getGenderList() {
+    return this.http
+      .get<String[]>(`${environment.tallyURL}/auth/v1/gender-list`)
+      .pipe(catchError(this.mapErrorResponse));
   }
 
   verifyUser(verifyData: any) {
@@ -116,25 +103,17 @@ export class AuthService extends CommonService {
 
   logout() {
     this.user.next(null);
-    localStorage.removeItem(environment.TALLY_APP);
     localStorage.removeItem(environment.TALLY_ORGANIZATION);
-    location.reload();
-    this.showToastSuccess('Logout successfully');
-    if (this.logoutTimer) {
-      clearTimeout(this.logoutTimer);
-    }
-    this.logoutTimer = null;
+    // Optionally call a backend endpoint to invalidate server-side sessions
+    this.http.post(`${environment.tallyURL}/auth/v1/logout`, {}, { withCredentials: true }).subscribe({
+      next: () => {},
+      error: () => {},
+      complete: () => {
+        this.router.navigate(['/auth/sign-in']);
+      }
+    });
   }
-
-  autoLogin() {
-    const userData = localStorage.getItem(environment.TALLY_APP);
-    if (!userData) return;
-    const cachedAuthUser: AuthUser = this.mapToAuthUser(JSON.parse(userData));
-    let expireDuration = cachedAuthUser.expireTime.getTime()-new Date().getTime();
-   // this.autoLogout(expireDuration);
-    this.user.next(cachedAuthUser);
-  }
-
+  
   private mapToAuthUser(parsedData: any): AuthUser {
     return {
       ...parsedData,

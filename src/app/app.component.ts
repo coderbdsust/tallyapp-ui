@@ -15,6 +15,6 @@ import { LoaderComponent } from "./modules/loader/loader.component";
 export class AppComponent implements OnInit {
   constructor(public themeService: ThemeService, private authService: AuthService) {}
   ngOnInit(): void {
-   this.authService.autoLogin();
+    this.authService.autoLogin();
   }
 }

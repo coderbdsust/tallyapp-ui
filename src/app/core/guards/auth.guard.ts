@@ -7,7 +7,7 @@ import {
   UrlTree,
 } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 
 @Injectable({
@@ -21,13 +21,11 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> {
     return this.authService.user.pipe(
+      filter((user) => user !== undefined), // wait until autoLogin sets it
       take(1),
       map((user) => {
-        if (user) {
-          return true;
-        } else {
-          return this.router.createUrlTree(['/auth/sign-in']);
-        }
+        if (user) return true;
+        return this.router.createUrlTree(['/auth/sign-in']);
       })
     );
   }

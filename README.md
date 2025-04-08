@@ -3,7 +3,9 @@
 </p>
 
 <p>
-  <img alt="Preview" src="img/dashboard-v1.png">
+  <img alt="Preview" src="img/dashboard-v2.png">
+  <img alt="Preview" src="img/employee-v1.png">
+  <img alt="Preview" src="img/employee-add-v1.png">
   <img alt="Preview" src="img/app-property-v1.png">
   <img alt="Preview" src="img/user-management-v2.png">
   <img alt="Preview" src="img/user-profile-v1.png">
@@ -11,22 +13,20 @@
 
 #### Versions
 
-<a href="https://angular.io"><img height= "24" src= "https://img.shields.io/badge/Angular 18-DD0031?style=for-the-badge&logo=angular&logoColor=white"></a> <a href="https://tailwindcss.com"><img height= "24" src= "https://img.shields.io/badge/Tailwind 3-0ea5e9?style=for-the-badge&logo=tailwind-css&logoColor=white"></a>
+<a href="https://angular.io"><img height= "24" src= "https://img.shields.io/badge/Angular 19-DD0031?style=for-the-badge&logo=angular&logoColor=white"></a> <a href="https://tailwindcss.com"><img height= "24" src= "https://img.shields.io/badge/Tailwind 3-0ea5e9?style=for-the-badge&logo=tailwind-css&logoColor=white"></a>
 
 #### Features
 
 - [x] Sidebar
 - [x] Navbar
 - [x] Footer
-- [x] Auth Module
-- [x] Standalone components
-- [x] Angular Signals
-- [x] Guards
+- [x] Auth Module (Sign In, Sign Up, Forgot Password)
+- [x] Auth Guards
 - [x] User Controls
 - [x] Modify App Property
-- [ ] Create Organization
-- [ ] Assign Employee
-- [ ] Dashboard Module
+- [x] Create Organization and Select
+- [x] Assign Employee to Organization
+- [x] Dashboard Module
 
 #### Commands
 
