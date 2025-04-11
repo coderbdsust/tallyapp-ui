@@ -11,6 +11,6 @@ export class TruncatePipe implements PipeTransform {
       }
   
       const half = Math.floor((maxLength - 3) / 2);
-      return `${value.substring(0, half)} . . . . . . . . . . . . . . ${value.substring(value.length - half)}`;
+      return `${value.substring(0, half)} * * * * * * * * * * * * * * * * * * ${value.substring(value.length - half)}`;
     }
 }
