@@ -1,0 +1,63 @@
+<div class="flex flex-col items-center px-6 bg-gray-50 h-lvh w-lvw">
+    <div class="flex flex-col items-center content-center ">
+      <!-- Start Drop Zone -->
+      <div
+        *ngIf="containFile === false"
+        class="relative flex flex-col outline-gray-500 outline-2 -outline-offset-4 outline-dashed w-[120px] h-[120px] rounded-2xl items-center justify-center"
+      >
+        <input
+          #fileInput
+          type="file"
+          (change)="handleChange($event)"
+          [accept]="allowedFileTypes"
+          class="absolute w-full h-full cursor-pointer opacity-0 top-0 left-0"
+        />
+  
+        <span class="mb-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
+          </svg>
+        </span>
+        
+        <p class="text-center text-xs max-w-[90%]">
+           File Upload <br />
+          (JPG, PNG)
+        </p>
+  
+        <button
+          type="button"
+          (click)="fileInput.click()"
+          class="z-10 mt-4 text-green-50 px-8 py-0 bg-green-500 rounded-lg font-medium text-xs hover:bg-green-600 ease-in-out"
+        >
+            Browse
+        </button>
+      </div>
+      <!-- End Drop Zone -->
+  
+      <!-- Start Preview Image -->
+      <div
+        *ngIf="fileURL"
+        [ngStyle]="{ 'background-image': 'url(' + fileURL + ')' }"
+        class="flex flex-col justify-end border w-[120px] h-[120px] rounded-2xl items-center relative bg-cover bg-center overflow-hidden bg-gray-300"
+      >
+        <div
+          class="flex flex-col w-full p-1 bg-white"
+        >
+      
+          <div class="flex gap-1 justify-start">
+    
+            <button
+            type="button"
+            
+            (click)="handleRemovesFile()"
+            class="text-xs font-medium w-full border border-red-500 px-2 py-0 rounded-lg text-red-500 hover:bg-red-500 hover:text-white ease-in-out"
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- End Preview Image -->
+    </div>
+  </div>
+  

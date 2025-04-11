@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
@@ -9,15 +9,19 @@ import { OrganizationService } from '../../service/organization.service';
 import { Employee } from '../../service/model/employee.model';
 import { EmployeeService } from '../../service/employee.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
+import { FileUploaderComponent } from "../../../../common/components/file-uploader/file-uploader.component";
+import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
+import { catchError, of, switchMap, tap, throwError } from 'rxjs';
 
 @Component({
     selector: 'app-add-employee',
-    imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, ButtonComponent, WordPipe],
+    imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, ButtonComponent, WordPipe, FileUploaderComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     templateUrl: './add-employee.component.html',
     styleUrl: './add-employee.component.scss'
 })
 export class AddEmployeeComponent {
+  @ViewChild(FileUploaderComponent) fileUploader!: FileUploaderComponent;
   @Output() public employeeEmitter = new EventEmitter<Employee>();
   @Input() organization!: Organization;
   $empDrawerTargetEl: any;
@@ -30,14 +34,10 @@ export class AddEmployeeComponent {
     edgeOffset: '',
     backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-30',
     onHide: () => {
-      // console.log('drawer is hidden');
-    },
-    onShow: () => {
-      // console.log('drawer is shown');
-    },
-    onToggle: () => {
-      // console.log('drawer has been toggled');
-    },
+      if(this.fileUploader) {
+        this.fileUploader.clearFile();
+      }
+    }
   };
 
   // instance options object
@@ -52,11 +52,14 @@ export class AddEmployeeComponent {
   empBillingTypeList: String[] = [];
   empStatusList: String[] = [];
   empTypeList: String[] = [];
+  selectedFile: File | null = null;
+  employee: Employee | null = null;
 
   constructor(
     private readonly _formBuilder: FormBuilder,
     private orgService: OrganizationService,
-    private empService: EmployeeService
+    private empService: EmployeeService,
+    private fileUploaderService: FileUploaderService
   ) {}
 
   ngOnInit(): void {
@@ -96,6 +99,13 @@ export class AddEmployeeComponent {
   }
 
   private initializeEmpForm(employee: Employee | null=null) {
+      
+      if(employee) {
+        this.employee = employee;
+        if(employee.profileImage)
+          this.fileUploader.setFile(employee.profileImage);
+      }
+
       this.empForm = this._formBuilder.group({
         id: [employee?.id],
         orgId: [this.organization?.id],
@@ -124,12 +134,7 @@ export class AddEmployeeComponent {
       });
   }
 
-  ngOnChanges() {
-    //this.initializeEmpForm(true);
-  }
-
   openDrawer(employee:Employee|null=null) {
-    console.log('Open Employee Drawer');
     this.initializeEmpForm(employee);
     this.drawer?.show();
   }
@@ -143,33 +148,62 @@ export class AddEmployeeComponent {
     return this.empForm.controls;
   }
 
-  onAddEmployee() {
-    console.log('submitted');
+  onAvatarSelect(file: File|null) {
+    this.selectedFile = file;
+    if(!file){
+      this.empForm.patchValue({ profileImage: null });      
+    }
+  }
 
+  onEmployeeSubmit() {
+  
     this.submitted = true;
-
+  
     const employeeData = this.empForm.value;
-
+  
     if (this.empForm.invalid) {
       return;
     }
-
-    const orgId = employeeData.orgId;
-    const employee: Employee = employeeData as Employee;
-
-    this.empService.addEmployeeToOrganization(orgId, employee).subscribe({
-      next: (employee) => {
-        this.employeeEmitter.emit(employee);
-        this.empForm.patchValue({
-          id: employee.id,
-        });
-        this.empService.showToastSuccess('Employee saved to organization successfully');
-        this.closeDrawer();
-        this.initializeEmpForm(employee);
-      },
-      error: (error) => {
-        this.orgService.showToastErrorResponse(error);
-      },
-    });
+  
+    const orgId = this.organization.id;
+  
+    let uploadObservable = of(null); // fallback if no file
+  
+    if (this.selectedFile) {
+      uploadObservable = this.fileUploaderService.uploadFile(this.selectedFile).pipe(
+        tap((response: any) => {
+          console.log('File uploaded successfully:', response);
+          employeeData.profileImage = response.fileURL;
+        }),
+        catchError((error) => {
+          console.error('Error uploading file:', error);
+          this.orgService.showToastErrorResponse(error);
+          return throwError(() => error); // Stop the chain
+        })
+      );
+    }
+  
+    uploadObservable
+      .pipe(
+        switchMap(() => {
+          employeeData.orgId = orgId;
+          const employee: Employee = employeeData as Employee;
+          return this.empService.addEmployeeToOrganization(orgId, employee);
+        })
+      )
+      .subscribe({
+        next: (employee) => {
+          this.employeeEmitter.emit(employee);
+          this.empForm.patchValue({ id: employee.id });
+          this.empService.showToastSuccess('Employee saved to organization successfully');
+  
+          this.closeDrawer();
+          this.initializeEmpForm(employee);
+        },
+        error: (error) => {
+          this.orgService.showToastErrorResponse(error);
+        },
+      });
   }
+  
 }
