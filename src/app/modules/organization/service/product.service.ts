@@ -18,9 +18,9 @@ export class ProductService extends CommonService {
     super();
   }
 
-  public getProductByOrganization(organizationId: String, page: number, size: number, search: string) {
+  public getProductByOrganization(organizationId: String, page: number, size: number, search: string, searchCriteria: string) {
     return this.http
-      .get<PageResponse<Product>>(`${environment.tallyURL}/product/v1/${organizationId}?page=${page}&size=${size}&search=${search}`)
+      .get<PageResponse<Product>>(`${environment.tallyURL}/product/v1/${organizationId}?page=${page}&size=${size}&search=${search}&searchCriteria=${searchCriteria}`)
       .pipe(catchError(this.mapErrorResponse));
   }
 

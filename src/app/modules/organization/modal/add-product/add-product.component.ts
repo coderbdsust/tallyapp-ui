@@ -1,34 +1,48 @@
 import { CommonModule, NgClass } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { Product } from '../../service/model/product.model';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ProductService } from '../../service/product.service';
 import { EmployeeService } from '../../service/employee.service';
+import { FileUploaderComponent } from '../../../../common/components/file-uploader/file-uploader.component';
+import { catchError, of, tap, throwError } from 'rxjs';
+import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 
 @Component({
   selector: 'app-add-product',
-  imports: [NgClass, ButtonComponent, FormsModule, CommonModule, ReactiveFormsModule, NgSelectComponent],
+  imports: [
+    NgClass,
+    ButtonComponent,
+    FormsModule,
+    CommonModule,
+    ReactiveFormsModule,
+    NgSelectComponent,
+    FileUploaderComponent,
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-product.component.html',
-  styleUrl: './add-product.component.scss'
+  styleUrl: './add-product.component.scss',
 })
 export class AddProductComponent {
-
   form!: FormGroup;
-  submitted=false;
+  submitted = false;
   isModalOpen = false;
   orgId: string | null = null;
-  allEmployees:any = [];
-  isEdit=false;
+  allEmployees: any = [];
+  isEdit = false;
   @Output() modifiedEmitter = new EventEmitter<Boolean>();
+  selectedFile: File | null = null;
+  @ViewChild(FileUploaderComponent) fileUploader!: FileUploaderComponent;
 
   constructor(
     private readonly _formBuilder: FormBuilder,
     private productService: ProductService,
-    private employeeService:EmployeeService) {}
+    private employeeService: EmployeeService,
+    private fileUploaderService: FileUploaderService,
+  ) {}
 
-  
   ngOnInit(): void {
     this.initializeForm();
   }
@@ -44,17 +58,25 @@ export class AddProductComponent {
       next: (response) => {
         this.allEmployees = response.content.map((employee) => ({
           id: employee.id,
-          fullName: `${employee.fullName}`
+          fullName: `${employee.fullName}`,
         }));
-      }
+      },
     });
-
   }
 
-  private initializeForm(product:Product| null = null) {
+  private initializeForm(product: Product | null = null) {
+    if (product && product.imageUrl) {
+      this.fileUploader.setFile(product.imageUrl);
+    } else {
+      if (this.fileUploader) {
+        this.fileUploader.clearFile();
+      }
+    }
+
     this.form = this._formBuilder.group({
       id: [product?.id],
       name: [product?.name, [Validators.required]],
+      code: [product?.code, [Validators.required]],
       description: [product?.description],
       employeeCost: [product?.employeeCost, [Validators.required]],
       productionCost: [product?.productionCost, [Validators.required]],
@@ -70,10 +92,8 @@ export class AddProductComponent {
   compareEmployee(emp1: any, emp2: any): boolean {
     return emp1 && emp2 ? emp1.id === emp2.id : emp1 === emp2;
   }
-  
 
-
-  openModal(product: Product| null=null, orgId: string | null = null) {
+  openModal(product: Product | null = null, orgId: string | null = null) {
     this.isEdit = !!product;
     this.orgId = orgId;
     this.initializeForm(product);
@@ -88,42 +108,69 @@ export class AddProductComponent {
     return this.form.controls;
   }
 
-  onSubmit(){
-    this.submitted = true;
-    
-    if (this.form.invalid) {
-      return;
-    }
-    
-    const product = this.form.value;
-    this.submitted = false;
-    if (this.isEdit) {
-      if(product.madeBy.id)
-          product.madeBy = product.madeBy.id;
-      this.productService.editProduct(product.id, product).subscribe({
-        next: (response) => {
-          this.productService.showToastSuccess('Product updated successfully');
-          this.closeModal();
-          this.modifiedEmitter.emit(true);
-        },
-        error: (error) => {
-          this.productService.showToastError(error);
-          this.closeModal();
-        }
-      });
-     }else{
-      this.productService.addProduct(product.madeBy, product).subscribe({
-        next: (response) => {
-          this.productService.showToastSuccess('Product added successfully');
-          this.closeModal();
-          this.modifiedEmitter.emit(true);
-        },
-        error: (error) => {
-          this.productService.showToastError(error);
-          this.closeModal();
-        }
-      });
+  onProductImageSelect(file: File | null) {
+    console.log('Selected file:', file);
+    this.selectedFile = file;
+    if (!file) {
+      this.form.patchValue({ imageUrl: null });
     }
   }
 
+  onSubmit() {
+    this.submitted = true;
+
+    if (this.form.invalid) {
+      return;
+    }
+
+    let product = this.form.value;
+
+    this.submitted = false;
+
+    let uploadObservable = of(null); // Default observable if no file is selected
+
+    if (this.selectedFile) {
+      uploadObservable = this.fileUploaderService.uploadFile(this.selectedFile).pipe(
+        tap((response: any) => {
+          product.imageUrl = response.fileURL;
+        }),
+        catchError((error) => {
+          this.fileUploaderService.showToastErrorResponse(error);
+          return throwError(() => error);
+        }),
+      );
+    }
+
+    uploadObservable.subscribe({
+      next: () => {
+        if (this.isEdit) {
+          if (product.madeBy.id) product.madeBy = product.madeBy.id;
+
+          this.productService.editProduct(product.id, product).subscribe({
+            next: () => {
+              this.productService.showToastSuccess('Product updated successfully');
+              this.closeModal();
+              this.modifiedEmitter.emit(true);
+            },
+            error: (error) => {
+              this.productService.showToastErrorResponse(error);
+              this.closeModal();
+            },
+          });
+        } else {
+          this.productService.addProduct(product.madeBy, product).subscribe({
+            next: () => {
+              this.productService.showToastSuccess('Product added successfully');
+              this.closeModal();
+              this.modifiedEmitter.emit(true);
+            },
+            error: (error) => {
+              this.productService.showToastErrorResponse(error);
+              this.closeModal();
+            },
+          });
+        }
+      },
+    });
+  }
 }

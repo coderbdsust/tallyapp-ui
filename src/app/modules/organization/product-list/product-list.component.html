@@ -33,6 +33,18 @@
             per page
           </div>
         </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
+          <div class="order-2 flex items-center gap-2 md:order-1">
+            <select class="w-48 p-2" name="rowSize" (change)="onSearchCriteria($event)">
+              <option value="" selected>Search Criteria</option>
+              <option value="name">Product Name</option>
+              <option value="code">Product Code</option>
+              <option value="madeBy">Made By</option>
+            </select>
+          </div>
+        </div>
+
         <div class="flex">
           <label class="relative text-muted-foreground">
             <div class="absolute left-2.5 top-2.5">
@@ -56,6 +68,7 @@
         <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
           <tr>
             <th>Product Name</th>
+            <th>Product Code</th>
             <th>Employee Cost</th>
             <th>Production Cost</th>
             <th>Selling Price</th>
@@ -97,7 +110,7 @@
                 </div>
               </div>
             </td>
-            
+            <td>{{ p.code }}</td> 
             <td>{{ p.employeeCost }}</td>
             <td>{{ p.productionCost }}</td>
             <td>{{ p.sellingPrice}}</td>

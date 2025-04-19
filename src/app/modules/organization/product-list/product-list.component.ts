@@ -20,6 +20,7 @@ import { ConfirmationModalComponent } from 'src/app/common/components/confirmati
 export class ProductListComponent extends PaginatedComponent<Product> {
   @ViewChild('addProductModal', { static: false }) addProductModal!: AddProductComponent;
   search: string = '';
+  searchCriteria: string = '';
   loading: boolean = false;
   submitted = false;
   errorMessage = '';
@@ -37,14 +38,14 @@ export class ProductListComponent extends PaginatedComponent<Product> {
     this.orgService.organization$.subscribe((org) => {
       if(org) {
         this.organization = org;
-        this.loadProducts(org.id, this.currentPage, this.selectedRows, this.search);
+        this.loadProducts(org.id, this.currentPage, this.selectedRows, this.search, this.searchCriteria);
       }
     });
   }
   
-  loadProducts(orgId: string, page: number, size: number, search: string) {
+  loadProducts(orgId: string, page: number, size: number, search: string, searchCriteria: string = '') {
     this.loading = true;
-    this.productService.getProductByOrganization(orgId, this.currentPage, this.selectedRows, this.search).subscribe({
+    this.productService.getProductByOrganization(orgId, this.currentPage, this.selectedRows, this.search, this.searchCriteria).subscribe({
       next: (response) => {
         this.pageResponse = response;
         this.currentPage = response.pageNo;
@@ -92,13 +93,25 @@ export class ProductListComponent extends PaginatedComponent<Product> {
   onSearchChange(event: Event) {
     const input = (event.target as HTMLInputElement).value;
     this.search = input;
-    this.loadProducts(this.organization.id, 0, this.selectedRows, this.search);
+    
+    if(this.searchCriteria === '' && this.search !== '') {
+      this.productService.showToastError('Please select a search criteria');
+      return;
+    }
+
+    this.loadProducts(this.organization.id, 0, this.selectedRows, this.search, this.searchCriteria);
   }
 
   onSelectChange(event: Event) {
     const rows = parseInt((event.target as HTMLSelectElement).value, 10);
     this.selectedRows = rows === -1 ? this.totalRows || 0 : rows;
-    this.loadProducts(this.organization.id, 0, this.selectedRows, this.search);
+    this.loadProducts(this.organization.id, 0, this.selectedRows, this.search, this.searchCriteria);
+  }
+
+  onSearchCriteria(event:Event){
+    const input = (event.target as HTMLInputElement).value;
+    this.searchCriteria = input;
+    console.log(this.searchCriteria);
   }
 
   goToPreviousPage() {
@@ -123,12 +136,12 @@ export class ProductListComponent extends PaginatedComponent<Product> {
   }
 
   updatePagination() {
-    this.loadProducts(this.organization.id, this.currentPage, this.selectedRows, this.search);
+    this.loadProducts(this.organization.id, this.currentPage, this.selectedRows, this.search, this.searchCriteria);
   }
 
   productListRefresh(status: Boolean) {
     if (status) {
-      this.loadProducts(this.organization.id, this.currentPage, this.selectedRows, this.search);
+      this.loadProducts(this.organization.id, this.currentPage, this.selectedRows, this.search, this.searchCriteria);
     }
   }
 }

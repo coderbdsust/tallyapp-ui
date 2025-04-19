@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Nft } from '../../models/nft';
 import { NftAuctionsTableComponent } from '../../components/nft/nft-auctions-table/nft-auctions-table.component';
 import { NftChartCardComponent } from '../../components/nft/nft-chart-card/nft-chart-card.component';
 import { NftSingleCardComponent } from '../../components/nft/nft-single-card/nft-single-card.component';
@@ -12,8 +11,9 @@ import { NftSingleCardEmployeeComponent } from '../../components/nft/nft-single-
     imports: [
         NftDualCardComponent,
         NftSingleCardComponent,
-        NftSingleCardEmployeeComponent,
+        // NftSingleCardEmployeeComponent,
         NftAuctionsTableComponent,
+        NftChartCardComponent
     ]
 })
 export class NftComponent implements OnInit {
