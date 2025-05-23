@@ -26,6 +26,11 @@ export class OrganizationService extends CommonService {
     this.selectedOrganization.next(org);
   }
 
+  public clearOrganization() {
+    localStorage.removeItem(environment.TALLY_ORGANIZATION);
+    this.selectedOrganization.next(null);
+  }
+
   getSelectedOrganization(): Organization | null {
     const storedOrg = localStorage.getItem(environment.TALLY_ORGANIZATION);
     return storedOrg ? JSON.parse(storedOrg) : null;

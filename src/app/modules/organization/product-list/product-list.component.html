@@ -73,6 +73,7 @@
             <th>Production Cost</th>
             <th>Selling Price</th>
             <th>Sold Price</th>
+            <th>Is Sold ?</th>
             <th>Made By</th>
             <th>Created</th>
             <th>Action</th>
@@ -115,6 +116,8 @@
             <td>{{ p.productionCost }}</td>
             <td>{{ p.sellingPrice}}</td>
             <td>{{ p.soldPrice}}</td>
+            <td *ngIf="p.sold">SOLD</td>
+            <td *ngIf="!p.sold">NOT SOLD</td>
             <td>{{ p.madeBy.fullName }}</td>
             <td>{{ p.createdDate | date }}</td>
             <td class="text-center">

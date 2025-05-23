@@ -8,6 +8,7 @@ import { SignUpComponent } from './pages/sign-up/sign-up.component';
 import { TwoStepsComponent } from './pages/account-verification-two-steps/two-steps.component';
 import { LoginResolve } from 'src/app/core/resolver/login-resolve';
 import { ForgotPasswordVerificationOtpComponent } from './pages/forgot-password-verification-otp/forgot-password-verification-otp.component';
+import { VerifyLoginOtpComponent } from './pages/verify-login-otp/verify-login-otp.component';
 
 const routes: Routes = [
   {
@@ -43,6 +44,11 @@ const routes: Routes = [
       { 
         path: 'account-activation',
         component: TwoStepsComponent,
+        resolve: { ready: LoginResolve }
+       },
+      { 
+        path: 'verify-login-otp',
+        component: VerifyLoginOtpComponent,
         resolve: { ready: LoginResolve }
        },
       { path: '**', redirectTo: 'sign-in', pathMatch: 'full' },

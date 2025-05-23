@@ -30,3 +30,8 @@ export interface UserProfile {
   shortProfileList: ShortProfile[];
   mobileNoVerified: boolean;
 }
+
+export interface TFAResponse {
+  byEmail: boolean;
+  byMobile: boolean;
+}

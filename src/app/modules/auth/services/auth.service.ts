@@ -5,6 +5,7 @@ import { catchError, tap, BehaviorSubject, Observable, of } from 'rxjs';
 import { CommonService } from './common.service';
 import { Router } from '@angular/router';
 import { ApiResponse, AuthUser, SignUpResponse } from './auth.model';
+import { OrganizationService } from '../../organization/service/organization.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,7 @@ export class AuthService extends CommonService {
   user$ = this.user.asObservable();
   logoutTimer: any;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private organizationService: OrganizationService) {
     super();
   }
 
@@ -28,7 +29,7 @@ export class AuthService extends CommonService {
     return this.http.post<AuthUser>(`${environment.tallyURL}/auth/v1/login`, signInData).pipe(
       catchError(this.mapErrorResponse),
       tap((authUser) => {
-        if (authUser != null) {
+        if (authUser != null && authUser.status === 'SUCCESS') {
           this.user.next(authUser);
         } else {
           this.user.next(null);
@@ -73,8 +74,22 @@ export class AuthService extends CommonService {
       .pipe(catchError(this.mapErrorResponse));
   }
 
-  verifyUser(verifyData: any) {
-    return this.http.post(`${environment.tallyURL}/auth/v1/verify`, verifyData).pipe(catchError(this.mapErrorResponse));
+  verifyUserAccount(verifyData: any) {
+    return this.http.post(`${environment.tallyURL}/auth/v1/account-verify`, verifyData).pipe(catchError(this.mapErrorResponse));
+  }
+
+  verifyLoginOtp(verifyData: any) {
+    return this.http.post<AuthUser>(`${environment.tallyURL}/auth/v1/verify-login-otp`, verifyData)
+    .pipe(
+      catchError(this.mapErrorResponse),
+      tap((authUser) => {
+        if (authUser != null && authUser.status === 'SUCCESS') {
+          this.user.next(authUser);
+        } else {
+          this.user.next(null);
+        }
+      }),
+    );
   }
 
   resendAccountVerificationOTP(username:any) {
@@ -103,7 +118,7 @@ export class AuthService extends CommonService {
 
   logout() {
     this.user.next(null);
-    localStorage.removeItem(environment.TALLY_ORGANIZATION);
+    this.organizationService.clearOrganization(); // Clear organization state if needed
     // Optionally call a backend endpoint to invalidate server-side sessions
     this.http.post(`${environment.tallyURL}/auth/v1/logout`, {}, { withCredentials: true }).subscribe({
       next: () => {},

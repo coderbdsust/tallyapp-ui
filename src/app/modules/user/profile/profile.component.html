@@ -42,6 +42,53 @@
         </div>
       </div>
     </div>
+    <div class="relative flex flex-col min-w-0 break-words bg-background w-full mb-6 shadow-xl rounded-lg">
+       <form [formGroup]="tfaForm" >
+          <div class="px-6">
+            <div class="text-center mt-12">
+              <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
+                  TWO Factor Authentication
+              </div>
+              <div class="mb-10 ml-10 text-blueGray-600 mt-2">
+                  <div class="flex flex-col items-center gap-2">
+                    <div class="form__group w-full">
+                      <div class="relative">
+                        <input
+                          type="checkbox"
+                          id="byEmail"
+                          class="peer mt-3 block"
+                          placeholder=" "
+                          formControlName="byEmail"
+                          (change)="onChangeTfaStatus()" />
+                        <label
+                          for="byEmail"
+                          class="absolute top-4 left-5 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300  peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                            By Email (Primary)
+                        </label>
+                      </div>
+                    </div>
+                    <div class="form__group w-full">
+                      <div class="relative">
+                        <input
+                          type="checkbox"
+                          id="byMobile"
+                          class="peer mt-3 block"
+                          placeholder=" "
+                          formControlName="byMobile"
+                          (change)="onChangeTfaStatus()" />
+                        <label
+                          for="byMobile"
+                          class="absolute top-4 left-5 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                            By Mobile
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+      </form>
+    </div>
   </div>
   <div class="w-full lg:w-8/12 px-4">
     <form [formGroup]="userProfileForm" (ngSubmit)="onSubmit()">

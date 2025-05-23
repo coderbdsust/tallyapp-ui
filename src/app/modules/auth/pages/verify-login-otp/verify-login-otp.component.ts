@@ -6,15 +6,22 @@ import { NgIf } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-    selector: 'app-two-steps',
-    templateUrl: './two-steps.component.html',
-    styleUrls: ['./two-steps.component.scss'],
-    imports: [FormsModule, RouterLink, ButtonComponent, NgIf]
+    selector: 'app-verify-login-otp',
+    templateUrl: './verify-login-otp.component.html',
+    styleUrls: ['./verify-login-otp.component.scss'],
+    imports: [FormsModule, ButtonComponent, NgIf]
 })
-export class TwoStepsComponent implements OnInit {
+export class VerifyLoginOtpComponent implements OnInit {
+  
   constructor(private readonly _router: Router, private acRoute: ActivatedRoute, private authService: AuthService) {
+    
     const currentNav = this._router.getCurrentNavigation();
-    this.username = currentNav?.extras?.state?.["userKey"];
+    console.log(currentNav?.extras?.state?.["tfaData"]);
+    this.username = currentNav?.extras?.state?.["tfaData"].username;
+    this.otpTxnId = currentNav?.extras?.state?.["tfaData"].otpTxnId;
+    this.message = currentNav?.extras?.state?.["tfaData"].message;
+
+
     if(!this.username){
       this._router.navigate([`/auth/sign-in`]);
     }
@@ -24,6 +31,8 @@ export class TwoStepsComponent implements OnInit {
   submitted = false;
   errorMessage = 'Please give a OTP';
   username: string = '';
+  otpTxnId: string = '';
+  message: string = '';
 
   ngOnInit(): void {
   }
@@ -54,23 +63,7 @@ export class TwoStepsComponent implements OnInit {
     }
   }
 
-  resendOTP() {
-    let user: any = {};
-    user.username = this.username;
-    this.authService.resendAccountVerificationOTP(user).subscribe({
-      next: (response) => {
-        if (response.businessCode == 601) {
-          this._router.navigate([`/auth/sign-in`]);
-          this.authService.showToastSuccess(`${response.message}`);
-        } else {
-          this.authService.showToastSuccess(`${response.message}`);
-        }
-      },
-      error: (error) => {
-        this.authService.showToastErrorResponse(error);
-      },
-    });
-  }
+  resendOTP() {}
 
   onSubmit() {
     this.submitted = true;
@@ -87,15 +80,16 @@ export class TwoStepsComponent implements OnInit {
 
     const verification = {
       username: this.username,
-      otpCode: otp,
+      otp: otp,
+      otpTxnId: this.otpTxnId,
     };
 
     this.errorMessage = '';
 
-    this.authService.verifyUserAccount(verification).subscribe({
+    this.authService.verifyLoginOtp(verification).subscribe({
       next: (response) => {
-        this._router.navigate([`/auth/sign-in`]);
-        this.authService.showToastSuccess(`User successfully verified, Please login`);
+        this._router.navigate([`/`]);
+        this.authService.showToastSuccess(`Welcome, ${response.fullName}`);
       },
       error: (error) => {
         this.authService.showToastErrorResponse(error);

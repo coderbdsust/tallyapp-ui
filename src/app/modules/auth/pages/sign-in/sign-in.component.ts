@@ -53,8 +53,12 @@ export class SignInComponent implements OnInit {
     
     this.authService.signIn(loginData).subscribe({
       next: (response) => {
-        this._router.navigate(['/']);
-        this.authService.showToastSuccess(`Welcome, ${response.fullName}`);
+        if(response.status === 'TFA_REQUIRED') {
+            this._router.navigate(['/auth/verify-login-otp'], { state: { tfaData: response } });
+        }else{
+            this._router.navigate(['/']);
+            this.authService.showToastSuccess(`Welcome, ${response.fullName}`);
+        }
       },
       error: (errorRes) => {
         this.authService.showToastErrorResponse(errorRes);

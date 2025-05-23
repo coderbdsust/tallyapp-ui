@@ -5,6 +5,7 @@ export interface AuthUser {
   username: string;
   email: string;
   role: string;
+  status: string;
 }
 export interface SignUpResponse {
   id: string;

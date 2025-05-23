@@ -21,6 +21,7 @@ export class ProfileComponent implements OnInit {
   userProfile: UserProfile | undefined;
   genderList: String[] = [];
   userProfileForm!: FormGroup;
+  tfaForm!: FormGroup;
   submitted = false;
 
   constructor(
@@ -34,7 +35,16 @@ export class ProfileComponent implements OnInit {
     initFlowbite();
     this.loadUserProfile();
     this.loadGenderList();
+    this.loadTfaStatus();
     this.userProfileForm = this.createUserProfileForm();
+    this.tfaForm = this.createTfaForm();
+  }
+
+  createTfaForm(): FormGroup {
+    return this._formBuilder.group({
+        byEmail: [false],
+        byMobile: [false]
+    });
   }
 
   createUserProfileForm(): FormGroup {
@@ -208,6 +218,20 @@ export class ProfileComponent implements OnInit {
     } else this.shortProfileList.removeAt(index);
   }
 
+  loadTfaStatus(){
+    this.userProfileService.getTfaStatus().subscribe({
+      next: (tfaStatus) => {
+        this.tfaForm.patchValue({
+          byEmail: tfaStatus.byEmail,
+          byMobile: tfaStatus.byMobile
+        });
+      },
+      error: (error) => {
+        this.commonService.showToastErrorResponse(error);
+      }
+    });
+  }
+
   loadUserProfile() {
     this.userProfileService.getUserProfile().subscribe(
       (userProfile) => {
@@ -290,6 +314,19 @@ export class ProfileComponent implements OnInit {
       error: (error) => {
         this.userProfileService.showToastErrorResponse(error);
       },
+    });
+  }
+
+  onChangeTfaStatus() {
+    let tfaStatus = this.tfaForm.value;
+    tfaStatus.enable = tfaStatus.byEmail || tfaStatus.byMobile;
+    this.userProfileService.changeTFAStatus(tfaStatus).subscribe({
+      next: (response) => {
+        this.userProfileService.showToastSuccess(response.message);
+      },
+      error: (error) => {
+        this.userProfileService.showToastErrorResponse(error);
+      }
     });
   }
 }

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { CommonService } from '../../auth/services/common.service';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
-import { Address, ShortProfile, UserProfile } from '../profile/profile.model';
+import { Address, ShortProfile, TFAResponse, UserProfile } from '../profile/profile.model';
 import { ApiResponse } from '../../auth/services/auth.model';
 
 @Injectable({
@@ -54,5 +54,17 @@ export class UserprofileService extends CommonService {
     return this.http
       .post<ApiResponse>(`${environment.tallyURL}/users/v1/change-password`, changePassword)
       .pipe(catchError(this.mapErrorResponse));
+  }
+
+
+  changeTFAStatus(tfaStatus: any) {
+    return this.http
+      .post<ApiResponse>(`${environment.tallyURL}/users/v1/change-tfa-status`, tfaStatus)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  getTfaStatus(){
+    return this.http.get<TFAResponse>(`${environment.tallyURL}/users/v1/tfa-status`)
+    .pipe(catchError(this.mapErrorResponse));
   }
 }
