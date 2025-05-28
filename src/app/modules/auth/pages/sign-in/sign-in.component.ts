@@ -5,6 +5,8 @@ import { Router, RouterLink } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from '../../../../common/components/button/button.component';
 import { AuthService } from '../../services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { TfaChannelSelectionModalComponent } from '../modal/tfa-channel-selection-modal/tfa-channel-selection-modal.component';
 
 
 @Component({
@@ -19,7 +21,7 @@ export class SignInComponent implements OnInit {
   passwordTextType!: boolean;
   errorMessage="";
 
-  constructor(private readonly _formBuilder: FormBuilder, private readonly _router: Router, private authService: AuthService) {}
+  constructor(private readonly _formBuilder: FormBuilder, private readonly _router: Router, private authService: AuthService,  private dialog: MatDialog) {}
 
   onClick() {
     console.log('Button clicked');
@@ -40,6 +42,41 @@ export class SignInComponent implements OnInit {
     this.passwordTextType = !this.passwordTextType;
   }
 
+  openTfaModal(tfaData:any) {
+    const dialogRef = this.dialog.open(TfaChannelSelectionModalComponent, {
+      width: '500px',
+      data: tfaData
+    });
+
+    dialogRef.afterClosed().subscribe(channel => {
+      if (channel) {
+        let loginOtpRequest = {
+          username: tfaData.username,
+          channel: channel,
+          token: tfaData.token
+        }
+        this.authService.sendLoginOtp(loginOtpRequest).subscribe({
+          next: (response) => {
+            if(response.status === 'TFA_REQUIRED') {
+              this._router.navigate(['/auth/verify-login-otp'], { state: { tfaData: response } });
+            } else {
+              this.authService.showToastError(response.message);
+            }
+          },
+          error: (errorRes) => {
+            this.authService.showToastErrorResponse(errorRes);
+          }
+        });
+      }
+    });
+  }
+
+  clearForm() {
+    this.form.reset();
+    this.submitted = false;
+    this.errorMessage = "";
+  }
+
   onSubmit() {
     this.submitted = true;
     
@@ -55,16 +92,20 @@ export class SignInComponent implements OnInit {
       next: (response) => {
         if(response.status === 'TFA_REQUIRED') {
             this._router.navigate(['/auth/verify-login-otp'], { state: { tfaData: response } });
-        }else{
+        }
+        else if(response.status === 'SUCCESS') {
             this._router.navigate(['/']);
             this.authService.showToastSuccess(`Welcome, ${response.fullName}`);
         }
+        else if(response.status === 'TFA_CHANNEL_SELECTION') {
+            this.clearForm();
+            this.openTfaModal(response);
+        }
+        else this.authService.showToastSuccess(`${response.message}`);
       },
       error: (errorRes) => {
         this.authService.showToastErrorResponse(errorRes);
       },
     });
-    
-
   }
 }

@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { NgIf } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { TfaChannelSelectionModalComponent } from '../modal/tfa-channel-selection-modal/tfa-channel-selection-modal.component';
 
 @Component({
     selector: 'app-verify-login-otp',
@@ -16,7 +18,6 @@ export class VerifyLoginOtpComponent implements OnInit {
   constructor(private readonly _router: Router, private acRoute: ActivatedRoute, private authService: AuthService) {
     
     const currentNav = this._router.getCurrentNavigation();
-    console.log(currentNav?.extras?.state?.["tfaData"]);
     this.username = currentNav?.extras?.state?.["tfaData"].username;
     this.otpTxnId = currentNav?.extras?.state?.["tfaData"].otpTxnId;
     this.message = currentNav?.extras?.state?.["tfaData"].message;
@@ -64,7 +65,7 @@ export class VerifyLoginOtpComponent implements OnInit {
   }
 
   resendOTP() {}
-
+  
   onSubmit() {
     this.submitted = true;
     const otp = this.inputs.join('');

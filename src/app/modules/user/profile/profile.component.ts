@@ -43,7 +43,8 @@ export class ProfileComponent implements OnInit {
   createTfaForm(): FormGroup {
     return this._formBuilder.group({
         byEmail: [false],
-        byMobile: [false]
+        byMobile: [false],
+        byAuthenticator: [false]
     });
   }
 

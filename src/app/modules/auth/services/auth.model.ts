@@ -6,6 +6,7 @@ export interface AuthUser {
   email: string;
   role: string;
   status: string;
+  message: string;
 }
 export interface SignUpResponse {
   id: string;

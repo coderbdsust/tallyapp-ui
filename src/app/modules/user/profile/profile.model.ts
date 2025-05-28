@@ -34,4 +34,5 @@ export interface UserProfile {
 export interface TFAResponse {
   byEmail: boolean;
   byMobile: boolean;
+  byAuthenticator: boolean;
 }

@@ -30,8 +30,8 @@
       <div class="m-4 grid gap-4 md:m-4">
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="space-y-3 text-left">
-            <div class="flex gap-4">
-              <div class="form__group w-2/3">
+            <div class="flex justify-between gap-2">
+              <div class="form__group w-3/6">
                 <div class="relative">
                   <input name="id" formControlName="id" type="hidden" />
                   <input
@@ -52,7 +52,7 @@
                 </div>
               </div>
 
-              <div class="form__group w-1/3">
+              <div class="form__group w-2/6">
                 <div class="relative">
                   <input
                     type="text"
@@ -70,6 +70,10 @@
                 <div *ngIf="submitted && f['code'].errors" class="is__invalid-error">
                   <div *ngIf="f['code'].errors['required']">Required field</div>
                 </div>
+                
+              </div>
+              <div class="form__group w-1/6 flex items-center justify-center">
+                 <svg-icon  (click)="generateProductCode()" src="./assets/icons/heroicons/outline/cursor-arrow-rays.svg" [svgClass]="'h-6 w-6 text-primary'" />
               </div>
             </div>
 

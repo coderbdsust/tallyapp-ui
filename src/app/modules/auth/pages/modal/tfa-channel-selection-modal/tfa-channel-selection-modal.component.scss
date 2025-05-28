@@ -1,0 +1,12 @@
+@use '@angular/material' as mat;
+
+:root {
+  @include mat.button-overrides((
+    filled-container-color: orange,
+    filled-label-text-color: red,
+  ));
+}
+
+.mat-mdc-radio-button ~ .mat-mdc-radio-button {
+  margin-left: 16px;
+}

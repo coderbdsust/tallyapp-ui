@@ -38,6 +38,19 @@ export class AuthService extends CommonService {
     );
   }
 
+   sendLoginOtp(sendLoginOtp: any) {
+    return this.http.post<AuthUser>(`${environment.tallyURL}/auth/v1/send-login-otp`, sendLoginOtp).pipe(
+      catchError(this.mapErrorResponse),
+      tap((authUser) => {
+        if (authUser != null && authUser.status === 'SUCCESS') {
+          this.user.next(authUser);
+        } else {
+          this.user.next(null);
+        }
+      }),
+    );
+  }
+
   refreshToken() {    
     return this.http.post<AuthUser>(`${environment.tallyURL}/auth/v1/refresh-token`, {}).pipe(
       catchError(this.mapErrorResponse),

@@ -1,0 +1,34 @@
+<h2 mat-dialog-title class="flex items-center justify-center">Two-Factor Authentication</h2>
+<mat-dialog-content>
+  <p>{{ data.message }}</p>
+    <mat-radio-group 
+    aria-label="Select OTP Channel"
+    [(ngModel)]="selectedChannel"
+    class="flex flex-col gap-1">
+        <mat-radio-button value="Email">{{data.otpChannels.Email}}</mat-radio-button>
+        <mat-radio-button value="Mobile">{{ data.otpChannels.Mobile }}</mat-radio-button>
+        <mat-radio-button value="Authenticator">{{ data.otpChannels.Authenticator || 'Authenticator' }}</mat-radio-button>
+    </mat-radio-group>
+  <mat-dialog-actions class="flex float-right gap-1">
+      <app-button full 
+          impact="bold" 
+          tone="danger" 
+          shape="rounded" 
+          size="medium"
+          (click)="onNoClick()"
+          >
+          Cancel
+      </app-button>
+      
+      <app-button full 
+          impact="bold" 
+          tone="primary" 
+          shape="rounded" 
+          size="medium"
+          [disabled]="!selectedChannel"
+          (click)="choose(selectedChannel)"
+          >
+          Choose
+      </app-button>
+  </mat-dialog-actions>
+</mat-dialog-content>

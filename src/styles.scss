@@ -1,12 +1,10 @@
-@use '@angular/material' as mat;
-@use 'tailwindcss/base' as *;
-@use 'tailwindcss/components'  as *;
-@use 'tailwindcss/utilities'  as *;
-@use './assets/styles/apexchart.scss' as *;
-
+@use 'tailwindcss/base';
+@use 'tailwindcss/components';
+@use 'tailwindcss/utilities';
+@use './assets/styles/apexchart.scss';
+// @use 'angular-material.scss';
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
 @import "@ng-select/ng-select/themes/material.theme.css";
 
 @layer base {
@@ -96,6 +94,8 @@
     --primary-foreground: 60 9.1% 97.8%;
     --muted: 12 6.5% 15.1%;
     --muted-foreground: 24 5.4% 63.9%;
+    --destructive: 350 100% 40%;
+    --destructive-foreground: 60 9.1% 97.8%;
     --border: 12 6.5% 15.1%;
   }
 
@@ -112,6 +112,7 @@
     --primary-foreground: 26 83.3% 14.1%;
     --muted: 12 6.5% 15.1%;
     --muted-foreground: 24 5.4% 63.9%;
+    --destructive: 350 100% 40%;
     --destructive-foreground: 60 9.1% 97.8%;
     --border: 12 6.5% 15.1%;
   }
@@ -155,33 +156,36 @@
   }
 
   .dropdown:hover > .dropdown-content {
-    @apply pointer-events-auto block scale-100 animate-fade-in-up opacity-100 duration-200;
+    @apply pointer-events-auto block scale-100 opacity-100 duration-200;
   }
 }
 
-/** Scroll bar **/
 @supports selector(::-webkit-scrollbar) {
-  .supports-scrollbars\: pr-2 {
+  .supports-scrollbars\:pr-2 {
     padding-right: 0.5rem;
   }
 }
 
+// Loader
 .loader {
-  --d:22px;
+  --d: 22px;
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  color: #FFFFFF;
-  box-shadow: 
-    calc(1*var(--d))      calc(0*var(--d))     0 0,
-    calc(0.707*var(--d))  calc(0.707*var(--d)) 0 1px,
-    calc(0*var(--d))      calc(1*var(--d))     0 2px,
-    calc(-0.707*var(--d)) calc(0.707*var(--d)) 0 3px,
-    calc(-1*var(--d))     calc(0*var(--d))     0 3.5px,
-    calc(-0.707*var(--d)) calc(-0.707*var(--d))0 4px,
-    calc(0*var(--d))      calc(-1*var(--d))    0 4.5px;
+  color: #ffffff;
+  box-shadow:
+    calc(1 * var(--d))      calc(0 * var(--d))     0 0,
+    calc(0.707 * var(--d))  calc(0.707 * var(--d)) 0 1px,
+    calc(0 * var(--d))      calc(1 * var(--d))     0 2px,
+    calc(-0.707 * var(--d)) calc(0.707 * var(--d)) 0 3px,
+    calc(-1 * var(--d))     calc(0 * var(--d))     0 3.5px,
+    calc(-0.707 * var(--d)) calc(-0.707 * var(--d)) 0 4px,
+    calc(0 * var(--d))      calc(-1 * var(--d))    0 4.5px;
   animation: l27 1s infinite steps(8);
 }
+
 @keyframes l27 {
-  100% {transform: rotate(1turn)}
+  100% { 
+    transform: rotate(1turn); 
+  }
 }

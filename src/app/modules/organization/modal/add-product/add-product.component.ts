@@ -9,6 +9,8 @@ import { EmployeeService } from '../../service/employee.service';
 import { FileUploaderComponent } from '../../../../common/components/file-uploader/file-uploader.component';
 import { catchError, of, tap, throwError } from 'rxjs';
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { generateRandomLuhnCode } from 'src/app/common/utils/LuhnCode';
 
 @Component({
   selector: 'app-add-product',
@@ -20,6 +22,7 @@ import { FileUploaderService } from 'src/app/core/services/file-uploader.service
     ReactiveFormsModule,
     NgSelectComponent,
     FileUploaderComponent,
+    AngularSvgIconModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-product.component.html',
@@ -113,6 +116,13 @@ export class AddProductComponent {
     this.selectedFile = file;
     if (!file) {
       this.form.patchValue({ imageUrl: null });
+    }
+  }
+
+  generateProductCode(){
+    if(!this.isEdit) {
+        let code = generateRandomLuhnCode(6);
+       this.form.patchValue({ code: code });
     }
   }
 
