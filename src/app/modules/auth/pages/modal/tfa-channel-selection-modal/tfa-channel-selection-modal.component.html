@@ -5,9 +5,9 @@
     aria-label="Select OTP Channel"
     [(ngModel)]="selectedChannel"
     class="flex flex-col gap-1">
-        <mat-radio-button value="Email">{{data.otpChannels.Email}}</mat-radio-button>
-        <mat-radio-button value="Mobile">{{ data.otpChannels.Mobile }}</mat-radio-button>
-        <mat-radio-button value="Authenticator">{{ data.otpChannels.Authenticator || 'Authenticator' }}</mat-radio-button>
+        <mat-radio-button value="Email" *ngIf="data.otpChannels.Email">{{data.otpChannels.Email}}</mat-radio-button>
+        <mat-radio-button value="Mobile" *ngIf="data.otpChannels.Mobile">{{ data.otpChannels.Mobile }}</mat-radio-button>
+        <mat-radio-button value="Authenticator" *ngIf="data.otpChannels.Authenticator">{{ data.otpChannels.Authenticator}}</mat-radio-button>
     </mat-radio-group>
   <mat-dialog-actions class="flex float-right gap-1">
       <app-button full 

@@ -23,3 +23,9 @@ export interface ApiResponse {
   userDetail:string;
   message:string;
 }
+
+export interface AuthenticatorAppResponse {
+  qrCode: string;
+  user : string;
+  issuer:string;
+}

@@ -20,6 +20,7 @@ export class VerifyLoginOtpComponent implements OnInit {
     const currentNav = this._router.getCurrentNavigation();
     this.username = currentNav?.extras?.state?.["tfaData"].username;
     this.otpTxnId = currentNav?.extras?.state?.["tfaData"].otpTxnId;
+    this.channel = currentNav?.extras?.state?.["tfaData"].channel;
     this.message = currentNav?.extras?.state?.["tfaData"].message;
 
 
@@ -33,6 +34,7 @@ export class VerifyLoginOtpComponent implements OnInit {
   errorMessage = 'Please give a OTP';
   username: string = '';
   otpTxnId: string = '';
+  channel: string = '';
   message: string = '';
 
   ngOnInit(): void {
@@ -83,6 +85,7 @@ export class VerifyLoginOtpComponent implements OnInit {
       username: this.username,
       otp: otp,
       otpTxnId: this.otpTxnId,
+      channel: this.channel,
     };
 
     this.errorMessage = '';

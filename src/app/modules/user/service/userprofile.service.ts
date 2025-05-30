@@ -55,11 +55,16 @@ export class UserprofileService extends CommonService {
       .post<ApiResponse>(`${environment.tallyURL}/users/v1/change-password`, changePassword)
       .pipe(catchError(this.mapErrorResponse));
   }
-
-
-  changeTFAStatus(tfaStatus: any) {
+  
+  changeTFAStatusEmail(tfaStatus: any) {
     return this.http
-      .post<ApiResponse>(`${environment.tallyURL}/users/v1/change-tfa-status`, tfaStatus)
+      .post<ApiResponse>(`${environment.tallyURL}/users/v1/change-tfa-status-by-email`, tfaStatus)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  changeTFAStatusMobile(tfaStatus: any) {
+    return this.http
+      .post<ApiResponse>(`${environment.tallyURL}/users/v1/change-tfa-status-by-mobile`, tfaStatus)
       .pipe(catchError(this.mapErrorResponse));
   }
 

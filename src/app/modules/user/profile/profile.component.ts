@@ -10,6 +10,9 @@ import { forkJoin } from 'rxjs';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { AuthService } from '../../auth/services/auth.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
+import { MatDialog } from '@angular/material/dialog';
+import { AuthenticatorAppService } from '../service/authenticator-app.service';
+import { AuthenticatorQrModalComponent } from '../modal/authenticator-qr-modal/authenticator-qr-modal.component';
 
 @Component({
     selector: 'app-profile',
@@ -29,6 +32,8 @@ export class ProfileComponent implements OnInit {
     private commonService: CommonService,
     private authService:AuthService,
     private readonly _formBuilder: FormBuilder,
+    private dialog: MatDialog,
+    private authenticatorAppService: AuthenticatorAppService
   ) {}
 
   ngOnInit(): void {
@@ -204,9 +209,7 @@ export class ProfileComponent implements OnInit {
   // Remove short profile
   removeShortProfile(index: number): void {
     const removedItem = this.shortProfileList.at(index).value;
-
     if (removedItem?.id) {
-      console.log(removedItem);
       this.userProfileService.deleteShortProfile(removedItem.id).subscribe({
         next: (response) => {
           this.userProfileService.showToastSuccess(response.message);
@@ -224,7 +227,8 @@ export class ProfileComponent implements OnInit {
       next: (tfaStatus) => {
         this.tfaForm.patchValue({
           byEmail: tfaStatus.byEmail,
-          byMobile: tfaStatus.byMobile
+          byMobile: tfaStatus.byMobile,
+          byAuthenticator: tfaStatus.byAuthenticator,
         });
       },
       error: (error) => {
@@ -256,7 +260,6 @@ export class ProfileComponent implements OnInit {
   loadGenderList() {
     this.authService.getGenderList().subscribe({
       next: (genderList) => {
-        console.log(genderList);
         this.genderList = genderList;
       },
       error: (error) => {
@@ -318,15 +321,61 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  onChangeTfaStatus() {
+  onChangeTfaStatusByEmail() {
     let tfaStatus = this.tfaForm.value;
-    tfaStatus.enable = tfaStatus.byEmail || tfaStatus.byMobile;
-    this.userProfileService.changeTFAStatus(tfaStatus).subscribe({
+    tfaStatus.tfaEnable = tfaStatus.byEmail || tfaStatus.byMobile || tfaStatus.byAuthenticator;
+    tfaStatus.isChannelEnable= tfaStatus.byEmail;
+    this.userProfileService.changeTFAStatusEmail(tfaStatus).subscribe({
+      next: (response) => {
+        this.userProfileService.showToastSuccess(response.message);
+      }
+      , error: (error) => {
+        this.userProfileService.showToastErrorResponse(error);
+      }
+    });   
+  }
+
+  onChangeTfaStatusByMobile() {
+    let tfaStatus = this.tfaForm.value;
+    tfaStatus.tfaEnable = tfaStatus.byEmail || tfaStatus.byMobile || tfaStatus.byAuthenticator;
+    tfaStatus.isChannelEnable= tfaStatus.byMobile;
+    this.userProfileService.changeTFAStatusMobile(tfaStatus).subscribe({
       next: (response) => {
         this.userProfileService.showToastSuccess(response.message);
       },
       error: (error) => {
         this.userProfileService.showToastErrorResponse(error);
+      }
+    });
+  }
+
+  onChangeTfaStatusByAuthenticator() {
+    let tfaStatus = this.tfaForm.value;
+    let byAuthenticator = tfaStatus.byAuthenticator;
+    const dialogRef = this.dialog.open(AuthenticatorQrModalComponent, {
+        width: '500px',
+        data: byAuthenticator
+    });
+
+    dialogRef.afterClosed().subscribe(otp => {
+      if (otp) {
+        if(byAuthenticator){
+          this.authenticatorAppService.authenticatorAppTfaEnable(otp).subscribe({
+            next:(response)=>{
+              this.authenticatorAppService.showToastSuccess(response.message);
+            },error:(error)=>{
+              this.authService.showToastErrorResponse(error);
+            }
+          });
+        }else{
+          this.authenticatorAppService.authenticatorAppTfaDisable(otp).subscribe({
+            next:(response)=>{
+              this.authenticatorAppService.showToastSuccess(response.message);
+            },error:(error)=>{
+              this.authService.showToastErrorResponse(error);
+            }
+          })
+        }
       }
     });
   }

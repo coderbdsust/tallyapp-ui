@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import {MatRadioModule} from '@angular/material/radio';
@@ -10,7 +10,7 @@ import { ButtonComponent } from 'src/app/common/components/button/button.compone
 @Component({
   selector: 'app-tfa-channel-selection-modal',
   templateUrl: './tfa-channel-selection-modal.component.html',
-  imports: [CommonModule, MatDialogModule, MatRadioModule, MatButtonModule, FormsModule, ButtonComponent],
+  imports: [CommonModule, MatDialogModule, MatRadioModule, MatButtonModule, FormsModule, ButtonComponent, NgIf],
 })
 export class TfaChannelSelectionModalComponent {
   constructor(
