@@ -10,6 +10,7 @@ import { PaginatedComponent } from 'src/app/common/components/pagination/paginat
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { MatDialog } from '@angular/material/dialog';
 import { AddOrganizationComponent } from '../drawer/add-organization/add-organization.component';
+import { OrganizationOwnerComponent } from '../modal/organization-owner/organization-owner.component';
 
 @Component({
   selector: 'app-organization-list',
@@ -21,7 +22,7 @@ import { AddOrganizationComponent } from '../drawer/add-organization/add-organiz
     AssignOrganizationComponent,
     AddOrganizationComponent,
     WordPipe,
-    NgIf
+    NgIf,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './organization-list.component.html',
@@ -37,17 +38,13 @@ export class OrganizationListComponent extends PaginatedComponent<Organization> 
   organization!: Organization;
   allOrganizations: Organization[] = [];
 
-  constructor(
-    private orgService: OrganizationService,
-    private empService: EmployeeService,
-    public dialog: MatDialog,
-  ) {
+  constructor(private orgService: OrganizationService, private empService: EmployeeService, public dialog: MatDialog) {
     super();
   }
 
   ngOnInit(): void {
     this.orgService.organization$.subscribe((org) => {
-      if(org) {
+      if (org) {
         this.organization = org;
         this.loadOrganizationByPage(this.currentPage, this.selectedRows, this.search);
       }
@@ -118,17 +115,24 @@ export class OrganizationListComponent extends PaginatedComponent<Organization> 
   assignOrganization() {
     this.assignOrganizationModal.openModal();
   }
-  
+
   onAddOrganization(org: Organization) {
     this.updateInPage(org, 'id');
   }
 
-  openOrganizationDrawer(isEdit:Boolean) {
+  openOrganizationOwners(org: Organization) {
+    console.log('Open organization owners for:', org);
+    const dialogRef = this.dialog.open(OrganizationOwnerComponent, {
+      width: '650px',
+      data: org,
+    });
+  }
+
+  openOrganizationDrawer(isEdit: Boolean) {
     if (isEdit) {
       this.organizationDrawer.openDrawer(this.organization);
     } else {
       this.organizationDrawer.openDrawer();
     }
-    
   }
 }

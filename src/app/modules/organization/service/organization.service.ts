@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { CommonService } from '../../auth/services/common.service';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, catchError } from 'rxjs';
-import { Organization, OrganizationTopEmployee, UserForOrganization } from './model/organization.model';
+import { Organization, OrganizationOwner, OrganizationTopEmployee, UserForOrganization } from './model/organization.model';
 import { Router } from '@angular/router';
 import { ApiResponse } from '../../auth/services/auth.model';
 import { PageResponse } from 'src/app/common/models/page-response';
@@ -86,4 +86,18 @@ export class OrganizationService extends CommonService {
       .get<Number>(`${environment.tallyURL}/organization/v1/${orgId}/total-employee`)
       .pipe(catchError(this.mapErrorResponse));
   }
+
+  public getAllOwnersByOrganization(orgId: string) {
+    return this.http
+      .get<OrganizationOwner>(`${environment.tallyURL}/organization/v1/get-owner-list/${orgId}`)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public removeOwnerFromOrganization(orgId: string, userIds: string[]) {
+    return this.http
+      .post<ApiResponse>(`${environment.tallyURL}/organization/v1/remove-owner-from-organization/${orgId}`, userIds)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+
 }

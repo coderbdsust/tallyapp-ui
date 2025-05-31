@@ -30,6 +30,8 @@ export class MenuService implements OnDestroy, OnInit {
 
       if (authUser?.role.includes('ADMIN')) {
         this._pagesMenu.set(Menu.adminPages);
+      }else if(authUser?.role.includes('MANAGER')){
+        this._pagesMenu.set(Menu.managerPages);
       } else {
         this._pagesMenu.set(Menu.userPages);
       }

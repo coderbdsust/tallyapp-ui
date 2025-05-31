@@ -1,0 +1,44 @@
+<div class="mb-4 flex justify-between m-4">
+  <div class="inline-block">
+    <h2 class="font-semibold text-foreground">All Owners</h2>
+    <div class="space-x-1 text-xs font-medium text-muted-foreground"></div>
+  </div>
+</div>
+<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
+  <div
+    class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+    <table
+      class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+      <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
+        <tr>
+          <th>Full Name </th>
+          <th>Email</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let owner of orgOwners?.owners; let i = index" class="gap-4 hover:bg-card/50">
+          <td>
+            <div class="flex items-center gap-2.5">
+              <div class="flex flex-col">
+                <a class="text-sm font-semibold text-foreground hover:text-primary" href="#"> {{
+                  owner.fullName }} </a>
+              </div>
+            </div>
+          </td>
+          <td>{{ owner.email }}</td>
+          <td>
+            <div class="flex items-center gap-4">
+              <a (click)="removeOwnerFromOrganization(owner)" class="flex flex-row gap-2 hover:text-red-700">
+                <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-6 w-6'"> </svg-icon>
+              </a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="flex items-center justify-end gap-2 p-4">
+    <app-button (click)="close()" impact="bold" tone="primary" shape="rounded" size="medium"> Close </app-button>   
+  </div>
+</div>

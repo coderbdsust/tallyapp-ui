@@ -19,6 +19,47 @@ export class Menu {
     }
   ];
 
+    public static managerPages: MenuItem[] = [
+    {
+      group: 'Base',
+      separator: false,
+      items: [
+        {
+          icon: 'assets/icons/heroicons/outline/chart-pie.svg',
+          label: 'Dashboard',
+          route: '/dashboard',
+          children: [
+            { label: 'Home', route: '/dashboard/home' },
+            { label: 'Statistics', route: '/dashboard/statistics' },
+          ],
+        }
+      ],
+    },
+    {
+      group: 'Manager',
+      separator: false,
+      items: [
+        {
+          icon: 'assets/icons/heroicons/outline/office.svg',
+          label: 'Organization',
+          route: '/organization',
+          children: [
+            { label: 'Employees', route: '/organization/employee/list' },
+            { label: 'Product', route: '/organization/product/list' }
+          ]
+        },
+        {
+         icon: 'assets/icons/heroicons/outline/building-library.svg',
+          label: 'Manage',
+          route: '/organization',
+          children: [
+            { label: 'Organization', route: '/organization/list' },
+          ]
+        }
+      ],
+    },
+  ];
+
   public static adminPages: MenuItem[] = [
     {
       group: 'Base',

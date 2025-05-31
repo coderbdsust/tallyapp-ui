@@ -32,6 +32,11 @@ export interface UserForOrganization {
     email:string;
 }
 
+export interface OrganizationOwner{
+  organization: Organization;
+  owners: UserForOrganization[];
+}
+
 export interface OrganizationTopEmployee {
   fullName:string;
   dateOfBirth:string;

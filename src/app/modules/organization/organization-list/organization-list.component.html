@@ -62,63 +62,48 @@
       class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
       <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
         <tr>
-          <th># No</th>
           <th>Organization Name</th>
           <th>Owner</th>
           <th>Reg Number</th>
           <th>Tin Number</th>
           <th>Vat Number</th>
           <th>Mobile No</th>
-          <th>Email</th>
           <th>Total Products</th>
           <th>Total Employees</th>
-           <th>Total Owner</th>
+          <th>Owners</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let org of pageResponse?.content; let i = index" class="gap-4 hover:bg-card/50">
-          <td>{{ i + startIndex}}</td>
-          <td class="relative">
-            <div class="flex items-center gap-2.5 group">
-              <!-- Avatar -->
-              <img 
-                [src]="org.avatar || 'https://placehold.co/400'" 
-                alt="user avatar" 
-                class="h-9 w-9 shrink-0 rounded-full"
-              />
-          
-              <!-- Name -->
+          <td>
+            <div class="flex items-center gap-2.5">
+              <img alt="user avatar" class="h-9 w-9 shrink-0 rounded-full" [src]="org.image || 'https://placehold.co/400'" />
               <div class="flex flex-col">
-                <a class="text-sm font-semibold text-foreground hover:text-primary" href="#">
-                  {{ org.orgName }}
+                <a class="text-sm font-semibold text-foreground hover:text-primary" href="#"> {{
+                  org.orgName }} </a>
+                <a class="text-xs font-medium text-muted-foreground/70 hover:text-primary" href="#">
+                  {{ org.orgEmail }}
                 </a>
-              </div>
-          
-              <!-- Hover Image Preview (Fix for table cutting issue) -->
-              <div 
-                class="absolute left-12 top-0 w-32 h-32 bg-white shadow-lg rounded-lg border border-gray-300 p-1
-                       opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
-                       z-50"
-              >
-                <img 
-                  [src]="org.image || 'https://placehold.co/400'" 
-                  alt="Preview" 
-                  class="w-full h-full object-cover rounded-lg"
-                >
               </div>
             </div>
           </td>
-           <td>{{ org.owner }}</td>
+          <td>{{ org.owner }}</td>
           <td>{{ org.orgRegNumber }}</td>
           <td>{{ org.orgTinNumber }}</td>
           <td>{{ org.orgVatNumber }}</td>
           <td>{{ org.orgMobileNo }}</td>
-           <td>{{ org.orgEmail }}</td>
           <td>{{ org.totalProducts }}</td>
           <td>{{ org.totalEmployees }}</td>
-           <td>{{ org.totalOwners }}</td>
+          <td>
+            <div class="flex items-center gap-4">
+              <a (click)="openOrganizationOwners(org)" class="flex flex-row gap-2 hover:text-red-700">
+                {{ org.totalOwners }}
+                <svg-icon src="./assets/icons/heroicons/outline/eye.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
+              </a>
+            </div>
+          </td>
           <td>{{ org.status | word }}</td>
           <td class="text-center">
             <div class="flex items-center gap-4">
