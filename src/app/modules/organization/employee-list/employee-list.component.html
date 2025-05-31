@@ -13,23 +13,6 @@
         <p>Add Employee</p>
       </button>
 
-      <button *ngIf="organization"
-        class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
-        (click)="assignOrganization()">
-        <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-        <p>Add Owner To Organization</p>
-      </button>
-
-      <button *ngIf="organization" class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
-      (click)="openOrganizationDrawer(true)">
-        <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-     </button>
-
-      <button class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
-        (click)="openOrganizationDrawer(false)">
-        <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-      </button>
-
     </div>
   </div>
 </div>
@@ -170,10 +153,6 @@
     </div>
   </div>
 </div>
-
-<app-assign-organization #assignOrganizationModal [organization]="organization"></app-assign-organization>
-
-<app-add-organization #organizationDrawer (orgEmitter)="onAddOrganization($event)"></app-add-organization>
 
 <app-add-employee #employeeDrawer (employeeEmitter)="onAddEmployee($event)" [organization]="organization">
 

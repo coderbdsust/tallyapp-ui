@@ -6,6 +6,7 @@ import { BehaviorSubject, catchError } from 'rxjs';
 import { Organization, OrganizationTopEmployee, UserForOrganization } from './model/organization.model';
 import { Router } from '@angular/router';
 import { ApiResponse } from '../../auth/services/auth.model';
+import { PageResponse } from 'src/app/common/models/page-response';
 
 @Injectable({
   providedIn: 'root',
@@ -39,6 +40,14 @@ export class OrganizationService extends CommonService {
   public getOrganizations() {
     return this.http
       .get<Organization[]>(`${environment.tallyURL}/organization/v1/list`)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public getOrganizationsByPage(page: number, size: number, search: string) {
+    return this.http
+      .get<PageResponse<Organization>>(`${environment.tallyURL}/organization/v1/page/list`, {
+        params: { page, size, search }
+      })
       .pipe(catchError(this.mapErrorResponse));
   }
 

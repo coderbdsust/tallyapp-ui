@@ -28,9 +28,21 @@
               />
 
             <label for="orgName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Organization Name</label>
-            <input readonly formControlName="orgName" type="text" name="orgName" id="orgName"
+            <!-- <input readonly formControlName="orgName" type="text" name="orgName" id="orgName"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" required
-              />
+              /> -->
+              <ng-select 
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                  [items]="organizationList"
+                  [multiple]="false"
+                  bindValue="id"
+                  bindLabel="orgName"
+                  formControlName="orgId"
+                  placeholder="Select Organization"
+                  [searchable]="false"
+                  (change)="onOrganizationChange($event)"
+                  >
+              </ng-select>
           </div>
 
           <div class="col-span-2">

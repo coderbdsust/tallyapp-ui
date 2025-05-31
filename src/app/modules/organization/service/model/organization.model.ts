@@ -20,6 +20,9 @@ export interface Organization {
     owner: string;
     image: string | './assets/furniture/furniture-01.png';
     avatar: string | './assets/avatars/avt-01.jpg';
+    totalEmployees: number;
+    totalProducts: number | 0;
+    totalOwners: number | 0;
   }
   
 

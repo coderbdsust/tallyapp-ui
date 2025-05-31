@@ -1,22 +1,18 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
-import { EditAppPropertiesComponent } from '../../admin/pages/app-properties/modal/edit-app-properties.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, NgIf } from '@angular/common';
 import { OrganizationService } from '../service/organization.service';
 import { AssignOrganizationComponent } from '../modal/assign-organization/assign-organization.component';
 import { Organization } from '../service/model/organization.model';
-import { AddEmployeeComponent } from '../drawer/add-employee/add-employee.component';
 import { EmployeeService } from '../service/employee.service';
-import { Employee } from '../service/model/employee.model';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
 import { AddOrganizationComponent } from '../drawer/add-organization/add-organization.component';
 
 @Component({
-  selector: 'app-organization-detail',
+  selector: 'app-organization-list',
   imports: [
     AngularSvgIconModule,
     FormsModule,
@@ -24,18 +20,15 @@ import { AddOrganizationComponent } from '../drawer/add-organization/add-organiz
     CommonModule,
     AssignOrganizationComponent,
     AddOrganizationComponent,
-    AddEmployeeComponent,
     WordPipe,
     NgIf
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './organization-detail.component.html',
-  styleUrl: './organization-detail.component.scss',
+  templateUrl: './organization-list.component.html',
+  styleUrl: './organization-list.component.scss',
 })
-export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
-  @ViewChild('employeeDrawer') employeeDrawer!: AddEmployeeComponent;
+export class OrganizationListComponent extends PaginatedComponent<Organization> {
   @ViewChild('organizationDrawer') organizationDrawer!: AddOrganizationComponent;
-  @ViewChild('addEmployeeModal', { static: false }) addEmployeeModal!: EditAppPropertiesComponent;
   @ViewChild('assignOrganizationModal', { static: false }) assignOrganizationModal!: AssignOrganizationComponent;
   search: string = '';
   loading: boolean = false;
@@ -56,40 +49,20 @@ export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
     this.orgService.organization$.subscribe((org) => {
       if(org) {
         this.organization = org;
-        this.loadEmployeeByOrganization(org.id, this.currentPage, this.selectedRows, this.search);
+        this.loadOrganizationByPage(this.currentPage, this.selectedRows, this.search);
       }
     });
   }
 
-  editEmployee(selectedEmployee: Employee) {
-    this.employeeDrawer.openDrawer(selectedEmployee);
+  editOrganization(selectedOrganization: Organization) {
+    this.organizationDrawer.openDrawer(selectedOrganization);
   }
 
-  deleteEmployee(selectedEmployee: Employee) {
-    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
-      width: '350px',
-      data: { message: `Are you sure you want to delete ${selectedEmployee.fullName}?` },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.empService.deleteEmployee(selectedEmployee.id).subscribe({
-          next: (response) => {
-            this.removeFromPage(selectedEmployee.id, 'id');
-            this.empService.showToastSuccess(response.message);
-          },
-          error: (errRes) => {
-            this.empService.showToastErrorResponse(errRes);
-          },
-        });
-      }
-    });
-  }
-
-  private loadEmployeeByOrganization(orgId: string, page: number, size: number, search: string) {
+  private loadOrganizationByPage(page: number, size: number, search: string) {
     this.loading = true;
-    this.empService.getEmployeesByOrganization(orgId, page, size, search).subscribe({
+    this.orgService.getOrganizationsByPage(page, size, search).subscribe({
       next: (response) => {
+        this.allOrganizations = response.content;
         this.pageResponse = response;
         this.currentPage = response.pageNo;
         this.totalRows = response.totalElements;
@@ -105,21 +78,16 @@ export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
   }
 
   onSearchChange(event: Event) {
-    const input = (event.target as HTMLInputElement).value;
-    this.search = input;
-    this.loadEmployeeByOrganization(this.organization.id, 0, this.selectedRows, this.search);
+    // const input = (event.target as HTMLInputElement).value;
+    // this.search = input;
+    // this.loadOrganizationByPage(0, this.selectedRows, this.search);
+    this.orgService.showToastInfo('Search functionality is not implemented yet.');
   }
 
   onSelectChange(event: Event) {
     const rows = parseInt((event.target as HTMLSelectElement).value, 10);
     this.selectedRows = rows === -1 ? this.totalRows || 0 : rows;
-    this.loadEmployeeByOrganization(this.organization.id, 0, this.selectedRows, this.search);
-  }
-
-  onSelectOrganization(event:Event){
-    const orgId = (event.target as HTMLSelectElement).value;
-    this.organization = this.allOrganizations.find(org => org.id === orgId) || this.organization;
-    this.loadEmployeeByOrganization(this.organization.id, 0, this.selectedRows, this.search);
+    this.loadOrganizationByPage(0, this.selectedRows, this.search);
   }
 
   goToPreviousPage() {
@@ -144,20 +112,15 @@ export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
   }
 
   private updatePagination() {
-    this.loadEmployeeByOrganization(this.organization.id, this.currentPage, this.selectedRows, this.search);
+    this.loadOrganizationByPage(this.currentPage, this.selectedRows, this.search);
   }
 
   assignOrganization() {
     this.assignOrganizationModal.openModal();
   }
-
+  
   onAddOrganization(org: Organization) {
-    this.organization = org;
-    this.allOrganizations.push(org);
-  }
-
-  onAddEmployee(emp: Employee) {
-    this.updateInPage(emp, 'id');
+    this.updateInPage(org, 'id');
   }
 
   openOrganizationDrawer(isEdit:Boolean) {
@@ -167,9 +130,5 @@ export class OrganizationDetailComponent extends PaginatedComponent<Employee> {
       this.organizationDrawer.openDrawer();
     }
     
-  }
-
-  openEmployeeDrawer() {
-    this.employeeDrawer.openDrawer();
   }
 }

@@ -44,8 +44,16 @@ export class Menu {
           label: 'Organization',
           route: '/organization',
           children: [
-            { label: 'My Organization', route: '/organization/detail' },
+            { label: 'Employees', route: '/organization/employee/list' },
             { label: 'Product', route: '/organization/product/list' }
+          ]
+        },
+        {
+         icon: 'assets/icons/heroicons/outline/building-library.svg',
+          label: 'Manage',
+          route: '/organization',
+          children: [
+            { label: 'Organization', route: '/organization/list' },
           ]
         },
         {

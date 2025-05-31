@@ -1,8 +1,8 @@
-import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, Input, OnChanges } from '@angular/core';
+import { CommonModule, NgClass, NgIf } from '@angular/common';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { Organization, UserForOrganization } from '../../service/model/organization.model';
+import { Organization } from '../../service/model/organization.model';
 import { OrganizationService } from '../../service/organization.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
@@ -14,7 +14,8 @@ import { NgSelectComponent } from '@ng-select/ng-select';
   styleUrl: './assign-organization.component.scss',
 })
 export class AssignOrganizationComponent implements OnChanges {
-  @Input() organization!: Organization;
+  organization: Organization | null = null;
+  @Input() organizationList!: Organization[];
   form!: FormGroup;
   submitted = false;
   isModalOpen = false;
@@ -25,8 +26,7 @@ export class AssignOrganizationComponent implements OnChanges {
 
   private initializeForm() {
     this.form = this._formBuilder.group({
-      orgId: [this.organization?.id, [Validators.required]],
-      orgName: [this.organization?.orgName, [Validators.required]],
+      orgId: [null, [Validators.required]],
       selectedUsers: [[], [Validators.required]],
     });
   }
@@ -49,6 +49,15 @@ export class AssignOrganizationComponent implements OnChanges {
 
   trackByUserId(index: number, user: any): number {
     return user.id;
+  }
+
+  onOrganizationChange(org: Organization) {
+    if (org) {
+      this.organization = org;
+      this.form.patchValue({
+        orgId: org.id,
+      });
+    }
   }
 
   onSearchKeyType(event: Event) {
@@ -81,13 +90,10 @@ export class AssignOrganizationComponent implements OnChanges {
   onSubmit() {
     this.submitted = true;
     const addOwner = this.form.value;
-
     if (this.form.invalid) {
       return;
     }
-
     const userIds = addOwner.selectedUsers;
-
     this.orgService.addUsersToOrganization(addOwner.orgId, userIds).subscribe({
       next: (response) => {
         this.closeModal();

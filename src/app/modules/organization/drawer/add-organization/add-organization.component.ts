@@ -96,8 +96,6 @@ export class AddOrganizationComponent {
   }
 
   onAddOrganization() {
-    console.log('submitted');
-
     this.submitted = true;
 
     const organizationData = this.orgForm.value;
