@@ -52,7 +52,7 @@ export class ProfileMenuComponent implements OnInit {
     {
       title: 'My Organization',
       icon: './assets/icons/heroicons/outline/office.svg',
-      link: '/organization/detail',
+      link: '/organization/list',
     },
     {
       title: 'Change Password',
@@ -138,12 +138,11 @@ export class ProfileMenuComponent implements OnInit {
   public getMenu(): void {
     this.authService.user.pipe(
       take(1),
-      map(user => (user?.role === 'ROLE_ADMIN' ? this.profileMenuAdmin : this.profileMenuUser))
+      map(user => (user?.role.toLowerCase().includes('admin') ? this.profileMenuAdmin : this.profileMenuUser))
     ).subscribe(menu => {
       this.menuItem = menu; // Assign the resolved menu array
     });
   }
-  
-  
-  
+
+
 }

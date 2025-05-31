@@ -32,8 +32,7 @@
 
       <!-- Profile menu -->
       <div class="items-center justify-end sm:order-4 md:flex md:flex-1 lg:w-0">
-
-        <div class="w-80">
+        <div *ngIf="isOrganizationRoute" class="w-80">
           <div class="relative">
             <select
               id="orgId"
@@ -53,7 +52,6 @@
             </label>
           </div>
         </div>
-
         <app-profile-menu></app-profile-menu>
       </div>
     </div>

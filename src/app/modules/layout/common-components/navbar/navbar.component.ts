@@ -4,9 +4,10 @@ import { NavbarMobileComponent } from './navbar-mobile/navbar-mobilecomponent';
 import { ProfileMenuComponent } from './profile-menu/profile-menu.component';
 import { NavbarMenuComponent } from './navbar-menu/navbar-menu.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Organization } from 'src/app/modules/organization/service/model/organization.model';
 import { OrganizationService } from 'src/app/modules/organization/service/organization.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-navbar',
@@ -17,15 +18,22 @@ import { OrganizationService } from 'src/app/modules/organization/service/organi
         NavbarMenuComponent,
         ProfileMenuComponent,
         NavbarMobileComponent,
-        NgFor
+        NgFor,
+        NgIf
     ]
 })
 export class NavbarComponent implements OnInit {
 
   allOrganizations: Organization[] = [];
   organzation: Organization | null = null;
+  isOrganizationRoute = false;
+  targetPaths = ['/dashboard', '/employee', '/product'];
   
-  constructor(public menuService: MenuService, public orgService: OrganizationService) { }
+  constructor(public menuService: MenuService, public orgService: OrganizationService, private router: Router) { 
+    this.router.events.subscribe(() => {
+      this.isOrganizationRoute = this.targetPaths.some(path => this.router.url.includes(path));
+    });
+  }
 
   ngOnInit(): void {
 
