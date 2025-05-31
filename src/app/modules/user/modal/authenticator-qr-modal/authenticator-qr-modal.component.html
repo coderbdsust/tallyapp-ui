@@ -1,9 +1,9 @@
 <h2 mat-dialog-title class="flex items-center justify-center">2FA Authenticator App</h2>
 <mat-dialog-content>
-  <ng-container *ngIf="step === 'qr'" class="flex justify-center items-end">
+  <div *ngIf="step === 'qr'" class="flex flex-col justify-center items-center">
     <h2>Scan the QR Code</h2>
     <img [src]="base64Image" alt="QR Code" />
-    <mat-dialog-actions class="flex float-right gap-1">
+    <mat-dialog-actions class="flex items-center justify-center gap-1">
         <app-button full 
             impact="bold" 
             tone="danger" 
@@ -24,7 +24,7 @@
             Validate
         </app-button>
     </mat-dialog-actions>
-  </ng-container>
+  </div>
 
   <ng-container *ngIf="step === 'otp'">
     <div>

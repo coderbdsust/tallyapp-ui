@@ -323,8 +323,7 @@ export class ProfileComponent implements OnInit {
 
   onChangeTfaStatusByEmail() {
     let tfaStatus = this.tfaForm.value;
-    tfaStatus.tfaEnable = tfaStatus.byEmail || tfaStatus.byMobile || tfaStatus.byAuthenticator;
-    tfaStatus.isChannelEnable= tfaStatus.byEmail;
+    tfaStatus.tfaEnable = tfaStatus.byEmail;
     this.userProfileService.changeTFAStatusEmail(tfaStatus).subscribe({
       next: (response) => {
         this.userProfileService.showToastSuccess(response.message);
@@ -337,8 +336,7 @@ export class ProfileComponent implements OnInit {
 
   onChangeTfaStatusByMobile() {
     let tfaStatus = this.tfaForm.value;
-    tfaStatus.tfaEnable = tfaStatus.byEmail || tfaStatus.byMobile || tfaStatus.byAuthenticator;
-    tfaStatus.isChannelEnable= tfaStatus.byMobile;
+    tfaStatus.tfaEnable = tfaStatus.byMobile;
     this.userProfileService.changeTFAStatusMobile(tfaStatus).subscribe({
       next: (response) => {
         this.userProfileService.showToastSuccess(response.message);
