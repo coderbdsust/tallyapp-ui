@@ -31,7 +31,6 @@ export class NftAuctionsTableComponent implements OnInit {
   loadProductsByOrganization(orgId: String) {
     this.productService.getProductByOrganization(orgId,0, 10, '','').subscribe({
       next: (response) => {
-        console.log(response)
         this.products = response.content;
       },
       error: (error) => {
