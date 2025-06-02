@@ -90,6 +90,16 @@ export class Menu {
           ]
         },
         {
+          icon: 'assets/icons/heroicons/outline/newpaper.svg',
+          label: 'Invoice Management',
+          route: '/invoice',
+          children: [
+            { label: 'Invoice', route: '/invoice/list' },
+            { label: 'Add Invoice', route: '/invoice/add' },
+            { label: 'Invoice Details', route: '/invoice/detail' }
+          ]
+        },
+        {
          icon: 'assets/icons/heroicons/outline/building-library.svg',
           label: 'Manage',
           route: '/organization',

@@ -1,0 +1,231 @@
+<div class="flex min-w-full flex-col rounded-xl border-none border-muted/20 bg-background" id="invoiceDetailContainer">
+    <div class="flex flex-col m-6 p-2 gap-4 divide-y-2 divide-dashed">
+
+        <!-- Invoice Info + Company Info -->
+        <div class="flex flex-row justify-between">
+            <div class="w-2/6 pr-2">
+                <img src="./assets/img/component-btn.png" alt="Invoice Image"
+                    class="w-60 h-auto rounded-lg shadow-md mb-4">
+
+                <div class="mt-2 text-lg font-bold text-muted-foreground flex justify-between">
+                    <span>Invoice No:</span>
+                    <span class="font-medium">#123456</span>
+                </div>
+
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>Invoice Date:</span>
+                    <span class="font-medium">2025-06-01</span>
+                </div>
+
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>Payment Status:</span>
+                    <span class="font-medium">Paid</span>
+                </div>
+            </div>
+
+
+            <div class="w-2/6 pl-2">
+                <img src="./assets/img/barcode-v2.png" alt="Invoice QR Code" class="w-full h-12 rounded bg-gray-100">
+
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>Company Name:</span>
+                    <span class="font-medium">TallyApp Ltd.</span>
+                </div>
+
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>Company Address:</span>
+                    <span class="font-medium">123 Main St, Dhaka</span>
+                </div>
+
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>Postcode:</span>
+                    <span class="font-medium">1207</span>
+                </div>
+
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>TIN No:</span>
+                    <span class="font-medium">123456789</span>
+                </div>
+
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>VAT Registration No:</span>
+                    <span class="font-medium">987654321</span>
+                </div>
+
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>Email Address:</span>
+                    <span class="font-medium">info&#64;tallyapp.com</span>
+                </div>
+
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>Contact No:</span>
+                    <span class="font-medium">+880 1234 567890</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Billing Address -->
+        <div class="flex flex-row">
+            <div class="w-2/6 pr-2">
+                <label class="text-lg font-semibold text-muted-foreground">Billing Address</label>
+
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>Customer Name:</span>
+                    <span class="font-medium">John Doe</span>
+                </div>
+
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>Customer Address:</span>
+                    <span class="font-medium">456 Elm Street</span>
+                </div>
+
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>Postcode:</span>
+                    <span class="font-medium">1000</span>
+                </div>
+
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>Phone:</span>
+                    <span class="font-medium">+880 1111 222333</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Product Table -->
+        <div class="flex flex-col">
+             <h1 class="text-lg font-semibold text-muted-foreground">Purchase History</h1>
+            <div
+                class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+                <table
+                    class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+                    <thead class="bg-black-100 border border-muted/20 text-sm text-muted-foreground text-white">
+                        <tr class="text-base">
+                            <th>SL</th>
+                            <th>Product Details</th>
+                            <th>Unit Rate</th>
+                            <th>Quantity</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="py-2 text-sm">1</td>
+                            <td class="py-2 text-sm">
+                                <div class="flex flex-col">
+                                    <span>Product 1</span>
+                                    <span class="text-xs text-muted-foreground">Description for Product 1</span>
+                                </div>
+                            </td>
+                            <td class="py-2 text-sm">$10.00</td>
+                            <td class="py-2 text-sm">2</td>
+                            <td class="py-2 text-sm">$20.00</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-sm">2</td>
+                            <td class="py-2 text-sm">
+                                <span>New Product</span><br>
+                                <span class="text-xs text-muted-foreground">Some description</span>
+                            </td>
+                            <td class="py-2 text-sm">$15.00</td>
+                            <td class="py-2 text-sm">3</td>
+                            <td class="py-2 text-sm">$45.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payment History -->
+        <div class="flex flex-row justify-between">
+            <div class="w-4/6 pr-2 mt-2">
+                <h1 class="text-lg font-semibold text-muted-foreground">Customer Payment History</h1>
+                <div
+                    class="mt-2 scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+                    <table
+                        class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+                        <thead class="bg-black-100 border border-muted/20 text-sm text-muted-foreground text-white">
+                            <tr>
+                                <th>Date</th>
+                                <th>Method</th>
+                                <th>Ref#</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-1 text-sm">2024-10-01</td>
+                                <td class="py-1 text-sm">Cash</td>
+                                <td class="py-1 text-sm">bKash</td>
+                                <td class="py-1 text-sm">$10.00</td>
+                            </tr>
+                            <tr>
+                                <td class="py-1 text-sm">2024-10-02</td>
+                                <td class="py-1 text-sm">Card</td>
+                                <td class="py-1 text-sm">#TX1002</td>
+                                <td class="py-1 text-sm">$55.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="w-2/6 pr-2">
+                <div class="flex flex-col items-end mt-8 text-base gap-1">
+                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
+                        <span>Sub Total:</span>
+                        <span>$65.00</span>
+                    </div>
+                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
+                        <span>Total Tax:</span>
+                        <span>$5.00</span>
+                    </div>
+                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
+                        <span>Total Discount:</span>
+                        <span>$0.00</span>
+                    </div>
+                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
+                        <span>Delivery Charge:</span>
+                        <span>$2.00</span>
+                    </div>
+                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
+                        <span>Total Amount:</span>
+                        <span>$72.00</span>
+                    </div>
+                    <div class="w-4/6 pl-2  text-muted-foreground flex justify-between">
+                        <span>Total Paid:</span>
+                        <span>$65.00</span>
+                    </div>
+                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
+                        <span>Total Due:</span>
+                        <span>$7.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="flex flex-col mt-6">
+            <label class="text-lg font-semibold text-muted-foreground">Notes</label>
+            <p class="text-sm text-muted-foreground">
+                Thank you for your business! If you have any questions about this invoice, please contact us at
+                <a href="mailto:contacts.tallyapp&#64;gmail.com"
+                    class="font-semibold">contacts.tallyapp&#64;gmail.com</a>.
+            </p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex flex-row justify-end mt-6 gap-2 " id="buttonSection">
+            <button class="flex flex-row px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-500/80">
+                <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
+                <span class="ml-2" (click)="downloadPdf()">Download</span>
+            </button>
+            <button class="flex flex-row px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80">
+                <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
+                <span class="ml-2">New Invoice</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -19,6 +19,11 @@ const routes: Routes = [
     loadChildren: () => import('../organization/organization.module').then((m) => m.OrganizationModule),
   },
   {
+    path: 'invoice',
+    component: LayoutComponent,
+    loadChildren: () => import('../invoice/invoice.module').then((m) => m.InvoiceModule),
+  },
+  {
     path: 'user',
     component: LayoutComponent,
     loadChildren: () => import('../user/user.module').then((m) => m.UserModule),

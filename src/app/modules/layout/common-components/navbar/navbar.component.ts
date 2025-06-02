@@ -27,7 +27,7 @@ export class NavbarComponent implements OnInit {
   allOrganizations: Organization[] = [];
   organzation: Organization | null = null;
   isOrganizationRoute = false;
-  targetPaths = ['/dashboard', '/employee', '/product'];
+  targetPaths = ['/dashboard', '/employee', '/product','/invoice'];
   
   constructor(public menuService: MenuService, public orgService: OrganizationService, private router: Router) { 
     this.router.events.subscribe(() => {

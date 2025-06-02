@@ -1,0 +1,241 @@
+<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
+    <div class="flex flex-col m-6 gap-4 divide-y-2 divide-dashed">
+        <div class="flex flex-row justify-between">
+            <div class="w-2/6 pr-2 ">
+                <img src="./assets/img/component-btn.png" alt="Invoice Image"
+                    class="w-60 h-auto rounded-lg shadow-md mb-4">
+                <input type="text" placeholder="Invoice No"
+                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                <input type="text" placeholder="Invoice Date"
+                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                <input type="text" placeholder="Payment Status"
+                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                
+                 </div>
+            <div class="w-2/6 pl-2 ">
+                <img src="./assets/img/barcode-v2.png" alt="Invoice QR Code" class="w-full h-12 rounded bg-gray-100">
+                <input type="text" placeholder="Company Name"
+                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                <textarea placeholder="Company Address"
+                    class="bg-gray-100 mt-2 w-full rounded-md border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
+                <input type="text" placeholder="Postcode"
+                    class="bg-gray-100 mt-2 w-full rounded-md border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                <input type="text" placeholder="TIN No"
+                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                <input type="text" placeholder="VAT Registration No"
+                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                <input type="text" placeholder="Email Address"
+                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                <input type="text" placeholder="Contact No"
+                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                
+            </div>
+        </div>
+        <div class="flex flex-row">
+            <div class="w-2/6 pr-2">
+                <label class="text-lg font-semibold text-muted-foreground">Billing Address</label>
+                <input type="text" placeholder="Customer Name"
+                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                <textarea placeholder="Customer Address"
+                    class="bg-gray-100 mt-2 w-full rounded-md border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
+                <input type="text" placeholder="Customer Postcode"
+                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                <input type="text" placeholder="Customer Phone"
+                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+            </div>
+        </div>
+        <div class="flex flex-col">
+           <h1 class="text-lg font-semibold text-muted-foreground">Purchase History</h1>
+            <div
+                class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+                <table
+                    class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+                    <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
+                        <tr>
+                            <th>SL</th>
+                            <th>Product Details</th>
+                            <th>Unit Rate</th>
+                            <th>Quantity</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="py-4 text-sm">1</td>
+                            <td class="py-4 text-sm">
+                                <div class="flex flex-col">
+                                    <span>Product 1</span>
+                                    <span class="text-xs text-muted-foreground">Description for Product 1</span>
+                                </div>
+                            </td>
+                            <td class="py-4 text-sm">$10.00</td>
+                            <td class="py-4 text-sm">2</td>
+                            <td class="py-4 text-sm">$20.00</td>
+                            <td class="py-4 text-sm">
+                                <div class="flex items-center gap-4">
+                                    <a class="text-primary hover:text-red-500">
+                                        <svg-icon src="./assets/icons/heroicons/outline/trash.svg"
+                                            [svgClass]="'h-4 w-4'"> </svg-icon>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 text-sm">2</td>
+                            <td class="py-4 text-sm">
+                                <input type="text" placeholder="Product Name"
+                                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                                <textarea type="text" placeholder="Product Details"
+                                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
+                            </td>
+
+                            <td class="py-4 text-sm">
+                                <input type="number" value="0.00" step="1" placeholder="Rate"
+                                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                            </td>
+                            <td class="py-4 text-sm">
+                                <input type="number" value="1" min="1" placeholder="Quantity"
+                                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                            </td>
+                            <td class="py-4 text-sm">
+                                <input type="text" value="$0.00" readonly
+                                    class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                            </td>
+                            <td class="py-4 text-sm">
+                                <div class="flex items-center gap-4">
+                                    <a class="text-primary hover:text-red-500 rounded-md">
+                                        <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg"
+                                            [svgClass]="'h-5 w-5'"> </svg-icon>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="flex flex-row justify-between">
+            <div class="w-4/6 pr-2">
+                <h1 class="text-lg font-semibold text-muted-foreground">Customer Payment History</h1>
+                <div
+                    class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+                    <table
+                        class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+                        <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
+                            <tr>
+                                <th>Date</th>
+                                <th>Method</th>
+                                <th>Ref#</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-4 text-sm">2024-10-01</td>
+                                <td class="py-4 text-sm">
+                                    Cash
+                                </td>
+                                <td class="py-4 text-sm">bKash</td>
+                                <td class="py-4 text-sm">$10.00</td>
+                                <td class="py-4 text-sm">
+                                    <div class="flex items-center gap-4">
+                                        <a class="text-primary hover:text-red-500">
+                                            <svg-icon src="./assets/icons/heroicons/outline/trash.svg"
+                                                [svgClass]="'h-5 w-5'"> </svg-icon>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 text-sm">
+                                    <input type="date" value="2024-10-01"
+                                        class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                                </td>
+                                <td class="py-4 text-sm">
+                                    <input type="text" placeholder="Method"
+                                        class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                                </td>
+                                <td class="py-4 text-sm">
+                                    <input type="text"  placeholder="Reference"
+                                        class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                                </td>
+                                <td class="py-4 text-sm">
+                                    <input type="text" value="$0.00" readonly
+                                        class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                                </td>
+                                <td class="py-4 text-sm">
+                                    <div class="flex items-center gap-4">
+                                        <a class="text-primary hover:text-red-500 rounded-md">
+                                            <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg"
+                                                [svgClass]="'h-6 w-6'"> </svg-icon>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="w-2/6 pr-2">
+                <div class="flex flex-col items-end mt-8">
+                    <div class="w-4/6 pl-2">
+                        <label class="text-base text-muted-foreground">Sub Total</label>
+                        <input type="text" value="$0.00" readonly
+                            class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                    </div>
+                    <div class="w-4/6 pl-2">
+                        <label class="text-base text-muted-foreground">Total Tax</label>
+                        <input type="text" value="$0.00" readonly
+                            class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                    </div>
+                    <div class="w-4/6 pl-2">
+                        <label class="text-base text-muted-foreground">Total Discount</label>
+                        <input type="text" value="$0.00" readonly
+                            class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                    </div>
+                    <div class="w-4/6 pl-2">
+                        <label class="text-base text-muted-foreground">Delivery Charge</label>
+                        <input type="text" value="$0.00" readonly
+                            class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                    </div>
+                    <div class="w-4/6 pl-2">
+                        <label class="text-base text-muted-foreground">Total Amount</label>
+                        <input type="text" value="$0.00" readonly
+                            class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                    </div>
+                    <div class="w-4/6 pl-2">
+                        <label class="text-base text-muted-foreground">Total Paid</label>
+                        <input type="text" value="$0.00" readonly
+                            class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                    </div>
+                    <div class="w-4/6 pl-2">
+                        <label class="text-base text-muted-foreground">Total Due</label>
+                        <input type="text" value="$0.00" readonly
+                            class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col mt-6">
+            <label class="text-lg font-semibold text-muted-foreground">Notes</label>
+            <p class="text-sm text-muted-foreground">
+                Thank you for your business! If you have any questions about this invoice, please contact us at
+                <a href="mailto:contacts.tallyapp&#64;gmail.com" class="font-semibold">contacts.tallyapp&#64;gmail.com</a>.
+            </p>
+
+        </div>
+        <div class="flex flex-row justify-end mt-2 gap-2">
+            <button class="flex flex-row px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80">
+                <svg-icon src="./assets/icons/heroicons/outline/folder.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
+                <span class="ml-2">Save</span>
+            </button>
+            <button class="flex flex-row px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-500/80">
+                <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
+                <span class="ml-2">Download</span>
+            </button>            
+        </div>
+    </div>
+</div>
