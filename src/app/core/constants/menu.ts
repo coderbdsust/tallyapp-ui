@@ -44,7 +44,7 @@ export class Menu {
           label: 'Organization',
           route: '/organization',
           children: [
-            { label: 'Employees', route: '/organization/employee/list' },
+            { label: 'Employee', route: '/organization/employee/list' },
             { label: 'Product', route: '/organization/product/list' }
           ]
         },
@@ -85,7 +85,7 @@ export class Menu {
           label: 'Organization',
           route: '/organization',
           children: [
-            { label: 'Employees', route: '/organization/employee/list' },
+            { label: 'Employee', route: '/organization/employee/list' },
             { label: 'Product', route: '/organization/product/list' }
           ]
         },

@@ -11,8 +11,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './invoice-detail.component.scss',
 })
 export class InvoiceDetailComponent {
-  
-  // Method 1: Increase html2canvas scale (Higher quality, larger file)
+
   downloadPdf() {
     console.log('Downloading invoice as PDF...');
 
@@ -25,10 +24,10 @@ export class InvoiceDetailComponent {
 
     // Increase scale for higher resolution
     html2canvas(invoiceElement, {
-      scale: 4, // Increased from 2 to 4 for better quality
+      scale: 2, // Reduce from 4 to 2
       useCORS: true,
       allowTaint: true,
-      backgroundColor: '#ffffff',
+      backgroundColor: '#ffffff'
     })
       .then((canvas) => {
         if (sectionToRemove) sectionToRemove.style.display = '';
