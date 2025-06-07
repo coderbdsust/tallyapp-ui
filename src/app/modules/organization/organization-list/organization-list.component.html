@@ -73,7 +73,7 @@
         <tr *ngFor="let org of pageResponse?.content; let i = index" class="gap-4 hover:bg-card/50">
           <td>
             <div class="flex items-center gap-2.5">
-              <img alt="user avatar" class="h-9 w-9 shrink-0 rounded-full" [src]="org.image || 'https://placehold.co/400'" />
+              <img alt="user avatar" class="h-9 w-9 shrink-0 rounded-full" [src]="org.banner || 'https://placehold.co/400'" />
               <div class="flex flex-col">
                 <a class="text-sm font-semibold text-foreground hover:text-primary" href="#"> {{
                   org.orgName }} </a>

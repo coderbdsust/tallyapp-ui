@@ -18,7 +18,7 @@ export interface Organization {
     orgAddressCountry: string;
     status: string;
     owner: string;
-    image: string | './assets/furniture/furniture-01.png';
+    banner: string | './assets/furniture/furniture-01.png';
     avatar: string | './assets/avatars/avt-01.jpg';
     logo: string | './assets/img/component-btn.png';
     totalEmployees: number;

@@ -94,8 +94,8 @@ export class AddOrganizationComponent {
       this.avatarUploader.setFile(org.avatar);
     }
 
-    if (org && org.image) {
-      this.bannerUploader.setFile(org.image);
+    if (org && org.banner) {
+      this.bannerUploader.setFile(org.banner);
     }
 
     this.orgForm = this._formBuilder.group({
@@ -114,7 +114,7 @@ export class AddOrganizationComponent {
         [Validators.required, Validators.pattern(/^01[3-9]\d{8}$/), Validators.minLength(11), Validators.maxLength(11)],
       ],
       since: [org?.since, Validators.required],
-      image: [org?.image],
+      banner: [org?.banner],
       avatar: [org?.avatar],
       logo: [org?.logo],
       orgAddressLine: [org?.orgAddressLine, [Validators.required]],
@@ -142,7 +142,7 @@ export class AddOrganizationComponent {
   onBannerImage(banner: File | null) {
     this.selectedImage = banner;
     if (!banner) {
-      this.orgForm.patchValue({ image: null });
+      this.orgForm.patchValue({ banner: null });
     }
   }
 
@@ -204,7 +204,7 @@ export class AddOrganizationComponent {
     if (this.selectedImage) {
       uploads.push(
         this.fileUploaderService.uploadFile(this.selectedImage).pipe(
-          map((response: any) => ({ field: 'image', url: response.fileURL })),
+          map((response: any) => ({ field: 'banner', url: response.fileURL })),
           catchError((error) => {
             this.orgService.showToastErrorResponse(error);
             return throwError(() => error);
