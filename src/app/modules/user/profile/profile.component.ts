@@ -15,10 +15,10 @@ import { AuthenticatorAppService } from '../service/authenticator-app.service';
 import { AuthenticatorQrModalComponent } from '../modal/authenticator-qr-modal/authenticator-qr-modal.component';
 
 @Component({
-    selector: 'app-profile',
-    imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, ButtonComponent, WordPipe],
-    templateUrl: './profile.component.html',
-    styleUrl: './profile.component.scss'
+  selector: 'app-profile',
+  imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, ButtonComponent, WordPipe],
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.scss'
 })
 export class ProfileComponent implements OnInit {
   userProfile: UserProfile | undefined;
@@ -30,11 +30,11 @@ export class ProfileComponent implements OnInit {
   constructor(
     private userProfileService: UserprofileService,
     private commonService: CommonService,
-    private authService:AuthService,
+    private authService: AuthService,
     private readonly _formBuilder: FormBuilder,
     private dialog: MatDialog,
     private authenticatorAppService: AuthenticatorAppService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     initFlowbite();
@@ -47,9 +47,9 @@ export class ProfileComponent implements OnInit {
 
   createTfaForm(): FormGroup {
     return this._formBuilder.group({
-        byEmail: [false],
-        byMobile: [false],
-        byAuthenticator: [false]
+      byEmail: [false],
+      byMobile: [false],
+      byAuthenticator: [false]
     });
   }
 
@@ -222,7 +222,7 @@ export class ProfileComponent implements OnInit {
     } else this.shortProfileList.removeAt(index);
   }
 
-  loadTfaStatus(){
+  loadTfaStatus() {
     this.userProfileService.getTfaStatus().subscribe({
       next: (tfaStatus) => {
         this.tfaForm.patchValue({
@@ -331,7 +331,7 @@ export class ProfileComponent implements OnInit {
       , error: (error) => {
         this.userProfileService.showToastErrorResponse(error);
       }
-    });   
+    });
   }
 
   onChangeTfaStatusByMobile() {
@@ -348,33 +348,43 @@ export class ProfileComponent implements OnInit {
   }
 
   onChangeTfaStatusByAuthenticator() {
-    let tfaStatus = this.tfaForm.value;
-    let byAuthenticator = tfaStatus.byAuthenticator;
+    let byAuthenticator = this.tfaForm.get('byAuthenticator')?.value;
+
     const dialogRef = this.dialog.open(AuthenticatorQrModalComponent, {
-        width: '500px',
-        data: byAuthenticator
+      width: '500px',
+      data: byAuthenticator
     });
 
     dialogRef.afterClosed().subscribe(otp => {
       if (otp) {
-        if(byAuthenticator){
+        const control = this.tfaForm.get('byAuthenticator');
+
+        if (byAuthenticator) {
           this.authenticatorAppService.authenticatorAppTfaEnable(otp).subscribe({
-            next:(response)=>{
+            next: (response) => {
               this.authenticatorAppService.showToastSuccess(response.message);
-            },error:(error)=>{
+            },
+            error: (error) => {
               this.authService.showToastErrorResponse(error);
+              control?.setValue(false, { emitEvent: false }); // revert
             }
           });
-        }else{
+        } else {
           this.authenticatorAppService.authenticatorAppTfaDisable(otp).subscribe({
-            next:(response)=>{
+            next: (response) => {
               this.authenticatorAppService.showToastSuccess(response.message);
-            },error:(error)=>{
+            },
+            error: (error) => {
               this.authService.showToastErrorResponse(error);
+              control?.setValue(true, { emitEvent: false }); // revert
             }
-          })
+          });
         }
+      } else {
+        // If modal closed without submitting OTP, revert checkbox
+        this.tfaForm.get('byAuthenticator')?.setValue(!byAuthenticator, { emitEvent: false });
       }
     });
   }
+
 }

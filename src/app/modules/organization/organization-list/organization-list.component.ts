@@ -126,6 +126,11 @@ export class OrganizationListComponent extends PaginatedComponent<Organization> 
       width: '650px',
       data: org,
     });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      this.loadOrganizationByPage(this.currentPage, this.selectedRows, this.search);
+    });
+
   }
 
   openOrganizationDrawer(isEdit: Boolean) {
