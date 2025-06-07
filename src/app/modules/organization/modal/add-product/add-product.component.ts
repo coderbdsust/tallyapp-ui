@@ -38,6 +38,7 @@ export class AddProductComponent {
   @Output() modifiedEmitter = new EventEmitter<Boolean>();
   selectedFile: File | null = null;
   @ViewChild(FileUploaderComponent) fileUploader!: FileUploaderComponent;
+  fileDeletedNeedToSubmit:boolean=false;
 
   constructor(
     private readonly _formBuilder: FormBuilder,
@@ -105,6 +106,9 @@ export class AddProductComponent {
 
   closeModal() {
     this.isModalOpen = false;
+    if(this.fileDeletedNeedToSubmit){
+      this.onSubmit();
+    }
   }
 
   get f() {
@@ -126,8 +130,14 @@ export class AddProductComponent {
     }
   }
 
+  onFileRemoved(){
+    console.log('File removed');
+    this.fileDeletedNeedToSubmit=true;
+  }
+
   onSubmit() {
     this.submitted = true;
+    this.fileDeletedNeedToSubmit=false;
 
     if (this.form.invalid) {
       return;

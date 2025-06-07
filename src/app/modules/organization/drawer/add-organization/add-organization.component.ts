@@ -42,6 +42,9 @@ export class AddOrganizationComponent {
     edgeOffset: '',
     backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-30',
     onHide: () => {
+      if(this.fileDeletedNeedToSubmit){
+        this.onAddOrganization();
+      }
       if(this.logoUploader) {
         this.logoUploader.clearFile();
       }
@@ -66,6 +69,7 @@ export class AddOrganizationComponent {
   selectedLogo: File | null = null;
   selectedImage: File | null = null;
   selectedAvatar: File | null = null;
+  fileDeletedNeedToSubmit:boolean=false;
 
   constructor(
     private readonly _formBuilder: FormBuilder,
@@ -156,8 +160,14 @@ export class AddOrganizationComponent {
     return this.orgForm.controls;
   }
 
+  onFileRemoved(){
+    console.log('File removed');
+    this.fileDeletedNeedToSubmit=true;
+  }
+
   onAddOrganization() {
     this.submitted = true;
+    this.fileDeletedNeedToSubmit=false;
 
     if (this.orgForm.invalid) {
       return;

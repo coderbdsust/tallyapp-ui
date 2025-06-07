@@ -25,6 +25,7 @@ export class FileUploaderComponent {
   uploadFile!: File | null;
   containFile: boolean = false;
   @Output() fileSelected = new EventEmitter<File|null>();
+  @Output() fileRemoved = new EventEmitter<void>();
 
   constructor(private fileUploaderService: FileUploaderService) {
   }
@@ -61,6 +62,7 @@ export class FileUploaderComponent {
     this.fileURL = null;
     this.containFile = false;
     this.fileSelected.emit(null);
+    this.fileRemoved.emit();
   }
 
   handleUploadFile() {

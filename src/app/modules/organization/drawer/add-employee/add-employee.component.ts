@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
@@ -37,6 +37,10 @@ export class AddEmployeeComponent {
       if(this.fileUploader) {
         this.fileUploader.clearFile();
       }
+
+     if(this.fileDeletedNeedToSubmit){
+        this.onEmployeeSubmit();
+      }
     }
   };
 
@@ -54,6 +58,7 @@ export class AddEmployeeComponent {
   empTypeList: String[] = [];
   selectedFile: File | null = null;
   employee: Employee | null = null;
+  fileDeletedNeedToSubmit:boolean=false;
 
   constructor(
     private readonly _formBuilder: FormBuilder,
@@ -155,9 +160,13 @@ export class AddEmployeeComponent {
     }
   }
 
+  onFileDeleted(){
+    this.fileDeletedNeedToSubmit=true;
+  }
+
   onEmployeeSubmit() {
-  
     this.submitted = true;
+    this.fileDeletedNeedToSubmit=false;
   
     const employeeData = this.empForm.value;
   
