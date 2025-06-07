@@ -10,7 +10,6 @@ import { OrganizationService } from '../../service/organization.service';
 import { FileUploaderComponent } from 'src/app/common/components/file-uploader/file-uploader.component';
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 import { catchError, forkJoin, map, of, switchMap, throwError } from 'rxjs';
-import { FileModel } from 'src/app/common/models/File.model';
 
 @Component({
   selector: 'app-add-organization',
@@ -67,7 +66,6 @@ export class AddOrganizationComponent {
   selectedLogo: File | null = null;
   selectedImage: File | null = null;
   selectedAvatar: File | null = null;
-  deletedFiles: FileModel[] = [];
 
   constructor(
     private readonly _formBuilder: FormBuilder,
