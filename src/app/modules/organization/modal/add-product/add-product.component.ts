@@ -82,13 +82,11 @@ export class AddProductComponent {
       name: [product?.name, [Validators.required]],
       code: [product?.code, [Validators.required]],
       description: [product?.description],
-      employeeCost: [product?.employeeCost, [Validators.required]],
-      productionCost: [product?.productionCost, [Validators.required]],
-      sellingPrice: [product?.sellingPrice, [Validators.required]],
-      soldPrice: [product?.soldPrice],
+      perUnitEmployeeCost: [product?.perUnitEmployeeCost, [Validators.required]],
+      perUnitProductionCost: [product?.perUnitProductionCost, [Validators.required]],
+      unitPrice: [product?.unitPrice, [Validators.required]],
+      initialQuantity:[product?.initialQuantity, [Validators.required]],
       imageUrl: [product?.imageUrl],
-      sold: [product?.sold],
-      soldDate: [product?.soldDate],
       madeBy: [product?.madeBy || null, [Validators.required]],
     });
   }
@@ -133,6 +131,14 @@ export class AddProductComponent {
   onFileRemoved(){
     console.log('File removed');
     this.fileDeletedNeedToSubmit=true;
+  }
+
+  addStock(){
+    this.productService.showToastInfo('Not implemented');
+  }
+
+  removeStock(){
+     this.productService.showToastInfo('Not implemented');
   }
 
   onSubmit() {

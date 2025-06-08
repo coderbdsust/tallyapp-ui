@@ -5,7 +5,6 @@ import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
 import { Router } from '@angular/router';
 import { PageResponse } from 'src/app/common/models/page-response';
-import { Employee } from './model/employee.model';
 import { ApiResponse } from '../../auth/services/auth.model';
 import { Product } from './model/product.model';
 

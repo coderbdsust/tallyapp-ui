@@ -1,25 +1,16 @@
-<div
-  [ngClass]="isModalOpen ? 'flex' : 'hidden'"
-  id="crud-modal"
-  tabindex="-1"
-  aria-hidden="true"
+<div [ngClass]="isModalOpen ? 'flex' : 'hidden'" id="crud-modal" tabindex="-1" aria-hidden="true"
   class="fixed inset-0 z-50 h-full w-full items-center justify-center bg-black bg-opacity-50">
-  <div class="relative w-full max-w-md p-4">
+  <div class="relative w-full max-w-2xl p-4">
     <!-- Modal content -->
     <div class="relative rounded bg-white shadow dark:bg-gray-700">
       <!-- Modal header -->
       <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Product</h3>
-        <button
-          type="button"
+        <button type="button"
           class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
           (click)="closeModal()">
           <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
           </svg>
           <span class="sr-only">Close</span>
@@ -30,261 +21,179 @@
       <div class="m-4 grid gap-4 md:m-4">
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="space-y-3 text-left">
-            <div class="flex justify-between gap-2">
-              <div class="form__group w-3/6">
-                <div class="relative">
-                  <input name="id" formControlName="id" type="hidden" />
-                  <input
-                    type="text"
-                    id="name"
-                    class="peer block"
-                    placeholder=" "
-                    [ngClass]="{ 'is__invalid-input': submitted && f['name'].errors }"
-                    formControlName="name" />
-                  <label
-                    for="name"
-                    class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                    Product Name
-                  </label>
-                </div>
-                <div *ngIf="submitted && f['name'].errors" class="is__invalid-error">
-                  <div *ngIf="f['name'].errors['required']">Required field</div>
+            <div class="flex flex-row">
+              <div class="w-2/6  flex justify-center items-center">
+                <div class="form__group w-full px-4">
+                  <div class="relative">
+                    <app-file-uploader #productImage (fileSelected)="onProductImageSelect($event)"
+                      (fileRemoved)="onFileRemoved()"></app-file-uploader>
+                    <label for="name"
+                      class="absolute top-0 left-1/2 z-10 -translate-x-1/2 -translate-y-8 scale-95 transform px-2 text-sm text-muted-foreground whitespace-nowrap duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:left-1/2 peer-placeholder-shown:-translate-x-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:left-1/2 peer-focus:-translate-x-1/2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                      Product Image
+                    </label>
+                  </div>
+                  <div *ngIf="submitted && f['imageUrl'].errors" class="is__invalid-error">
+                    <div *ngIf="f['imageUrl'].errors['required']">Required field</div>
+                  </div>
                 </div>
               </div>
 
-              <div class="form__group w-2/6">
-                <div class="relative">
-                  <input
-                    type="text"
-                    id="code"
-                    class="peer block"
-                    placeholder=" "
-                    [ngClass]="{ 'is__invalid-input': submitted && f['name'].errors }"
-                    formControlName="code" />
-                  <label
-                    for="code"
-                    class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                    Product Code
-                  </label>
-                </div>
-                <div *ngIf="submitted && f['code'].errors" class="is__invalid-error">
-                  <div *ngIf="f['code'].errors['required']">Required field</div>
-                </div>
-                
-              </div>
-              <div class="form__group w-1/6 flex items-center justify-center">
-                 <svg-icon  (click)="generateProductCode()" src="./assets/icons/heroicons/outline/cursor-arrow-rays.svg" [svgClass]="'h-6 w-6 text-primary'" />
-              </div>
-            </div>
+              <div class="w-4/6 space-y-3 ">
+                <div class="flex justify-between gap-2">
+                  <div class="form__group w-3/6">
+                    <div class="relative">
+                      <input name="id" formControlName="id" type="hidden" />
+                      <input type="text" id="name" class="peer block" placeholder=" "
+                        [ngClass]="{ 'is__invalid-input': submitted && f['name'].errors }" formControlName="name" />
+                      <label for="name"
+                        class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                        Product Name
+                      </label>
+                    </div>
+                    <div *ngIf="submitted && f['name'].errors" class="is__invalid-error">
+                      <div *ngIf="f['name'].errors['required']">Required field</div>
+                    </div>
+                  </div>
 
-            <div class="form__group">
-              <div class="relative">
-                <textarea
-                  type="text"
-                  id="description"
-                  class="peer block"
-                  placeholder=" "
-                  [ngClass]="{ 'is__invalid-input': submitted && f['description'].errors }"
-                  formControlName="description">
+                  <div class="form__group w-2/6">
+                    <div class="relative">
+                      <input type="text" id="code" class="peer block" placeholder=" "
+                        [ngClass]="{ 'is__invalid-input': submitted && f['name'].errors }" formControlName="code" />
+                      <label for="code"
+                        class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                        Product Code
+                      </label>
+                    </div>
+                    <div *ngIf="submitted && f['code'].errors" class="is__invalid-error">
+                      <div *ngIf="f['code'].errors['required']">Required field</div>
+                    </div>
+
+                  </div>
+                  <div class="form__group w-1/6 flex items-center justify-center">
+                    <svg-icon (click)="generateProductCode()"
+                      src="./assets/icons/heroicons/outline/cursor-arrow-rays.svg"
+                      [svgClass]="'h-6 w-6 text-primary'" />
+                  </div>
+                </div>
+
+                <div class="form__group">
+                  <div class="relative">
+                    <textarea type="text" id="description" class="peer block" placeholder=" "
+                      [ngClass]="{ 'is__invalid-input': submitted && f['description'].errors }"
+                      formControlName="description">
                 </textarea>
-                <label
-                  for="name"
-                  class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                  Product Description
-                </label>
-              </div>
-              <div *ngIf="submitted && f['description'].errors" class="is__invalid-error">
-                <div *ngIf="f['description'].errors['required']">Required field</div>
-              </div>
-            </div>
+                    <label for="name"
+                      class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                      Product Description
+                    </label>
+                  </div>
+                  <div *ngIf="submitted && f['description'].errors" class="is__invalid-error">
+                    <div *ngIf="f['description'].errors['required']">Required field</div>
+                  </div>
+                </div>
 
-            <div class="flex gap-4">
-              <div class="form__group w-full">
-                <div class="relative">
-                  <input
-                    type="text"
-                    id="employeeCost"
-                    class="peer block"
-                    placeholder=" "
-                    [ngClass]="{ 'is__invalid-input': submitted && f['employeeCost'].errors }"
-                    formControlName="employeeCost" />
-                  <label
-                    for="name"
-                    class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                    Employee Cost
-                  </label>
-                </div>
-                <div *ngIf="submitted && f['employeeCost'].errors" class="is__invalid-error">
-                  <div *ngIf="f['employeeCost'].errors['required']">Required field</div>
-                </div>
-              </div>
+                <div class="form__group">
+                  <div class="relative">
+                    <ng-select
+                      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
+                      [items]="allEmployees" [multiple]="false" bindValue="id" bindLabel="fullName"
+                      formControlName="madeBy" placeholder="Type name or mobile no partially and press enter"
+                      [searchable]="true" [compareWith]="compareEmployee" (keydown.enter)="onSearchKeyType($event)">
+                    </ng-select>
+                    <div *ngIf="submitted && f['madeBy'].errors" class="is__invalid-error">
+                      <div *ngIf="f['madeBy'].errors['required']">Required field</div>
+                    </div>
 
-              <div class="form__group w-full">
-                <div class="relative">
-                  <input
-                    type="text"
-                    id="productionCost"
-                    class="peer block"
-                    placeholder=" "
-                    [ngClass]="{ 'is__invalid-input': submitted && f['productionCost'].errors }"
-                    formControlName="productionCost" />
-                  <label
-                    for="productionCost"
-                    class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                    Production Cost
-                  </label>
+                    <label for="madeBy"
+                      class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                      Made By
+                    </label>
+                  </div>
+                  <div *ngIf="submitted && f['madeBy'].errors" class="is__invalid-error">
+                    <div *ngIf="f['madeBy'].errors['required']">Required field</div>
+                  </div>
                 </div>
-                <div *ngIf="submitted && f['productionCost'].errors" class="is__invalid-error">
-                  <div *ngIf="f['productionCost'].errors['required']">Required field</div>
+
+                <div class="form__group">
+                  <div class="relative">
+                    <input type="hidden" id="imageUrl" class="peer block" placeholder=" "
+                      [ngClass]="{ 'is__invalid-input': submitted && f['imageUrl'].errors }"
+                      formControlName="imageUrl" />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="flex gap-4">
-              <div class="form__group w-full">
-                <div class="relative">
-                  <input
-                    type="text"
-                    id="sellingPrice"
-                    class="peer block"
-                    placeholder=" "
-                    [ngClass]="{ 'is__invalid-input': submitted && f['sellingPrice'].errors }"
-                    formControlName="sellingPrice" />
-                  <label
-                    for="sellingPrice"
-                    class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                    Selling Price
-                  </label>
-                </div>
-                <div *ngIf="submitted && f['sellingPrice'].errors" class="is__invalid-error">
-                  <div *ngIf="f['sellingPrice'].errors['required']">Required field</div>
-                </div>
-              </div>
+            <div class="flex flex-col gap-2 mt-4">
 
-              <div class="form__group w-full">
-                <div class="relative">
-                  <input
-                    type="text"
-                    id="soldPrice"
-                    class="peer block"
-                    placeholder=" "
-                    [ngClass]="{ 'is__invalid-input': submitted && f['soldPrice'].errors }"
-                    formControlName="soldPrice" />
-                  <label
-                    for="soldPrice"
-                    class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                    Sold Price
-                  </label>
-                </div>
-                <div *ngIf="submitted && f['soldPrice'].errors" class="is__invalid-error">
-                  <div *ngIf="f['soldPrice'].errors['required']">Required field</div>
-                </div>
+              <div class="flex flex-row border-dashed border-y-2 justify-between">
+                <h1 class="text-sm text-muted-foreground text-center font-bold mt-2">Inventory</h1>
+                <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5 mb-2'"
+                  (click)="addStock()" class="text-primary text-primary-foreground mt-3"> </svg-icon>
               </div>
-            </div>
-
-            <div class="form__group">
-              <div class="relative">
-                <ng-select
-                  class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
-                  [items]="allEmployees"
-                  [multiple]="false"
-                  bindValue="id"
-                  bindLabel="fullName"
-                  formControlName="madeBy"
-                  placeholder="Type name or mobile no partially and press enter"
-                  [searchable]="true"
-                  [compareWith]="compareEmployee"
-                  (keydown.enter)="onSearchKeyType($event)">
-                </ng-select>
-                <div *ngIf="submitted && f['madeBy'].errors" class="is__invalid-error">
-                  <div *ngIf="f['madeBy'].errors['required']">Required field</div>
+              <div class="flex gap-4">
+                <div class="form__group w-2/6">
+                  <div class="relative">
+                    <input type="text" id="perUnitEmployeeCost" class="peer block" placeholder=" "
+                      [ngClass]="{ 'is__invalid-input': submitted && f['perUnitEmployeeCost'].errors }"
+                      formControlName="perUnitEmployeeCost" />
+                    <label for="perUnitEmployeeCost"
+                      class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                      Employee Cost / Unit
+                    </label>
+                  </div>
+                  <div *ngIf="submitted && f['perUnitEmployeeCost'].errors" class="is__invalid-error">
+                    <div *ngIf="f['perUnitEmployeeCost'].errors['required']">Required field</div>
+                  </div>
                 </div>
 
-                <label
-                  for="madeBy"
-                  class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                  Made By
-                </label>
-              </div>
-              <div *ngIf="submitted && f['madeBy'].errors" class="is__invalid-error">
-                <div *ngIf="f['madeBy'].errors['required']">Required field</div>
-              </div>
-            </div>
-
-            <div class="form__group">
-              <div class="relative">
-                <app-file-uploader #productImage (fileSelected)="onProductImageSelect($event)" (fileRemoved)="onFileRemoved()"></app-file-uploader>
-                <label
-                  for="name"
-                  class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                  Product Image
-                </label>
-              </div>
-              <div *ngIf="submitted && f['imageUrl'].errors" class="is__invalid-error">
-                <div *ngIf="f['imageUrl'].errors['required']">Required field</div>
-              </div>
-            </div>
-
-            <div class="form__group">
-              <div class="relative">
-                <input
-                  type="hidden"
-                  id="imageUrl"
-                  class="peer block"
-                  placeholder=" "
-                  [ngClass]="{ 'is__invalid-input': submitted && f['imageUrl'].errors }"
-                  formControlName="imageUrl" />
-                <!-- <label
-                  for="name"
-                  class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                  Product Image URL
-                </label> -->
-              </div>
-              <!-- <div *ngIf="submitted && f['imageUrl'].errors" class="is__invalid-error">
-                <div *ngIf="f['imageUrl'].errors['required']">Required field</div>
-              </div> -->
-            </div>
-
-            <div class="flex gap-4">
-              <div class="form__group w-full">
-                <div class="relative">
-                  <input
-                    type="text"
-                    id="soldDate"
-                    class="peer block"
-                    placeholder=" "
-                    [ngClass]="{ 'is__invalid-input': submitted && f['soldDate'].errors }"
-                    formControlName="soldDate" />
-                  <label
-                    for="sellingPrice"
-                    class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                    Sold Date
-                  </label>
+                <div class="form__group w-2/6">
+                  <div class="relative">
+                    <input type="text" id="perUnitProductionCost" class="peer block" placeholder=" "
+                      [ngClass]="{ 'is__invalid-input': submitted && f['perUnitProductionCost'].errors }"
+                      formControlName="perUnitProductionCost" />
+                    <label for="perUnitProductionCost"
+                      class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                      Production Cost / Unit
+                    </label>
+                  </div>
+                  <div *ngIf="submitted && f['perUnitProductionCost'].errors" class="is__invalid-error">
+                    <div *ngIf="f['perUnitProductionCost'].errors['required']">Required field</div>
+                  </div>
                 </div>
-                <div *ngIf="submitted && f['soldDate'].errors" class="is__invalid-error">
-                  <div *ngIf="f['soldDate'].errors['required']">Required field</div>
+                <div class="form__group w-1/6">
+                  <div class="relative">
+                    <input type="text" id="unitPrice" class="peer block" placeholder=" "
+                      [ngClass]="{ 'is__invalid-input': submitted && f['unitPrice'].errors }"
+                      formControlName="unitPrice" />
+                    <label for="unitPrice"
+                      class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                      Unit Price
+                    </label>
+                  </div>
+                  <div *ngIf="submitted && f['unitPrice'].errors" class="is__invalid-error">
+                    <div *ngIf="f['unitPrice'].errors['required']">Required field</div>
+                  </div>
                 </div>
+
+                <div class="form__group w-1/6">
+                  <div class="relative">
+                    <input type="text" id="initialQuantity" class="peer block" placeholder=" "
+                      [ngClass]="{ 'is__invalid-input': submitted && f['initialQuantity'].errors }"
+                      formControlName="initialQuantity" />
+                    <label for="initialQuantity"
+                      class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                      Quantity
+                    </label>
+                  </div>
+                  <div *ngIf="submitted && f['initialQuantity'].errors" class="is__invalid-error">
+                    <div *ngIf="f['initialQuantity'].errors['required']">Required field</div>
+                  </div>
+                </div>
+                <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-5 w-5 mb-2'"
+                  (click)="removeStock()" class="text-primary text-primary-foreground mt-3"> </svg-icon>
               </div>
 
-              <div class="form__group w-full">
-                <div class="relative">
-                  <input
-                    type="checkbox"
-                    id="sold"
-                    class="peer mt-3 block"
-                    placeholder=" "
-                    [ngClass]="{ 'is__invalid-input': submitted && f['sold'].errors }"
-                    formControlName="sold" />
-                  <label
-                    for="sold"
-                    class="absolute top-4 left-5 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                    Product Sold ?
-                  </label>
-                </div>
-                <div *ngIf="submitted && f['sold'].errors" class="is__invalid-error">
-                  <div *ngIf="f['sold'].errors['required']">Required field</div>
-                </div>
-              </div>
             </div>
 
             <div class="flex justify-between space-x-2 pb-4">

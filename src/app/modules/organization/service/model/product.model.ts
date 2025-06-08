@@ -5,13 +5,12 @@ export interface Product {
     name: string,
     code: string,
     description: string,
-    employeeCost: number,
-    productionCost: number,
-    sellingPrice: number,
-    soldPrice: number,
+    perUnitEmployeeCost: number,
+    perUnitProductionCost: number,
+    unitPrice: number,
+    availableQuantity:number,
+    initialQuantity:number,
     imageUrl: string,
-    sold: boolean,
-    soldDate: string,
     createdDate: string,
     madeBy: Employee
   }
