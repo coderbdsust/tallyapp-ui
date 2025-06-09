@@ -1,8 +1,8 @@
 import { CommonModule, NgClass } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { Product } from '../../service/model/product.model';
+import { Product, ProductStock } from '../../service/model/product.model';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ProductService } from '../../service/product.service';
 import { EmployeeService } from '../../service/employee.service';
@@ -77,19 +77,63 @@ export class AddProductComponent {
       }
     }
 
+    let stockArray = this._formBuilder.array([]);
+    
+    if(product &&  product?.productStockList){
+      stockArray = this.setProductStockList(product.productStockList);
+    }
+
     this.form = this._formBuilder.group({
       id: [product?.id],
       name: [product?.name, [Validators.required]],
       code: [product?.code, [Validators.required]],
       description: [product?.description],
-      perUnitEmployeeCost: [product?.perUnitEmployeeCost, [Validators.required]],
-      perUnitProductionCost: [product?.perUnitProductionCost, [Validators.required]],
-      unitPrice: [product?.unitPrice, [Validators.required]],
-      initialQuantity:[product?.initialQuantity, [Validators.required]],
       imageUrl: [product?.imageUrl],
       madeBy: [product?.madeBy || null, [Validators.required]],
+      productStockList: stockArray 
     });
   }
+
+  createProductStockForm(){
+     return this._formBuilder.group({
+      id: [''],
+      batchNumber: [''],
+      manufactureDate: [''],
+      expiryDate: [''],
+      initialQuantity:[0],
+      availableQuantity:[0],
+      quantityToAdd:[1, Validators.required],
+      unitPrice: ['', Validators.required],
+      perUnitProductionCost: ['', Validators.required],
+      perUnitEmployeeCost: ['', Validators.required]
+    });
+  }
+
+  get getProductStockList(): FormArray {
+    return this.form.get('productStockList') as FormArray;
+  }
+
+  setProductStockList(stockList: ProductStock[]): FormArray {
+      let stockArray = this.form.get('productStockList') as FormArray;
+      stockArray.clear();
+      stockList.forEach((stock) => {
+        stockArray.push(
+          this._formBuilder.group({
+            id: [stock.id],
+            batchNumber: [stock.batchNumber],
+            manufactureDate: [stock.manufactureDate],
+            expiryDate: [stock.expiryDate],
+            initialQuantity:[stock.initialQuantity],
+            availableQuantity:[stock.availableQuantity],
+            quantityToAdd:[0, Validators.required],
+            unitPrice: [stock.unitPrice, Validators.required],
+            perUnitProductionCost: [stock.perUnitProductionCost, Validators.required],
+            perUnitEmployeeCost: [stock.perUnitEmployeeCost, Validators.required]
+          }),
+        );
+      });
+      return stockArray;
+    }
 
   compareEmployee(emp1: any, emp2: any): boolean {
     return emp1 && emp2 ? emp1.id === emp2.id : emp1 === emp2;
@@ -123,7 +167,7 @@ export class AddProductComponent {
 
   generateProductCode(){
     if(!this.isEdit) {
-        let code = generateRandomLuhnCode(6);
+       let code = generateRandomLuhnCode(6);
        this.form.patchValue({ code: code });
     }
   }
@@ -133,13 +177,15 @@ export class AddProductComponent {
     this.fileDeletedNeedToSubmit=true;
   }
 
-  addStock(){
-    this.productService.showToastInfo('Not implemented');
-  }
+  addStock() {
+  const stockArray = this.form.get('productStockList') as FormArray;
+  stockArray.push(this.createProductStockForm());
+}
 
-  removeStock(){
-     this.productService.showToastInfo('Not implemented');
-  }
+ removeStock(index: number) {
+  const stockArray = this.form.get('productStockList') as FormArray;
+  stockArray.removeAt(index);
+}
 
   onSubmit() {
     this.submitted = true;
@@ -150,6 +196,7 @@ export class AddProductComponent {
     }
 
     let product = this.form.value;
+    console.log(product);
 
     this.submitted = false;
 
