@@ -77,10 +77,12 @@ export class AddProductComponent {
       }
     }
 
-    let stockArray = this._formBuilder.array([]);
+    let stockArray = this._formBuilder.array([]) as FormArray;
     
     if(product &&  product?.productStockList){
       stockArray = this.setProductStockList(product.productStockList);
+    }else{
+      stockArray.push(this.createProductStockForm());
     }
 
     this.form = this._formBuilder.group({

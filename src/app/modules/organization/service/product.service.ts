@@ -6,7 +6,7 @@ import { catchError } from 'rxjs';
 import { Router } from '@angular/router';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { ApiResponse } from '../../auth/services/auth.model';
-import { Product } from './model/product.model';
+import { Product, ProductStatistics } from './model/product.model';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +20,12 @@ export class ProductService extends CommonService {
   public getProductByOrganization(organizationId: String, page: number, size: number, search: string, searchCriteria: string) {
     return this.http
       .get<PageResponse<Product>>(`${environment.tallyURL}/product/v1/${organizationId}?page=${page}&size=${size}&search=${search}&searchCriteria=${searchCriteria}`)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+    public getProductStatistics(organizationId: string) {
+    return this.http
+      .get<ProductStatistics>(`${environment.tallyURL}/product/v1/${organizationId}/statistics`)
       .pipe(catchError(this.mapErrorResponse));
   }
 
@@ -40,5 +46,6 @@ export class ProductService extends CommonService {
       .delete<ApiResponse>(`${environment.tallyURL}/product/v1/${productId}`)
       .pipe(catchError(this.mapErrorResponse));
   }
+
   
 }

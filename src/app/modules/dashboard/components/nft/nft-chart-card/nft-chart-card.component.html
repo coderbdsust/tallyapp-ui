@@ -2,29 +2,41 @@
 
 
   <!-- Card Body -->
-   <div class="h-[240px]">
-      <apx-chart
-        [series]="chartOptions.series!"
-        [chart]="chartOptions.chart!"
-        [legend]="chartOptions.legend!"
-        [dataLabels]="chartOptions.dataLabels!"
-        [fill]="chartOptions.fill!"
-        [stroke]="chartOptions.stroke!"
-        [xaxis]="chartOptions.xaxis!"
-        [yaxis]="chartOptions.yaxis!"
-        [states]="chartOptions.states!"
-        [tooltip]="chartOptions.tooltip!"
-        [colors]="chartOptions.colors!"
-        [grid]="chartOptions.grid!"
-        [title]="chartOptions.title!">
-      </apx-chart>
+  <div class="h-[220px]">
+    <apx-chart [series]="chartOptions.series!" [chart]="chartOptions.chart!" [legend]="chartOptions.legend!"
+      [dataLabels]="chartOptions.dataLabels!" [fill]="chartOptions.fill!" [stroke]="chartOptions.stroke!"
+      [xaxis]="chartOptions.xaxis!" [yaxis]="chartOptions.yaxis!" [states]="chartOptions.states!"
+      [tooltip]="chartOptions.tooltip!" [colors]="chartOptions.colors!" [grid]="chartOptions.grid!"
+      [title]="chartOptions.title!">
+    </apx-chart>
   </div>
 
-  <!-- end Chart -->
-
-  <h2 class="text-center text-md mt-6 font-semibold text-foreground">{{organization?.totalProducts}}</h2>
-  <div class="text-center dflex items-end justify-between text-sm font-semibold text-muted-foreground">
-    Total Products
+  <div class="flex flex-row justify-between mb-4">
+    <div class="w-1/2 ">
+      <div class="flex flex-col gap-2">
+        <div class="w-full mb-2">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total Stock</p>
+          <p class="text-md font-bold text-gray-700">{{productStatistics?.totalProductCount || 0}}</p>
+        </div>
+        <div class="w-full mb-2">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Units Sold</p>
+          <p class="text-md font-bold text-gray-700">{{productStatistics?.totalProductSoldCount || 0}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="w-1/2 ">
+      <div class="flex flex-col gap-2">
+        <div class="w-full mb-2">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total Production Cost</p>
+          <p class="text-md font-bold text-gray-700">BDT {{productStatistics?.totalProductionCostSum || 0}} </p>
+        </div>
+        <div class="w-full mb-2">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total Employee Cost</p>
+          <p class="text-md font-bold text-gray-700">BDT {{productStatistics?.totalEmployeeCostSum || 0}}</p>
+        </div>
+      </div>
+    </div>
   </div>
-  
+
+
 </div>

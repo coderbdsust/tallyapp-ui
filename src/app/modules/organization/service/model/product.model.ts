@@ -27,3 +27,11 @@ export interface ProductStock {
   perUnitProductionCost: number;
   perUnitEmployeeCost: number;
 }
+
+export interface ProductStatistics{
+  totalProductCount: number;
+  totalAvailableProductCount: number;
+  totalProductSoldCount:number;
+  totalEmployeeCostSum: number;
+  totalProductionCostSum: number;
+}

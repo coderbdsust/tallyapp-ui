@@ -241,8 +241,13 @@
                   </div>
 
                   <!-- Remove Icon -->
-                  <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-5 w-5 mb-2 cursor-pointer'"
-                    (click)="removeStock(i)" class="text-primary text-primary-foreground mt-3"> </svg-icon>
+                  <svg-icon 
+                    *ngIf="getProductStockList.length > 1"
+                    src="./assets/icons/heroicons/outline/minus.svg"
+                    [svgClass]="'h-5 w-5 mb-2 cursor-pointer'"
+                    (click)="removeStock(i)"
+                    class="text-primary  mt-3">
+                   </svg-icon>
 
                 </div>
               </div>

@@ -8,7 +8,7 @@ import { Organization } from 'src/app/modules/organization/service/model/organiz
 import { ProductService } from 'src/app/modules/organization/service/product.service';
 import { OrganizationService } from 'src/app/modules/organization/service/organization.service';
 import { PageResponse } from 'src/app/common/models/page-response';
-import { Product } from 'src/app/modules/organization/service/model/product.model';
+import { Product, ProductStatistics } from 'src/app/modules/organization/service/model/product.model';
 
 @Component({
   selector: '[nft-chart-card]',
@@ -19,6 +19,7 @@ export class NftChartCardComponent implements OnInit, OnDestroy {
   public organization: Organization | null = null;
   public productResponse: PageResponse<Product> | null = null;
   public chartOptions: Partial<ChartOptions>;
+  public productStatistics:ProductStatistics|null=null;
 
   constructor(
     private themeService: ThemeService,
@@ -126,7 +127,20 @@ export class NftChartCardComponent implements OnInit, OnDestroy {
     this.orgService.organization$.subscribe((org) => {
       if (org) {
         this.organization = org;
+        this.productStatistics=null;
+        this.loadProductStatistics(org.id);
         this.loadProductsByOrganization(org.id);
+      }
+    });
+  }
+
+  loadProductStatistics(orgId:string){
+    this.productService.getProductStatistics(orgId).subscribe({
+      next:(response)=>{
+        this.productStatistics = response;
+      },
+      error:(err)=>{
+        console.log(err);
       }
     });
   }
