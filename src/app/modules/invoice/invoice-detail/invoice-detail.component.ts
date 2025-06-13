@@ -119,5 +119,9 @@ export class InvoiceDetailComponent {
     }
   }
 
+  backToInvoiceList(){
+    this.router.navigate(['/invoice/list']);
+  }
+
 
 }

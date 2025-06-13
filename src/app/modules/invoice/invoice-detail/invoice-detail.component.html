@@ -222,10 +222,14 @@
                 <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
                 <span class="ml-2" (click)="downloadPdf()">Download</span>
             </button>
-            <!-- <button class="flex flex-row px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80">
-                <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
-                <span class="ml-2">New Invoice</span>
-            </button> -->
+            <button
+            class="flex flex-row px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80"
+            (click)="backToInvoiceList()"
+            >
+            <svg-icon src="./assets/icons/heroicons/outline/back.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
+            <span class="ml-2">Back</span>
+            </button>
+
         </div>
     </div>
 </div>

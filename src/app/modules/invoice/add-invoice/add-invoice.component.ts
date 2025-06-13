@@ -338,4 +338,9 @@ export class AddInvoiceComponent implements OnInit {
       error: err => this.invoiceService.showToastErrorResponse(err)
     });
   }
+
+   backToInvoiceList(){
+    this.router.navigate(['/invoice/list']);
+  }
+  
 }

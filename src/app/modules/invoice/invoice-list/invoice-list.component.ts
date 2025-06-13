@@ -152,6 +152,11 @@ export class InvoiceListComponent extends PaginatedComponent<Invoice>{
     });
   }
 
+  downloadInvoice(invoice:Invoice){
+    console.log(invoice);
+    this.invoiceService.showToastInfo("Not implemented here, Download from view page");
+  }
+
 
 
 
