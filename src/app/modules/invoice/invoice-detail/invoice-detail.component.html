@@ -126,9 +126,9 @@
                                     <span class="text-xs text-muted-foreground">{{item.description}}</span>
                                 </div>
                             </td>
-                            <td class="py-2 text-sm">{{item.pricePerUnit}}</td>
+                            <td class="py-2 text-sm">{{item.pricePerUnit | number}}</td>
                             <td class="py-2 text-sm">{{item.quantitySold}}</td>
-                            <td class="py-2 text-sm">{{item.totalAmount}}</td>
+                            <td class="py-2 text-sm">{{item.totalAmount | number}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -156,7 +156,7 @@
                                 <td class="py-1 text-sm">{{item.paymentDate}}</td>
                                 <td class="py-1 text-sm">{{item.paymentMethod}}</td>
                                 <td class="py-1 text-sm">{{item.reference}}</td>
-                                <td class="py-1 text-sm">{{item.amount}}</td>
+                                <td class="py-1 text-sm">{{item.amount | number}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -168,35 +168,35 @@
                 <div class="flex flex-col items-end mt-8 text-base gap-1">
                     <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
                         <span>Sub Total:</span>
-                        <span>{{invoice.productSubTotal}}</span>
+                        <span>{{invoice.productSubTotal | number}}</span>
                     </div>
                     <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
                         <span>Total Tax: ({{invoice.taxRate}}%)</span>
-                        <span>{{invoice.productTotalTax}}</span>
+                        <span>{{invoice.productTotalTax |number}}</span>
                     </div>
                     <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
                         <span>Total Vat: ({{invoice.vatRate}}%)</span>
-                        <span>{{invoice.productTotalVat}}</span>
+                        <span>{{invoice.productTotalVat | number}}</span>
                     </div>
                     <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
                         <span>Total Discount:</span>
-                        <span>{{invoice.totalDiscount}}</span>
+                        <span>{{invoice.totalDiscount | number}}</span>
                     </div>
                     <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
                         <span>Delivery Charge:</span>
-                        <span>{{invoice.deliveryCharge}}</span>
+                        <span>{{invoice.deliveryCharge | number}}</span>
                     </div>
                     <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
                         <span>Total Amount:</span>
-                        <span>{{invoice.totalAmount}}</span>
+                        <span>{{invoice.totalAmount | number}}</span>
                     </div>
                     <div class="w-4/6 pl-2  text-muted-foreground flex justify-between">
                         <span>Total Paid:</span>
-                        <span>{{invoice.totalPaid}}</span>
+                        <span>{{invoice.totalPaid | number}}</span>
                     </div>
                     <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
                         <span>Total Due:</span>
-                        <span>{{invoice.remainingAmount}}</span>
+                        <span>{{invoice.remainingAmount | number}}</span>
                     </div>
                     
                 </div>

@@ -139,9 +139,9 @@
                                         <span class="text-xs text-muted-foreground">{{prod.description}}</span>
                                     </div>
                                 </td>
-                                <td class="py-4 text-sm">{{prod.pricePerUnit}}</td>
+                                <td class="py-4 text-sm">{{prod.pricePerUnit | number}}</td>
                                 <td class="py-4 text-sm">{{prod.quantitySold}}</td>
-                                <td class="py-4 text-sm">{{prod.totalAmount}}</td>
+                                <td class="py-4 text-sm">{{prod.totalAmount | number}}</td>
                                 <td class="py-4 text-sm">
                                     <div class="flex items-center gap-4">
                                         <a class="text-primary hover:text-red-500" (click)="deleteProduct(prod)">
@@ -226,7 +226,7 @@
                                     <td class="py-4 text-sm">{{pay.paymentDate}}</td>
                                     <td class="py-4 text-sm">{{pay.paymentMethod}}</td>
                                     <td class="py-4 text-sm">{{pay.reference}}</td>
-                                    <td class="py-4 text-sm">{{pay.amount}}</td>
+                                    <td class="py-4 text-sm">{{pay.amount | number}}</td>
                                     <td class="py-4 text-sm">
                                         <div class="flex items-center gap-4">
                                             <a class="text-primary hover:text-red-500" (click)="deletePayment(pay)">
