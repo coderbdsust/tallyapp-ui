@@ -51,7 +51,7 @@
       class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
       <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
         <tr>
-          <th>Invoice ID</th>
+          <th>Invoice Number</th>
           <th>Invoice Date</th>
           <th>Customer Name</th>
           <th>Customer Mobile</th>
@@ -63,13 +63,13 @@
       </thead>
       <tbody>
         <tr *ngFor="let invoice of pageResponse?.content; let i = index" class="gap-4 hover:bg-card/50">
-          <td>{{ invoice.invoiceId }}</td>
+          <td>{{ invoice.invoiceNumber }}</td>
           <td>{{ invoice.invoiceDate | date }}</td>
-          <td>{{ invoice.customerName }}</td>
-          <td>{{ invoice.customerMobile }}</td>
+          <td>{{ invoice.customer?.name }}</td>
+          <td>{{ invoice.customer?.mobile }}</td>
           <td>{{ invoice.totalAmount | currency }}</td>
-          <td>{{ invoice.totalDue | currency }}</td>
-          <td>{{ invoice.status }}</td>
+          <td>{{ invoice.remainingAmount| currency }}</td>
+          <td>{{ invoice.invoiceStatus }}</td>
           <td>
             <div class="flex items-center gap-4">
               <a (click)="viewInvoice(invoice)" class="flex flex-row gap-2 hover:text-red-700">

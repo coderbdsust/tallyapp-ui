@@ -21,9 +21,12 @@ export interface Organization {
     banner: string | './assets/furniture/furniture-01.png';
     avatar: string | './assets/avatars/avt-01.jpg';
     logo: string | './assets/img/component-btn.png';
+    logoB64:string|'';
     totalEmployees: number;
     totalProducts: number | 0;
     totalOwners: number | 0;
+    tax:number|0;
+    vat:number|0;
   }
   
 

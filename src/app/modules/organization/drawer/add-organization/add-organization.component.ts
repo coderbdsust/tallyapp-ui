@@ -10,6 +10,7 @@ import { OrganizationService } from '../../service/organization.service';
 import { FileUploaderComponent } from 'src/app/common/components/file-uploader/file-uploader.component';
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 import { catchError, forkJoin, map, of, switchMap, throwError } from 'rxjs';
+import { WordPipe } from 'src/app/common/pipes/word.pipe';
 
 @Component({
   selector: 'app-add-organization',
@@ -20,6 +21,7 @@ import { catchError, forkJoin, map, of, switchMap, throwError } from 'rxjs';
     CommonModule,
     ButtonComponent,
     FileUploaderComponent,
+    WordPipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-organization.component.html',
@@ -70,6 +72,11 @@ export class AddOrganizationComponent {
   selectedImage: File | null = null;
   selectedAvatar: File | null = null;
   fileDeletedNeedToSubmit:boolean=false;
+  status: string[] = [
+    'ACTIVE',
+    'INACTIVE',
+    'CLOSED'
+  ];
 
   constructor(
     private readonly _formBuilder: FormBuilder,
@@ -121,7 +128,9 @@ export class AddOrganizationComponent {
       orgAddressCity: [org?.orgAddressCity, [Validators.required]],
       orgAddressPostcode: [org?.orgAddressPostcode, [Validators.required]],
       orgAddressCountry: [org?.orgAddressCountry, [Validators.required]],
-      status: ['ACTIVE', [Validators.required]],
+      status: [org?.status, [Validators.required]],
+      vat: [org?.vat, [Validators.required]],
+      tax: [org?.tax, [Validators.required]],
     });
   }
 

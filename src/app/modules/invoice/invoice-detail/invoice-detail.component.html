@@ -3,63 +3,67 @@
 
         <!-- Invoice Info + Company Info -->
         <div class="flex flex-row justify-between">
-            <div class="w-2/6 pr-2">
-                <img src="./assets/img/logo/logo3.png" alt="Invoice Image"
+            <div class="w-4/12 pr-2">
+                <img [src]="invoice.ownerOrganization.logoB64 || 'https://placehold.co/400'" alt="Invoice Logo"
                     class="w-auto h-20 rounded-lg shadow-md mb-4">
 
                 <div class="mt-2 text-lg font-bold text-muted-foreground flex justify-between">
                     <span>Invoice No:</span>
-                    <span class="font-medium">#123456</span>
+                    <span class="font-medium">{{invoice.invoiceNumber}}</span>
                 </div>
 
                 <div class="mt-2 text-sm text-muted-foreground flex justify-between">
                     <span>Invoice Date:</span>
-                    <span class="font-medium">2025-06-01</span>
+                    <span class="font-medium">{{invoice.invoiceDate}}</span>
                 </div>
 
                 <div class="mt-2 text-sm text-muted-foreground flex justify-between">
                     <span>Payment Status:</span>
-                    <span class="font-medium">Paid</span>
+                    <span class="font-medium">{{invoice.invoiceStatus | word }}</span>
+                </div>
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>Delivery Date:</span>
+                    <span class="font-medium">{{invoice.deliveryDate}}</span>
                 </div>
             </div>
 
 
-            <div class="w-2/6 pl-2">
-                <img src="./assets/img/barcode-v2.png" alt="Invoice QR Code" class="w-full h-12 rounded bg-gray-100">
+            <div class="w-5/12 pl-2">
+                <img [src]="invoice.barcode" alt="Invoice QR Code" class="w-full h-12 rounded bg-gray-100">
 
                 <div class="mt-2 text-sm text-muted-foreground flex justify-between">
                     <span>Company Name:</span>
-                    <span class="font-medium">TallyApp Ltd.</span>
+                    <span class="font-medium">{{invoice.ownerOrganization.orgName}}</span>
                 </div>
 
                 <div class="mt-2 text-sm text-muted-foreground flex justify-between">
-                    <span>Company Address:</span>
-                    <span class="font-medium">123 Main St, Dhaka</span>
+                    <span>Address:</span>
+                    <span class="font-medium">{{invoice.ownerOrganization.orgAddressLine}}</span>
                 </div>
 
                 <div class="mt-2 text-sm text-muted-foreground flex justify-between">
                     <span>Postcode:</span>
-                    <span class="font-medium">1207</span>
+                    <span class="font-medium">{{invoice.ownerOrganization.orgAddressPostcode}}</span>
                 </div>
 
                 <div class="mt-2 text-sm text-muted-foreground flex justify-between">
                     <span>TIN No:</span>
-                    <span class="font-medium">123456789</span>
+                    <span class="font-medium">{{invoice.ownerOrganization.orgTinNumber}}</span>
                 </div>
 
                 <div class="mt-2 text-sm text-muted-foreground flex justify-between">
                     <span>VAT Registration No:</span>
-                    <span class="font-medium">987654321</span>
+                    <span class="font-medium">{{invoice.ownerOrganization.orgVatNumber}}</span>
                 </div>
 
                 <div class="mt-2 text-sm text-muted-foreground flex justify-between">
                     <span>Email Address:</span>
-                    <span class="font-medium">info&#64;tallyapp.com</span>
+                    <span class="font-medium">{{invoice.ownerOrganization.orgEmail}}</span>
                 </div>
 
                 <div class="mt-2 text-sm text-muted-foreground flex justify-between">
                     <span>Contact No:</span>
-                    <span class="font-medium">+880 1234 567890</span>
+                    <span class="font-medium">{{invoice.ownerOrganization.orgMobileNo}}</span>
                 </div>
             </div>
 
@@ -72,22 +76,26 @@
 
                 <div class="mt-2 text-sm text-muted-foreground flex justify-between">
                     <span>Customer Name:</span>
-                    <span class="font-medium">John Doe</span>
+                    <span class="font-medium">{{invoice.customer?.name}}</span>
                 </div>
 
                 <div class="mt-2 text-sm text-muted-foreground flex justify-between">
-                    <span>Customer Address:</span>
-                    <span class="font-medium">456 Elm Street</span>
+                    <span>Address:</span>
+                    <span class="font-medium">{{invoice.customer?.address}}</span>
                 </div>
 
                 <div class="mt-2 text-sm text-muted-foreground flex justify-between">
                     <span>Postcode:</span>
-                    <span class="font-medium">1000</span>
+                    <span class="font-medium">{{invoice.customer?.postcode}}</span>
                 </div>
 
                 <div class="mt-2 text-sm text-muted-foreground flex justify-between">
                     <span>Phone:</span>
-                    <span class="font-medium">+880 1111 222333</span>
+                    <span class="font-medium">{{invoice.customer?.mobile}}</span>
+                </div>
+                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
+                    <span>Email:</span>
+                    <span class="font-medium">{{invoice.customer?.email}}</span>
                 </div>
             </div>
 
@@ -110,27 +118,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="py-2 text-sm">1</td>
+                        <tr *ngFor="let item of invoice.productSales; let i=index;">
+                            <td class="py-2 text-sm">{{i+1}}</td>
                             <td class="py-2 text-sm">
                                 <div class="flex flex-col">
-                                    <span>Product 1</span>
-                                    <span class="text-xs text-muted-foreground">Description for Product 1</span>
+                                    <span>{{item.name}} ({{item.code}})</span>
+                                    <span class="text-xs text-muted-foreground">{{item.description}}</span>
                                 </div>
                             </td>
-                            <td class="py-2 text-sm">$10.00</td>
-                            <td class="py-2 text-sm">2</td>
-                            <td class="py-2 text-sm">$20.00</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 text-sm">2</td>
-                            <td class="py-2 text-sm">
-                                <span>New Product</span><br>
-                                <span class="text-xs text-muted-foreground">Some description</span>
-                            </td>
-                            <td class="py-2 text-sm">$15.00</td>
-                            <td class="py-2 text-sm">3</td>
-                            <td class="py-2 text-sm">$45.00</td>
+                            <td class="py-2 text-sm">{{item.pricePerUnit}}</td>
+                            <td class="py-2 text-sm">{{item.quantitySold}}</td>
+                            <td class="py-2 text-sm">{{item.totalAmount}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -154,17 +152,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="py-1 text-sm">2024-10-01</td>
-                                <td class="py-1 text-sm">Cash</td>
-                                <td class="py-1 text-sm">bKash</td>
-                                <td class="py-1 text-sm">$10.00</td>
-                            </tr>
-                            <tr>
-                                <td class="py-1 text-sm">2024-10-02</td>
-                                <td class="py-1 text-sm">Card</td>
-                                <td class="py-1 text-sm">#TX1002</td>
-                                <td class="py-1 text-sm">$55.00</td>
+                            <tr *ngFor="let item of invoice.payments; let i=index;">
+                                <td class="py-1 text-sm">{{item.paymentDate}}</td>
+                                <td class="py-1 text-sm">{{item.paymentMethod}}</td>
+                                <td class="py-1 text-sm">{{item.reference}}</td>
+                                <td class="py-1 text-sm">{{item.amount}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -176,38 +168,46 @@
                 <div class="flex flex-col items-end mt-8 text-base gap-1">
                     <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
                         <span>Sub Total:</span>
-                        <span>$65.00</span>
+                        <span>{{invoice.productSubTotal}}</span>
                     </div>
                     <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
-                        <span>Total Tax:</span>
-                        <span>$5.00</span>
+                        <span>Total Tax: ({{invoice.taxRate}}%)</span>
+                        <span>{{invoice.productTotalTax}}</span>
+                    </div>
+                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
+                        <span>Total Vat: ({{invoice.vatRate}}%)</span>
+                        <span>{{invoice.productTotalVat}}</span>
                     </div>
                     <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
                         <span>Total Discount:</span>
-                        <span>$0.00</span>
+                        <span>{{invoice.totalDiscount}}</span>
                     </div>
                     <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
                         <span>Delivery Charge:</span>
-                        <span>$2.00</span>
+                        <span>{{invoice.deliveryCharge}}</span>
                     </div>
                     <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
                         <span>Total Amount:</span>
-                        <span>$72.00</span>
+                        <span>{{invoice.totalAmount}}</span>
                     </div>
                     <div class="w-4/6 pl-2  text-muted-foreground flex justify-between">
                         <span>Total Paid:</span>
-                        <span>$65.00</span>
+                        <span>{{invoice.totalPaid}}</span>
                     </div>
                     <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
                         <span>Total Due:</span>
-                        <span>$7.00</span>
+                        <span>{{invoice.remainingAmount}}</span>
                     </div>
+                    
                 </div>
             </div>
         </div>
-
+        
+        <h1 class="text-muted-foreground"><strong>In words: </strong>{{this.toWords.convert(this.invoice.totalAmount)}}</h1>
+        
         <!-- Notes -->
         <div class="flex flex-col mt-6">
+            
             <label class="text-lg font-semibold text-muted-foreground">Notes</label>
             <p class="text-sm text-muted-foreground">
                 Thank you for your business! If you have any questions about this invoice, please contact us at
@@ -222,10 +222,10 @@
                 <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
                 <span class="ml-2" (click)="downloadPdf()">Download</span>
             </button>
-            <button class="flex flex-row px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80">
+            <!-- <button class="flex flex-row px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80">
                 <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
                 <span class="ml-2">New Invoice</span>
-            </button>
+            </button> -->
         </div>
     </div>
 </div>

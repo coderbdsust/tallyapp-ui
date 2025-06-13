@@ -94,9 +94,7 @@ export class Menu {
           label: 'Invoice Management',
           route: '/invoice',
           children: [
-            { label: 'Invoice', route: '/invoice/list' },
-            { label: 'Add Invoice', route: '/invoice/add' },
-            { label: 'Invoice Details', route: '/invoice/detail' }
+            { label: 'Invoice', route: '/invoice/list' }
           ]
         },
         {

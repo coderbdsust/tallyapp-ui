@@ -1,22 +1,77 @@
 <div class="h-[420px] flex-col rounded-lg bg-background px-8 py-8 sm:flex-row">
 
+<!-- Wrapper with fixed height -->
+<div class="h-[180px]">
+  <div class="relative w-full h-full" 
+       (mouseenter)="onMouseEnter()" 
+       (mouseleave)="onMouseLeave()">
+    <div class="relative h-full overflow-hidden rounded-lg">
+      <div
+        *ngFor="let item of productResponse?.content; let i = index"
+        class="absolute inset-0 transition-transform duration-700 ease-in-out"
+        [class.translate-x-0]="i === currentSlide"
+        [class.translate-x-full]="i > currentSlide"
+        [class.-translate-x-full]="i < currentSlide"
+      >
+        <img
+          [src]="item.imageUrl || 'https://placehold.co/400x300'"
+          class="w-full h-full object-contain p-2"
+          [alt]="item.name || 'Product image'"
+        />
+      </div>
+    </div>
 
-  <!-- Card Body -->
-  <div class="h-[220px]">
-    <apx-chart [series]="chartOptions.series!" [chart]="chartOptions.chart!" [legend]="chartOptions.legend!"
-      [dataLabels]="chartOptions.dataLabels!" [fill]="chartOptions.fill!" [stroke]="chartOptions.stroke!"
-      [xaxis]="chartOptions.xaxis!" [yaxis]="chartOptions.yaxis!" [states]="chartOptions.states!"
-      [tooltip]="chartOptions.tooltip!" [colors]="chartOptions.colors!" [grid]="chartOptions.grid!"
-      [title]="chartOptions.title!">
-    </apx-chart>
+    <!-- Navigation buttons -->
+    <button
+      type="button"
+      class=" absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+      (click)="prevSlide()"
+    >
+      <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </span>
+    </button>
+
+    <button
+      type="button"
+      class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+      (click)="nextSlide()"
+    >
+      <span class=" inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </span>
+    </button>
+
+    <!-- Indicators -->
+    <div class="absolute z-30 flex -translate-x-1/2 bottom-3 left-1/2 space-x-3">
+      <button
+        *ngFor="let item of productResponse?.content; let i = index"
+        type="button"
+        class="w-3 h-3 rounded-full transition-colors duration-300"
+        [class.bg-white]="i === currentSlide"
+        [class.bg-gray-300]="i !== currentSlide"
+        (click)="goToSlide(i)"
+      ></button>
+    </div>
   </div>
+</div>
 
-  <div class="flex flex-row justify-between mb-4">
+
+
+  <div class="flex flex-row justify-between mb-2 mt-4">
     <div class="w-1/2 ">
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-1">
         <div class="w-full mb-2">
-          <p class="text-sm text-gray-500 dark:text-gray-400">Total Stock</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total Initial Stock</p>
           <p class="text-md font-bold text-gray-700">{{productStatistics?.totalProductCount || 0}}</p>
+        </div>
+        <div class="w-full mb-2">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total Available Stock</p>
+          <p class="text-md font-bold text-gray-700">{{productStatistics?.totalAvailableProductCount || 0}}</p>
         </div>
         <div class="w-full mb-2">
           <p class="text-sm text-gray-500 dark:text-gray-400">Units Sold</p>
@@ -25,7 +80,7 @@
       </div>
     </div>
     <div class="w-1/2 ">
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-1">
         <div class="w-full mb-2">
           <p class="text-sm text-gray-500 dark:text-gray-400">Total Production Cost</p>
           <p class="text-md font-bold text-gray-700">BDT {{productStatistics?.totalProductionCostSum || 0}} </p>
@@ -33,6 +88,10 @@
         <div class="w-full mb-2">
           <p class="text-sm text-gray-500 dark:text-gray-400">Total Employee Cost</p>
           <p class="text-md font-bold text-gray-700">BDT {{productStatistics?.totalEmployeeCostSum || 0}}</p>
+        </div>
+         <div class="w-full mb-2">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total Payment Collected</p>
+          <p class="text-md font-bold text-gray-700">BDT {{productStatistics?.totalPaymentCollectedSum || 0}}</p>
         </div>
       </div>
     </div>

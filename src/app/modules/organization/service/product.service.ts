@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { ApiResponse } from '../../auth/services/auth.model';
 import { Product, ProductStatistics } from './model/product.model';
+import { Invoice } from '../../invoice/invoice.model';
 
 @Injectable({
   providedIn: 'root',
@@ -23,19 +24,25 @@ export class ProductService extends CommonService {
       .pipe(catchError(this.mapErrorResponse));
   }
 
-    public getProductStatistics(organizationId: string) {
+  public getProductByOrganizationAndNameOrCode(organizationId: string, page: number, size: number, search: string) {
+    return this.http
+      .get<PageResponse<Product>>(`${environment.tallyURL}/product/v1/${organizationId}/list?page=${page}&size=${size}&search=${search}`)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public getProductStatistics(organizationId: string) {
     return this.http
       .get<ProductStatistics>(`${environment.tallyURL}/product/v1/${organizationId}/statistics`)
       .pipe(catchError(this.mapErrorResponse));
   }
 
-  public addProduct(employeeId:String, product: Product) {
+  public addProduct(employeeId: String, product: Product) {
     return this.http
       .post<Product>(`${environment.tallyURL}/product/v1/${employeeId}/add`, product)
       .pipe(catchError(this.mapErrorResponse));
   }
 
-  public editProduct(productId:String, product: Product) {
+  public editProduct(productId: String, product: Product) {
     return this.http
       .put<Product>(`${environment.tallyURL}/product/v1/${productId}`, product)
       .pipe(catchError(this.mapErrorResponse));
@@ -47,5 +54,17 @@ export class ProductService extends CommonService {
       .pipe(catchError(this.mapErrorResponse));
   }
 
-  
+  public addProductToInvoice(invoiceId: String, product: Product) {
+    return this.http
+      .post<Invoice>(`${environment.tallyURL}/product/v1/invoice/${invoiceId}/add`, product)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public removeProductFromInvoice(invoiceId: string, productSaleId: string) {
+    return this.http
+      .delete<ApiResponse>(`${environment.tallyURL}/product/v1/invoice/${invoiceId}/${productSaleId}/remove`)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+
 }

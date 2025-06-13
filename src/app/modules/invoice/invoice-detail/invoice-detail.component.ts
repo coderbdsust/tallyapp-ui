@@ -3,43 +3,91 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import * as jsPdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { CommonModule } from '@angular/common';
+import { InvoiceService } from '../service/invoice.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Invoice } from '../invoice.model';
+import { ToWords } from 'to-words';
+import { WordPipe } from 'src/app/common/pipes/word.pipe';
 
 @Component({
   selector: 'app-invoice-detail',
-  imports: [AngularSvgIconModule, CommonModule],
+  imports: [AngularSvgIconModule, CommonModule, WordPipe],
   templateUrl: './invoice-detail.component.html',
   styleUrl: './invoice-detail.component.scss',
 })
 export class InvoiceDetailComponent {
 
-  downloadPdf() {
-    console.log('Downloading invoice as PDF...');
 
+  constructor(
+    private readonly invoiceService: InvoiceService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+  ) { }
+
+  orgId: string = '';
+  invoiceId: string = '';
+  invoice!: Invoice;
+  toWords = new ToWords({
+    localeCode: 'en-BD',
+    converterOptions: {
+      currency: true,
+      ignoreDecimal: true
+    },
+  });
+
+  ngOnInit(): void {
+    this.handleRouteParams();
+  }
+
+  private handleRouteParams(): void {
+    this.route.queryParams.subscribe(params => {
+      this.orgId = params['orgId'];
+      this.invoiceId = params['invoiceId'];
+
+      if (!this.orgId || !this.invoiceId) {
+        this.router.navigate(['/invoice/list']);
+        this.invoiceService.showToastError("Couldn't load invoice");
+        return;
+      }
+      this.fetchInvoice();
+    });
+  }
+
+  private fetchInvoice(): void {
+    this.invoiceService.getInvoiceById(this.orgId, this.invoiceId).subscribe({
+      next: invoice => {
+        this.invoice = invoice;
+      },
+      error: err => {
+        this.router.navigate(['/invoice/list']);
+        this.invoiceService.showToastErrorResponse(err);
+      }
+    });
+  }
+
+  downloadPdf() {
     const invoiceElement = document.getElementById('invoiceDetailContainer');
     const sectionToRemove = document.getElementById('buttonSection');
+    const logo = document.querySelector('img[alt="Invoice Logo"]') as HTMLImageElement;
 
     if (!invoiceElement) return;
-
     if (sectionToRemove) sectionToRemove.style.display = 'none';
 
-    // Increase scale for higher resolution
-    html2canvas(invoiceElement, {
-      scale: 2, // Reduce from 4 to 2
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#ffffff'
-    })
-      .then((canvas) => {
+    const render = () => {
+      html2canvas(invoiceElement, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      }).then((canvas) => {
         if (sectionToRemove) sectionToRemove.style.display = '';
 
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPdf.jsPDF('p', 'mm', 'a4');
-
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
 
-        // Reduce margins to make content larger
-        const margin = 5; // Reduced from 10mm
+        const margin = 5;
         const imgWidth = pageWidth - margin * 2;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
@@ -57,11 +105,19 @@ export class InvoiceDetailComponent {
         }
 
         pdf.save('invoice-detail.pdf');
-      })
-      .catch((error) => {
+      }).catch((error) => {
         console.error('Error generating PDF:', error);
         if (sectionToRemove) sectionToRemove.style.display = '';
       });
+    };
+
+    // Wait for image to load if not yet complete
+    if (!logo || !logo.complete) {
+      logo.onload = render;
+    } else {
+      render();
+    }
   }
+
 
 }

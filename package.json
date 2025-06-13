@@ -58,6 +58,7 @@
     "ng-apexcharts": "^1.7.1",
     "ngx-sonner": "^3.0.0",
     "rxjs": "~7.4.0",
+    "to-words": "^4.6.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },

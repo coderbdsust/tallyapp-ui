@@ -34,4 +34,5 @@ export interface ProductStatistics{
   totalProductSoldCount:number;
   totalEmployeeCostSum: number;
   totalProductionCostSum: number;
+  totalPaymentCollectedSum: number;
 }
