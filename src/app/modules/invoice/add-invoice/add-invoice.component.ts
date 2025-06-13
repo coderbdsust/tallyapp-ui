@@ -339,6 +339,10 @@ export class AddInvoiceComponent implements OnInit {
     });
   }
 
+  previewInvoice(){
+    this.router.navigate(['/invoice/detail'], { queryParams: { orgId: this.orgId, invoiceId: this.invoiceId } }); 
+  }
+
    backToInvoiceList(){
     this.router.navigate(['/invoice/list']);
   }

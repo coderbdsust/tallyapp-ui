@@ -17,7 +17,7 @@
                     <input type="date" placeholder=" " [value]="invoice?.invoiceDate" formControlName="invoiceDate"
                         class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"/>
                    
-                    <label class="text-sm text-muted-foreground">Invoice Status</label>
+                    <label class="text-sm text-muted-foreground">Payment Status</label>
                     <select type="text" placeholder=" " [value]="invoice?.invoiceStatus" formControlName="invoiceStatus"
                         class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
                          <option *ngFor="let status of invoiceStatus" [value]="status">{{ status | word }}</option>
@@ -83,8 +83,8 @@
                     <label class="text-sm text-muted-foreground">Customer Name</label>
                         <a class="text-primary hover:text-red-500" (click)="createNewCustomer()" tooltips="Create New Customer">
                             <svg-icon 
-                                src="./assets/icons/heroicons/outline/plus-v2.svg"
-                                [svgClass]="'h-5 w-5'"> 
+                                src="./assets/icons/heroicons/outline/eye-dropper.svg"
+                                [svgClass]="'h-4 w-4'"> 
                                 
                             </svg-icon>
                         </a>
@@ -334,8 +334,15 @@
                 <svg-icon src="./assets/icons/heroicons/outline/folder.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
                 <span class="ml-2">Save</span>
             </button>
+             <button
+                class="flex flex-row px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-primary/80"
+                (click)="previewInvoice()"
+                >
+                <svg-icon src="./assets/icons/heroicons/outline/eye.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
+                <span class="ml-2">Preview</span>
+            </button>
             <button
-                class="flex flex-row px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80"
+                class="flex flex-row px-4 py-2 bg-destructive text-white rounded-md hover:bg-primary/80"
                 (click)="backToInvoiceList()"
                 >
                 <svg-icon src="./assets/icons/heroicons/outline/back.svg" [svgClass]="'h-5 w-5'"> </svg-icon>

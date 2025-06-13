@@ -119,6 +119,10 @@ export class InvoiceDetailComponent {
     }
   }
 
+  editInvoice(){
+    this.router.navigate(['/invoice/add'], { queryParams: { orgId: this.orgId, invoiceId: this.invoiceId } }); 
+  }
+
   backToInvoiceList(){
     this.router.navigate(['/invoice/list']);
   }
