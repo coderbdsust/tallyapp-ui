@@ -10,6 +10,7 @@ import { AuthInterceptorService } from './app/core/interceptor/auth-interceptor.
 import { AuthService } from './app/modules/auth/services/auth.service';
 import { LoaderService } from './app/core/services/loader.service';
 import { provideAngularSvgIcon } from 'angular-svg-icon';
+import { LanguageInterceptor } from './app/core/interceptor/language-interceptor.service';
 
 if (environment.production) {
   enableProdMode();
@@ -24,7 +25,8 @@ bootstrapApplication(AppComponent, {
       importProvidersFrom(BrowserModule, AppRoutingModule),
       provideAnimations(),
       provideHttpClient(withInterceptorsFromDi()),
-      {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi:true },
+      { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
+      { provide: HTTP_INTERCEPTORS, useClass: LanguageInterceptor, multi: true },
       AuthService,
       LoaderService,
       provideAngularSvgIcon()

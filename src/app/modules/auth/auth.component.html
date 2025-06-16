@@ -16,10 +16,10 @@
 
   <!-- Select positioned to the top right corner -->
   <div class="absolute top-0 right-0 p-4">
-    <select>
+    <select  (change)="onLanguageChange($event)">
       <option value="-1">Select Language</option>
-      <option value="en" selected>English</option>
-      <option value="bn">বাংলা</option>
+      <option value="en" [selected]="selectedLanguage === 'en'">English</option>
+      <option value="bn" [selected]="selectedLanguage === 'bn'">বাংলা</option>
     </select>
   </div>
 

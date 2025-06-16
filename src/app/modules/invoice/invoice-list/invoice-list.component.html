@@ -71,7 +71,7 @@
           <td>{{ invoice.totalAmount | number }}</td>
           <td>{{ invoice.totalPaid | number}}</td>
           <td>{{ invoice.remainingAmount | number }}</td>
-          <td>{{ invoice.invoiceStatus }}</td>
+          <td>{{ invoice.invoiceStatus | word}}</td>
           <td class="flex flex-row gap-3">
             <div class="flex items-center gap-4">
               <a (click)="viewInvoice(invoice)" class="flex flex-row gap-2 hover:text-red-700">

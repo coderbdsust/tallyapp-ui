@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Invoice } from '../invoice.model';
 import { PageResponse } from 'src/app/common/models/page-response';
-import { catchError } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import { ApiResponse } from '../../auth/services/auth.model';
 
 @Injectable({
@@ -44,6 +44,13 @@ export class InvoiceService extends CommonService {
    public deleteInvoice(invoiceId: string) {
       return this.http
         .delete<ApiResponse>(`${environment.tallyURL}/invoice/v1/${invoiceId}`)
+        .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public downloadInvoice(organizationId: string, invoiceId:string):Observable<Blob> {
+    const url = `${environment.tallyURL}/pdf/v1/invoice/${organizationId}/${invoiceId}/download`;
+      return this.http
+        .get(url, {responseType: 'blob'})
         .pipe(catchError(this.mapErrorResponse));
   }
 

@@ -95,10 +95,17 @@
                 <div class="form__group">
                   <div class="relative">
                     <ng-select
-                      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
-                      [items]="allEmployees" [multiple]="false" bindValue="id" bindLabel="fullName"
-                      formControlName="madeBy" placeholder="Type name or mobile no partially and press enter"
-                      [searchable]="true" [compareWith]="compareEmployee" (keydown.enter)="onSearchKeyType($event)">
+                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
+                        [items]="allEmployees"
+                        [multiple]="false"
+                        bindValue="id"
+                        bindLabel="fullName"
+                        formControlName="madeBy"
+                        placeholder="Type name or mobile no partially and press enter"
+                        [searchable]="true"
+                        [compareWith]="compareEmployee"
+                        (change)="onSelectEmployee($event)"
+                        (keydown.enter)="onSearchEmployeeKeyType($event)">
                     </ng-select>
                     <div *ngIf="submitted && f['madeBy'].errors" class="is__invalid-error">
                       <div *ngIf="f['madeBy'].errors['required']">Required field</div>

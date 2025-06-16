@@ -34,7 +34,7 @@ import { RolePipe } from 'src/app/common/pipes/role.pipe';
 })
 export class ProfileMenuComponent implements OnInit {
   public isOpen = false;
-
+  public selectedLanguage = localStorage.getItem('app-language')||'en';
   public menuItem: { title: string; icon: string; link: string }[] = [];
 
   public logoutItem = {
@@ -142,6 +142,14 @@ export class ProfileMenuComponent implements OnInit {
     ).subscribe(menu => {
       this.menuItem = menu; // Assign the resolved menu array
     });
+  }
+
+  onLanguageChange(event: Event): void {
+    const lang = (event.target as HTMLSelectElement).value;
+    if (lang && lang !== '-1') {
+      this.selectedLanguage = lang;
+      localStorage.setItem('app-language', lang);
+    }
   }
 
 

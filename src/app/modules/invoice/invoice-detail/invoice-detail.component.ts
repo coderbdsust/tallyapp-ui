@@ -119,6 +119,25 @@ export class InvoiceDetailComponent {
     }
   }
 
+  downloadInvoice(){
+      this.invoiceService.downloadInvoice(this.orgId, this.invoiceId).subscribe({
+      next: (pdfRes: Blob) => {
+        const blob = new Blob([pdfRes], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice-${this.invoice.invoiceNumber || this.invoice.id}.pdf`;
+        a.click();
+
+        window.URL.revokeObjectURL(url); // clean up the blob URL
+      },
+      error: (err) => {
+        this.invoiceService.showToastErrorResponse(err);
+      }
+    });
+  }
+
   editInvoice(){
     this.router.navigate(['/invoice/add'], { queryParams: { orgId: this.orgId, invoiceId: this.invoiceId } }); 
   }

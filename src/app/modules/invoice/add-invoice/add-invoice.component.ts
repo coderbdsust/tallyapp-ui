@@ -181,7 +181,7 @@ export class AddInvoiceComponent implements OnInit {
   onCustomerSearchKeyType(event: Event): void {
     const searchKey = (event.target as HTMLInputElement).value;
     if (searchKey.length < 4) {
-      this.invoiceService.showToastInfo('Please type at least three (4) characters');
+      this.invoiceService.showToastInfo('Please type at least four (4) characters');
       return;
     }
     this.fetchCustomer(searchKey);

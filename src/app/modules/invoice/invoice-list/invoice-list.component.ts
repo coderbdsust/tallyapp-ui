@@ -10,10 +10,11 @@ import { OrganizationService } from '../../organization/service/organization.ser
 import { Organization } from '../../organization/service/model/organization.model';
 import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { WordPipe } from 'src/app/common/pipes/word.pipe';
 
 @Component({
   selector: 'app-invoice-list',
-  imports: [AngularSvgIconModule, CommonModule],
+  imports: [AngularSvgIconModule, CommonModule, WordPipe],
   
   templateUrl: './invoice-list.component.html',
   styleUrl: './invoice-list.component.scss'
@@ -153,11 +154,23 @@ export class InvoiceListComponent extends PaginatedComponent<Invoice>{
   }
 
   downloadInvoice(invoice:Invoice){
-    console.log(invoice);
-    this.invoiceService.showToastInfo("Not implemented here, Download from view page");
+      console.log(invoice);
+      this.invoiceService.downloadInvoice(this.organization.id, invoice.id).subscribe({
+      next: (pdfRes: Blob) => {
+        const blob = new Blob([pdfRes], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice-${invoice.invoiceNumber || invoice.id}.pdf`;
+        a.click();
+
+        window.URL.revokeObjectURL(url); // clean up the blob URL
+      },
+      error: (err) => {
+        this.invoiceService.showToastErrorResponse(err);
+      }
+    });
   }
-
-
-
 
 }

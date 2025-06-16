@@ -31,7 +31,6 @@
 
             </div>
             <div class="w-2/6 pl-2 ">
-                <!-- <img src="./assets/img/barcode-v2.png" alt="Invoice QR Code" class="w-full h-12 rounded bg-gray-100"> -->
                 <img [src]="invoice?.barcode || './assets/img/barcode-v2.png'" alt="Invoice QR Code" class="w-full h-12 rounded bg-gray-100">
 
                 <label class="text-sm text-muted-foreground">Organization Name</label>
@@ -122,7 +121,7 @@
                                 <th>SL</th>
                                 <th>Product Details</th>
                                 <th>Unit Rate</th>
-                                <th>Quantity</th>
+                                <th>Units</th>
                                 <th>Amount</th>
                                 <th class="flex flex-row gap-2">
                                     <span>Action</span>
@@ -214,7 +213,7 @@
                                 <tr>
                                     <th>Date</th>
                                     <th>Method</th>
-                                    <th>Ref#</th>
+                                    <th>Txn Ref#</th>
                                     <th>Amount</th>
                                     <th class="flex flex-row gap-2">
                                         <span>Action</span>

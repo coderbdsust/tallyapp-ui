@@ -3,12 +3,19 @@
 </p>
 
 <p>
-  <img alt="Preview" src="img/dashboard-v2.png">
-  <img alt="Preview" src="img/employee-v1.png">
-  <img alt="Preview" src="img/employee-add-v1.png">
+  <img alt="Preview" src="img/dashboard-v3.png">
+  <img alt="Preview" src="img/employee-v2.png">
+  <img alt="Preview" src="img/product.png">
+  <img alt="Preview" src="img/invoice-list-v1.png">
+  <img alt="Preview" src="img/invoice-page-part-1.png">
+  <img alt="Preview" src="img/invoice-page-part-2.png">
+  <img alt="Preview" src="img/invoice-page-part-3.png">
+  <img alt="Preview" src="img/invoice-pdf.png">
+  <img alt="Preview" src="img/user-profile-v2.png">
+    <img alt="Preview" src="img/2FA-By-Authenticator-App.png">
   <img alt="Preview" src="img/app-property-v1.png">
-  <img alt="Preview" src="img/user-management-v2.png">
-  <img alt="Preview" src="img/user-profile-v1.png">
+
+
 </p>
 
 #### Versions
@@ -20,13 +27,24 @@
 - [x] Sidebar
 - [x] Navbar
 - [x] Footer
-- [x] Auth Module (Sign In, Sign Up, Forgot Password)
+- [x] Auth Module 
+    - Sign In
+    - Sign Up
+    - Forgot Password,
+    - Login By 2FA Authentication (Email or Authenticator App)
 - [x] Auth Guards
-- [x] User Controls
-- [x] Modify App Property
-- [x] Create Organization and Select
-- [x] Assign Employee to Organization
 - [x] Dashboard Module
+- [x] Create Organization
+- [x] Create Employee under an Organization
+- [x] Create Product for an Organization
+- [x] Create Invoice using Product
+- [x] Modify App Property
+- [x] User Management
+- [ ] Module Based Security
+- [ ] Employee Income 
+- [ ] Organization Income
+- [ ] Reporting
+- [ ] Translate App
 
 #### Commands
 

@@ -11,6 +11,7 @@ import { catchError, of, tap, throwError } from 'rxjs';
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { generateRandomLuhnCode } from 'src/app/common/utils/LuhnCode';
+import { Employee } from '../../service/model/employee.model';
 
 @Component({
   selector: 'app-add-product',
@@ -22,7 +23,7 @@ import { generateRandomLuhnCode } from 'src/app/common/utils/LuhnCode';
     ReactiveFormsModule,
     NgSelectComponent,
     FileUploaderComponent,
-    AngularSvgIconModule
+    AngularSvgIconModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-product.component.html',
@@ -38,7 +39,7 @@ export class AddProductComponent {
   @Output() modifiedEmitter = new EventEmitter<Boolean>();
   selectedFile: File | null = null;
   @ViewChild(FileUploaderComponent) fileUploader!: FileUploaderComponent;
-  fileDeletedNeedToSubmit:boolean=false;
+  fileDeletedNeedToSubmit: boolean = false;
 
   constructor(
     private readonly _formBuilder: FormBuilder,
@@ -51,9 +52,9 @@ export class AddProductComponent {
     this.initializeForm();
   }
 
-  onSearchKeyType(event: Event) {
+  onSearchEmployeeKeyType(event: Event) {
     const searchKey = (event.target as HTMLSelectElement).value;
-    if (searchKey && searchKey.length < 5) {
+    if (!searchKey || searchKey.length < 5) {
       this.productService.showToastInfo('Please type atleast five (5) characters');
       return;
     }
@@ -61,11 +62,29 @@ export class AddProductComponent {
     this.employeeService.getEmployeesByOrganization(this.orgId!, 0, 10, searchKey).subscribe({
       next: (response) => {
         this.allEmployees = response.content.map((employee) => ({
+          ...employee,
           id: employee.id,
-          fullName: `${employee.fullName}`,
+          fullName: `${employee.fullName} - ${employee.employeeType} - ${employee.mobileNo}`,
         }));
       },
     });
+  }
+
+  onSelectEmployee(employee: Employee) {
+    console.log(employee);
+
+    if (!employee) {
+      return;
+    }
+
+    if (employee.employeeBillingType.includes('DAILY')) {
+      let stockArray = this.form.get('productStockList') as FormArray;
+      stockArray.controls.forEach((control) => {
+        control.get('perUnitEmployeeCost')?.setValue(employee.billingRate);
+        control.get('perUnitProductionCost')?.setValue(0);
+        control.get('unitPrice')?.setValue(employee.billingRate*1.5);
+      });
+    }
   }
 
   private initializeForm(product: Product | null = null) {
@@ -78,10 +97,10 @@ export class AddProductComponent {
     }
 
     let stockArray = this._formBuilder.array([]) as FormArray;
-    
-    if(product &&  product?.productStockList){
+
+    if (product && product?.productStockList) {
       stockArray = this.setProductStockList(product.productStockList);
-    }else{
+    } else {
       stockArray.push(this.createProductStockForm());
     }
 
@@ -92,22 +111,22 @@ export class AddProductComponent {
       description: [product?.description],
       imageUrl: [product?.imageUrl],
       madeBy: [product?.madeBy || null, [Validators.required]],
-      productStockList: stockArray 
+      productStockList: stockArray,
     });
   }
 
-  createProductStockForm(){
-     return this._formBuilder.group({
+  createProductStockForm() {
+    return this._formBuilder.group({
       id: [''],
       batchNumber: [''],
       manufactureDate: [''],
       expiryDate: [''],
-      initialQuantity:[0],
-      availableQuantity:[0],
-      quantityToAdd:[1, Validators.required],
+      initialQuantity: [0],
+      availableQuantity: [0],
+      quantityToAdd: [1, Validators.required],
       unitPrice: ['', Validators.required],
       perUnitProductionCost: ['', Validators.required],
-      perUnitEmployeeCost: ['', Validators.required]
+      perUnitEmployeeCost: ['', Validators.required],
     });
   }
 
@@ -116,26 +135,26 @@ export class AddProductComponent {
   }
 
   setProductStockList(stockList: ProductStock[]): FormArray {
-      let stockArray = this.form.get('productStockList') as FormArray;
-      stockArray.clear();
-      stockList.forEach((stock) => {
-        stockArray.push(
-          this._formBuilder.group({
-            id: [stock.id],
-            batchNumber: [stock.batchNumber],
-            manufactureDate: [stock.manufactureDate],
-            expiryDate: [stock.expiryDate],
-            initialQuantity:[stock.initialQuantity],
-            availableQuantity:[stock.availableQuantity],
-            quantityToAdd:[0, Validators.required],
-            unitPrice: [stock.unitPrice, Validators.required],
-            perUnitProductionCost: [stock.perUnitProductionCost, Validators.required],
-            perUnitEmployeeCost: [stock.perUnitEmployeeCost, Validators.required]
-          }),
-        );
-      });
-      return stockArray;
-    }
+    let stockArray = this.form.get('productStockList') as FormArray;
+    stockArray.clear();
+    stockList.forEach((stock) => {
+      stockArray.push(
+        this._formBuilder.group({
+          id: [stock.id],
+          batchNumber: [stock.batchNumber],
+          manufactureDate: [stock.manufactureDate],
+          expiryDate: [stock.expiryDate],
+          initialQuantity: [stock.initialQuantity],
+          availableQuantity: [stock.availableQuantity],
+          quantityToAdd: [0, Validators.required],
+          unitPrice: [stock.unitPrice, Validators.required],
+          perUnitProductionCost: [stock.perUnitProductionCost, Validators.required],
+          perUnitEmployeeCost: [stock.perUnitEmployeeCost, Validators.required],
+        }),
+      );
+    });
+    return stockArray;
+  }
 
   compareEmployee(emp1: any, emp2: any): boolean {
     return emp1 && emp2 ? emp1.id === emp2.id : emp1 === emp2;
@@ -150,7 +169,7 @@ export class AddProductComponent {
 
   closeModal() {
     this.isModalOpen = false;
-    if(this.fileDeletedNeedToSubmit){
+    if (this.fileDeletedNeedToSubmit) {
       this.onSubmit();
     }
   }
@@ -167,31 +186,31 @@ export class AddProductComponent {
     }
   }
 
-  generateProductCode(){
-    if(!this.isEdit) {
-       let code = generateRandomLuhnCode(6);
-       this.form.patchValue({ code: code });
+  generateProductCode() {
+    if (!this.isEdit) {
+      let code = generateRandomLuhnCode(6);
+      this.form.patchValue({ code: code });
     }
   }
 
-  onFileRemoved(){
+  onFileRemoved() {
     console.log('File removed');
-    this.fileDeletedNeedToSubmit=true;
+    this.fileDeletedNeedToSubmit = true;
   }
 
   addStock() {
-  const stockArray = this.form.get('productStockList') as FormArray;
-  stockArray.push(this.createProductStockForm());
-}
+    const stockArray = this.form.get('productStockList') as FormArray;
+    stockArray.push(this.createProductStockForm());
+  }
 
- removeStock(index: number) {
-  const stockArray = this.form.get('productStockList') as FormArray;
-  stockArray.removeAt(index);
-}
+  removeStock(index: number) {
+    const stockArray = this.form.get('productStockList') as FormArray;
+    stockArray.removeAt(index);
+  }
 
   onSubmit() {
     this.submitted = true;
-    this.fileDeletedNeedToSubmit=false;
+    this.fileDeletedNeedToSubmit = false;
 
     if (this.form.invalid) {
       return;
