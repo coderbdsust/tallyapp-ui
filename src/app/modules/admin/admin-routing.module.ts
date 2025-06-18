@@ -5,6 +5,7 @@ import { TableComponent } from './pages/table/table.component';
 import { AppPropertiesComponent } from './pages/app-properties/app-properties.component';
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { RegisteredUserComponent } from './pages/user-management/registered-user.component';
+import { PermissionMatrixComponent } from './pages/permission-matrix/permission-matrix.component';
 
 const routes: Routes = [
   {
@@ -15,7 +16,8 @@ const routes: Routes = [
       { path: '', redirectTo: 'app-property', pathMatch: 'full' },
       { path: 'table', component: TableComponent },
       { path: 'app-property', component: AppPropertiesComponent },
-      { path: 'user-management', component: RegisteredUserComponent }
+      { path: 'user-management', component: RegisteredUserComponent },
+      { path: 'permission-matrix', component: PermissionMatrixComponent }
     ],
   },
 ];

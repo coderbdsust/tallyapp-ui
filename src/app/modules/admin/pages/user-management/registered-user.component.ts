@@ -2,7 +2,6 @@ import { Component, signal, computed, OnInit, ViewChild, CUSTOM_ELEMENTS_SCHEMA 
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { PageResponse } from 'src/app/common/models/page-response';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { RegisteredUser } from './registered-user.model';
 import { RegisterUserService } from './service/register-user.service';

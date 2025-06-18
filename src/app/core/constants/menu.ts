@@ -111,7 +111,8 @@ export class Menu {
           route: '/admin',
           children: [
             { label: 'App Properties', route: '/admin/app-property' },
-            { label: 'User Management', route: '/admin/user-management' }
+            { label: 'User Management', route: '/admin/user-management' },
+            { label: 'Permission Management', route: '/admin/permission-matrix' }
           ]
         }
       ],
