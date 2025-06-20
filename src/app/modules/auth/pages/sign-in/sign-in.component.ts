@@ -100,7 +100,11 @@ export class SignInComponent implements OnInit {
         if (response.status === 'TFA_REQUIRED') {
           this._router.navigate(['/auth/verify-login-otp'], { state: { tfaData: response }, replaceUrl: true });
         } else if (response.status === 'SUCCESS') {
-          this._router.navigate(['/']);
+          if (response?.roles[0]?.includes('SUPER_ADMIN')) {
+            this._router.navigate(['/admin/user-management']);
+          } else {
+            this._router.navigate(['/']);
+          }
           this.authService.showToastSuccess(`Welcome, ${response.fullName}`);
         } else if (response.status === 'TFA_CHANNEL_SELECTION') {
           this.clearForm();

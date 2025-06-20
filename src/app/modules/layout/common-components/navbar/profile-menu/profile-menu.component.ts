@@ -43,24 +43,6 @@ export class ProfileMenuComponent implements OnInit {
     link: '/auth',
   };
 
-  public profileMenuAdmin = [
-    {
-      title: 'My Profile',
-      icon: './assets/icons/heroicons/outline/user-circle.svg',
-      link: '/user/profile',
-    },
-    {
-      title: 'My Organization',
-      icon: './assets/icons/heroicons/outline/office.svg',
-      link: '/organization/list',
-    },
-    {
-      title: 'Change Password',
-      icon: './assets/icons/heroicons/outline/wrench.svg',
-      link: '/user/change-password',
-    }
-  ];
-
   public profileMenuUser = [
     {
       title: 'My Profile',
@@ -138,7 +120,7 @@ export class ProfileMenuComponent implements OnInit {
   public getMenu(): void {
     this.authService.user.pipe(
       take(1),
-      map(user => (user?.role.toLowerCase().includes('admin') ? this.profileMenuAdmin : this.profileMenuUser))
+      map(user => (this.profileMenuUser))
     ).subscribe(menu => {
       this.menuItem = menu; // Assign the resolved menu array
     });

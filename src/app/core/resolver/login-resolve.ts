@@ -15,7 +15,11 @@ export class LoginResolve implements Resolve<boolean> {
        take(1),
        map((user) => {
           if (user) {
-             this.router.navigateByUrl('/dashboard/home');
+             console.log(user);
+             if(user.roles[0].includes('SUPER_ADMIN')){
+               this.router.navigateByUrl('/admin/user-management');
+             }else
+                this.router.navigateByUrl('/dashboard/home');
              return false;
           }
           return true;

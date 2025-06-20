@@ -4,10 +4,12 @@ export interface AuthUser {
   fullName: string;
   username: string;
   email: string;
-  role: string;
+  roles: string[];
+  modules: string[];
   status: string;
   message: string;
 }
+
 export interface SignUpResponse {
   id: string;
   username: string;
