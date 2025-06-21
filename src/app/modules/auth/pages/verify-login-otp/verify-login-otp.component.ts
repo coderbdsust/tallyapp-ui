@@ -84,7 +84,11 @@ export class VerifyLoginOtpComponent implements OnInit {
 
     this.authService.verifyLoginOtp(verification).subscribe({
       next: (response) => {
-        this._router.navigate([`/`]);
+        if (response?.roles[0]?.includes('SUPER_ADMIN')) {
+            this._router.navigate(['/admin/user-management']);
+          } else {
+            this._router.navigate(['/']);
+          }
         this.authService.showToastSuccess(`Welcome, ${response.fullName}`);
       },
       error: (error) => {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/modules/auth/services/common.service';
 import { UserprofileService } from 'src/app/modules/user/service/userprofile.service';
 import { Address, ShortProfile, UserProfile } from './profile.model';
@@ -6,25 +6,29 @@ import { initFlowbite } from 'flowbite';
 import { NgFor, NgIf } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, tap, throwError } from 'rxjs';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { AuthService } from '../../auth/services/auth.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthenticatorAppService } from '../service/authenticator-app.service';
 import { AuthenticatorQrModalComponent } from '../modal/authenticator-qr-modal/authenticator-qr-modal.component';
+import { FileUploaderComponent } from 'src/app/common/components/file-uploader/file-uploader.component';
+import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 
 @Component({
   selector: 'app-profile',
-  imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, ButtonComponent, WordPipe],
+  imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, ButtonComponent, WordPipe, FileUploaderComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent implements OnInit {
+  @ViewChild(FileUploaderComponent) fileUploader!: FileUploaderComponent;
   userProfile: UserProfile | undefined;
   genderList: String[] = [];
   userProfileForm!: FormGroup;
   tfaForm!: FormGroup;
+  selectedFile: File | null = null;
   submitted = false;
 
   constructor(
@@ -33,7 +37,8 @@ export class ProfileComponent implements OnInit {
     private authService: AuthService,
     private readonly _formBuilder: FormBuilder,
     private dialog: MatDialog,
-    private authenticatorAppService: AuthenticatorAppService
+    private authenticatorAppService: AuthenticatorAppService,
+    private fileUploaderService: FileUploaderService
   ) { }
 
   ngOnInit(): void {
@@ -60,6 +65,7 @@ export class ProfileComponent implements OnInit {
       fullName: ['', Validators.required],
       gender: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
+      profileImage:[''],
       addressList: this._formBuilder.array([]),
       shortProfileList: this._formBuilder.array([]),
     });
@@ -238,23 +244,27 @@ export class ProfileComponent implements OnInit {
   }
 
   loadUserProfile() {
-    this.userProfileService.getUserProfile().subscribe(
-      (userProfile) => {
+    this.userProfileService.getUserProfile().subscribe({
+      next:(userProfile)=>{
         this.userProfile = userProfile;
+        
+        if(userProfile.profileImage)
+          this.fileUploader.setFile(userProfile.profileImage);
+
         this.userProfileForm.patchValue({
           id: userProfile.id,
           mobileNo: userProfile.mobileNo,
           fullName: userProfile.fullName,
           gender: userProfile.gender,
           dateOfBirth: userProfile.dateOfBirth,
+          profileImage: userProfile.profileImage
         });
         this.setAddresses(userProfile.addressList);
         this.setShortProfiles(userProfile.shortProfileList);
-      },
-      (error) => {
+      },error:(error)=>{
         this.commonService.showToastErrorResponse(error);
-      },
-    );
+      }
+    });
   }
 
   loadGenderList() {
@@ -268,6 +278,18 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  onAvatarSelect(file: File | null) {
+    this.selectedFile = file;
+    if (!file) {
+      this.userProfileForm.patchValue({ profileImage: null });
+    }
+  }
+
+  onFileDeleted() {
+    this.userProfileForm.patchValue({ profileImage: null });
+    this.onSubmit();
+  }
+
   onSubmit() {
     this.submitted = true;
 
@@ -275,9 +297,23 @@ export class ProfileComponent implements OnInit {
       this.commonService.showToastError('Please fill up the form');
       return;
     }
+    let userProfile = this.userProfileForm.value;
 
-    const userProfile = this.userProfileForm.value;
+    if (this.selectedFile) {
+      this.fileUploaderService.uploadFile(this.selectedFile).subscribe({
+        next:(response)=>{
+          userProfile.profileImage = response.fileURL;
+          this.saveFormData(userProfile);
+        },error:(error)=>{
+          this.fileUploaderService.showToastErrorResponse(error);
+        }
+      })
+    }else{
+      this.saveFormData(userProfile);
+    }
+  }
 
+  saveFormData(userProfile:any){
     const shortProfiles: ShortProfile[] = (this.userProfileForm.get('shortProfileList') as FormArray).getRawValue();
 
     const addressList: Address[] = (this.userProfileForm.get('addressList') as FormArray).getRawValue();
@@ -313,7 +349,7 @@ export class ProfileComponent implements OnInit {
             ...(userProfileResponse as UserProfile),
           };
         }
-        this.userProfileService.showToastSuccess(`${this.userProfile?.fullName}, profile updated`);
+        this.userProfileService.showToastSuccess(`${this.userProfile?.fullName}, Profile Updated`);
       },
       error: (error) => {
         this.userProfileService.showToastErrorResponse(error);

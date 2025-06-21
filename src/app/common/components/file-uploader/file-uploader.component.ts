@@ -9,6 +9,8 @@ const ALLOWED_FILE_TYPES = [
   'image/jpg'
 ];
 
+export type FileUploaderShape = 'square' | 'circle' | 'rectangle' | 'avatar';
+
 @Component({
   selector: 'app-file-uploader',
   imports: [CommonModule],
@@ -20,6 +22,9 @@ export class FileUploaderComponent {
 
   allowedFileTypes = ALLOWED_FILE_TYPES;
 
+  // New shape input parameter
+  @Input() shape: FileUploaderShape = 'square';
+  
   isUploading = false;
   @Input() fileURL!: string | null;
   uploadFile!: File | null;
@@ -74,6 +79,7 @@ export class FileUploaderComponent {
   }
 
   clearFile() {
+    console.log('clear file');
     this.uploadFile = null;
     this.fileURL = null;
     this.containFile = false;

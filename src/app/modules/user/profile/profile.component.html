@@ -1,388 +1,392 @@
-<div class="flex flex-wrap">
-  <div class="w-full lg:w-4/12 px-4">
-    <div class="relative flex flex-col min-w-0 break-words bg-background w-full mb-6 shadow-xl rounded-lg">
-      <div class="px-6">
-        <div class="flex flex-wrap justify-center items-center">
-          <div class="w-full px-4 flex justify-center items-center">
-            <div class="relative flex justify-center items-center h-40 w-40">
-              <img alt="profile photo" src="assets/img/profile-male.jpg"
-                class="shadow-xl rounded-full h-32 w-32 border-none" />
+<form [formGroup]="userProfileForm" (ngSubmit)="onSubmit()">
+  <div class="flex flex-wrap">
+    <div class="w-full lg:w-4/12 px-4">
+      <div class="relative flex flex-col min-w-0 break-words bg-background w-full mb-6 shadow-xl rounded-lg">
+        <div class="px-6">
+          <div class="flex flex-wrap justify-center items-center">
+            <div class="w-full px-4 flex justify-center items-center mt-4">
+              <div class="mt-8">
+                  <div class="relative">
+                    <app-file-uploader #profileImage (fileSelected)="onAvatarSelect($event)" (fileRemoved)="onFileDeleted()" shape="avatar"></app-file-uploader>
+                    <input type="hidden" formControlName="profileImage" />
+                  </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="text-center mt-12">
-          <h3 class="text-xl font-semibold leading-normal text-blueGray-700 mb-2">
-            {{userProfile?.fullName || 'Full Name'}}
-          </h3>
-          <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
-            <i class="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
-            {{userProfile?.addressList?.[0]?.city || 'City'}} ,  {{userProfile?.addressList?.[0]?.country || 'Country'}}
+          <div class="text-center mt-12">
+            <h3 class="text-xl font-semibold leading-normal text-blueGray-700 mb-2">
+              {{userProfile?.fullName || 'Full Name'}}
+            </h3>
+            <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
+              <i class="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
+              {{userProfile?.addressList?.[0]?.city || 'City'}} ,  {{userProfile?.addressList?.[0]?.country || 'Country'}}
+            </div>
+            <div class="mb-2 text-blueGray-600 mt-10">
+              <i class="fas fa-laptop mr-2 text-lg text-blueGray-400"></i>
+              {{userProfile?.shortProfileList?.[0]?.designation || 'Designation'}}
+            </div>
+            <div class="mb-2 text-blueGray-600">
+              <i class="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
+              {{userProfile?.shortProfileList?.[0]?.companyName || 'Company Name'}}
+            </div>
           </div>
-          <div class="mb-2 text-blueGray-600 mt-10">
-            <i class="fas fa-laptop mr-2 text-lg text-blueGray-400"></i>
-            {{userProfile?.shortProfileList?.[0]?.designation || 'Designation'}}
-          </div>
-          <div class="mb-2 text-blueGray-600">
-            <i class="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
-            {{userProfile?.shortProfileList?.[0]?.companyName || 'Company Name'}}
-          </div>
-        </div>
-        <div class="mt-10 py-10 border-t border-blueGray-200 text-center">
-          <div class="flex flex-wrap justify-center">
-            <div class="w-full lg:w-9/12 px-4">
-              <p class="mb-4 text-lg leading-relaxed text-blueGray-700">
-                @for (skill of userProfile?.shortProfileList?.[0]?.skills?.split(','); track $index) {
-                  <span class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800">
-                    {{ skill }}
-                  </span>
-                  }
-              </p>
+          <div class="mt-10 py-10 border-t border-blueGray-200 text-center">
+            <div class="flex flex-wrap justify-center">
+              <div class="w-full lg:w-9/12 px-4">
+                <p class="mb-4 text-lg leading-relaxed text-blueGray-700">
+                  @for (skill of userProfile?.shortProfileList?.[0]?.skills?.split(','); track $index) {
+                    <span class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800">
+                      {{ skill }}
+                    </span>
+                    }
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <div class="relative flex flex-col min-w-0 break-words bg-background w-full mb-6 shadow-xl rounded-lg">
+        <form [formGroup]="tfaForm" >
+            <div class="px-6">
+              <div class="text-center mt-12">
+                <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
+                    TWO Factor Authentication
+                </div>
+                <div class="mb-10 ml-10 text-blueGray-600 mt-2">
+                    <div class="flex flex-col items-center gap-2">
+                      <div class="form__group w-full">
+                        <div class="relative">
+                          <input
+                            type="checkbox"
+                            id="byEmail"
+                            class="peer mt-3 block"
+                            placeholder=" "
+                            formControlName="byEmail"
+                            (change)="onChangeTfaStatusByEmail()" />
+                          <label
+                            for="byEmail"
+                            class="absolute top-4 left-5 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300  peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                              By Email (Primary)
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form__group w-full">
+                        <div class="relative">
+                          <input
+                            type="checkbox"
+                            id="byMobile"
+                            class="peer mt-3 block"
+                            placeholder=" "
+                            formControlName="byMobile"
+                            (change)="onChangeTfaStatusByMobile()" />
+                          <label
+                            for="byMobile"
+                            class="absolute top-4 left-5 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                              By Mobile
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form__group w-full">
+                        <div class="relative">
+                          <input
+                            type="checkbox"
+                            id="byAuthenticator"
+                            class="peer mt-3 block"
+                            placeholder=" "
+                            formControlName="byAuthenticator"
+                            (change)="onChangeTfaStatusByAuthenticator()" />
+                          <label
+                            for="byAuthenticator"
+                            class="absolute top-4 left-5 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+                              By Authenticator App
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </form>
+      </div>
     </div>
-    <div class="relative flex flex-col min-w-0 break-words bg-background w-full mb-6 shadow-xl rounded-lg">
-       <form [formGroup]="tfaForm" >
-          <div class="px-6">
-            <div class="text-center mt-12">
-              <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
-                  TWO Factor Authentication
-              </div>
-              <div class="mb-10 ml-10 text-blueGray-600 mt-2">
-                  <div class="flex flex-col items-center gap-2">
-                    <div class="form__group w-full">
-                      <div class="relative">
-                        <input
-                          type="checkbox"
-                          id="byEmail"
-                          class="peer mt-3 block"
-                          placeholder=" "
-                          formControlName="byEmail"
-                          (change)="onChangeTfaStatusByEmail()" />
-                        <label
-                          for="byEmail"
-                          class="absolute top-4 left-5 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300  peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                            By Email (Primary)
-                        </label>
-                      </div>
-                    </div>
-                    <div class="form__group w-full">
-                      <div class="relative">
-                        <input
-                          type="checkbox"
-                          id="byMobile"
-                          class="peer mt-3 block"
-                          placeholder=" "
-                          formControlName="byMobile"
-                          (change)="onChangeTfaStatusByMobile()" />
-                        <label
-                          for="byMobile"
-                          class="absolute top-4 left-5 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                            By Mobile
-                        </label>
-                      </div>
-                    </div>
-                    <div class="form__group w-full">
-                      <div class="relative">
-                        <input
-                          type="checkbox"
-                          id="byAuthenticator"
-                          class="peer mt-3 block"
-                          placeholder=" "
-                          formControlName="byAuthenticator"
-                          (change)="onChangeTfaStatusByAuthenticator()" />
-                        <label
-                          for="byAuthenticator"
-                          class="absolute top-4 left-5 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                            By Authenticator App
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-              </div>
+    <div class="w-full lg:w-8/12 px-4">
+      
+        <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-background border-0">
+          <div class="rounded-t bg-gray-100 mb-0 px-6 py-6">
+            <div class="text-center flex justify-between">
+              <h6 class="text-blueGray-700 text-xl font-bold">My Profile</h6>
+                <app-button 
+                  full
+                  [disabled]="userProfileForm.invalid" 
+                  impact="bold" 
+                  tone="primary" 
+                  shape="rounded" 
+                  size="medium">
+                  Update
+              </app-button>
             </div>
           </div>
-      </form>
-    </div>
-  </div>
-  <div class="w-full lg:w-8/12 px-4">
-    <form [formGroup]="userProfileForm" (ngSubmit)="onSubmit()">
-      <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-background border-0">
-        <div class="rounded-t bg-gray-100 mb-0 px-6 py-6">
-          <div class="text-center flex justify-between">
-            <h6 class="text-blueGray-700 text-xl font-bold">My Profile</h6>
-              <app-button 
-                full
-                [disabled]="userProfileForm.invalid" 
-                impact="bold" 
-                tone="primary" 
-                shape="rounded" 
-                size="medium">
-                Update
-            </app-button>
-          </div>
-        </div>
-        <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
-            <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
-              User Information
-            </h6>
-            <div class="flex flex-wrap">
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative w-full mb-3">
-                  <input name="id"  [value]="userProfile?.id" formControlName="id" type="hidden"/>
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="username">
-                    Username
-                  </label>
-                  <input readonly type="text" name="username"
-                    class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    value="{{userProfile?.username}}" />
-                </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="email">
-                    Email address
-                  </label>
-                  <input readonly type="email" name="email"
-                    class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    value="{{userProfile?.email}}" />
-                </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="fullName">
-                    Full Name
-                  </label>
-                  <input type="text" name="fullName" formControlName="fullName"
-                    class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    value="{{userProfile?.fullName}}" />
-  
-                  <div class="is__invalid-error" *ngIf="isFieldInvalid('fullName')">
-                      {{ getErrorMessage('fullName') }}
-                  </div>
-                </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="dateOfBirth">
-                    Date of Birth
-                  </label>
-                  <div class="relative max-w-sm">
-                    
-                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none pl-2">
-                      <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20">
-                        <path
-                          d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                      </svg>
-                    </div>
-
-                    <input
-                        #dateOfBirth
-                        id="dateOfBirth"
-                        datepicker
-                        datepicker-autohide
-                        type="text"
-                        name="dateOfBirth"
-                        formControlName="dateOfBirth"
-                        datepicker-format="yyyy-mm-dd"
-                        class="pl-8 bg-white border border-gray-300 text-black text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
-                        placeholder="Select Birthdate"
-                        (changeDate)="onDateChange($event)"
-                      />
-
-                      <div class="is__invalid-error" *ngIf="isFieldInvalid('dateOfBirth')">
-                        {{ getErrorMessage('dateOfBirth') }}
-                       </div>
-                  </div>
-
-                </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="gender">
-                    Gender
-                  </label>
-
-                  <select id="gender" name="gender" formControlName="gender"
-                    class="py-2.5 px-0 indent-4 w-full text-sm rounded bg-white border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                    <option value="-1" >Select Gender</option>
-                    <ng-container *ngFor="let gender of genderList; let i = index;">
-                      <option [value]="gender" [selected]="gender == userProfile?.gender">{{gender | word}}
-                      </option>
-                    </ng-container>
-                  </select>  
-                  <div class="is__invalid-error" *ngIf="isFieldInvalid('gender')">
-                    {{ getErrorMessage('gender') }}
-                   </div>                
-                </div>
-              </div>
-
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="mobileNo">
-                    Mobile No
-                  </label>
-                  <input type="text" name="mobileNo" formControlName="mobileNo"
-                    class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    value="{{userProfile?.mobileNo}}" />
-                </div>
-                <div class="is__invalid-error" *ngIf="isFieldInvalid('mobileNo')">
-                  {{ getErrorMessage('mobileNo') }}
-                 </div>  
-              </div>
-
-            </div>
-
-            <hr class="mt-6 border-b-1 border-blueGray-300" />
-
-            
-            <div class="flex justify-between">
+          <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
               <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
-                Contact Address
+                User Information
               </h6>
-                <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5'" (click)="addAddress()" class="text-primary text-primary-foreground mt-3"> </svg-icon>
-            </div>
-            <div class="grid grid-cols-1 divide-y-2" formArrayName="addressList">
-              <div *ngFor="let address of addressList.controls; let i = index" [formGroupName]="i">
-                <div class="flex justify-between">
-                  <p class="text-blueGray-200 text-xs mt-3 mb-6 font-bold uppercase">Address # {{i+1}}</p>
-                  <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-5 w-5'" (click)="removeAddress(i)" class="text-primary text-primary-foreground mt-3"> </svg-icon>
-               </div>
-                <div class="flex flex-wrap">
-                  <div class="w-full lg:w-12/12 px-4">
-                    <div class="relative w-full mb-3">
-                      <input type="hidden"
-                        formControlName="id" />
-
-                      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="addressLine{{i+1}}">
-                        Address
-                      </label>
-                    
-                      <input type="text" name="addressLine{{i+1}}"
-                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                        formControlName="addressLine" />
-
-                      <div *ngIf="(submitted || address.get('addressLine')?.touched) && address.get('addressLine')?.invalid" class="is__invalid-error">
-                        <p *ngIf="address.get('addressLine')?.hasError('required')">Address Line is required.</p>
+              <div class="flex flex-wrap">
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative w-full mb-3">
+                    <input name="id"  [value]="userProfile?.id" formControlName="id" type="hidden"/>
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="username">
+                      Username
+                    </label>
+                    <input readonly type="text" name="username"
+                      class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      value="{{userProfile?.username}}" />
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative w-full mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="email">
+                      Email address
+                    </label>
+                    <input readonly type="email" name="email"
+                      class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      value="{{userProfile?.email}}" />
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative w-full mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="fullName">
+                      Full Name
+                    </label>
+                    <input type="text" name="fullName" formControlName="fullName"
+                      class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      value="{{userProfile?.fullName}}" />
+    
+                    <div class="is__invalid-error" *ngIf="isFieldInvalid('fullName')">
+                        {{ getErrorMessage('fullName') }}
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative w-full mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="dateOfBirth">
+                      Date of Birth
+                    </label>
+                    <div class="relative max-w-sm">
+                      
+                      <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none pl-2">
+                        <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20">
+                          <path
+                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                        </svg>
                       </div>
+
+                      <input
+                          #dateOfBirth
+                          id="dateOfBirth"
+                          datepicker
+                          datepicker-autohide
+                          type="text"
+                          name="dateOfBirth"
+                          formControlName="dateOfBirth"
+                          datepicker-format="yyyy-mm-dd"
+                          class="pl-8 bg-white border border-gray-300 text-black text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+                          placeholder="Select Birthdate"
+                          (changeDate)="onDateChange($event)"
+                        />
+
+                        <div class="is__invalid-error" *ngIf="isFieldInvalid('dateOfBirth')">
+                          {{ getErrorMessage('dateOfBirth') }}
+                        </div>
                     </div>
-                  </div>
-                  <div class="w-full lg:w-3/12 px-4">
-                    <div class="relative w-full mb-3">
-                      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="city{{i+1}}">
-                        City
-                      </label>
-                      <input type="text" name="city{{i+1}}"
-                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                        formControlName="city" />
-                      <div *ngIf="(submitted || address.get('city')?.touched) && address.get('city')?.invalid" class="is__invalid-error">
-                        <p *ngIf="address.get('city')?.hasError('required')">City is required.</p>
-                      </div> 
-                    </div>
-                  </div>
-                  <div class="w-full lg:w-3/12 px-4">
-                    <div class="relative w-full mb-3">
-                      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="state{{i+1}}">
-                        State
-                      </label>
-                      <input type="text" name="state{{i+1}}"
-                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                        formControlName="state" />
-                        <div *ngIf="(submitted || address.get('state')?.touched) && address.get('state')?.invalid" class="is__invalid-error">
-                          <p *ngIf="address.get('state')?.hasError('required')">State is required.</p>
-                        </div>    
-                    </div>
-                  </div>
-                  <div class="w-full lg:w-3/12 px-4">
-                    <div class="relative w-full mb-3">
-                      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="postCode{{i+1}}">
-                        Postal Code
-                      </label>
-                      <input type="text" name="postCode{{i+1}}"
-                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                        formControlName="postCode" />
-                        <div *ngIf="(submitted || address.get('postCode')?.touched) && address.get('postCode')?.invalid" class="is__invalid-error">
-                          <p *ngIf="address.get('postCode')?.hasError('required')">Postcode is required.</p>
-                          <p *ngIf="address.get('postCode')?.hasError('pattern')">Postcode must be a 4-digit number.</p>
-                        </div>    
-                    </div>
-                  </div>
-                  <div class="w-full lg:w-3/12 px-4">
-                    <div class="relative w-full mb-3">
-                      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="country{{i+1}}">
-                        Country
-                      </label>
-                      <input type="text" name="country{{i+1}}"
-                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                        formControlName="country" />
-                        <div *ngIf="(submitted || address.get('country')?.touched) && address.get('country')?.invalid" class="is__invalid-error">
-                          <p *ngIf="address.get('country')?.hasError('required')">Country is required.</p>
-                        </div>    
-                    </div>
+
                   </div>
                 </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative w-full mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="gender">
+                      Gender
+                    </label>
+
+                    <select id="gender" name="gender" formControlName="gender"
+                      class="py-2.5 px-0 indent-4 w-full text-sm rounded bg-white border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                      <option value="-1" >Select Gender</option>
+                      <ng-container *ngFor="let gender of genderList; let i = index;">
+                        <option [value]="gender" [selected]="gender == userProfile?.gender">{{gender | word}}
+                        </option>
+                      </ng-container>
+                    </select>  
+                    <div class="is__invalid-error" *ngIf="isFieldInvalid('gender')">
+                      {{ getErrorMessage('gender') }}
+                    </div>                
+                  </div>
+                </div>
+
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative w-full mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="mobileNo">
+                      Mobile No
+                    </label>
+                    <input type="text" name="mobileNo" formControlName="mobileNo"
+                      class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      value="{{userProfile?.mobileNo}}" />
+                  </div>
+                  <div class="is__invalid-error" *ngIf="isFieldInvalid('mobileNo')">
+                    {{ getErrorMessage('mobileNo') }}
+                  </div>  
+                </div>
+
               </div>
-            </div>
-            <div class="flex justify-between">
-              <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
-                Work Information
-              </h6>
-                <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5'" (click)="addShortProfile()" class="text-primary text-primary-foreground mt-3"> </svg-icon>
-            </div>
-            <div class="grid grid-cols-1 divide-y-2" formArrayName="shortProfileList">
+
+              <hr class="mt-6 border-b-1 border-blueGray-300" />
+
               
-              <div  *ngFor="let profile of shortProfileList.controls; let i = index" [formGroupName]="i">
-                <div class="flex justify-between">
-                    <p class="text-blueGray-200 text-xs mt-3 mb-6 font-bold uppercase">Work # {{i+1}}</p>
-                    <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-5 w-5'" (click)="removeShortProfile(i)" class="text-primary text-primary-foreground mt-3"> </svg-icon>
+              <div class="flex justify-between">
+                <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+                  Contact Address
+                </h6>
+                  <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5'" (click)="addAddress()" class="text-primary text-primary-foreground mt-3"> </svg-icon>
+              </div>
+              <div class="grid grid-cols-1 divide-y-2" formArrayName="addressList">
+                <div *ngFor="let address of addressList.controls; let i = index" [formGroupName]="i">
+                  <div class="flex justify-between">
+                    <p class="text-blueGray-200 text-xs mt-3 mb-6 font-bold uppercase">Address # {{i+1}}</p>
+                    <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-5 w-5'" (click)="removeAddress(i)" class="text-primary text-primary-foreground mt-3"> </svg-icon>
                 </div>
-                <div class="flex flex-wrap">
-                  <div class="w-full lg:w-12/12 px-4">
-                    <div class="relative w-full mb-3">
-                      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="designation">
-                        Designation
-                      </label>
-                      <input type="text" name="designation"
-                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                        formControlName="designation" />
-                        <div *ngIf="(submitted || profile.get('designation')?.touched) && profile.get('designation')?.invalid" class="is__invalid-error">
-                          <p *ngIf="profile.get('designation')?.hasError('required')">Designation is required.</p>
-                        </div> 
+                  <div class="flex flex-wrap">
+                    <div class="w-full lg:w-12/12 px-4">
+                      <div class="relative w-full mb-3">
+                        <input type="hidden"
+                          formControlName="id" />
+
+                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="addressLine{{i+1}}">
+                          Address
+                        </label>
+                      
+                        <input type="text" name="addressLine{{i+1}}"
+                          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          formControlName="addressLine" />
+
+                        <div *ngIf="(submitted || address.get('addressLine')?.touched) && address.get('addressLine')?.invalid" class="is__invalid-error">
+                          <p *ngIf="address.get('addressLine')?.hasError('required')">Address Line is required.</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="w-full lg:w-12/12 px-4">
-                    <div class="relative w-full mb-3">
-                      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="skills">
-                        Skills
-                      </label>
-                      <input type="text" name="skills"
-                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                        formControlName="skills" />
-                        <div *ngIf="(submitted || profile.get('skills')?.touched) && profile.get('skills')?.invalid" class="is__invalid-error">
-                          <p *ngIf="profile.get('skills')?.hasError('required')">Skills is required.</p>
+                    <div class="w-full lg:w-3/12 px-4">
+                      <div class="relative w-full mb-3">
+                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="city{{i+1}}">
+                          City
+                        </label>
+                        <input type="text" name="city{{i+1}}"
+                          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          formControlName="city" />
+                        <div *ngIf="(submitted || address.get('city')?.touched) && address.get('city')?.invalid" class="is__invalid-error">
+                          <p *ngIf="address.get('city')?.hasError('required')">City is required.</p>
                         </div> 
+                      </div>
                     </div>
-                  </div>
-                  <div class="w-full lg:w-12/12 px-4">
-                    <div class="relative w-full mb-3">
-                      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="companyName">
-                        Company Name
-                      </label>
-                      <input type="text" name="companyName"
-                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                        formControlName="companyName" />
-                        <div *ngIf="(submitted || profile.get('companyName')?.touched) && profile.get('companyName')?.invalid" class="is__invalid-error">
-                          <p *ngIf="profile.get('companyName')?.hasError('required')">Company Name is required.</p>
-                        </div> 
+                    <div class="w-full lg:w-3/12 px-4">
+                      <div class="relative w-full mb-3">
+                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="state{{i+1}}">
+                          State
+                        </label>
+                        <input type="text" name="state{{i+1}}"
+                          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          formControlName="state" />
+                          <div *ngIf="(submitted || address.get('state')?.touched) && address.get('state')?.invalid" class="is__invalid-error">
+                            <p *ngIf="address.get('state')?.hasError('required')">State is required.</p>
+                          </div>    
+                      </div>
+                    </div>
+                    <div class="w-full lg:w-3/12 px-4">
+                      <div class="relative w-full mb-3">
+                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="postCode{{i+1}}">
+                          Postal Code
+                        </label>
+                        <input type="text" name="postCode{{i+1}}"
+                          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          formControlName="postCode" />
+                          <div *ngIf="(submitted || address.get('postCode')?.touched) && address.get('postCode')?.invalid" class="is__invalid-error">
+                            <p *ngIf="address.get('postCode')?.hasError('required')">Postcode is required.</p>
+                            <p *ngIf="address.get('postCode')?.hasError('pattern')">Postcode must be a 4-digit number.</p>
+                          </div>    
+                      </div>
+                    </div>
+                    <div class="w-full lg:w-3/12 px-4">
+                      <div class="relative w-full mb-3">
+                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="country{{i+1}}">
+                          Country
+                        </label>
+                        <input type="text" name="country{{i+1}}"
+                          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          formControlName="country" />
+                          <div *ngIf="(submitted || address.get('country')?.touched) && address.get('country')?.invalid" class="is__invalid-error">
+                            <p *ngIf="address.get('country')?.hasError('required')">Country is required.</p>
+                          </div>    
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+              <div class="flex justify-between">
+                <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+                  Work Information
+                </h6>
+                  <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5'" (click)="addShortProfile()" class="text-primary text-primary-foreground mt-3"> </svg-icon>
+              </div>
+              <div class="grid grid-cols-1 divide-y-2" formArrayName="shortProfileList">
+                
+                <div  *ngFor="let profile of shortProfileList.controls; let i = index" [formGroupName]="i">
+                  <div class="flex justify-between">
+                      <p class="text-blueGray-200 text-xs mt-3 mb-6 font-bold uppercase">Work # {{i+1}}</p>
+                      <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-5 w-5'" (click)="removeShortProfile(i)" class="text-primary text-primary-foreground mt-3"> </svg-icon>
+                  </div>
+                  <div class="flex flex-wrap">
+                    <div class="w-full lg:w-12/12 px-4">
+                      <div class="relative w-full mb-3">
+                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="designation">
+                          Designation
+                        </label>
+                        <input type="text" name="designation"
+                          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          formControlName="designation" />
+                          <div *ngIf="(submitted || profile.get('designation')?.touched) && profile.get('designation')?.invalid" class="is__invalid-error">
+                            <p *ngIf="profile.get('designation')?.hasError('required')">Designation is required.</p>
+                          </div> 
+                      </div>
+                    </div>
+                    <div class="w-full lg:w-12/12 px-4">
+                      <div class="relative w-full mb-3">
+                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="skills">
+                          Skills
+                        </label>
+                        <input type="text" name="skills"
+                          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          formControlName="skills" />
+                          <div *ngIf="(submitted || profile.get('skills')?.touched) && profile.get('skills')?.invalid" class="is__invalid-error">
+                            <p *ngIf="profile.get('skills')?.hasError('required')">Skills is required.</p>
+                          </div> 
+                      </div>
+                    </div>
+                    <div class="w-full lg:w-12/12 px-4">
+                      <div class="relative w-full mb-3">
+                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="companyName">
+                          Company Name
+                        </label>
+                        <input type="text" name="companyName"
+                          class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          formControlName="companyName" />
+                          <div *ngIf="(submitted || profile.get('companyName')?.touched) && profile.get('companyName')?.invalid" class="is__invalid-error">
+                            <p *ngIf="profile.get('companyName')?.hasError('required')">Company Name is required.</p>
+                          </div> 
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
         </div>
-      </div>
-    </form>
+    
+    </div>
   </div>
-</div>
+ </form>

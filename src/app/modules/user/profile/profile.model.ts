@@ -29,6 +29,7 @@ export interface UserProfile {
   addressList: Address[];
   shortProfileList: ShortProfile[];
   mobileNoVerified: boolean;
+  profileImage:string;
 }
 
 export interface TFAResponse {

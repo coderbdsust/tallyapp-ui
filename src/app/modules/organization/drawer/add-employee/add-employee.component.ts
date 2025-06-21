@@ -104,7 +104,7 @@ export class AddEmployeeComponent {
   }
 
   private initializeEmpForm(employee: Employee | null=null) {
-      
+
       if(employee) {
         this.employee = employee;
         if(employee.profileImage)
@@ -207,7 +207,7 @@ export class AddEmployeeComponent {
           this.empService.showToastSuccess('Employee saved to organization successfully');
   
           this.closeDrawer();
-          this.initializeEmpForm(employee);
+          this.initializeEmpForm(null);
         },
         error: (error) => {
           this.orgService.showToastErrorResponse(error);

@@ -63,7 +63,7 @@ export class Menu {
       ],
     },
     {
-      group: 'Settings',
+      group: 'Super Admin',
       separator: false,
       items: [
         {
