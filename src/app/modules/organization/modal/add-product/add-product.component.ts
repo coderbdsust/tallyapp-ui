@@ -1,8 +1,8 @@
 import { CommonModule, NgClass } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { Product, ProductStock } from '../../service/model/product.model';
+import { Product, ProductCategory, ProductStock } from '../../service/model/product.model';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ProductService } from '../../service/product.service';
 import { EmployeeService } from '../../service/employee.service';
@@ -12,6 +12,7 @@ import { FileUploaderService } from 'src/app/core/services/file-uploader.service
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { generateRandomLuhnCode } from 'src/app/common/utils/LuhnCode';
 import { Employee } from '../../service/model/employee.model';
+import { ProductCategoryService } from '../../service/product-category.service';
 
 @Component({
   selector: 'app-add-product',
@@ -33,8 +34,9 @@ export class AddProductComponent {
   form!: FormGroup;
   submitted = false;
   isModalOpen = false;
-  orgId: string | null = null;
+  @Input() orgId: string | null = null;
   allEmployees: any = [];
+  allProductCategories: ProductCategory[] = [];
   isEdit = false;
   @Output() modifiedEmitter = new EventEmitter<Boolean>();
   selectedFile: File | null = null;
@@ -46,10 +48,24 @@ export class AddProductComponent {
     private productService: ProductService,
     private employeeService: EmployeeService,
     private fileUploaderService: FileUploaderService,
+    private productCategoryService:ProductCategoryService
   ) {}
 
   ngOnInit(): void {
     this.initializeForm();
+  }
+
+  loadProductCategories(orgId:string|null){
+    if(orgId){
+        this.productCategoryService.getProductCagegoriesByOrganization(orgId).subscribe({
+          next:(categories)=>{
+            console.log(categories);
+            this.allProductCategories = categories;
+          },error:(errorRes)=>{
+            this.productCategoryService.showToastErrorResponse(errorRes);
+          }
+        });
+    }
   }
 
   onSearchEmployeeKeyType(event: Event) {
@@ -111,9 +127,39 @@ export class AddProductComponent {
       description: [product?.description],
       imageUrl: [product?.imageUrl],
       madeBy: [product?.madeBy || null, [Validators.required]],
+      categoryId:[product?.productCategory?.id, [Validators.required]],
       productStockList: stockArray,
     });
   }
+
+  addNewCategory(categoryName: string): Promise<ProductCategory> {
+  const category: ProductCategory = {
+    id:null,
+    name: categoryName,
+    description: categoryName,
+    active: true
+  };
+
+  return new Promise((resolve, reject) => {
+    if (!this.orgId) {
+      this.productCategoryService.showToastError('Organization ID is missing.');
+      return reject('Organization ID is missing.');
+    }
+
+    this.productCategoryService.addProductCategoryByOrganization(this.orgId, category).subscribe({
+      next: (savedCategory) => {
+        this.allProductCategories.push(savedCategory);
+        resolve(savedCategory);
+      },
+      error: (error) => {
+        this.productCategoryService.showToastErrorResponse(error);
+        reject(error);
+      }
+    });
+  });
+}
+
+
 
   createProductStockForm() {
     return this._formBuilder.group({
@@ -164,6 +210,7 @@ export class AddProductComponent {
     this.isEdit = !!product;
     this.orgId = orgId;
     this.initializeForm(product);
+    this.loadProductCategories(orgId);
     this.isModalOpen = true;
   }
 

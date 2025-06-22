@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 import { catchError, of, tap } from 'rxjs';
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 
@@ -9,11 +10,11 @@ const ALLOWED_FILE_TYPES = [
   'image/jpg'
 ];
 
-export type FileUploaderShape = 'square' | 'circle' | 'rectangle' | 'avatar';
+export type FileUploaderShape = 'rectangle' | 'avatar';
 
 @Component({
   selector: 'app-file-uploader',
-  imports: [CommonModule],
+  imports: [CommonModule, AngularSvgIconModule],
   templateUrl: './file-uploader.component.html',
   styleUrl: './file-uploader.component.scss'
 })
@@ -23,7 +24,7 @@ export class FileUploaderComponent {
   allowedFileTypes = ALLOWED_FILE_TYPES;
 
   // New shape input parameter
-  @Input() shape: FileUploaderShape = 'square';
+  @Input() shape: FileUploaderShape = 'rectangle';
   
   isUploading = false;
   @Input() fileURL!: string | null;

@@ -14,6 +14,7 @@ export interface Product {
   createdDate: string,
   madeBy: Employee
   productStockList:ProductStock[] | null;
+  productCategory: ProductCategory;
 }
 
 export interface ProductStock {
@@ -35,4 +36,11 @@ export interface ProductStatistics{
   totalEmployeeCostSum: number;
   totalProductionCostSum: number;
   totalPaymentCollectedSum: number;
+}
+
+export interface ProductCategory{
+  id:string|null;
+  name:string;
+  description:string;
+  active:boolean;
 }

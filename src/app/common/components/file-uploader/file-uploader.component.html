@@ -3,7 +3,11 @@
       <!-- Start Drop Zone -->
       <div
         *ngIf="containFile === false"
-        class="relative flex flex-col outline-gray-500 outline-2 -outline-offset-4 outline-dashed w-[120px] h-[120px] rounded-2xl items-center justify-center"
+        [ngClass]="{
+          'w-[125px] h-[125px] rounded-2xl': shape === 'rectangle',
+          'w-[140px] h-[140px] rounded-full': shape === 'avatar'
+        }"
+        class="relative flex flex-col outline-gray-500 outline-2 -outline-offset-4 outline-dashed items-center justify-center"
       >
         <input
           #fileInput
@@ -38,7 +42,11 @@
       <div
         *ngIf="fileURL"
         [ngStyle]="{ 'background-image': 'url(' + fileURL + ')' }"
-        class="flex flex-col justify-end border w-[120px] h-[120px] rounded-2xl items-center relative bg-cover bg-center overflow-hidden bg-gray-300"
+        [ngClass]="{
+          'w-[130px] h-[130px] rounded-2xl': shape === 'rectangle',
+          'w-[140px] h-[140px] rounded-full': shape === 'avatar'
+        }"
+        class="flex flex-col justify-end border items-center relative bg-cover bg-center overflow-hidden bg-gray-300"
       >
         <div
           class="flex flex-col w-full p-1 bg-white"
