@@ -2,15 +2,15 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, NgIf } from '@angular/common';
-import { OrganizationService } from '../service/organization.service';
-import { Organization } from '../service/model/organization.model';
-import { AddEmployeeComponent } from '../drawer/add-employee/add-employee.component';
-import { EmployeeService } from '../service/employee.service';
-import { Employee } from '../service/model/employee.model';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
+import { AddEmployeeComponent } from '../../drawer/add-employee/add-employee.component';
+import { Employee } from '../../service/model/employee.model';
+import { Organization } from '../../service/model/organization.model';
+import { OrganizationService } from '../../service/organization.service';
+import { EmployeeService } from '../../service/employee.service';
 
 @Component({
   selector: 'app-employee-list',

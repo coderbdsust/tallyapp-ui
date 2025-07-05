@@ -8,6 +8,7 @@ import {
     FileTextIcon,
     BuildingIcon,
     BarChart3Icon,
+    HandCoinsIcon,
     LayoutIcon
 } from 'lucide-angular';
 
@@ -26,6 +27,7 @@ export class GetIconPipe implements PipeTransform {
         'file-text': FileTextIcon,
         'building': BuildingIcon,
         'bar-chart-3': BarChart3Icon,
+        'hand-coins': HandCoinsIcon,
         'layout': LayoutIcon,
     };
 

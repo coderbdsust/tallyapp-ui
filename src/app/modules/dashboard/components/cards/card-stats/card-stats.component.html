@@ -1,15 +1,16 @@
 <div
-  class="relative flex flex-col min-w-0 break-words bg-white rounded-lg bg-background p-4  xl:mb-0 shadow-lg"
+  [ngClass]="[statIconColor, 'bg-opacity-25']"
+  class="relative flex flex-col min-w-0 break-words rounded-lg bg-background p-4  xl:mb-0 shadow-lg"
 >
   <div class="flex-auto p-4">
     <div class="flex flex-wrap">
       <div class="relative w-full pr-4 max-w-full flex-grow flex-1">
-        <h5 class="text-blueGray-400 uppercase font-bold text-xs">
+        <span class="font-semibold text-lg text-blueGray-700">
+          BDT {{ statTitle }}
+        </span>
+        <h5 class="text-blueGray-400 uppercase font-bold text-sm">
           {{ statSubtitle }}
         </h5>
-        <span class="font-semibold text-xl text-blueGray-700">
-          {{ statTitle }}
-        </span>
       </div>
       <div class="relative w-auto pl-4 flex-initial">
         <div
@@ -20,7 +21,7 @@
         </div>
       </div>
     </div>
-    <p class="text-sm text-blueGray-400 mt-4">
+    <!-- <p class="text-sm text-blueGray-400 mt-4">
       <span class="mr-2" [ngClass]="statPercentColor">
         <i
           [ngClass]="
@@ -30,6 +31,6 @@
         {{ statPercent }}%
       </span>
       <span class="whitespace-nowrap">{{ statDescripiron }}</span>
-    </p>
+    </p> -->
   </div>
 </div>

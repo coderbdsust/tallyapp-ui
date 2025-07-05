@@ -19,7 +19,13 @@ export class EmployeeService extends CommonService {
 
   public getEmployeesByOrganization(organizationId: String, page: number, size: number, search: string) {
     return this.http
-      .get<PageResponse<Employee>>(`${environment.tallyURL}/employee/v1/${organizationId}/all-employee?page=${page}&size=${size}&search=${search}`)
+      .get<PageResponse<Employee>>(`${environment.tallyURL}/employee/v1/${organizationId}/all-employee-by-page?page=${page}&size=${size}&search=${search}`)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public getAllEmployeesByOrganization(organizationId: String) {
+    return this.http
+      .get<Employee[]>(`${environment.tallyURL}/employee/v1/${organizationId}/all-employee`)
       .pipe(catchError(this.mapErrorResponse));
   }
 
@@ -50,6 +56,12 @@ export class EmployeeService extends CommonService {
   public deleteEmployee(employeeId: String) {
     return this.http
       .delete<ApiResponse>(`${environment.tallyURL}/employee/v1/${employeeId}`)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public getExpenseTypes() {
+    return this.http
+      .get<string[]>(`${environment.tallyURL}/employee-expenses/v1/expense-type`)
       .pipe(catchError(this.mapErrorResponse));
   }
 

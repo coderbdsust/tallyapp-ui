@@ -13,5 +13,6 @@ export interface SubMenuItem {
   expanded?: boolean;
   active?: boolean;
   children?: Array<SubMenuItem>;
-  requiredModules?: string[]; // New property for module-based access control
+  requiredModules?: string[];
+  queryParams?: { [key: string]: any }; // Add this for query parameters
 }

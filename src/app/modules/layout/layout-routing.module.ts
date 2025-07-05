@@ -24,6 +24,11 @@ const routes: Routes = [
     loadChildren: () => import('../invoice/invoice.module').then((m) => m.InvoiceModule),
   },
   {
+    path: 'cash-management',
+    component: LayoutComponent,
+    loadChildren: () => import('../cash-management/transaction.module').then((m) => m.TransactionModule),
+  },
+  {
     path: 'user',
     component: LayoutComponent,
     loadChildren: () => import('../user/user.module').then((m) => m.UserModule),

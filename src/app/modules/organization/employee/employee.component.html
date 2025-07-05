@@ -1,0 +1,30 @@
+<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
+  <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
+    <div class="w-full">
+      <!-- Tab Navigation -->
+      <div class="border-gray-200">
+        <nav class="flex space-x-8" aria-label="Tabs">
+          <button
+            *ngFor="let tab of tabs"
+            (click)="setActiveTab(tab.id)"
+            [class]="
+              activeTab === tab.id
+                ? 'border-indigo-500 text-indigo-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            "
+            class="whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-offset-2">
+            {{ tab.label }}
+          </button>
+        </nav>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="mt-6">
+        <div class="transition-opacity duration-300">
+          <app-employee-list *ngIf="activeTab === 'employee'"></app-employee-list>
+          <app-employee-expense *ngIf="activeTab === 'expense'"></app-employee-expense>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

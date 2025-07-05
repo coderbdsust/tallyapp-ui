@@ -8,10 +8,11 @@ export class Menu {
     'PRODUCT_MANAGEMENT': ['Product'],
     'INVOICE_MANAGEMENT': ['Invoice'],
     'ORGANIZATION_MANAGEMENT': ['Organization'],
-    'USER_MANAGEMENT': ['Settings'], // For user management under settings
-    'APP_CONFIGURATION': ['Settings'], // For app properties under settings
-    'PROFILE': [], // Profile is usually always available
-    'REPORTING': [] // Can be added to specific menu items if needed
+    'CASH_MANAGEMENT': ['Transaction'],
+    'USER_MANAGEMENT': ['Settings'],
+    'APP_CONFIGURATION': ['Settings'],
+    'PROFILE': [],
+    'REPORTING': []
   };
 
   // Base menu structure with all possible items
@@ -27,7 +28,7 @@ export class Menu {
           requiredModules: ['DASHBOARD'],
           children: [
             { label: 'Home', route: '/dashboard/home' },
-            { label: 'Statistics', route: '/dashboard/statistics' },
+            { label: 'Report', route: '/dashboard/statistics' },
           ],
         }
       ],
@@ -39,13 +40,13 @@ export class Menu {
         {
           icon: 'assets/icons/heroicons/outline/office.svg',
           label: 'Employee',
-          route: '/organization/employee/list',
+          route: '/organization/employee',
           requiredModules: ['EMPLOYEE_MANAGEMENT']
         },
         {
           icon: 'assets/icons/heroicons/outline/office.svg',
           label: 'Product',
-          route: '/organization/product/list',
+          route: '/organization/product',
           requiredModules: ['PRODUCT_MANAGEMENT']
         },
         {
@@ -53,6 +54,12 @@ export class Menu {
           label: 'Invoice',
           route: '/invoice/list',
           requiredModules: ['INVOICE_MANAGEMENT']
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/banknotes.svg',
+          label: 'Cash Management',
+          route: '/cash-management',
+          requiredModules: ['CASH_MANAGEMENT']
         },
         {
           icon: 'assets/icons/heroicons/outline/building-library.svg',
@@ -72,18 +79,18 @@ export class Menu {
           route: '/admin',
           requiredModules: ['USER_MANAGEMENT', 'APP_CONFIGURATION'],
           children: [
-            { 
-              label: 'App Properties', 
+            {
+              label: 'App Properties',
               route: '/admin/app-property',
               requiredModules: ['APP_CONFIGURATION']
             },
-            { 
-              label: 'User Management', 
+            {
+              label: 'User Management',
               route: '/admin/user-management',
               requiredModules: ['USER_MANAGEMENT']
             },
-            { 
-              label: 'Permission Matrix', 
+            {
+              label: 'Permission Matrix',
               route: '/admin/permission-matrix',
               requiredModules: ['USER_MANAGEMENT']
             }
@@ -106,13 +113,13 @@ export class Menu {
           .filter(item => this.hasRequiredModules(item.requiredModules || [], userModules))
           .map(item => ({
             ...item,
-            children: item.children?.filter(child => 
+            children: item.children?.filter(child =>
               this.hasRequiredModules(child.requiredModules || [], userModules)
             )
           }))
-          .filter(item => !item.children || item.children.length > 0) // Remove parent items with no accessible children
+          .filter(item => !item.children || item.children.length > 0)
       }))
-      .filter(group => group.items.length > 0); // Remove empty groups
+      .filter(group => group.items.length > 0);
   }
 
   /**
@@ -123,9 +130,61 @@ export class Menu {
    */
   private static hasRequiredModules(requiredModules: string[], userModules: string[]): boolean {
     if (!requiredModules || requiredModules.length === 0) {
-      return true; // No specific modules required
+      return true;
     }
     return requiredModules.some(module => userModules.includes(module));
+  }
+
+  /**
+   * Find a menu item by route and query parameters
+   * @param route The route to search for
+   * @param queryParams Optional query parameters to match
+   * @returns The matching menu item or null
+   */
+  public static findMenuItemByRoute(route: string, queryParams?: { [key: string]: any }): any {
+    for (const group of this.ALL_PAGES) {
+      for (const item of group.items) {
+        if (this.matchesRouteAndParams(item, route, queryParams)) {
+          return item;
+        }
+        
+        if (item.children) {
+          for (const child of item.children) {
+            if (this.matchesRouteAndParams(child, route, queryParams)) {
+              return child;
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Helper method to check if a menu item matches route and query parameters
+   */
+  private static matchesRouteAndParams(
+    item: any, 
+    route: string, 
+    queryParams?: { [key: string]: any }
+  ): boolean {
+    if (item.route !== route) {
+      return false;
+    }
+
+    // If no query params specified, match any item with the route
+    if (!queryParams) {
+      return true;
+    }
+
+    // If query params specified, they must match exactly
+    if (!item.queryParams) {
+      return Object.keys(queryParams).length === 0;
+    }
+
+    return Object.entries(queryParams).every(([key, value]) => 
+      item.queryParams[key] === value
+    );
   }
 
   /**
@@ -133,8 +192,6 @@ export class Menu {
    * @deprecated Use getFilteredPages() instead
    */
   public static get pages(): MenuItem[] {
-    // Return all pages for backward compatibility
-    // In practice, you should use getFilteredPages()
     return this.ALL_PAGES;
   }
 }

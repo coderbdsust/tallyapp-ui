@@ -48,13 +48,20 @@ export class AddInvoiceComponent implements OnInit {
   invoiceId = '';
   allProducts: Product[] = [];
   allCustomers:Customer[] = [];
+  readonly allPaymentMethods = [
+    'Cash',
+    'Bank Transfer',
+    'Mobile Banking',
+    'Card',
+    'Cheque',
+    'Other'
+  ];
 
   readonly invoiceStatus = [
     'DRAFT',
     'ISSUED',
     'PARTIALLY_PAID',
-    'PAID',
-    'CANCELLED'
+    'PAID'
   ];
 
   constructor(
@@ -122,7 +129,7 @@ export class AddInvoiceComponent implements OnInit {
       customerName: [invoice?.customer?.name, Validators.required],
       customerMobile: [invoice?.customer?.mobile, Validators.required],
       customerEmail: [invoice?.customer?.email],
-      customerAddressLine: [invoice?.customer?.address],
+      customerAddressLine: [invoice?.customer?.address, Validators.required],
       customerPostcode: [invoice?.customer?.postcode],
 
       totalDiscount: [invoice?.totalDiscount],
@@ -136,7 +143,7 @@ export class AddInvoiceComponent implements OnInit {
       paymentId: [],
       paymentDate: ['', Validators.required],
       paymentMethod: ['', Validators.required],
-      paymentRef: ['', Validators.required],
+      paymentRef: [''],
       paymentAmount: ['', Validators.required]
     });
   }
@@ -268,7 +275,6 @@ export class AddInvoiceComponent implements OnInit {
 
   submitProduct(): void {
     if (this.productForm.invalid) return;
-    console.log('Product submitted:', this.productForm.value);
     let product = this.productForm.value;
     this.productService.addProductToInvoice(this.invoiceId, product).subscribe({
       next: (inv) => {
@@ -276,18 +282,20 @@ export class AddInvoiceComponent implements OnInit {
         this.refreshInvoice();
       },
       error: (err) => {
+        this.initiateProductForm();
+        this.refreshInvoice();
         this.productService.showToastErrorResponse(err);
       }
     });
   }
 
   deleteProduct(prod: ProductSale) {
-    console.log(prod);
     this.productService.removeProductFromInvoice(this.invoiceId, prod.id).subscribe({
       next:(apiRes)=>{
         this.refreshInvoice();
       },
       error:(err)=>{
+        this.refreshInvoice();
         this.productService.showToastErrorResponse(err);
       }
     });
@@ -295,9 +303,12 @@ export class AddInvoiceComponent implements OnInit {
   }
 
   deletePayment(payment: Payment): void {
-    this.paymentService.deletePayment(payment.id).subscribe({
+    this.paymentService.deletePayment(this.invoiceId, payment.id).subscribe({
       next: (apiRes) => {
         this.refreshInvoice();
+      },error:(errorRes)=>{
+        this.refreshInvoice();
+        this.paymentService.showToastErrorResponse(errorRes);
       }
     });
   }
@@ -311,7 +322,10 @@ export class AddInvoiceComponent implements OnInit {
         this.initiatePaymentForm();
         this.refreshInvoice();
       },
-      error: err => this.paymentService.showToastErrorResponse(err)
+      error: (errorRes) => {
+        this.refreshInvoice();
+        this.paymentService.showToastErrorResponse(errorRes);
+      }
     });
   }
 
@@ -329,14 +343,46 @@ export class AddInvoiceComponent implements OnInit {
   submitInvoice(): void {
     if (this.invForm.invalid) return;
     const invoice = this.invForm.value;
-    console.log(invoice);
     this.invoiceService.updateInvoice(invoice.id, invoice).subscribe({
       next: updated => {
         this.invoice = updated;
         this.initiateInvoiceForm(updated);
       },
-      error: err => this.invoiceService.showToastErrorResponse(err)
+      error: (err) =>{
+         this.refreshInvoice();
+         this.invoiceService.showToastErrorResponse(err)
+       }
     });
+  }
+
+  // Utility function to get error messages dynamically
+  getErrorMessage(form:FormGroup, controlName: string): string | null {
+    const control = form.get(controlName);
+    if (control && control.errors) {
+      const errorKeys = Object.keys(control.errors);
+      if (errorKeys.length > 0) {
+        const errorKey = errorKeys[0]; // Get the first error key
+        return this.getErrorText(errorKey, control.errors[errorKey]);
+      }
+    }
+    return null;
+  }
+
+  // Map error keys to error messages
+  private getErrorText(errorKey: string, errorValue: any): string {
+    const errorMessages: { [key: string]: string } = {
+      required: 'This field is required.',
+      minlength: `Minimum length is ${errorValue.requiredLength}.`,
+      email: 'Please enter a valid email address.',
+      pattern: 'Invalid format.',
+    };
+    return errorMessages[errorKey] || 'Invalid value.';
+  }
+
+  // Check if a field is invalid
+  isFieldInvalid(form:FormGroup, controlName: string): boolean {
+    const control = form.get(controlName);
+    return !!(control && control.invalid && (control.dirty || control.touched));
   }
 
   previewInvoice(){
@@ -345,6 +391,25 @@ export class AddInvoiceComponent implements OnInit {
 
    backToInvoiceList(){
     this.router.navigate(['/invoice/list']);
+  }
+
+  downloadInvoice(){
+      this.invoiceService.downloadInvoice(this.orgId, this.invoiceId).subscribe({
+      next: (pdfRes: Blob) => {
+        const blob = new Blob([pdfRes], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice-${this.invoice?.invoiceNumber || this.invoice?.id}.pdf`;
+        a.click();
+
+        window.URL.revokeObjectURL(url); // clean up the blob URL
+      },
+      error: (err) => {
+        this.invoiceService.showToastErrorResponse(err);
+      }
+    });
   }
   
 }

@@ -117,7 +117,9 @@ export class OrganizationListComponent extends PaginatedComponent<Organization> 
   }
 
   onAddOrganization(org: Organization) {
+    console.log('New Organization Added : ',org);
     this.updateInPage(org, 'id');
+    this.orgService.loadAllOrganizations().subscribe();
   }
 
   openOrganizationOwners(org: Organization) {

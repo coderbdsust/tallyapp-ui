@@ -73,9 +73,14 @@ export class CommonService {
 
   showToastErrorResponse(errorResponse: ErrorResponse) {
     if (errorResponse.status !== 401) {
+      let errorMessage;
+      if( errorResponse.errors && errorResponse.errors.length > 0) {
+         errorMessage = errorResponse.errors.map((err) => {return err.errorMessage}).join(', ');
+      }
+      
       toast.error('', {
         position: 'bottom-right',
-        description: errorResponse.message,
+        description: errorMessage || errorResponse.message,
         action: {
           label: 'Close',
           onClick: () => console.log('Action!'),

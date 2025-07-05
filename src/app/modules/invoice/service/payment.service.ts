@@ -22,9 +22,9 @@ export class PaymentService extends CommonService {
           .pipe(catchError(this.mapErrorResponse));
     }
 
-    public deletePayment(paymentId: string) {
+    public deletePayment(invoiceId:string, paymentId: string) {
         return this.http
-          .delete<ApiResponse>(`${environment.tallyURL}/payment/v1/${paymentId}`)
+          .delete<ApiResponse>(`${environment.tallyURL}/payment/v1/${invoiceId}/${paymentId}`)
           .pipe(catchError(this.mapErrorResponse));
     }
 }

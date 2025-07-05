@@ -1,47 +1,51 @@
 <!-- Card stats -->
 <div class="flex flex-wrap">
-  <div class="w-full px-4 lg:w-6/12 xl:w-3/12 mt-2">
-    <app-card-stats
-      statSubtitle="TRAFFIC"
-      statTitle="350,897"
-      statArrow="up"
-      statPercent="3.48"
-      statPercentColor="text-emerald-500"
-      statDescripiron="Since last month"
-      statIconName="far fa-chart-bar"
-      statIconColor="bg-red-500"></app-card-stats>
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+    <app-card-stats statSubtitle="Cash Balance" statTitle="{{ organizationBalance?.cashBalance }}"
+      statPercentColor="text-emerald-500" statIconName="fas fa-plus"
+      statIconColor="bg-green-500"></app-card-stats>
   </div>
-  <div class="w-full px-4 lg:w-6/12 xl:w-3/12  mt-2">
-    <app-card-stats
-      statSubtitle="NEW USERS"
-      statTitle="2,356"
-      statArrow="down"
-      statPercent="3.48"
-      statPercentColor="text-red-500"
-      statDescripiron="Since last week"
-      statIconName="fas fa-chart-pie"
-      statIconColor="bg-orange-500"></app-card-stats>
+
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+    <app-card-stats statSubtitle="Total Expenses" statTitle="{{ organizationBalance?.totalExpenses  }}"
+      statPercentColor="text-emerald-500" statIconName="fas fa-minus" statIconColor="bg-red-500"></app-card-stats>
   </div>
-  <div class="w-full px-4 lg:w-6/12 xl:w-3/12  mt-2">
-    <app-card-stats
-      statSubtitle="SALES"
-      statTitle="924"
-      statArrow="down"
-      statPercent="1.10"
-      statPercentColor="text-orange-500"
-      statDescripiron="Since yesterday"
-      statIconName="fas fa-users"
-      statIconColor="bg-pink-500"></app-card-stats>
+
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+    <app-card-stats statSubtitle="Net Income" statTitle="{{ organizationBalance?.netIncome  }}"
+      statPercentColor="text-emerald-500" statIconName="fas fa-dollar-sign" statIconColor="bg-purple-500"></app-card-stats>
   </div>
-  <div class="w-full px-4 lg:w-6/12 xl:w-3/12  mt-2">
-    <app-card-stats
-      statSubtitle="PERFORMANCE"
-      statTitle="49,65%"
-      statArrow="up"
-      statPercent="12"
-      statPercentColor="text-emerald-500"
-      statDescripiron="Since last month"
-      statIconName="fas fa-percent"
-      statIconColor="bg-emerald-500"></app-card-stats>
+
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+    <app-card-stats statSubtitle="Accounts Receivable"
+      statTitle="{{ organizationBalance?.accountsReceivable }}" statPercentColor="text-emerald-500"
+      statIconName="fas fa-plus" statIconColor="bg-yellow-500"></app-card-stats>
   </div>
+
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+    <app-card-stats statSubtitle="Accounts Payable" statTitle="{{ organizationBalance?.accountsPayable  }}"
+      statPercentColor="text-emerald-500" statIconName="fas fa-minus" statIconColor="bg-purple-500"></app-card-stats>
+  </div>
+
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+    <app-card-stats statSubtitle="Total Revenue" statTitle="{{ organizationBalance?.totalRevenue  }}"
+      statPercentColor="text-emerald-500" statIconName="fas fa-dollar-sign" statIconColor="bg-yellow-500"></app-card-stats>
+  </div>
+
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+    <app-card-stats statSubtitle="Total Assets" statTitle="{{ organizationBalance?.totalAssets }}"
+      statPercentColor="text-emerald-500" statIconName="fas fa-plus" statIconColor="bg-red-500"></app-card-stats>
+  </div>
+
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+    <app-card-stats statSubtitle="Total Liabilities" statTitle="{{ organizationBalance?.totalLiabilities }}"
+      statPercentColor="text-emerald-500" statIconName="fas fa-minus" statIconColor="bg-green-500"></app-card-stats>
+  </div>
+
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+    <app-card-stats statSubtitle="Total Equity" statTitle="{{ organizationBalance?.totalEquity }}"
+      statPercentColor="text-emerald-500" statIconName="fas fa-dollar-sign" statIconColor="bg-purple-500"></app-card-stats>
+  </div>
+
+
 </div>

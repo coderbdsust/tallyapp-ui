@@ -1,0 +1,144 @@
+<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="flex gap-4 ">
+            <div class="w-6/12 mr-4">
+                <div>
+                    <label class="text-sm text-muted-foreground">Organization Name</label>
+                    <input type="text" placeholder=" " readonly [value]="org?.orgName"
+                        class="bg-gray-100 mb-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+
+                    <input type="hidden" placeholder=" " formControlName="organizationId"
+                        class="bg-gray-100 mb-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+                </div>
+
+                <div>
+                    <label class="text-sm text-muted-foreground">Payment Method</label>
+                    <select formControlName="paymentMethod"
+                        class=" block py-2  w-full  text-sm text-gray-500 bg-transparent border-1 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                        <option value="" disabled selected>Select Payment Method</option>
+                        <ng-container *ngFor="let method of allPaymentMethods; let i = index;">
+                            <option [value]="method">{{method}}</option>
+                        </ng-container>
+                    </select>
+                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'paymentMethod')">
+                        {{ getErrorMessage(form, 'paymentMethod') }}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-sm text-muted-foreground">Expense Type</label>
+                    <select formControlName="expenseType"
+                        class="block py-2  w-full  text-sm text-gray-500 bg-transparent border-1 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                        <option value="" selected>Select Expense Type</option>
+                        <ng-container *ngFor="let exp of allExpenseTypes; let i = index;">
+                            <option [value]="exp">{{exp | word}}</option>
+                        </ng-container>
+                    </select>
+                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'expenseType')">
+                        {{ getErrorMessage(form, 'expenseType') }}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-sm text-muted-foreground">Amount</label>
+                    <input type="number" placeholder=" " formControlName="amount"
+                        class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'amount')">
+                        {{ getErrorMessage(form, 'amount') }}
+                    </div>
+                </div>
+            </div>
+            <div class="w-6/12  mr-4">
+                <div>
+                    <label class="text-sm text-muted-foreground">Expense Date</label>
+                    <input type="date" placeholder=" " formControlName="expenseDate"
+                        class="w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'expenseDate')">
+                        {{ getErrorMessage(form, 'expenseDate') }}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-sm text-muted-foreground">Employee Name</label>
+                    <select formControlName="employeeId"
+                        class="mt-2 block py-2  w-full  text-sm text-gray-500 bg-transparent border-1 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                        <option value="" selected>Select Employee</option>
+                        <ng-container *ngFor="let emp of allEmployees; let i = index;">
+                            <option [value]="emp.id">{{emp.fullName}}</option>
+                        </ng-container>
+                    </select>
+                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'employeeId')">
+                        {{ getErrorMessage(form, 'employeeId') }}
+                    </div>
+                </div>
+                <div>
+                    <label class="text-sm text-muted-foreground">Description</label>
+                    <textarea placeholder="" formControlName="description"
+                        class=" mb-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" ></textarea>
+
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-row justify-end mt-2 mr-4 gap-2">
+            <button class="flex flex-row px-4 py-2 rounded-md" [disabled]="form.invalid" [ngClass]="{
+                    'bg-primary text-white': !form.invalid,
+                    'bg-gray-400 text-gray-200 cursor-not-allowed': form.invalid
+                }">
+                <svg-icon src="./assets/icons/heroicons/outline/minus-v2.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+                <span class="ml-2">Expense</span>
+            </button>
+
+            <button class="flex flex-row px-4 py-2 bg-destructive text-white rounded-md hover:bg-primary/80"
+                (click)="cancel()">
+                <svg-icon src="./assets/icons/heroicons/outline/back.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
+                <span class="ml-2">Cancel</span>
+            </button>
+        </div>
+
+    </form>
+
+    <div class="mt-4 flex min-w-full flex-col rounded-xl border border-muted/40 bg-background p-2">
+        <div
+            class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+            <table
+                class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+                <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
+                    <tr>
+                        <th># No</th>
+                        <th>Full Name</th>
+                        <th>Expense Date</th>
+                        <th>Mobile No</th>
+                        <th>Employee Type</th>
+                        <th>Amount</th>
+                        <th>Expense Type</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let emp of employeeExpenses; let i = index;">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ emp.employee.fullName }}</td>
+                        <td>{{ emp.expenseDate | date }}</td>
+                        <td>{{ emp.employee.mobileNo }}</td>
+                        <td>{{ emp.employee.employeeType }}</td>
+                        <td>{{ emp.amount }}</td>
+                        <td>{{ emp.expenseType}}</td>
+                        <td>{{ emp.status }}</td>
+                        <td>
+                            <button class="text-green-500 hover:text-green-700" (click)="approveExpense(emp.id)">
+                                <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700" (click)="rejectExpense(emp.id)">
+                                <svg-icon src="./assets/icons/heroicons/outline/x.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+                            </button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>

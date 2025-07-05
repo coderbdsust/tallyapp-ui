@@ -1,15 +1,15 @@
 import { Component, ViewChild } from '@angular/core';
-import { Product } from '../service/model/product.model';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, NgIf } from '@angular/common';
-import { ProductService } from '../service/product.service';
-import { OrganizationService } from '../service/organization.service';
-import { Organization } from '../service/model/organization.model';
-import { MatDialog } from '@angular/material/dialog';
-import { AddProductComponent } from '../modal/add-product/add-product.component';
 import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
+import { AddProductComponent } from '../../modal/add-product/add-product.component';
+import { Organization } from '../../service/model/organization.model';
+import { ProductService } from '../../service/product.service';
+import { OrganizationService } from '../../service/organization.service';
+import { MatDialog } from '@angular/material/dialog';
+import { Product } from '../../service/model/product.model';
 
 @Component({
   selector: 'app-product-list',

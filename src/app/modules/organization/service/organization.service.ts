@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CommonService } from '../../auth/services/common.service';
 import { environment } from 'src/environments/environment';
-import { BehaviorSubject, catchError } from 'rxjs';
+import { BehaviorSubject, catchError, tap } from 'rxjs';
 import { Organization, OrganizationOwner, OrganizationTopEmployee, UserForOrganization } from './model/organization.model';
 import { Router } from '@angular/router';
 import { ApiResponse } from '../../auth/services/auth.model';
@@ -14,12 +14,30 @@ import { PageResponse } from 'src/app/common/models/page-response';
 export class OrganizationService extends CommonService {
 
   selectedOrganization = new BehaviorSubject<Organization | null>(null);
-
   organization$ = this.selectedOrganization.asObservable();
+
+  private allOrganizationsSubject = new BehaviorSubject<Organization[]>([]);
+  allOrganizations$ = this.allOrganizationsSubject.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {
     super();
     this.selectedOrganization.next(this.getSelectedOrganization());
+  }
+
+  // Load all organizations once and update subject
+  public loadAllOrganizations() {
+    return this.http
+      .get<Organization[]>(`${environment.tallyURL}/organization/v1/list`)
+      .pipe(
+        tap((orgs) => {
+          this.allOrganizationsSubject.next(orgs);
+          // Set default selected organization if none set
+          if (!this.getSelectedOrganization() && orgs.length > 0) {
+            this.setOrganization(orgs[0]);
+          }
+        }),
+        catchError(this.mapErrorResponse)
+      );
   }
 
   public setOrganization(org: Organization | null) {

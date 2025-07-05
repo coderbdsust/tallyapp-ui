@@ -38,10 +38,10 @@
               id="orgId"
               for="orgId"
               (change)="onSelectOrganization($event)"
-              [value]="organzation?.id"
+              [value]="organization?.id"
               class="py-1.5 pl-4 pr-2 peer block w-full appearance-none border border-b-4 border-purple-500 bg-transparent  px-0 indent-4 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400">
               <ng-container *ngFor="let org of allOrganizations; let i = index">
-                <option [value]="org.id" [selected]="organzation?.id === org.id">{{ org.orgName}}</option>
+                <option [value]="org.id" [selected]="organization?.id === org.id">{{ org.orgName}}</option>
               </ng-container>
             </select>
 

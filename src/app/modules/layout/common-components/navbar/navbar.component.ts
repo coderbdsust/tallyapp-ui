@@ -1,71 +1,91 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+
 import { MenuService } from '../../services/menu.service';
+import { OrganizationService } from 'src/app/modules/organization/service/organization.service';
+import { Organization } from 'src/app/modules/organization/service/model/organization.model';
+
 import { NavbarMobileComponent } from './navbar-mobile/navbar-mobilecomponent';
 import { ProfileMenuComponent } from './profile-menu/profile-menu.component';
 import { NavbarMenuComponent } from './navbar-menu/navbar-menu.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { NgFor, NgIf } from '@angular/common';
-import { Organization } from 'src/app/modules/organization/service/model/organization.model';
-import { OrganizationService } from 'src/app/modules/organization/service/organization.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
+  imports: [AngularSvgIconModule, NavbarMenuComponent, ProfileMenuComponent, NavbarMobileComponent, NgFor, NgIf],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
-  imports: [AngularSvgIconModule, NavbarMenuComponent, ProfileMenuComponent, NavbarMobileComponent, NgFor, NgIf],
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   allOrganizations: Organization[] = [];
-  organzation: Organization | null = null;
+  organization: Organization | null = null;
   isOrganizationRoute = false;
-  targetPaths = ['/dashboard', '/employee', '/product', '/invoice'];
 
-  constructor(public menuService: MenuService, public orgService: OrganizationService, private router: Router) {
-    this.router.events.subscribe(() => {
-      this.isOrganizationRoute = this.targetPaths.some((path) => this.router.url.includes(path));
-    });
-  }
+  private subscriptions: Subscription[] = [];
+  private readonly targetPaths = ['/dashboard', '/employee', '/product', '/invoice','/cash-management'];
+
+  constructor(public menuService: MenuService, public orgService: OrganizationService, private router: Router) { }
 
   ngOnInit(): void {
-    if (this.isOrganizationRoute) {
-      this.orgService.organization$.subscribe((org) => {
-        if (org) {
-          this.organzation = org;
-        }
+    // Check on component init if current url matches target path
+    this.checkAndLoadOrganizations(this.router.url);
+
+    // Subscribe to router events to detect navigation changes
+    const routerSub = this.router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        this.checkAndLoadOrganizations(event.url);
       });
 
-      if (this.allOrganizations.length === 0) {
-        this.loadOrganizations();
-      }
+    this.subscriptions.push(routerSub);
+  }
+
+  // Helper method to check URL and load orgs if needed
+  private checkAndLoadOrganizations(url: string): void {
+    const match = this.targetPaths.some(path => url.includes(path));
+    if (match && !this.isOrganizationRoute) {
+      this.isOrganizationRoute = true;
+      this.loadOrganizationsAndSubscribe();
+    } else if (!match && this.isOrganizationRoute) {
+      this.isOrganizationRoute = false;
+      // Optionally handle clearing orgs or subscriptions if needed here
     }
   }
 
-  public toggleMobileMenu(): void {
+  toggleMobileMenu(): void {
     this.menuService.showMobileMenu = true;
   }
 
-  loadOrganizations() {
-    this.orgService.getOrganizations().subscribe({
-      next: (response) => {
-        this.allOrganizations = response;
-        if (
-          this.allOrganizations &&
-          this.allOrganizations.length > 0 &&
-          this.orgService.getSelectedOrganization() === null
-        ) {
-          this.orgService.setOrganization(this.allOrganizations[0]);
-        }
+  loadOrganizationsAndSubscribe(): void {
+    // Load organizations once and subscribe to the list
+    this.orgService.loadAllOrganizations().subscribe({
+      next: () => {
+        // Subscribe to organization list
+        const orgListSub = this.orgService.allOrganizations$.subscribe((orgs) => {
+          this.allOrganizations = orgs;
+        });
+        this.subscriptions.push(orgListSub);
+
+        // Subscribe to selected organization
+        const selectedOrgSub = this.orgService.organization$.subscribe((org) => {
+          this.organization = org;
+        });
+        this.subscriptions.push(selectedOrgSub);
       },
-      error: (error) => {
-        console.error('Error loading organizations:', error);
-      },
+      error: (err) => console.error('Failed to load organizations', err),
     });
   }
 
-  onSelectOrganization(event: Event) {
+  onSelectOrganization(event: Event): void {
     const orgId = (event.target as HTMLSelectElement).value;
-    let organization = this.allOrganizations.find((org) => org.id === orgId) || null;
-    this.orgService.setOrganization(organization);
+    const selectedOrg = this.allOrganizations.find((org) => org.id === orgId) || null;
+    this.orgService.setOrganization(selectedOrg);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }
