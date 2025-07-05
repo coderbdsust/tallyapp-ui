@@ -3,8 +3,10 @@
 </p>
 
 <p>
-  <img alt="Preview" src="img/dashboard-v3.png">
+  <img alt="Preview" src="img/dashboard-v5.png">
+  <img alt="Preview" src="img/report-v5.png">
   <img alt="Preview" src="img/employee-v2.png">
+  <img alt="Preview" src="img/employee-expense-v5.png">
   <img alt="Preview" src="img/product.png">
   <img alt="Preview" src="img/invoice-list-v1.png">
   <img alt="Preview" src="img/invoice-page-part-1.png">
@@ -13,7 +15,7 @@
   <img alt="Preview" src="img/invoice-pdf.png">
   <img alt="Preview" src="img/user-profile-v2.png">
   <img alt="Preview" src="img/2FA-By-Authenticator-App.png">
-  <img alt="Preview" src="img/permission-matrix-v1.png">
+  <img alt="Preview" src="img/permission-matrix-v5.png">
   <img alt="Preview" src="img/app-property-v1.png">
 
 
@@ -42,9 +44,10 @@
 - [x] Modify App Property
 - [x] User Management
 - [x] Module Based Security
-- [ ] Employee Income 
-- [ ] Organization Income
-- [ ] Reporting
+- [x] Cash Management
+- [x] Organization Income
+- [x] Reporting
+- [ ] Employee Income
 - [ ] Translate App
 
 #### Commands

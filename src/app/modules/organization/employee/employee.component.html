@@ -23,6 +23,8 @@
         <div class="transition-opacity duration-300">
           <app-employee-list *ngIf="activeTab === 'employee'"></app-employee-list>
           <app-employee-expense *ngIf="activeTab === 'expense'"></app-employee-expense>
+          <app-employee-daily-reporting *ngIf="activeTab === 'daily-reporting'"></app-employee-daily-reporting>
+          <app-employee-income *ngIf="activeTab === 'income'"></app-employee-income>
         </div>
       </div>
     </div>

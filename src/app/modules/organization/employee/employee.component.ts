@@ -4,10 +4,12 @@ import { Subscription } from 'rxjs';
 import { EmployeeExpenseComponent } from "./employee-expense/employee-expense.component";
 import { NgFor, NgIf } from '@angular/common';
 import { EmployeeListComponent } from './employee-list/employee-list.component';
+import { EmployeeDailyReportingComponent } from './employee-daily-reporting/employee-daily-reporting.component';
+import { EmployeeIncomeComponent } from './employee-income/employee-income.component';
 
 @Component({
   selector: 'app-employee',
-  imports: [EmployeeListComponent, EmployeeExpenseComponent, NgIf, NgFor],
+  imports: [EmployeeListComponent, EmployeeExpenseComponent,EmployeeDailyReportingComponent, EmployeeIncomeComponent, NgIf, NgFor],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss'
 })
@@ -18,6 +20,8 @@ export class EmployeeComponent {
   tabs = [
     { id: 'employee', label: 'Employee List' },
     { id: 'expense', label: 'Employee Expense' },
+    { id: 'daily-reporting', label: 'Employee Daily Reporting' },
+    { id: 'income', label: 'Employee Income' },
   ];
 
   constructor(

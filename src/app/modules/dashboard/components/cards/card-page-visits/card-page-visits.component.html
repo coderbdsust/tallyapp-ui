@@ -62,7 +62,17 @@
       </thead>
       <tbody>
         <tr *ngFor="let txn of pageResponse?.content; let i = index" class="hover:bg-card/50  gap-4">
-          <td class="hover:text-red-400">{{ txn.transactionType }}</td>
+          <td class="hover:text-red-400">
+            <span class="rounded-[30px] px-2 py-0.5 text-xs font-medium "
+              [ngClass]="[
+                  getTransactionTypeColor(txn.transactionType).bg,
+                  getTransactionTypeColor(txn.transactionType).text
+                ]"
+              >
+                {{ txn.transactionType }}
+            </span>
+
+          </td>
           <td>{{ txn.amount }}</td>
           <td>
             {{ txn.transactionDate |date: 'dd-MM-yyyy HH:mm' }}
