@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { CommonService } from '../../auth/services/common.service';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
-import { OrganizationBalance } from '../models/organization-balance';
+import { OrganizationBalance, Transaction } from '../models/organization-balance';
 import { ApiResponse } from '../../auth/services/auth.model';
+import { PageResponse } from 'src/app/common/models/page-response';
 
 
 @Injectable({
@@ -27,6 +28,12 @@ export class AccountingService extends CommonService {
         .pipe(catchError(this.mapErrorResponse));
     }
 
+    public getTransactionType() {
+      return this.http
+        .get<string[]>(`${environment.tallyURL}/accounting/v1/transactions/transaction-type`)
+        .pipe(catchError(this.mapErrorResponse));
+    }
+
      public recordCashIn(cashIn: any) {
       return this.http
         .post<ApiResponse>(`${environment.tallyURL}/cash/v1/cash-in`, cashIn)
@@ -42,6 +49,20 @@ export class AccountingService extends CommonService {
     public recordExpense(expense: any) {
       return this.http
         .post<ApiResponse>(`${environment.tallyURL}/cash/v1/expense`, expense)
+        .pipe(catchError(this.mapErrorResponse));
+    }
+
+    public getTransactionSummaryByPage(orgId: string, transactionType: string, startDate: string | null, endDate: string | null, page: number, size: number) {
+      return this.http
+        .get<PageResponse<Transaction>>(`${environment.tallyURL}/accounting/v1/transactions/${orgId}`, {
+          params: {
+            transactionType,
+            startDate: startDate ? startDate : '',
+            endDate: endDate ? endDate : '',
+            page: page.toString(),
+            size: size.toString()
+          }
+        })
         .pipe(catchError(this.mapErrorResponse));
     }
 

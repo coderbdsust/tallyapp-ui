@@ -11,10 +11,10 @@ export interface OrganizationBalance {
   cashBalance: number
   accountsReceivable: number
   accountsPayable: number
-  recentTransactions: RecentTransaction[]
+  recentTransactions: Transaction[]
 }
 
-export interface RecentTransaction {
+export interface Transaction {
   id: string
   transactionNumber: string
   transactionDate: string
