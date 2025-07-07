@@ -20,3 +20,24 @@ export interface EmployeeExpense {
   organiation:Organization,
   transaction: any
 }
+
+export interface ExpenseTypeSummary {
+  expenseType: string;
+  totalAmount: number;
+}
+
+export interface EmployeeEarningSummary {
+  employeeId: string;
+  employeeName: string;
+  employeeProfileImage: string;
+  accountOpened: string;
+  fromDate: string;
+  toDate: string;
+  totalProductEarnings: number;
+  totalProductsProduced: number;
+  expenseTypeSummaries: ExpenseTypeSummary[];
+  totalExpenses: number;
+  totalFoodAllowanceExpenses: number;
+  totalSalaryExpenses: number;
+  netEarnings: number;
+}

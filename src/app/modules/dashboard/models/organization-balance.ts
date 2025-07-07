@@ -22,7 +22,10 @@ export interface Transaction {
   amount: number
   description: string
   customerName: string
-  supplierName: any
+  supplierName: string
+  employeeName: string
+  accountName: string
+  accountCode: string
   reference: string
   isReversed: boolean
 }

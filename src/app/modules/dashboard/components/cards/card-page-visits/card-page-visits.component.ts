@@ -158,7 +158,11 @@ export class CardPageVisitsComponent extends PaginatedComponent<Transaction> imp
         .getTransactionSummaryByPage(this.organization.id, transactionType, startDate, endDate, page, size)
         .subscribe({
           next: (response) => {
-            this.pageResponse = response;
+             this.pageResponse = response;
+             this.currentPage = response.pageNo;
+             this.totalRows = response.totalElements;
+             this.totalPages = response.totalPages;
+             this.updatePagesArray();
           },
           error: (error) => {
             console.error('Error fetching transaction summary:', error);

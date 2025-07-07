@@ -7,6 +7,10 @@ import { Component, OnInit, Input } from "@angular/core";
     imports: [NgClass]
 })
 export class CardStatsComponent implements OnInit {
+
+  @Input()
+  public borderColor: string = "border-blue-500";
+
   @Input()
   get statSubtitle(): string {
     return this._statSubtitle;
@@ -17,13 +21,13 @@ export class CardStatsComponent implements OnInit {
   private _statSubtitle = "Traffic";
 
   @Input()
-  get statTitle(): string {
+  get statTitle(): number {
     return this._statTitle;
   }
-  set statTitle(statTitle: string) {
-    this._statTitle = statTitle === undefined ? "350,897" : statTitle;
+  set statTitle(statTitle: number|undefined) {
+    this._statTitle = statTitle === undefined ? 0 : statTitle;
   }
-  private _statTitle = "350,897";
+  private _statTitle = 0;
 
   // The value must match one of up or down
   @Input()
@@ -92,4 +96,8 @@ export class CardStatsComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
+
+  formatCurrency(amount: number): string {
+    return `BDT ${amount.toLocaleString()}`;
+  }
 }

@@ -68,7 +68,7 @@ export class ExpenseComponent extends FormError implements OnInit {
         amount: [0, Validators.required],
         paymentMethod: ['', Validators.required],
         expenseType: ['', Validators.required],
-        description: [''],
+        description: ['', Validators.required],
       });
     }
   
@@ -83,7 +83,7 @@ export class ExpenseComponent extends FormError implements OnInit {
        this.accService.recordExpense(this.form.value).subscribe({
         next: (response) => {
           this.orgService.showToastSuccess(response.message || 'Expense recorded successfully');
-          this.form.reset();
+          this.initiatlizeForm(this.org)
         },
         error: (error) => {
           this.orgService.showToastErrorResponse(error);

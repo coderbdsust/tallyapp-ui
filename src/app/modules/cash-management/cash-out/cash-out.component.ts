@@ -53,8 +53,8 @@ export class CashOutComponent extends FormError implements OnInit{
          transactionDate: ['', Validators.required],
          amount: [0, Validators.required],
          paymentMethod: ['', Validators.required],
-         category: [''],
-         description: [''],
+         reference: ['', Validators.required],
+         description: ['', Validators.required],
        });
      }
    
@@ -69,7 +69,7 @@ export class CashOutComponent extends FormError implements OnInit{
         this.accService.recordCashOut(this.form.value).subscribe({
          next: (response) => {
            this.orgService.showToastSuccess(response.message || 'Cash Out recorded successfully');
-           this.form.reset();
+           this.initiatlizeForm(this.org);
          },
          error: (error) => {
            this.orgService.showToastErrorResponse(error);

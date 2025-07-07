@@ -52,8 +52,8 @@ export class CashInComponent extends FormError implements OnInit {
       transactionDate: ['', Validators.required],
       amount: [0, Validators.required],
       paymentMethod: ['', Validators.required],
-      reference: [''],
-      description: [''],
+      reference: ['', Validators.required],
+      description: ['', Validators.required],
     });
   }
 
@@ -68,7 +68,7 @@ export class CashInComponent extends FormError implements OnInit {
      this.accService.recordCashIn(this.form.value).subscribe({
       next: (response) => {
         this.orgService.showToastSuccess(response.message || 'Cash In recorded successfully');
-        this.form.reset();
+        this.initiatlizeForm(this.org);
       },
       error: (error) => {
         this.orgService.showToastErrorResponse(error);

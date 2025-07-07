@@ -4,9 +4,10 @@
 
 <p>
   <img alt="Preview" src="img/dashboard-v5.png">
-  <img alt="Preview" src="img/report-v5.png">
+  <img alt="Preview" src="img/report-v6.png">
   <img alt="Preview" src="img/employee-v2.png">
   <img alt="Preview" src="img/employee-expense-v5.png">
+    <img alt="Preview" src="img/employee-income-v6.png">
   <img alt="Preview" src="img/product.png">
   <img alt="Preview" src="img/invoice-list-v1.png">
   <img alt="Preview" src="img/invoice-page-part-1.png">

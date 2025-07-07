@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
-import { EmployeeExpense } from './model/employee-expense.model';
+import { EmployeeEarningSummary, EmployeeExpense } from './model/employee-expense.model';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +36,17 @@ export class EmployeeExpenseService extends CommonService {
   public getOrganizationExpenses(organizationId:string) {
         return this.http
           .get<EmployeeExpense[]>(`${environment.tallyURL}/employee-expenses/v1/organization/${organizationId}`)
+          .pipe(catchError(this.mapErrorResponse));
+  }
+
+    public getEmployeeIncomeSummary(employeeId:string, fromDate: string, toDate: string) {
+        return this.http
+          .get<EmployeeEarningSummary>(`${environment.tallyURL}/employee-earnings/v1/${employeeId}`, {
+            params: {
+              fromDate,
+              toDate
+            }
+          })
           .pipe(catchError(this.mapErrorResponse));
   }
 

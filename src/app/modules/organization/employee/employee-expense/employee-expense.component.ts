@@ -91,7 +91,7 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
         paymentMethod: ['', Validators.required],
         expenseType: ['', Validators.required],
         employeeId: ['', Validators.required],
-        description: [''],
+        description: ['', Validators.required],
       });
     }
 
@@ -117,7 +117,7 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
        this.empExpenseService.createExpense(this.form.value).subscribe({
         next: (response) => {
           this.orgService.showToastSuccess('Employee expense created successfully');
-          this.form.reset();
+          this.initiatlizeForm(this.org)
           this.loadOrganizationExpenses(this.org!);
         },
         error: (error) => {

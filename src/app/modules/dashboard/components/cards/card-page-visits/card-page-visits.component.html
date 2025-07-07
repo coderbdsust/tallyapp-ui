@@ -2,9 +2,7 @@
   <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
     <div class="flex flex-row items-center gap-2 text-xs text-muted-foreground">
 
-      <select
-        name="transactionType"
-        (change)="onSelectTxnTypeChange($event)"
+      <select name="transactionType" (change)="onSelectTxnTypeChange($event)"
         class="py-2   text-sm text-gray-500 bg-transparent border-1  border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
         <option value="" selected>Transaction Type</option>
         <ng-container *ngFor="let txn of allTransactionTypes; let i = index;">
@@ -57,19 +55,19 @@
           <th class="min-w-[50px]">Transaction Type</th>
           <th class="min-w-[100px]">Amount</th>
           <th class="min-w-[100px]">Date</th>
+          <th class="min-w-[120px]">Account Name</th>
+          <th class="min-w-[120px]">From/To</th>
           <th class="min-w-[120px]">Description</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let txn of pageResponse?.content; let i = index" class="hover:bg-card/50  gap-4">
           <td class="hover:text-red-400">
-            <span class="rounded-[30px] px-2 py-0.5 text-xs font-medium "
-              [ngClass]="[
+            <span class="rounded-[30px] px-2 py-0.5 text-xs font-medium " [ngClass]="[
                   getTransactionTypeColor(txn.transactionType).bg,
                   getTransactionTypeColor(txn.transactionType).text
-                ]"
-              >
-                {{ txn.transactionType }}
+                ]">
+              {{ txn.transactionType }}
             </span>
 
           </td>
@@ -77,6 +75,25 @@
           <td>
             {{ txn.transactionDate |date: 'dd-MM-yyyy HH:mm' }}
           </td>
+          <td>
+            {{ txn.accountName || 'N/A' }}
+          </td>
+          <td>
+            <ng-container *ngIf="txn.supplierName">
+              {{ txn.supplierName }} (Supplier)
+            </ng-container>
+            <ng-container *ngIf="!txn.supplierName && txn.customerName">
+              {{ txn.customerName }} (Customer)
+            </ng-container>
+            <ng-container *ngIf="!txn.supplierName && !txn.customerName && txn.employeeName">
+              {{ txn.employeeName }} (Employee)
+            </ng-container>
+            <ng-container *ngIf="!txn.supplierName && !txn.customerName && !txn.employeeName">
+              N/A
+            </ng-container>
+          </td>
+
+
           <td>
             {{ txn.description}}
           </td>
