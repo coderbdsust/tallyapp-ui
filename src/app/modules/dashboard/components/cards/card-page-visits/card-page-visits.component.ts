@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Organization } from 'src/app/modules/organization/service/model/organization.model';
-import { OrganizationBalance, Transaction } from '../../../models/organization-balance';
+import {  Transaction } from '../../../models/organization-balance';
 import { CommonModule, NgFor } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
@@ -16,7 +16,7 @@ import { OrganizationService } from 'src/app/modules/organization/service/organi
   imports: [CommonModule, AngularSvgIconModule, WordPipe],
 })
 export class CardPageVisitsComponent extends PaginatedComponent<Transaction> implements OnInit {
-  public organization: Organization | null = null;
+  organization: Organization | null = null;
   search: string = '';
   allTransactionTypes: string[] = [];
   startDate: string | null = null;
@@ -58,6 +58,7 @@ export class CardPageVisitsComponent extends PaginatedComponent<Transaction> imp
     } else {
       this.transactionType = '';
     }
+    this.currentPage = 0; // Reset to first page when filtering
     this.loadTransactionSummary(
       this.transactionType,
       this.startDate,
@@ -70,6 +71,7 @@ export class CardPageVisitsComponent extends PaginatedComponent<Transaction> imp
   onStartDateChange(event: Event) {
     const input = (event.target as HTMLInputElement).value;
     this.startDate = input ? input : null;
+    this.currentPage = 0; // Reset to first page when filtering
     this.loadTransactionSummary(
       this.transactionType,
       this.startDate,
@@ -82,6 +84,7 @@ export class CardPageVisitsComponent extends PaginatedComponent<Transaction> imp
   onEndDateChange(event: Event) {
     const input = (event.target as HTMLInputElement).value;
     this.endDate = input ? input : null;
+    this.currentPage = 0; // Reset to first page when filtering
     this.loadTransactionSummary(
       this.transactionType,
       this.startDate,
@@ -94,6 +97,7 @@ export class CardPageVisitsComponent extends PaginatedComponent<Transaction> imp
   onSearchChange(event: Event) {
     const input = (event.target as HTMLInputElement).value;
     this.search = input;
+    this.currentPage = 0; // Reset to first page when searching
     this.loadTransactionSummary(
       this.transactionType,
       this.startDate,
@@ -106,6 +110,7 @@ export class CardPageVisitsComponent extends PaginatedComponent<Transaction> imp
   onSelectChange(event: Event) {
     const rows = parseInt((event.target as HTMLSelectElement).value, 10);
     this.selectedRows = rows === -1 ? this.totalRows || 0 : rows;
+    this.currentPage = 0; // Reset to first page when changing page size
     this.loadTransactionSummary(
       this.transactionType,
       this.startDate,
@@ -129,8 +134,9 @@ export class CardPageVisitsComponent extends PaginatedComponent<Transaction> imp
     }
   }
 
-  goToPage(page: number) {
-    if (page >= 0 && page < this.totalPages) {
+  goToPage(page: number | string) {
+    // Only handle number pages, ignore ellipsis
+    if (typeof page === 'number' && page >= 0 && page < this.totalPages) {
       this.currentPage = page;
       this.updatePagination();
     }
