@@ -62,7 +62,7 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
     }
 
     loadAllExpenseTypes(){
-      this.empService.getExpenseTypes().subscribe({
+      this.empExpenseService.getExpenseTypes().subscribe({
         next: (response) => {
           this.allExpenseTypes = response;
         },

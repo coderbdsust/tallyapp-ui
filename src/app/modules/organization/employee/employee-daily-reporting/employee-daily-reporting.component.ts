@@ -2,79 +2,95 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { EmployeeService } from '../../service/employee.service';
-import { EmployeeExpenseService } from '../../service/employee-expense.service';
 import { OrganizationService } from '../../service/organization.service';
 import { Organization } from '../../service/model/organization.model';
-import { Employee } from '../../service/model/employee.model';
-
-
-
-interface ExpenditureFormData {
-  entryDate: string;
-  employees: Employee[];
-  summary: {
-    totalEmployees: number;
-    totalExpenses: number;
-  };
-}
+import { ButtonComponent } from "../../../../common/components/button/button.component";
+import { FormError } from 'src/app/common/components/form-error/form-error.component';
+import { DailyWorkService } from '../../service/daily-work.service';
+import { DailyWork, EmployeeWorkUnit } from '../../service/model/daily-work.model';
 
 @Component({
   selector: 'app-employee-daily-reporting',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule,AngularSvgIconModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, AngularSvgIconModule, ButtonComponent],
   templateUrl: './employee-daily-reporting.component.html',
   styleUrl: './employee-daily-reporting.component.scss'
 })
-export class EmployeeDailyReportingComponent implements OnInit {
-  
-  expenditureForm: FormGroup;
-  organzation:Organization|null = null;
-  allEmployees: Employee[] = [];
+export class EmployeeDailyReportingComponent extends FormError implements OnInit {
 
+  expenditureForm!: FormGroup;
+  organzation: Organization | null = null;
+  dailyWork: DailyWork | null = null;
+  dailyWorks: DailyWork[] = [];
 
   constructor(
-      private fb: FormBuilder,
-      private readonly empService: EmployeeService,
-      private readonly empExpenseService: EmployeeExpenseService,
-      private readonly orgService: OrganizationService) {
+    private fb: FormBuilder,
+    private readonly dailyWorkService: DailyWorkService,
+    private readonly orgService: OrganizationService) {
+    super();
+    this.initializeDailyWorkForm('', this.getCurrentDate(), []);
+  }
 
+  initializeDailyWorkForm(dailyWorkId: string, entryDate: string, employeeWorkUnits: EmployeeWorkUnit[]) {
     this.expenditureForm = this.fb.group({
-      entryDate: [this.getCurrentDate(), Validators.required],
-      employees: this.fb.array([])
+      dailyWorkId: [dailyWorkId],
+      entryDate: [entryDate, Validators.required],
+      employeeWorkUnits: this.fb.array([])
     });
+    
+    // Clear existing form array first
+    const formArray = this.employeeWorkUnits;
+    formArray.clear();
+    
+    // Add employee work units if provided
+    if (employeeWorkUnits && employeeWorkUnits.length > 0) {
+      employeeWorkUnits.forEach(e => this.addEmployeeWorkUnitRow(e));
+    }
   }
 
   ngOnInit(): void {
     this.orgService.organization$.subscribe((org) => {
       if (org) {
         this.organzation = org;
-        this.loadAllEmployees(org);
+        this.pendingDailyWorks(org);
       }
     });
   }
 
-  loadAllEmployees(org: Organization) {
-    this.empService.getAllEmployeesByOrganization(org.id).subscribe({
+  pendingDailyWorks(org: Organization) {
+    this.dailyWorkService.getPendingDailyWorkEntries(org.id).subscribe({
       next: (response) => {
-        this.allEmployees = response;
+        this.dailyWorks = response;
+      }, 
+      error: (error) => {
+        this.dailyWorkService.showToastErrorResponse(error);
+      }
+    });
+  }
+
+  newReportForm(org: Organization, entryDate: string) {
+    this.dailyWorkService.createDailyWorkEntry(org.id, entryDate).subscribe({
+      next: (dailyWork) => {
+        this.dailyWork = dailyWork;
+        this.initializeDailyWorkForm(dailyWork.dailyWorkId, dailyWork.entryDate, dailyWork.employeeWorkUnits);
       },
       error: (error) => {
-        this.empService.showToastErrorResponse(error);
+        this.dailyWorkService.showToastErrorResponse(error);
       },
     });
   }
 
-  get employees(): FormArray {
-    return this.expenditureForm.get('employees') as FormArray;
+  get employeeWorkUnits(): FormArray {
+    return this.expenditureForm.get('employeeWorkUnits') as FormArray;
   }
 
   get totalEmployees(): number {
-    return this.employees.length;
+    return this.employeeWorkUnits.length;
   }
 
   get totalExpenses(): number {
-    return this.employees.controls.reduce((total, control) => {
-      return total + (control.get('expense')?.value || 0);
+    return this.employeeWorkUnits.controls.reduce((total, control) => {
+      const expense = control.get('expense')?.value;
+      return total + (typeof expense === 'number' ? expense : 0);
     }, 0);
   }
 
@@ -82,76 +98,109 @@ export class EmployeeDailyReportingComponent implements OnInit {
     return new Date().toISOString().split('T')[0];
   }
 
-  createEmployeeFormGroup(emp: Employee | null = null): FormGroup {
-    return this.fb.group({
-      employeeId: [emp?.id || '', Validators.required],
-      employeeName: [emp?.fullName || '', Validators.required],
-      workUnit: [1, Validators.required],
-      isPresent: [true],
-      expense: [emp?.dailyAllowance, [Validators.required, Validators.min(0)]]
+  createEmployeeFormGroup(emp: EmployeeWorkUnit | null = null): FormGroup {
+    const group = this.fb.group({
+      employeeWorkUnitId: [emp?.employeeWorkUnitId || ''],
+      employeeId: [emp?.employeeId || '', Validators.required],
+      employeeName: [emp?.employeeName || '', Validators.required],
+      workUnit: [emp?.workUnit || 1, [Validators.required, Validators.min(0)]],
+      isPresent: [emp?.isPresent !== undefined ? emp.isPresent : true],
+      unitRate: [emp?.workUnitRate || 0, [Validators.required, Validators.min(0)]],
+      billingType: [emp?.billingType || '', Validators.required],
+      expense: [emp?.expense || 0, [Validators.required, Validators.min(0)]]
     });
+
+    // Set up reactive changes for isPresent and workUnit
+    this.setupFormGroupSubscriptions(group);
+
+    return group;
   }
 
-  addEmployeeRow(emp: Employee | null = null): void {
-    this.employees.push(this.createEmployeeFormGroup(emp));
+  private setupFormGroupSubscriptions(group: FormGroup): void {
+    const isPresentControl = group.get('isPresent');
+    const workUnitControl = group.get('workUnit');
+    
+    if (isPresentControl && workUnitControl) {
+      // Handle presence change
+      isPresentControl.valueChanges.subscribe((isPresent) => {
+        if (!isPresent) {
+          workUnitControl.setValue(0);
+          workUnitControl.disable({ emitEvent: false });
+        } else {
+          workUnitControl.enable({ emitEvent: false });
+          if (workUnitControl.value === 0) {
+            workUnitControl.setValue(1);
+          }
+        }
+      });
+
+      // Initial state setup
+      if (!isPresentControl.value) {
+        workUnitControl.setValue(0);
+        workUnitControl.disable({ emitEvent: false });
+      }
+    }
+  }
+
+  addEmployeeWorkUnitRow(emp: EmployeeWorkUnit | null = null): void {
+    this.employeeWorkUnits.push(this.createEmployeeFormGroup(emp));
   }
 
   removeEmployeeRow(index: number): void {
-    if (this.employees.length > 1) {
-      this.employees.removeAt(index);
+    if (this.employeeWorkUnits.length > 1) {
+      this.employeeWorkUnits.removeAt(index);
+    }
+  }
+
+  // Fix the form control access in template
+  getEmployeeControl(index: number, controlName: string) {
+    return this.employeeWorkUnits.at(index).get(controlName);
+  }
+
+  // Fix the toggle function for isPresent
+  togglePresent(index: number): void {
+    const control = this.getEmployeeControl(index, 'isPresent');
+    if (control) {
+      control.setValue(!control.value);
     }
   }
 
   onSubmit(): void {
     if (this.expenditureForm.valid) {
-      const formData: ExpenditureFormData = {
-        entryDate: this.expenditureForm.get('entryDate')?.value,
-        employees: this.employees.value,
-        summary: {
-          totalEmployees: this.totalEmployees,
-          totalExpenses: this.totalExpenses
-        }
-      };
+      const formData = this.expenditureForm.value as DailyWork;
+      
+      // Ensure we have a valid dailyWorkId
+      if (!formData.dailyWorkId) {
+        this.dailyWorkService.showToastInfo('Please initiate a new report first.');
+        return;
+      }
 
       console.log('Form Data:', formData);
-      alert(`Form submitted successfully!\n\nDate: ${formData.entryDate}\nTotal Employees: ${formData.summary.totalEmployees}\nTotal Expenses: ${formData.summary.totalExpenses.toFixed(2)}`);
+      
+      this.dailyWorkService.editDailyWorkEntry(formData.dailyWorkId, formData).subscribe({
+        next: (response) => {
+          this.dailyWorkService.showToastSuccess('Daily work entry updated successfully');
+          if (this.organzation) {
+            this.pendingDailyWorks(this.organzation);
+          }
+        }, 
+        error: (err) => {
+          this.dailyWorkService.showToastErrorResponse(err);
+        }
+      });
     } else {
-      alert('Please fill in all required fields');
       this.markFormGroupTouched();
+      this.dailyWorkService.showToastInfo('Please fill in all required fields correctly.');
     }
   }
 
   clearAll(): void {
     if (confirm('Are you sure you want to clear all employee data?')) {
-      this.employees.clear();
-      this.addEmployeeRow();
+      this.employeeWorkUnits.clear();
+      // Reset daily work
+      this.dailyWork = null;
+      this.expenditureForm.get('dailyWorkId')?.setValue('');
     }
-  }
-
-  exportData(): void {
-    if (this.expenditureForm.valid) {
-      const formData: ExpenditureFormData = {
-        entryDate: this.expenditureForm.get('entryDate')?.value,
-        employees: this.employees.value,
-        summary: {
-          totalEmployees: this.totalEmployees,
-          totalExpenses: this.totalExpenses
-        }
-      };
-
-      const dataStr = JSON.stringify(formData, null, 2);
-      const dataBlob = new Blob([dataStr], { type: 'application/json' });
-      const url = URL.createObjectURL(dataBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `daily-expenditure-${formData.entryDate}.json`;
-      link.click();
-      URL.revokeObjectURL(url);
-    }
-  }
-
-  printForm(): void {
-    window.print();
   }
 
   private markFormGroupTouched(): void {
@@ -161,12 +210,78 @@ export class EmployeeDailyReportingComponent implements OnInit {
 
       if (control instanceof FormArray) {
         control.controls.forEach(arrayControl => {
-          Object.keys(arrayControl.value).forEach(arrayKey => {
-            arrayControl.get(arrayKey)?.markAsTouched();
-          });
+          if (arrayControl instanceof FormGroup) {
+            Object.keys(arrayControl.controls).forEach(arrayKey => {
+              arrayControl.get(arrayKey)?.markAsTouched();
+            });
+          }
         });
       }
     });
   }
 
+  newReport(): void {
+    if (this.organzation) {
+      const entryDate = this.expenditureForm.get('entryDate')?.value;
+      
+      if (!entryDate) {
+        this.dailyWorkService.showToastInfo('Please select an entry date.');
+        return;
+      }
+      
+      console.log('Entry Date: ', entryDate);
+      this.newReportForm(this.organzation, entryDate);
+    } else {
+      this.dailyWorkService.showToastError('Organization not found.');
+    }
+  }
+
+  editReport(dailyWork: DailyWork): void {
+    this.dailyWork = dailyWork;
+    this.initializeDailyWorkForm(dailyWork.dailyWorkId, dailyWork.entryDate, dailyWork.employeeWorkUnits);
+    this.dailyWorkService.showToastInfo('Modify Daily Work Entry : ' + dailyWork.entryDate);
+  }
+
+  deleteReport(dailyWork: DailyWork): void {
+    if (confirm('Are you sure you want to delete this daily work entry?')) {
+      this.dailyWorkService.removeDailyWorkEntry(dailyWork.dailyWorkId).subscribe({
+        next: (response) => {
+          this.dailyWorkService.showToastSuccess(response.message || 'Daily work entry deleted successfully');
+          if (this.organzation) {
+            this.pendingDailyWorks(this.organzation);
+          }
+          
+          // Clear form if deleted entry was being edited
+          if (this.dailyWork?.dailyWorkId === dailyWork.dailyWorkId) {
+            this.clearAll();
+          }
+        }, 
+        error: (err) => {
+          this.dailyWorkService.showToastErrorResponse(err);
+        }
+      });
+    }
+  }
+
+  approveReport(dailyWork: DailyWork): void {
+    if (confirm('Are you sure you want to approve this daily work entry?')) {
+      // Implement approval logic here
+      this.dailyWorkService.approveDailyWorkEntry(dailyWork.dailyWorkId, dailyWork).subscribe({
+        next: (response) => {
+          this.dailyWorkService.showToastSuccess('Daily work entry approved successfully');
+          if (this.organzation) {
+            this.pendingDailyWorks(this.organzation);
+          }
+          
+          // Clear form if approved entry was being edited
+          if (this.dailyWork?.dailyWorkId === dailyWork.dailyWorkId) {
+            this.clearAll();
+          }
+        },
+        error: (err) => {
+          this.dailyWorkService.showToastErrorResponse(err);
+        }
+      });
+    }
+  }
 }

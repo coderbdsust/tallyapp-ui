@@ -58,12 +58,5 @@ export class EmployeeService extends CommonService {
       .delete<ApiResponse>(`${environment.tallyURL}/employee/v1/${employeeId}`)
       .pipe(catchError(this.mapErrorResponse));
   }
-
-  public getExpenseTypes() {
-    return this.http
-      .get<string[]>(`${environment.tallyURL}/employee-expenses/v1/expense-type`)
-      .pipe(catchError(this.mapErrorResponse));
-  }
-
-  
+    
 }

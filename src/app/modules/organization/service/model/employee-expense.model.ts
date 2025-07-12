@@ -29,12 +29,13 @@ export interface ExpenseTypeSummary {
 export interface EmployeeEarningSummary {
   employeeId: string;
   employeeName: string;
+  employeeBillingType: string;
   employeeProfileImage: string;
   accountOpened: string;
   fromDate: string;
   toDate: string;
-  totalProductEarnings: number;
-  totalProductsProduced: number;
+  totalUnitEarnings: number;
+  totalUnits: number;
   expenseTypeSummaries: ExpenseTypeSummary[];
   totalExpenses: number;
   totalFoodAllowanceExpenses: number;

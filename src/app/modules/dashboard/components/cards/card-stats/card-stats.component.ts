@@ -1,5 +1,6 @@
 import { NgClass } from "@angular/common";
 import { Component, OnInit, Input } from "@angular/core";
+import { formatCurrency } from "src/app/common/utils/common";
 
 @Component({
     selector: "app-card-stats",
@@ -7,6 +8,8 @@ import { Component, OnInit, Input } from "@angular/core";
     imports: [NgClass]
 })
 export class CardStatsComponent implements OnInit {
+
+  formatCurrency = formatCurrency;
 
   @Input()
   public borderColor: string = "border-blue-500";
@@ -97,7 +100,5 @@ export class CardStatsComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  formatCurrency(amount: number): string {
-    return `BDT ${amount.toLocaleString()}`;
-  }
+  
 }
