@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { CardPageVisitsComponent } from '../../components/cards/card-page-visits/card-page-visits.component';
 import { CardSocialTrafficComponent } from '../../components/cards/card-social-traffic/card-social-traffic.component';
 import { HeaderStatsComponent } from "../../components/header-stats/header-stats.component";
-import { Organization } from 'src/app/modules/organization/service/model/organization.model';
-import { OrganizationBalance } from '../../models/organization-balance';
-import { OrganizationService } from 'src/app/modules/organization/service/organization.service';
-import { AccountingService } from '../../service/accounting.service';
+import { Organization } from 'src/app/core/models/organization.model';
+import { OrganizationBalance } from '../../../../core/models/organization-balance.model';
+import { OrganizationService } from 'src/app/core/services/organization.service';
+import { AccountingService } from '../../../../core/services/accounting.service';
 @Component({
     selector: 'app-stats-dashboard',
     imports: [

@@ -3,11 +3,11 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, OnDestroy, Outp
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { Organization } from '../../service/model/organization.model';
+import { Organization } from '../../../../core/models/organization.model';
 import { Drawer, DrawerInterface, DrawerOptions, InstanceOptions } from 'flowbite';
-import { OrganizationService } from '../../service/organization.service';
-import { Employee } from '../../service/model/employee.model';
-import { EmployeeService } from '../../service/employee.service';
+import { OrganizationService } from '../../../../core/services/organization.service';
+import { Employee } from '../../../../core/models/employee.model';
+import { EmployeeService } from '../../../../core/services/employee.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { FileUploaderComponent } from "../../../../common/components/file-uploader/file-uploader.component";
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';

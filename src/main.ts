@@ -7,7 +7,7 @@ import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AuthInterceptorService } from './app/core/interceptor/auth-interceptor.service';
-import { AuthService } from './app/modules/auth/services/auth.service';
+import { AuthService } from './app/core/services/auth.service';
 import { LoaderService } from './app/core/services/loader.service';
 import { provideAngularSvgIcon } from 'angular-svg-icon';
 import { LanguageInterceptor } from './app/core/interceptor/language-interceptor.service';

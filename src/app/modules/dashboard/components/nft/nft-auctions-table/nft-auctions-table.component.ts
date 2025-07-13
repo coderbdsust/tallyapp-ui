@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Nft } from '../../../models/nft';
+import { Nft } from '../../../../../core/models/nft';
 import { NftAuctionsTableItemComponent } from '../nft-auctions-table-item/nft-auctions-table-item.component';
 import { NgFor } from '@angular/common';
-import { Product } from 'src/app/modules/organization/service/model/product.model';
-import { ProductService } from 'src/app/modules/organization/service/product.service';
-import { Organization } from 'src/app/modules/organization/service/model/organization.model';
-import { OrganizationService } from 'src/app/modules/organization/service/organization.service';
+import { Product } from 'src/app/core/models/product.model';
+import { ProductService } from 'src/app/core/services/product.service';
+import { Organization } from 'src/app/core/models/organization.model';
+import { OrganizationService } from 'src/app/core/services/organization.service';
 
 @Component({
     selector: '[nft-auctions-table]',

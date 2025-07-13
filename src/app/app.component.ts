@@ -3,7 +3,7 @@ import { ThemeService } from './core/services/theme.service';
 import { RouterOutlet } from '@angular/router';
 import { ResponsiveHelperComponent } from './common/components/responsive-helper/responsive-helper.component';
 import { NgxSonnerToaster } from 'ngx-sonner';
-import { AuthService } from './modules/auth/services/auth.service';
+import { AuthService } from './core/services/auth.service';
 import { LoaderComponent } from "./modules/loader/loader.component";
 
 @Component({

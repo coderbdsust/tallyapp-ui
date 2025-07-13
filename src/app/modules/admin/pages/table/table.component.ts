@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, OnInit, signal } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { User } from './model/user.model';
+import { User } from '../../../../core/models/user.model';
 import { FormsModule } from '@angular/forms';
 import { TableHeaderComponent } from './components/table-header/table-header.component';
 import { TableFooterComponent } from './components/table-footer/table-footer.component';
@@ -9,7 +9,7 @@ import { TableRowComponent } from './components/table-row/table-row.component';
 import { TableActionComponent } from './components/table-action/table-action.component';
 import { toast } from 'ngx-sonner';
 import { dummyData } from 'src/app/common/dummy/user.dummy';
-import { TableFilterService } from './services/table-filter.service';
+import { TableFilterService } from '../../../../core/services/table-filter.service';
 
 @Component({
     selector: 'app-table',

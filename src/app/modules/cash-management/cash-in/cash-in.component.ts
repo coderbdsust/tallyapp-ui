@@ -3,10 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { Organization } from '../../organization/service/model/organization.model';
-import { OrganizationService } from '../../organization/service/organization.service';
+import { Organization } from '../../../core/models/organization.model';
+import { OrganizationService } from '../../../core/services/organization.service';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
-import { AccountingService } from '../../dashboard/service/accounting.service';
+import { AccountingService } from '../../../core/services/accounting.service';
 
 @Component({
   selector: 'app-cash-in',

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { MenuService } from '../layout/services/menu.service';
+import { MenuService } from '../../core/services/menu.service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NgModel } from '@angular/forms';
 

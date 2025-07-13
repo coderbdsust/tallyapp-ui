@@ -2,10 +2,10 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild, OnInit, OnDestroy } from 
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, NgIf } from '@angular/common';
-import { OrganizationService } from '../service/organization.service';
+import { OrganizationService } from '../../../core/services/organization.service';
 import { AssignOrganizationComponent } from '../modal/assign-organization/assign-organization.component';
-import { Organization } from '../service/model/organization.model';
-import { EmployeeService } from '../service/employee.service';
+import { Organization } from '../../../core/models/organization.model';
+import { EmployeeService } from '../../../core/services/employee.service';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { MatDialog } from '@angular/material/dialog';

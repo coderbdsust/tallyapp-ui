@@ -5,15 +5,15 @@ import { CommonModule } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
-import { InvoiceService } from '../service/invoice.service';
-import { PaymentService } from '../service/payment.service';
-import { ProductService } from '../../organization/service/product.service';
+import { InvoiceService } from '../../../core/services/invoice.service';
+import { PaymentService } from '../../../core/services/payment.service';
+import { ProductService } from '../../../core/services/product.service';
 
 import { Customer, Invoice, Payment, ProductSale } from '../invoice.model';
-import { Product } from '../../organization/service/model/product.model';
+import { Product } from '../../../core/models/product.model';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { ToWords } from 'to-words';
-import { CustomerService } from '../service/customer.service';
+import { CustomerService } from '../../../core/services/customer.service';
 import { ButtonComponent } from "../../../common/components/button/button.component";
 
 @Component({

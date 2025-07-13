@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonService } from '../../auth/services/common.service';
-import { DailyWork } from './model/daily-work.model';
+import { CommonService } from './common.service';
+import { DailyWork } from '../models/daily-work.model';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
-import { ApiResponse } from '../../auth/services/auth.model';
+import { ApiResponse } from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root'

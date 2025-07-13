@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CommonService } from '../../auth/services/common.service';
+import { CommonService } from './common.service';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
 import { Router } from '@angular/router';
 import { PageResponse } from 'src/app/common/models/page-response';
-import { ApiResponse } from '../../auth/services/auth.model';
-import { Product, ProductStatistics } from './model/product.model';
-import { Invoice } from '../../invoice/invoice.model';
+import { ApiResponse } from '../models/auth.model';
+import { Product, ProductStatistics } from '../models/product.model';
+import { Invoice } from '../../modules/invoice/invoice.model';
 
 @Injectable({
   providedIn: 'root',

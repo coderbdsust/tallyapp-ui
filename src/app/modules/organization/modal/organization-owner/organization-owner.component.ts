@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Organization, OrganizationOwner, UserForOrganization } from '../../service/model/organization.model';
-import { OrganizationService } from '../../service/organization.service';
+import { Organization, OrganizationOwner, UserForOrganization } from '../../../../core/models/organization.model';
+import { OrganizationService } from '../../../../core/services/organization.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';

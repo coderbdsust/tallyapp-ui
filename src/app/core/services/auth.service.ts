@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { catchError, tap, BehaviorSubject, Observable, of } from 'rxjs';
 import { CommonService } from './common.service';
 import { Router } from '@angular/router';
-import { ApiResponse, AuthUser, SignUpResponse } from './auth.model';
-import { OrganizationService } from '../../organization/service/organization.service';
+import { ApiResponse, AuthUser, SignUpResponse } from '../models/auth.model';
+import { OrganizationService } from './organization.service';
 
 @Injectable({
   providedIn: 'root',

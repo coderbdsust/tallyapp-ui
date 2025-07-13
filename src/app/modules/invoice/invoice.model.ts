@@ -1,4 +1,4 @@
-import { Organization } from "../organization/service/model/organization.model";
+import { Organization } from "../../core/models/organization.model";
 
 export interface Invoice {
     id: string;

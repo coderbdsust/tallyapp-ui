@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { CardStatsComponent } from "../cards/card-stats/card-stats.component";
-import { Organization } from "src/app/modules/organization/service/model/organization.model";
-import { OrganizationService } from "src/app/modules/organization/service/organization.service";
-import { AccountingService } from "../../service/accounting.service";
-import { OrganizationBalance } from "../../models/organization-balance";
+import { Organization } from "src/app/core/models/organization.model";
+import { OrganizationService } from "src/app/core/services/organization.service";
+import { AccountingService } from "../../../../core/services/accounting.service";
+import { OrganizationBalance } from "../../../../core/models/organization-balance.model";
 import { CurrencyPipe } from "@angular/common";
 
 @Component({

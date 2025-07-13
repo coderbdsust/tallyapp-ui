@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { Module, NewRole, RoleResponse } from './permission.model';
 import { GetIconPipe } from 'src/app/common/pipes/get.icon.pipe';
-import { PermissionService } from './service/permission.service';
+import { PermissionService } from '../../../../core/services/permission.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
 

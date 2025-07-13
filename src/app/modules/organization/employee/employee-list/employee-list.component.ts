@@ -7,11 +7,12 @@ import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
 import { AddEmployeeComponent } from '../../drawer/add-employee/add-employee.component';
-import { Employee } from '../../service/model/employee.model';
-import { Organization } from '../../service/model/organization.model';
-import { OrganizationService } from '../../service/organization.service';
-import { EmployeeService } from '../../service/employee.service';
+import { Employee } from '../../../../core/models/employee.model';
+import { Organization } from '../../../../core/models/organization.model';
+import { OrganizationService } from '../../../../core/services/organization.service';
+import { EmployeeService } from '../../../../core/services/employee.service';
 import { Subject, takeUntil } from 'rxjs';
+import { formatCurrency } from 'src/app/common/utils/common';
 
 @Component({
   selector: 'app-employee-list',
@@ -37,6 +38,7 @@ export class EmployeeListComponent extends PaginatedComponent<Employee> implemen
   errorMessage = '';
   organization!: Organization;
   allOrganizations: Organization[] = [];
+  formatCurrency = formatCurrency;
 
   private destroy$ = new Subject<void>();
 

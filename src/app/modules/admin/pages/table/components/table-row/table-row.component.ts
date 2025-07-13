@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { User } from '../../model/user.model';
+import { User } from '../../../../../../core/models/user.model';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 

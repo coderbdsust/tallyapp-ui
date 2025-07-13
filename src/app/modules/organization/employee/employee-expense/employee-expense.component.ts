@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Organization } from '../../service/model/organization.model';
+import { Organization } from '../../../../core/models/organization.model';
 import { Router } from '@angular/router';
-import { OrganizationService } from '../../service/organization.service';
-import { AccountingService } from 'src/app/modules/dashboard/service/accounting.service';
+import { OrganizationService } from '../../../../core/services/organization.service';
+import { AccountingService } from 'src/app/core/services/accounting.service';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
-import { Employee } from '../../service/model/employee.model';
-import { EmployeeService } from '../../service/employee.service';
+import { Employee } from '../../../../core/models/employee.model';
+import { EmployeeService } from '../../../../core/services/employee.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
-import { EmployeeExpenseService } from '../../service/employee-expense.service';
-import { EmployeeExpense } from '../../service/model/employee-expense.model';
+import { EmployeeExpenseService } from '../../../../core/services/employee-expense.service';
+import { EmployeeExpense } from '../../../../core/models/employee-expense.model';
 
 @Component({
   selector: 'app-employee-expense',

@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { OrganizationService } from '../../service/organization.service';
-import { Organization } from '../../service/model/organization.model';
+import { OrganizationService } from '../../../../core/services/organization.service';
+import { Organization } from '../../../../core/models/organization.model';
 import { ButtonComponent } from "../../../../common/components/button/button.component";
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
-import { DailyWorkService } from '../../service/daily-work.service';
-import { DailyWork, EmployeeWorkUnit } from '../../service/model/daily-work.model';
+import { DailyWorkService } from '../../../../core/services/daily-work.service';
+import { DailyWork, EmployeeWorkUnit } from '../../../../core/models/daily-work.model';
 import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 

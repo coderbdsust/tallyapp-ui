@@ -5,12 +5,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, NgIf } from '@angular/common';
 import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
 import { AddProductComponent } from '../../modal/add-product/add-product.component';
-import { Organization } from '../../service/model/organization.model';
-import { ProductService } from '../../service/product.service';
-import { OrganizationService } from '../../service/organization.service';
+import { Organization } from '../../../../core/models/organization.model';
+import { ProductService } from '../../../../core/services/product.service';
+import { OrganizationService } from '../../../../core/services/organization.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Product } from '../../service/model/product.model';
+import { Product } from '../../../../core/models/product.model';
 import { Subject, takeUntil } from 'rxjs';
+import { formatCurrency } from 'src/app/common/utils/common';
 
 @Component({
   selector: 'app-product-list',
@@ -27,6 +28,7 @@ export class ProductListComponent extends PaginatedComponent<Product> implements
   submitted = false;
   errorMessage = '';
   organization!: Organization;
+  formatCurrency = formatCurrency;
 
   private destroy$ = new Subject<void>();
 

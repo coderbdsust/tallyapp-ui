@@ -2,12 +2,12 @@ import { Component, ViewChild, CUSTOM_ELEMENTS_SCHEMA, OnInit, OnDestroy } from 
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from 'src/app/modules/auth/services/auth.service';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { RegisteredUser } from './registered-user.model';
-import { RegisterUserService } from './service/register-user.service';
 import { EditAppPropertiesComponent } from '../app-properties/modal/edit-app-properties.component';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
 import { Subject, takeUntil } from 'rxjs';
+import { RegisterUserService } from 'src/app/core/services/register-user.service';
 
 @Component({
   selector: 'app-registered-user',

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { CommonService } from '../../auth/services/common.service';
+import { CommonService } from './common.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Payment } from '../invoice.model';
+import { Payment } from '../../modules/invoice/invoice.model';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
-import { ApiResponse } from '../../auth/services/auth.model';
+import { ApiResponse } from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root'

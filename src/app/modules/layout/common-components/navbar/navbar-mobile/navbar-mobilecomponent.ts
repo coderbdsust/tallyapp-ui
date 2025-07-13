@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuService } from '../../../services/menu.service';
+import { MenuService } from '../../../../../core/services/menu.service';
 import { NavbarMobileMenuComponent } from './navbar-mobile-menu/navbar-mobile-menu.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { NgClass } from '@angular/common';

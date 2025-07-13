@@ -3,8 +3,8 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AppProperties } from '../app-properties.model';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { AppPropertiesService } from '../service/app-properties.service';
-import { AuthService } from 'src/app/modules/auth/services/auth.service';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { AppPropertiesService } from 'src/app/core/services/app-properties.service';
 
 @Component({
     selector: 'app-edit-app-properties',

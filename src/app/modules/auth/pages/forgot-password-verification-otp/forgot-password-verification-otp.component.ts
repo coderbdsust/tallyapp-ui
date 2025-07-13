@@ -3,7 +3,7 @@ import { Router, RouterLink, ActivatedRoute, Params } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { NgClass, NgIf, NgFor } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
     selector: 'app-forgot-password-verification-otp',

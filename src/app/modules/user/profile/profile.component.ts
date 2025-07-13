@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CommonService } from 'src/app/modules/auth/services/common.service';
-import { UserprofileService } from 'src/app/modules/user/service/userprofile.service';
+import { CommonService } from 'src/app/core/services/common.service';
+import { UserprofileService } from 'src/app/core/services/userprofile.service';
 import { Address, ShortProfile, UserProfile } from './profile.model';
 import { initFlowbite } from 'flowbite';
 import { NgFor, NgIf } from '@angular/common';
@@ -8,10 +8,10 @@ import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Va
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { catchError, forkJoin, tap, throwError } from 'rxjs';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { AuthService } from '../../auth/services/auth.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { MatDialog } from '@angular/material/dialog';
-import { AuthenticatorAppService } from '../service/authenticator-app.service';
+import { AuthenticatorAppService } from '../../../core/services/authenticator-app.service';
 import { AuthenticatorQrModalComponent } from '../modal/authenticator-qr-modal/authenticator-qr-modal.component';
 import { FileUploaderComponent } from 'src/app/common/components/file-uploader/file-uploader.component';
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';

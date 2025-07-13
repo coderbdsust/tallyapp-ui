@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { CommonService } from '../../auth/services/common.service';
+import { CommonService } from './common.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
-import { ProductCategory } from './model/product.model';
+import { ProductCategory } from '../models/product.model';
 
 @Injectable({
   providedIn: 'root'

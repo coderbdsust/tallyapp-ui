@@ -5,7 +5,7 @@ import { ClickOutsideDirective } from '../../../../../common/directives/click-ou
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ThemeService } from '../../../../../core/services/theme.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
-import { AuthService } from 'src/app/modules/auth/services/auth.service';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { map, take } from 'rxjs';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { RolePipe } from 'src/app/common/pipes/role.pipe';

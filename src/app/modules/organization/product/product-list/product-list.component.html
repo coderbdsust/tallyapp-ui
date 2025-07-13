@@ -140,11 +140,11 @@
           </td> 
           <td>
             <span class="font-semibold text-green-600">
-              {{ p.unitPrice | currency }}
+              {{ formatCurrency(p.unitPrice) }}
             </span>
           </td>
-          <td>{{ p.perUnitEmployeeCost | currency }}</td>
-          <td>{{ p.perUnitProductionCost | currency }}</td>
+          <td>{{ formatCurrency(p.perUnitEmployeeCost) }}</td>
+          <td>{{ formatCurrency(p.perUnitProductionCost) }}</td>
           <td>
             <span 
               class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"

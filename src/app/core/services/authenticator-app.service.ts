@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CommonService } from '../../auth/services/common.service';
+import { CommonService } from './common.service';
 import { catchError } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { ApiResponse, AuthenticatorAppResponse } from '../../auth/services/auth.model';
+import { ApiResponse, AuthenticatorAppResponse } from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root'

@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Organization } from 'src/app/modules/organization/service/model/organization.model';
-import { Transaction } from '../../../models/organization-balance';
+import { Organization } from 'src/app/core/models/organization.model';
+import { Transaction } from '../../../../../core/models/organization-balance.model';
 import { CommonModule } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
-import { AccountingService } from '../../../service/accounting.service';
+import { AccountingService } from '../../../../../core/services/accounting.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
-import { OrganizationService } from 'src/app/modules/organization/service/organization.service';
+import { OrganizationService } from 'src/app/core/services/organization.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({

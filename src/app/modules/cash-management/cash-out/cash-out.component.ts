@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Organization } from '../../organization/service/model/organization.model';
+import { Organization } from '../../../core/models/organization.model';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { OrganizationService } from '../../organization/service/organization.service';
+import { OrganizationService } from '../../../core/services/organization.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
-import { AccountingService } from '../../dashboard/service/accounting.service';
+import { AccountingService } from '../../../core/services/accounting.service';
 
 @Component({
   selector: 'app-cash-out',

@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CommonService } from '../../auth/services/common.service';
+import { CommonService } from './common.service';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
-import { OrganizationBalance, Transaction } from '../models/organization-balance';
-import { ApiResponse } from '../../auth/services/auth.model';
+import { OrganizationBalance, Transaction } from '../models/organization-balance.model';
+import { ApiResponse } from '../models/auth.model';
 import { PageResponse } from 'src/app/common/models/page-response';
 
 

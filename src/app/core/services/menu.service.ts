@@ -3,8 +3,8 @@ import { NavigationEnd, Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Menu } from 'src/app/core/constants/menu';
 import { MenuItem, SubMenuItem } from 'src/app/core/models/menu.model';
-import { AuthService } from '../../auth/services/auth.service';
-import packageJson from '../../../../../package.json';
+import { AuthService } from './auth.service';
+import packageJson from '../../../../package.json';
 
 @Injectable({
   providedIn: 'root',

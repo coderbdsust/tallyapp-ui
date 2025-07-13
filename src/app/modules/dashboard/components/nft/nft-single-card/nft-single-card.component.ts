@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Nft } from '../../../models/nft';
+import { Nft } from '../../../../../core/models/nft';
 import { NgStyle } from '@angular/common';
-import { Organization, OrganizationTopEmployee } from 'src/app/modules/organization/service/model/organization.model';
-import { OrganizationService } from 'src/app/modules/organization/service/organization.service';
+import { Organization, OrganizationTopEmployee } from 'src/app/core/models/organization.model';
+import { OrganizationService } from 'src/app/core/services/organization.service';
 
 @Component({
   selector: '[nft-single-card]',

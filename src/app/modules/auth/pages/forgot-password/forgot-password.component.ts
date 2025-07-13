@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { NgClass, NgIf } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
     selector: 'app-forgot-password',

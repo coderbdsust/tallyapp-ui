@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Nft } from '../../../models/nft';
+import { Nft } from '../../../../../core/models/nft';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { Product } from 'src/app/modules/organization/service/model/product.model';
+import { Product } from 'src/app/core/models/product.model';
 import { CommonModule } from '@angular/common';
 
 @Component({

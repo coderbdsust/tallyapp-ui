@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { CommonService } from 'src/app/modules/auth/services/common.service';
-import { RegisteredUser } from '../registered-user.model';
+import { CommonService } from 'src/app/core/services/common.service';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { HttpClient } from '@angular/common/http';
-import { ApiResponse } from 'src/app/modules/auth/services/auth.model';
+import { ApiResponse } from 'src/app/core/models/auth.model';
+import { RegisteredUser } from 'src/app/modules/admin/pages/user-management/registered-user.model';
 
 @Injectable({
   providedIn: 'root',

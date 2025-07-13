@@ -1,4 +1,4 @@
-import { User } from 'src/app/modules/admin/pages/table/model/user.model';
+import { User } from 'src/app/core/models/user.model';
 
 export const dummyData: User[] = [
   {

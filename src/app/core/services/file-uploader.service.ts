@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError } from 'rxjs';
-import { CommonService } from 'src/app/modules/auth/services/common.service';
+import { CommonService } from 'src/app/core/services/common.service';
 import { environment } from 'src/environments/environment';
 
 export interface FileUploadResponse {

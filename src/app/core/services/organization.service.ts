@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CommonService } from '../../auth/services/common.service';
+import { CommonService } from './common.service';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, catchError, tap } from 'rxjs';
-import { Organization, OrganizationOwner, OrganizationTopEmployee, UserForOrganization } from './model/organization.model';
+import { Organization, OrganizationOwner, OrganizationTopEmployee, UserForOrganization } from '../models/organization.model';
 import { Router } from '@angular/router';
-import { ApiResponse } from '../../auth/services/auth.model';
+import { ApiResponse } from '../models/auth.model';
 import { PageResponse } from 'src/app/common/models/page-response';
 
 @Injectable({

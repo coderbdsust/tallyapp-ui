@@ -2,17 +2,17 @@ import { CommonModule, NgClass } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { Product, ProductCategory, ProductStock } from '../../service/model/product.model';
+import { Product, ProductCategory, ProductStock } from '../../../../core/models/product.model';
 import { NgSelectComponent } from '@ng-select/ng-select';
-import { ProductService } from '../../service/product.service';
-import { EmployeeService } from '../../service/employee.service';
+import { ProductService } from '../../../../core/services/product.service';
+import { EmployeeService } from '../../../../core/services/employee.service';
 import { FileUploaderComponent } from '../../../../common/components/file-uploader/file-uploader.component';
 import { catchError, of, tap, throwError } from 'rxjs';
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { generateRandomLuhnCode } from 'src/app/common/utils/LuhnCode';
-import { Employee } from '../../service/model/employee.model';
-import { ProductCategoryService } from '../../service/product-category.service';
+import { Employee } from '../../../../core/models/employee.model';
+import { ProductCategoryService } from '../../../../core/services/product-category.service';
 
 @Component({
   selector: 'app-add-product',

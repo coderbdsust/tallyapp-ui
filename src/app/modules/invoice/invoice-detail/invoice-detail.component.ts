@@ -3,7 +3,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import * as jsPdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { CommonModule } from '@angular/common';
-import { InvoiceService } from '../service/invoice.service';
+import { InvoiceService } from '../../../core/services/invoice.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Invoice } from '../invoice.model';
 import { ToWords } from 'to-words';

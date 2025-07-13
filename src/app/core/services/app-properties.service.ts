@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AppProperties } from '../app-properties.model';
 import { catchError } from 'rxjs';
-import { CommonService } from '../../../../auth/services/common.service';
 import { environment } from 'src/environments/environment';
 import { PageResponse } from 'src/app/common/models/page-response';
+import { CommonService } from 'src/app/core/services/common.service';
+import { AppProperties } from 'src/app/modules/admin/pages/app-properties/app-properties.model';
 
 @Injectable({
   providedIn: 'root',

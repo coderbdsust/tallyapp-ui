@@ -117,8 +117,8 @@
           <td>{{ emp.mobileNo }}</td>
           <td>{{ emp.employeeType | word }}</td>
           <td>{{ emp.employeeBillingType | word }}</td>
-          <td>{{ emp.billingRate | currency }}</td>
-          <td>{{ emp.dailyAllowance | currency }}</td>
+          <td>{{ formatCurrency(emp.billingRate)  }}</td>
+          <td>{{ formatCurrency(emp.dailyAllowance)}}</td>
           <td>
             <span 
               class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"

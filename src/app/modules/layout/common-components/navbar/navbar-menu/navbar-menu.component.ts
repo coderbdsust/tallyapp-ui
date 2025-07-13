@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'src/app/core/models/menu.model';
-import { MenuService } from '../../../services/menu.service';
+import { MenuService } from '../../../../../core/services/menu.service';
 import { NavbarSubmenuComponent } from '../navbar-submenu/navbar-submenu.component';
 import { NgFor, NgClass } from '@angular/common';
 

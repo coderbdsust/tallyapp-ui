@@ -5,9 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { NgClass, NgIf, NgFor } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { passwordStrength } from 'check-password-strength'
-import { UserprofileService } from 'src/app/modules/user/service/userprofile.service';
+import { UserprofileService } from 'src/app/core/services/userprofile.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 
 @Component({

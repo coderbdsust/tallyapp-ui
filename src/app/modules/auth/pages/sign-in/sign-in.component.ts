@@ -4,7 +4,7 @@ import { NgClass, NgIf } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from '../../../../common/components/button/button.component';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { TfaChannelSelectionModalComponent } from '../modal/tfa-channel-selection-modal/tfa-channel-selection-modal.component';
 

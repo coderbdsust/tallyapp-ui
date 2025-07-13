@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { AuthenticatorAppService } from '../../service/authenticator-app.service';
+import { AuthenticatorAppService } from '../../../../core/services/authenticator-app.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { OtpComponent } from 'src/app/common/components/otp/otp.component';

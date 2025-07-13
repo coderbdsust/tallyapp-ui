@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CommonService } from '../../auth/services/common.service';
+import { CommonService } from './common.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Customer } from '../invoice.model';
+import { Customer } from '../../modules/invoice/invoice.model';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';

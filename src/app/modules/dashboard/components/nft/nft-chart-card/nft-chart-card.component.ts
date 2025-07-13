@@ -4,11 +4,11 @@ import { ThemeService } from 'src/app/core/services/theme.service';
 import { ChartOptions } from '../../../../../common/models/chart-options';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { Organization } from 'src/app/modules/organization/service/model/organization.model';
-import { ProductService } from 'src/app/modules/organization/service/product.service';
-import { OrganizationService } from 'src/app/modules/organization/service/organization.service';
+import { Organization } from 'src/app/core/models/organization.model';
+import { ProductService } from 'src/app/core/services/product.service';
+import { OrganizationService } from 'src/app/core/services/organization.service';
 import { PageResponse } from 'src/app/common/models/page-response';
-import { Product, ProductStatistics } from 'src/app/modules/organization/service/model/product.model';
+import { Product, ProductStatistics } from 'src/app/core/models/product.model';
 import { NgClass, NgFor } from '@angular/common';
 
 @Component({

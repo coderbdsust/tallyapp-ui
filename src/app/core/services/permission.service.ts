@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CommonService } from 'src/app/modules/auth/services/common.service';
+import { CommonService } from 'src/app/core/services/common.service';
 import { environment } from 'src/environments/environment';
-import { Module, NewRole, RoleResponse } from '../permission.model';
+import { Module, NewRole, RoleResponse } from '../../modules/admin/pages/permission-matrix/permission.model';
 import { catchError } from 'rxjs';
 
 @Injectable({

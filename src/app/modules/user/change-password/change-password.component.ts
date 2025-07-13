@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { UserprofileService } from '../service/userprofile.service';
+import { UserprofileService } from '../../../core/services/userprofile.service';
 import { passwordStrength } from 'check-password-strength'
 
 @Component({
