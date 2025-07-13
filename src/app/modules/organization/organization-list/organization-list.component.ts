@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, NgIf } from '@angular/common';
@@ -11,6 +11,7 @@ import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { MatDialog } from '@angular/material/dialog';
 import { AddOrganizationComponent } from '../drawer/add-organization/add-organization.component';
 import { OrganizationOwnerComponent } from '../modal/organization-owner/organization-owner.component';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-organization-list',
@@ -28,101 +29,94 @@ import { OrganizationOwnerComponent } from '../modal/organization-owner/organiza
   templateUrl: './organization-list.component.html',
   styleUrl: './organization-list.component.scss',
 })
-export class OrganizationListComponent extends PaginatedComponent<Organization> {
+export class OrganizationListComponent extends PaginatedComponent<Organization> implements OnInit, OnDestroy {
   @ViewChild('organizationDrawer') organizationDrawer!: AddOrganizationComponent;
   @ViewChild('assignOrganizationModal', { static: false }) assignOrganizationModal!: AssignOrganizationComponent;
+  
   search: string = '';
   loading: boolean = false;
   submitted = false;
   errorMessage = '';
   organization!: Organization;
   allOrganizations: Organization[] = [];
+  searchEnabled: boolean = false; // Flag to control search functionality
 
-  constructor(private orgService: OrganizationService, private empService: EmployeeService, public dialog: MatDialog) {
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private orgService: OrganizationService, 
+    private empService: EmployeeService, 
+    public dialog: MatDialog
+  ) {
     super();
   }
 
   ngOnInit(): void {
-    this.orgService.organization$.subscribe((org) => {
-      if (org) {
-        this.organization = org;
-        this.loadOrganizationByPage(this.currentPage, this.selectedRows, this.search);
-      }
-    });
+    this.subscribeToOrganization();
   }
 
-  editOrganization(selectedOrganization: Organization) {
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  // Abstract method implementation
+  loadData(): void {
+    this.loading = true;
+    this.orgService
+      .getOrganizationsByPage(this.currentPage, this.selectedRows, this.search)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.allOrganizations = response.content;
+          this.updatePaginationState(response);
+          this.loading = false;
+        },
+        error: (error) => {
+          this.loading = false;
+          this.empService.showToastErrorResponse(error);
+        },
+      });
+  }
+
+  private subscribeToOrganization(): void {
+    this.orgService.organization$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((org) => {
+        if (org) {
+          this.organization = org;
+          this.loadData();
+        }
+      });
+  }
+
+  // Event handlers
+  onSearchChange(event: Event): void {
+    if (!this.searchEnabled) {
+      this.orgService.showToastInfo('Search functionality is not implemented yet.');
+      return;
+    }
+
+    const input = (event.target as HTMLInputElement).value;
+    this.search = input;
+    this.onFilterChange();
+  }
+
+  onSelectChange(event: Event): void {
+    const rows = parseInt((event.target as HTMLSelectElement).value, 10);
+    this.onPageSizeChange(rows);
+  }
+
+  // Organization actions
+  editOrganization(selectedOrganization: Organization): void {
     this.organizationDrawer.openDrawer(selectedOrganization);
   }
 
-  private loadOrganizationByPage(page: number, size: number, search: string) {
-    this.loading = true;
-    this.orgService.getOrganizationsByPage(page, size, search).subscribe({
-      next: (response) => {
-        this.allOrganizations = response.content;
-        this.pageResponse = response;
-        this.currentPage = response.pageNo;
-        this.totalRows = response.totalElements;
-        this.totalPages = response.totalPages;
-        this.updatePagesArray();
-        this.loading = false;
-      },
-      error: (error) => {
-        this.loading = false;
-        this.empService.showToastErrorResponse(error);
-      },
-    });
-  }
-
-  onSearchChange(event: Event) {
-    // const input = (event.target as HTMLInputElement).value;
-    // this.search = input;
-    // this.loadOrganizationByPage(0, this.selectedRows, this.search);
-    this.orgService.showToastInfo('Search functionality is not implemented yet.');
-  }
-
-  onSelectChange(event: Event) {
-    const rows = parseInt((event.target as HTMLSelectElement).value, 10);
-    this.selectedRows = rows === -1 ? this.totalRows || 0 : rows;
-    this.loadOrganizationByPage(0, this.selectedRows, this.search);
-  }
-
-  goToPreviousPage() {
-    if (!this.first) {
-      this.currentPage--;
-      this.updatePagination();
-    }
-  }
-
-  goToNextPage() {
-    if (!this.last) {
-      this.currentPage++;
-      this.updatePagination();
-    }
-  }
-
-  goToPage(page: number) {
-    if (page >= 0 && page < this.totalPages) {
-      this.currentPage = page;
-      this.updatePagination();
-    }
-  }
-
-  private updatePagination() {
-    this.loadOrganizationByPage(this.currentPage, this.selectedRows, this.search);
-  }
-
-  assignOrganization() {
+  assignOrganization(): void {
     this.assignOrganizationModal.openModal();
   }
 
-  onAddOrganization(org: Organization) {
-    console.log('New Organization Added : ',org);
-    this.updateInPage(org, 'id');
-    this.orgService.loadAllOrganizations().subscribe();
-  }
-
-  openOrganizationOwners(org: Organization) {
+  openOrganizationOwners(org: Organization): void {
     console.log('Open organization owners for:', org);
     const dialogRef = this.dialog.open(OrganizationOwnerComponent, {
       width: '650px',
@@ -130,16 +124,53 @@ export class OrganizationListComponent extends PaginatedComponent<Organization> 
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.loadOrganizationByPage(this.currentPage, this.selectedRows, this.search);
+      this.loadData();
     });
-
   }
 
-  openOrganizationDrawer(isEdit: Boolean) {
+  openOrganizationDrawer(isEdit: boolean): void {
     if (isEdit) {
       this.organizationDrawer.openDrawer(this.organization);
     } else {
       this.organizationDrawer.openDrawer();
     }
+  }
+
+  // Event callbacks
+  onAddOrganization(org: Organization): void {
+    console.log('New Organization Added:', org);
+    this.updateInPage(org, 'id');
+    this.orgService.loadAllOrganizations()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
+  }
+
+  // Utility methods
+  getOrganizationIndex(index: number): number {
+    return index + this.startIndex;
+  }
+
+  getStatusColor(status: string): { bg: string; text: string } {
+    const statusMap: Record<string, { bg: string; text: string }> = {
+      'ACTIVE': { bg: 'bg-green-100', text: 'text-green-800' },
+      'INACTIVE': { bg: 'bg-red-100', text: 'text-red-800' },
+      'PENDING': { bg: 'bg-yellow-100', text: 'text-yellow-800' },
+      'SUSPENDED': { bg: 'bg-orange-100', text: 'text-orange-800' }
+    };
+
+    return statusMap[status] || { bg: 'bg-gray-100', text: 'text-gray-800' };
+  }
+
+  getOwnerDisplayText(org: Organization): string {
+    if (org.totalOwners > 1) {
+      return `${org.totalOwners} owners`;
+    }
+    return org.totalOwners === 1 ? '1 owner' : 'No owners';
+  }
+
+  getStatsColor(value: number, type: 'products' | 'employees'): string {
+    if (value === 0) return 'text-red-500';
+    if (value < 5) return 'text-yellow-600';
+    return 'text-green-600';
   }
 }

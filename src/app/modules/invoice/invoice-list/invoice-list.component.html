@@ -1,131 +1,277 @@
 <div class="mb-4 flex justify-between">
   <div class="inline-block">
-    <h2 class="font-semibold text-foreground">All Invoice</h2>
-    <div class="space-x-1 text-xs font-medium text-muted-foreground"></div>
+    <h2 class="font-semibold text-foreground">All Invoices</h2>
+    <div class="space-x-1 text-xs font-medium text-muted-foreground">
+      <span *ngIf="organization">Organization: {{ organization.orgName }}</span>
+    </div>
   </div>
   <div class="inline-block space-x-4">
     <div class="flex items-center justify-center gap-4">
-
       <button
-        class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
+        class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
         (click)="createInvoice()">
-        <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
         <p>Create Invoice</p>
       </button>
     </div>
   </div>
 </div>
+
 <div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
+  <!-- Filters and Search Section -->
   <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
     <h3 class="text-sm font-medium text-muted-foreground">
-      Showing <span>{{ startIndex }}-{{ endIndex }} of {{ this.totalRows }}</span> rows
+      Showing <span>{{ startIndex }}-{{ endIndex }} of {{ totalRows }}</span> rows
     </h3>
     <div class="flex flex-wrap gap-2">
+      <!-- Page Size Selector -->
       <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
         <div class="order-2 flex items-center gap-2 md:order-1">
           Show
           <select class="w-16 p-2" name="rowSize" (change)="onSelectChange($event)">
-            <option value="10" selected>10</option>
-            <option value="20">20</option>
-            <option value="30">30</option>
-            <option value="-1">All</option>
+            <option *ngFor="let option of getPageSizeOptions()" 
+                    [value]="option.value" 
+                    [selected]="option.value === selectedRows">
+              {{ option.label }}
+            </option>
           </select>
           per page
         </div>
       </div>
 
+      <!-- Search Input -->
       <div class="flex">
         <label class="relative text-muted-foreground">
           <div class="absolute left-2.5 top-2.5">
-            <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
+            <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'">
+            </svg-icon>
           </div>
-          <input name="search" class="py-2 pl-8 pr-2" placeholder="Search" type="text" value=""
-            (keydown.enter)="onSearchChange($event)" />
+          <input 
+            name="search" 
+            class="py-2 pl-8 pr-2" 
+            placeholder="Search invoices..." 
+            type="text" 
+            [value]="search"
+            (keydown.enter)="onSearchChange($event)"
+            (input)="onSearchChange($event)" />
         </label>
       </div>
     </div>
   </div>
-  <div
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-8">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+
+  <!-- Table Section -->
+  <div *ngIf="!loading"
     class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
     <table
       class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
       <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
         <tr>
-          <th>Invoice Number</th>
-          <th>Invoice Date</th>
-          <th>Customer Name</th>
-          <th>Customer Mobile</th>
-          <th>Total Amount</th>
-          <th>Total Paid</th>
-          <th>Total Due</th>
-          <th>Status</th>
-          <th>Action</th>
+          <th class="min-w-[130px]">Invoice Number</th>
+          <th class="min-w-[110px]">Invoice Date</th>
+          <th class="min-w-[150px]">Customer</th>
+          <th class="min-w-[120px]">Total Amount</th>
+          <th class="min-w-[110px]">Total Paid</th>
+          <th class="min-w-[110px]">Amount Due</th>
+          <th class="min-w-[100px]">Status</th>
+          <th class="min-w-[140px]">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let invoice of pageResponse?.content; let i = index" class="gap-4 hover:bg-card/50">
-          <td>{{ invoice.invoiceNumber }}</td>
-          <td>{{ invoice.invoiceDate | date }}</td>
-          <td>{{ invoice.customer?.name }}</td>
-          <td>{{ invoice.customer?.mobile }}</td>
-          <td>{{ invoice.totalAmount | number }}</td>
-          <td>{{ invoice.totalPaid | number}}</td>
-          <td>{{ invoice.remainingAmount | number }}</td>
-          <td>{{ invoice.invoiceStatus | word}}</td>
-          <td class="flex flex-row gap-3">
-            <div class="flex items-center gap-4">
-              <a (click)="viewInvoice(invoice)" class="flex flex-row gap-2 hover:text-red-700">
-                <svg-icon src="./assets/icons/heroicons/outline/eye.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
-              </a>
-            </div>
-            <div class="flex items-center gap-4">
-              <a (click)="editInvoice(invoice)" class="hover:text-red-700">
-                <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
-              </a>
-            </div>
-             <div class="flex items-center gap-4">
-              <a (click)="deleteInvoice(invoice)" class="hover:text-red-700">
-                <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
-              </a>
-            </div>
-            <div class="flex items-center gap-4">
-              <a (click)="downloadInvoice(invoice)" class="hover:text-red-700">
-                <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
-              </a>
+        <tr *ngFor="let invoice of pageResponse?.content; let i = index" 
+            class="gap-4 hover:bg-card/50"
+            [ngClass]="{'bg-red-50': isOverdue(invoice)}">
+          
+          <!-- Invoice Number -->
+          <td>
+            <div class="flex flex-col">
+              <span class="font-mono text-sm font-semibold">{{ invoice.invoiceNumber }}</span>
+              <span *ngIf="isOverdue(invoice)" class="text-xs text-red-600 font-medium">OVERDUE</span>
             </div>
           </td>
-   
+
+          <!-- Invoice Date -->
+          <td>
+            <span class="text-sm">{{ invoice.invoiceDate | date: 'dd-MM-yyyy' }}</span>
+          </td>
+
+          <!-- Customer Info -->
+          <td>
+            <div class="flex flex-col">
+              <span class="text-sm font-medium">{{ invoice.customer?.name || 'No customer' }}</span>
+              <span *ngIf="invoice.customer?.mobile" class="text-xs text-muted-foreground">
+                {{ invoice.customer?.mobile }}
+              </span>
+            </div>
+          </td>
+
+          <!-- Total Amount -->
+          <td>
+            <span [ngClass]="getAmountColor(invoice.totalAmount, 'total')">
+              {{ formatCurrency(invoice.totalAmount)}}
+            </span>
+          </td>
+
+          <!-- Total Paid -->
+          <td>
+            <span [ngClass]="getAmountColor(invoice.totalPaid, 'paid')">
+              {{ formatCurrency(invoice.totalPaid ) }}
+            </span>
+          </td>
+
+          <!-- Amount Due -->
+          <td>
+            <span [ngClass]="getAmountColor(invoice.remainingAmount, 'due')">
+              {{ formatCurrency(invoice.remainingAmount) }}
+            </span>
+          </td>
+
+          <!-- Status -->
+          <td>
+            <span 
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+              [ngClass]="[
+                getStatusColor(invoice.invoiceStatus).bg,
+                getStatusColor(invoice.invoiceStatus).text
+              ]">
+              {{ invoice.invoiceStatus | word }}
+            </span>
+          </td>
+
+          <!-- Actions -->
+          <td>
+            <div class="flex items-center gap-2">
+              <!-- View Invoice -->
+              <button 
+                (click)="viewInvoice(invoice)" 
+                class="p-1 hover:text-blue-600 transition-colors"
+                title="View Invoice">
+                <svg-icon src="./assets/icons/heroicons/outline/eye.svg" [svgClass]="'h-4 w-4'">
+                </svg-icon>
+              </button>
+
+              <!-- Edit Invoice -->
+              <button 
+                (click)="editInvoice(invoice)" 
+                class="p-1 hover:text-primary transition-colors"
+                title="Edit Invoice">
+                <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'">
+                </svg-icon>
+              </button>
+
+              <!-- Download Invoice -->
+              <button 
+                (click)="downloadInvoice(invoice)" 
+                class="p-1 hover:text-green-600 transition-colors"
+                title="Download PDF">
+                <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-4 w-4'">
+                </svg-icon>
+              </button>
+
+              <!-- Delete Invoice -->
+              <button 
+                (click)="deleteInvoice(invoice)" 
+                class="p-1 hover:text-red-600 transition-colors"
+                title="Delete Invoice">
+                <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'">
+                </svg-icon>
+              </button>
+            </div>
+          </td>
         </tr>
-        <tr *ngIf="pageResponse?.content?.length === 0">
-          <td class="py-4 text-center text-sm" colspan="7">No invoice found</td>
+
+        <!-- Empty State -->
+        <tr *ngIf="!hasData">
+          <td class="py-8 text-center text-sm" colspan="8">
+            <div class="flex flex-col items-center gap-2">
+              <svg-icon src="./assets/icons/heroicons/outline/document-text.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
+              </svg-icon>
+              <span>No invoices found</span>
+              <button 
+                class="mt-2 text-primary hover:text-primary/80 text-xs underline"
+                (click)="createInvoice()">
+                Create your first invoice
+              </button>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
-  <div class="flex flex-wrap items-center justify-end gap-2 py-3 px-5 text-xs text-muted-foreground">
-    <div class="order-1 flex items-center gap-4 md:order-2">
-      <!-- Pagination buttons -->
+  
+  <!-- Pagination Section -->
+  <div *ngIf="showPagination && !loading" 
+       class="flex flex-wrap items-center justify-between gap-2 py-3 px-5 text-xs text-muted-foreground">
+    <!-- Page Info -->
+    <div class="flex items-center gap-2">
+      <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
+    </div>
+    
+    <!-- Pagination Controls -->
+    <div class="flex items-center gap-4">
       <div class="inline-flex items-center gap-1">
-        <!-- Previous button -->
+        <!-- First Page Button -->
         <button
-          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50"
-          [disabled]="first" (click)="goToPreviousPage()">
-          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+          *ngIf="!first"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToFirstPage()"
+          title="First Page">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
         </button>
 
-        <!-- Page buttons -->
-        <button *ngFor="let page of getPagesArray(); let i = index"
-          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm" [ngClass]="{
-            'bg-gray-200': i === this.currentPage,
-            'hover:bg-muted-foreground/10': i !== this.currentPage
-          }" (click)="goToPage(i)">
-          {{ i + 1 }}
+        <!-- Previous Page Button -->
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="first" 
+          (click)="goToPreviousPage()"
+          title="Previous Page">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
         </button>
 
+        <!-- Page Numbers -->
+        <ng-container *ngFor="let page of getVisiblePages()">
+          <button 
+            *ngIf="isClickablePage(page)"
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm transition-colors" 
+            [ngClass]="{
+              'bg-primary text-primary-foreground': isCurrentPage(page),
+              'hover:bg-muted-foreground/10': !isCurrentPage(page)
+            }" 
+            (click)="goToPage(page)">
+            {{ getPageNumber(page) }}
+          </button>
+          
+          <span 
+            *ngIf="!isClickablePage(page)" 
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center text-sm">
+            ...
+          </span>
+        </ng-container>
+
+        <!-- Next Page Button -->
         <button
-          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50"
-          [disabled]="last" (click)="goToNextPage()">
-          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="last" 
+          (click)="goToNextPage()"
+          title="Next Page">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+
+        <!-- Last Page Button -->
+        <button
+          *ngIf="!last"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToLastPage()"
+          title="Last Page">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
         </button>
       </div>
     </div>

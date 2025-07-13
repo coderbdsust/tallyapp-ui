@@ -1,13 +1,16 @@
 import { PageResponse } from "../../models/page-response";
 
-export class PaginatedComponent<T> {
+export abstract class PaginatedComponent<T> {
   pageResponse: PageResponse<T> | null = null;
   selectedRows: number = 10;
   totalRows: number = 0;
   totalPages: number = 0;
   currentPage: number = 0;
   pagesArray: number[] = [];
-  maxVisiblePages: number = 5; // Maximum number of page buttons to show
+  maxVisiblePages: number = 5;
+
+  // Abstract method that child components must implement
+  abstract loadData(): void;
 
   updateInPage(updatedItem: T, idKey: keyof T) {
     if (!this.pageResponse) return;
@@ -28,7 +31,6 @@ export class PaginatedComponent<T> {
     if (!this.pageResponse) return;
 
     const updatedContent = this.pageResponse.content.filter((item) => item[idKey] !== itemId);
-
     this.recalculatePage(updatedContent);
   }
 
@@ -37,7 +39,6 @@ export class PaginatedComponent<T> {
 
     this.totalRows = updatedContent.length;
     this.totalPages = Math.max(1, Math.ceil(this.totalRows / this.pageResponse.size));
-
     this.currentPage = Math.min(this.currentPage, this.totalPages - 1);
 
     this.pageResponse = {
@@ -52,6 +53,70 @@ export class PaginatedComponent<T> {
     this.updatePagesArray();
   }
 
+  // Pagination navigation methods
+  goToPreviousPage(): void {
+    if (!this.first) {
+      this.currentPage--;
+      this.loadData();
+    }
+  }
+
+  goToNextPage(): void {
+    if (!this.last) {
+      this.currentPage++;
+      this.loadData();
+    }
+  }
+
+  goToPage(page: number | string): void {
+    if (typeof page === 'number' && page >= 0 && page < this.totalPages) {
+      this.currentPage = page;
+      this.loadData();
+    }
+  }
+
+  goToFirstPage(): void {
+    if (this.currentPage !== 0) {
+      this.currentPage = 0;
+      this.loadData();
+    }
+  }
+
+  goToLastPage(): void {
+    const lastPage = this.totalPages - 1;
+    if (this.currentPage !== lastPage) {
+      this.currentPage = lastPage;
+      this.loadData();
+    }
+  }
+
+  // Page size change handler
+  onPageSizeChange(newSize: number): void {
+    this.selectedRows = newSize === -1 ? this.totalRows || 0 : newSize;
+    this.resetToFirstPage();
+  }
+
+  // Filter/search change handler
+  onFilterChange(): void {
+    this.resetToFirstPage();
+  }
+
+  // Helper method to reset to first page and reload data
+  private resetToFirstPage(): void {
+    this.currentPage = 0;
+    this.loadData();
+  }
+
+  // Update pagination state from API response
+  updatePaginationState(response: PageResponse<T>): void {
+    this.pageResponse = response;
+    this.currentPage = response.pageNo;
+    this.totalRows = response.totalElements;
+    this.totalPages = response.totalPages;
+    this.updatePagesArray();
+  }
+
+  // Getters
   get startIndex(): number {
     return this.totalRows === 0 ? 0 : this.currentPage * this.selectedRows + 1;
   }
@@ -68,7 +133,16 @@ export class PaginatedComponent<T> {
     return this.currentPage >= this.totalPages - 1;
   }
 
-  updatePagesArray() {
+  get hasData(): boolean {
+    return !!(this.pageResponse?.content && this.pageResponse.content.length > 0);
+  }
+
+  get showPagination(): boolean {
+    return this.totalPages > 1;
+  }
+
+  // Pagination display methods
+  updatePagesArray(): void {
     this.pagesArray = Array.from({ length: this.totalPages }, (_, index) => index);
   }
 
@@ -76,48 +150,39 @@ export class PaginatedComponent<T> {
     return this.pagesArray;
   }
 
-  // New method for smart pagination
   getVisiblePages(): (number | string)[] {
     if (this.totalPages <= this.maxVisiblePages) {
-      // Show all pages if total pages is less than max visible
       return Array.from({ length: this.totalPages }, (_, index) => index);
     }
 
     const visiblePages: (number | string)[] = [];
     const halfVisible = Math.floor(this.maxVisiblePages / 2);
     
-    // Always show first page
     visiblePages.push(0);
     
     let startPage = Math.max(1, this.currentPage - halfVisible);
     let endPage = Math.min(this.totalPages - 2, this.currentPage + halfVisible);
     
-    // Adjust if we're near the beginning
     if (this.currentPage <= halfVisible) {
       endPage = Math.min(this.totalPages - 2, this.maxVisiblePages - 2);
     }
     
-    // Adjust if we're near the end
     if (this.currentPage >= this.totalPages - halfVisible - 1) {
       startPage = Math.max(1, this.totalPages - this.maxVisiblePages + 1);
     }
     
-    // Add ellipsis before middle pages if needed
     if (startPage > 1) {
       visiblePages.push('...');
     }
     
-    // Add middle pages
     for (let i = startPage; i <= endPage; i++) {
       visiblePages.push(i);
     }
     
-    // Add ellipsis after middle pages if needed
     if (endPage < this.totalPages - 2) {
       visiblePages.push('...');
     }
     
-    // Always show last page (if there are more than 1 pages)
     if (this.totalPages > 1) {
       visiblePages.push(this.totalPages - 1);
     }
@@ -125,17 +190,26 @@ export class PaginatedComponent<T> {
     return visiblePages;
   }
 
-  // Method to check if a page item is current
   isCurrentPage(page: number | string): boolean {
     return typeof page === 'number' && page === this.currentPage;
   }
 
-  // Method to check if a page item is clickable
   isClickablePage(page: number | string): boolean {
     return typeof page === 'number';
   }
   
   getPageNumber(page: number | string): number {
     return typeof page === 'number' ? page + 1 : 0;
+  }
+
+  // Page size options
+  getPageSizeOptions(): { value: number; label: string }[] {
+    return [
+      { value: 10, label: '10' },
+      { value: 20, label: '20' },
+      { value: 30, label: '30' },
+      { value: 50, label: '50' },
+      { value: -1, label: 'All' }
+    ];
   }
 }

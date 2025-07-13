@@ -1,245 +1,320 @@
-<div class="flex min-w-full flex-col rounded-xl border-none border-muted/20 bg-background" id="invoiceDetailContainer">
-    <div class="flex flex-col m-6 p-2 gap-4 divide-y-2 divide-dashed">
+<!-- Loading State -->
+<div *ngIf="loading" class="flex justify-center items-center min-h-screen">
+  <div class="flex flex-col items-center gap-4">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    <p class="text-muted-foreground">Loading invoice details...</p>
+  </div>
+</div>
 
-        <!-- Invoice Info + Company Info -->
-        <div class="flex flex-row justify-between">
-            <div class="w-4/12 pr-2">
-                <img [src]="invoice.ownerOrganization.logoB64 || 'https://placehold.co/400'" alt="Invoice Logo"
-                    class="w-auto h-20 rounded-lg shadow-md mb-4">
+<!-- Invoice Content -->
+<div *ngIf="!loading && invoice" class="flex min-w-full flex-col rounded-xl border-none border-muted/20 bg-background" id="invoiceDetailContainer">
+  <div class="flex flex-col m-6 p-2 gap-4 divide-y-2 divide-dashed">
 
-                <div class="mt-2 text-lg font-bold text-muted-foreground flex justify-between">
-                    <span>Invoice No:</span>
-                    <span class="font-medium">{{invoice.invoiceNumber}}</span>
-                </div>
+    <!-- Invoice Info + Company Info -->
+    <div class="flex flex-row justify-between gap-6">
+      <!-- Left Side - Invoice Details -->
+      <div class="w-5/12 pr-4">
+        <img 
+          [src]="getCompanyInfo('logoB64') !== 'N/A' ? invoice.ownerOrganization.logoB64 : 'https://placehold.co/400'" 
+          alt="Invoice Logo"
+          class="w-auto h-20 rounded-lg shadow-md mb-6 object-contain">
 
-                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
-                    <span>Invoice Date:</span>
-                    <span class="font-medium">{{invoice.invoiceDate}}</span>
-                </div>
+        <div class="space-y-3">
+          <div class="flex justify-between items-center text-lg font-bold text-muted-foreground">
+            <span>Invoice No:</span>
+            <span class="font-mono bg-gray-100 px-2 py-1 rounded text-sm">{{ invoice.invoiceNumber }}</span>
+          </div>
 
-                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
-                    <span>Payment Status:</span>
-                    <span class="font-medium">{{invoice.invoiceStatus | word }}</span>
-                </div>
-                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
-                    <span>Delivery Date:</span>
-                    <span class="font-medium">{{invoice.deliveryDate}}</span>
-                </div>
-       
+          <div class="flex justify-between items-center text-sm text-muted-foreground">
+            <span>Invoice Date:</span>
+            <span class="font-medium">{{ formatDate(invoice.invoiceDate) }}</span>
+          </div>
 
-                <div class="mt-2 text-md font-bold text-muted-foreground flex justify-between">
-                    <span>Invoice Amount:</span>
-                    <span class="font-medium">{{invoice.totalAmount|number}}</span>
-                </div>
-            </div>
+          <div class="flex justify-between items-center text-sm text-muted-foreground">
+            <span>Payment Status:</span>
+            <span class="font-medium px-2 py-1 rounded text-xs" [ngClass]="getStatusColor()">
+              {{ invoice.invoiceStatus | word }}
+            </span>
+          </div>
 
+          <div class="flex justify-between items-center text-sm text-muted-foreground">
+            <span>Delivery Date:</span>
+            <span class="font-medium">{{ invoice.deliveryDate }}</span>
+          </div>
 
-            <div class="w-5/12 flex flex-col gap-3">
-                <img [src]="invoice.barcode || './assets/img/barcode-v2.png'" alt="Invoice QR Code" class="w-full h-12 rounded bg-gray-100">
-
-                <div class="text-sm text-muted-foreground flex justify-between">
-                    <span>Company Name:</span>
-                    <span class="font-medium">{{invoice.ownerOrganization.orgName}}</span>
-                </div>
-
-                <div class="text-sm text-muted-foreground flex justify-between">
-                    <span>Address:</span>
-                    <span class="font-medium">{{invoice.ownerOrganization.orgAddressLine}}</span>
-                </div>
-
-                <div class="text-sm text-muted-foreground flex justify-between">
-                    <span>Postcode:</span>
-                    <span class="font-medium">{{invoice.ownerOrganization.orgAddressPostcode}}</span>
-                </div>
-
-                <div class="text-sm text-muted-foreground flex justify-between">
-                    <span>TIN No:</span>
-                    <span class="font-medium">{{invoice.ownerOrganization.orgTinNumber}}</span>
-                </div>
-
-                <div class="text-sm text-muted-foreground flex justify-between">
-                    <span>VAT Registration No:</span>
-                    <span class="font-medium">{{invoice.ownerOrganization.orgVatNumber}}</span>
-                </div>
-
-                <div class="text-sm text-muted-foreground flex justify-between">
-                    <span>Email Address:</span>
-                    <span class="font-medium">{{invoice.ownerOrganization.orgEmail}}</span>
-                </div>
-
-                <div class="text-sm text-muted-foreground flex justify-between">
-                    <span>Contact No:</span>
-                    <span class="font-medium">{{invoice.ownerOrganization.orgMobileNo}}</span>
-                </div>
-            </div>
-
+          <div class="flex justify-between items-center text-lg font-bold text-muted-foreground pt-2 border-t border-gray-200">
+            <span>Invoice Amount:</span>
+            <span class="font-bold">{{ formatCurrency(invoice.totalAmount) }}</span>
+          </div>
         </div>
+      </div>
 
-        <!-- Billing Address -->
-        <div class="flex flex-row">
-            <div class="w-2/6 pr-2">
-                <label class="text-lg font-semibold text-muted-foreground">Billing Address</label>
+      <!-- Right Side - Company Details -->
+      <div class="w-6/12 flex flex-col gap-4">
+        <img 
+          [src]="invoice.barcode || './assets/img/barcode-v2.png'" 
+          alt="Invoice QR Code" 
+          class="w-full h-12 rounded  object-contain">
 
-                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
-                    <span>Customer Name:</span>
-                    <span class="font-medium">{{invoice.customer?.name}}</span>
-                </div>
+        <div class="grid grid-cols-1 gap-3">
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Company Name:</span>
+            <span>{{ getCompanyInfo('orgName') }}</span>
+          </div>
 
-                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
-                    <span>Address:</span>
-                    <span class="font-medium">{{invoice.customer?.address}}</span>
-                </div>
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Address:</span>
+            <span class="text-right max-w-xs">{{ getCompanyInfo('orgAddressLine') }}</span>
+          </div>
 
-                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
-                    <span>Postcode:</span>
-                    <span class="font-medium">{{invoice.customer?.postcode}}</span>
-                </div>
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Postcode:</span>
+            <span>{{ getCompanyInfo('orgAddressPostcode') }}</span>
+          </div>
 
-                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
-                    <span>Phone:</span>
-                    <span class="font-medium">{{invoice.customer?.mobile}}</span>
-                </div>
-                <div class="mt-2 text-sm text-muted-foreground flex justify-between">
-                    <span>Email:</span>
-                    <span class="font-medium">{{invoice.customer?.email}}</span>
-                </div>
-            </div>
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">TIN No:</span>
+            <span class="font-mono text-xs bg-gray-100 px-1 rounded">{{ getCompanyInfo('orgTinNumber') }}</span>
+          </div>
 
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">VAT Registration No:</span>
+            <span class="font-mono text-xs bg-gray-100 px-1 rounded">{{ getCompanyInfo('orgVatNumber') }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Email Address:</span>
+            <span >{{ getCompanyInfo('orgEmail') }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Contact No:</span>
+            <span class="font-mono">{{ getCompanyInfo('orgMobileNo') }}</span>
+          </div>
         </div>
-
-        <!-- Product Table -->
-        <div class="flex flex-col">
-             <h1 class="text-lg font-semibold text-muted-foreground">Purchase History</h1>
-            <div
-                class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
-                <table
-                    class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
-                    <thead class="bg-black-100 border border-muted/20 text-sm text-muted-foreground text-white">
-                        <tr class="text-base">
-                            <th>SL</th>
-                            <th>Product Details</th>
-                            <th>Unit Rate</th>
-                            <th>Units</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of invoice.productSales; let i=index;">
-                            <td class="py-2 text-sm">{{i+1}}</td>
-                            <td class="py-2 text-sm">
-                                <div class="flex flex-col">
-                                    <span>{{item.name}} ({{item.code}})</span>
-                                    <span class="text-xs text-muted-foreground">{{item.description}}</span>
-                                </div>
-                            </td>
-                            <td class="py-2 text-sm">{{item.pricePerUnit | number}}</td>
-                            <td class="py-2 text-sm">{{item.quantitySold}}</td>
-                            <td class="py-2 text-sm">{{item.totalAmount | number}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Payment History -->
-        <div class="flex flex-row justify-between">
-            <div class="w-4/6 pr-2 mt-2">
-                <h1 class="text-lg font-semibold text-muted-foreground">Customer Payment History</h1>
-                <div
-                    class="mt-2 scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
-                    <table
-                        class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
-                        <thead class="bg-black-100 border border-muted/20 text-sm text-muted-foreground text-white">
-                            <tr>
-                                <th>Date</th>
-                                <th>Method</th>
-                                <th>Ref#</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let item of invoice.payments; let i=index;">
-                                <td class="py-1 text-sm">{{item.paymentDate}}</td>
-                                <td class="py-1 text-sm">{{item.paymentMethod}}</td>
-                                <td class="py-1 text-sm">{{item.reference}}</td>
-                                <td class="py-1 text-sm">{{item.amount | number}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Summary Section -->
-            <div class="w-2/6 pr-2">
-                <div class="flex flex-col items-end mt-8 text-base gap-1">
-                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
-                        <span>Sub Total:</span>
-                        <span>{{invoice.productSubTotal | number}}</span>
-                    </div>
-                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
-                        <span>Total Tax: ({{invoice.taxRate}}%)</span>
-                        <span>{{invoice.productTotalTax |number}}</span>
-                    </div>
-                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
-                        <span>Total Vat: ({{invoice.vatRate}}%)</span>
-                        <span>{{invoice.productTotalVat | number}}</span>
-                    </div>
-                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
-                        <span>Total Discount:</span>
-                        <span>{{invoice.totalDiscount | number}}</span>
-                    </div>
-                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
-                        <span>Delivery Charge:</span>
-                        <span>{{invoice.deliveryCharge | number}}</span>
-                    </div>
-                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
-                        <span>Total Amount:</span>
-                        <span>{{invoice.totalAmount | number}}</span>
-                    </div>
-                    <div class="w-4/6 pl-2  text-muted-foreground flex justify-between">
-                        <span>Total Paid:</span>
-                        <span>{{invoice.totalPaid | number}}</span>
-                    </div>
-                    <div class="w-4/6 pl-2 text-muted-foreground flex justify-between">
-                        <span>Total Due:</span>
-                        <span>{{invoice.remainingAmount | number}}</span>
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-        
-        <h1 class="text-muted-foreground"><strong>In words: </strong>{{this.toWords.convert(this.invoice.totalAmount)}}</h1>
-        
-        <!-- Notes -->
-        <div class="flex flex-col mt-6">
-            
-            <label class="text-lg font-semibold text-muted-foreground">Notes</label>
-            <p class="text-sm text-muted-foreground">
-                Thank you for your business! If you have any questions about this invoice, please contact us at
-                <a href="mailto:contacts.tallyapp&#64;gmail.com"
-                    class="font-semibold">contacts.tallyapp&#64;gmail.com</a>.
-            </p>
-        </div>
-
-        <!-- Buttons -->
-        <div class="flex flex-row justify-end mt-6 gap-2 " id="buttonSection">
-            <button class="flex flex-row px-4 py-2 bg-primary text-white rounded-md hover:bg-purple-500/80">
-                <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
-                <span class="ml-2" (click)="downloadInvoice()">Download</span>
-            </button>
-            <button class="flex flex-row px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-500/80">
-                <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
-                <span class="ml-2" (click)="editInvoice()">Edit Invoice</span>
-            </button>
-            <button
-            class="flex flex-row px-4 py-2 bg-destructive text-white rounded-md hover:bg-primary/80"
-            (click)="backToInvoiceList()"
-            >
-            <svg-icon src="./assets/icons/heroicons/outline/back.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
-                <span class="ml-2">Back</span>
-            </button>
-
-        </div>
+      </div>
     </div>
+
+    <!-- Billing Address -->
+    <div class="flex flex-row pt-4">
+      <div class="w-1/2 pr-4">
+        <h2 class="text-lg font-semibold text-muted-foreground mb-4">Billing Address</h2>
+
+        <div class="grid grid-cols-1 gap-3">
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Customer Name:</span>
+            <span>{{ getCustomerInfo('name') }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Address:</span>
+            <span class="text-right max-w-xs">{{ getCustomerInfo('address') }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Postcode:</span>
+            <span>{{ getCustomerInfo('postcode') }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Phone:</span>
+            <span class="font-mono">{{ getCustomerInfo('mobile') }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Email:</span>
+            <span >{{ getCustomerInfo('email') }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Table -->
+    <div class="flex flex-col pt-4">
+      <h2 class="text-lg font-semibold text-muted-foreground mb-4">Purchase History</h2>
+      
+      <div *ngIf="!hasProducts()" class="text-center py-8 text-muted-foreground">
+        <p>No products found in this invoice.</p>
+      </div>
+
+      <div *ngIf="hasProducts()" class="overflow-x-auto">
+        <table class="table w-full table-auto border-collapse border border-gray-200 text-left align-middle leading-5 text-muted-foreground">
+          <thead class="bg-gray-100 border-b border-gray-200">
+            <tr>
+              <th class="px-4 py-3 text-sm font-medium">SL</th>
+              <th class="px-4 py-3 text-sm font-medium">Product Details</th>
+              <th class="px-4 py-3 text-sm font-medium text-right">Unit Rate</th>
+              <th class="px-4 py-3 text-sm font-medium text-center">Units</th>
+              <th class="px-4 py-3 text-sm font-medium text-right">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of invoice.productSales; let i=index" class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-3 text-sm text-center">{{ i + 1 }}</td>
+              <td class="px-4 py-3">
+                <div class="flex flex-col">
+                  <span class="font-medium">{{ item.name }}</span>
+                  <span class="text-xs text-muted-foreground font-mono">({{ item.code }})</span>
+                  <span *ngIf="item.description" class="text-xs text-muted-foreground mt-1">{{ item.description }}</span>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm text-right font-mono">{{ formatCurrency(item.pricePerUnit) }}</td>
+              <td class="px-4 py-3 text-sm text-center font-medium">{{ item.quantitySold }}</td>
+              <td class="px-4 py-3 text-sm text-right font-mono font-semibold">{{ formatCurrency(item.totalAmount) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Payment History & Summary -->
+    <div class="flex flex-row justify-between gap-6 pt-4">
+      <!-- Left Side - Payment History -->
+      <div class="w-7/12 pr-4">
+        <h2 class="text-lg font-semibold text-muted-foreground mb-4">Customer Payment History</h2>
+        
+        <div *ngIf="!hasPayments()" class="text-center py-8 text-muted-foreground">
+          <p>No payments recorded for this invoice.</p>
+        </div>
+
+        <div *ngIf="hasPayments()" class="overflow-x-auto">
+          <table class="table w-full table-auto border-collapse border border-gray-200 text-left align-middle leading-5 text-muted-foreground">
+            <thead class="bg-gray-100 border-b border-gray-200">
+              <tr>
+                <th class="px-4 py-3 text-sm font-medium">Date</th>
+                <th class="px-4 py-3 text-sm font-medium">Method</th>
+                <th class="px-4 py-3 text-sm font-medium">Ref#</th>
+                <th class="px-4 py-3 text-sm font-medium text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let payment of invoice.payments; let i=index" class="border-b border-gray-100 hover:bg-gray-50">
+                <td class="px-4 py-2 text-sm">{{ payment.paymentDate }}</td>
+                <td class="px-4 py-2 text-sm">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
+                    {{ payment.paymentMethod | word }}
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-sm font-mono">{{ payment.reference || 'N/A' }}</td>
+                <td class="px-4 py-2 text-sm text-right font-mono font-semibold">{{ formatCurrency(payment.amount) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right Side - Summary -->
+      <div class="w-5/12">
+        <div class="bg-gray-50 p-6 rounded-lg">
+          <h3 class="text-lg font-semibold text-muted-foreground mb-4">Invoice Summary</h3>
+          
+          <div class="space-y-3">
+            <div class="flex justify-between text-sm">
+              <span>Sub Total:</span>
+              <span class="font-mono">{{ formatCurrency(invoice.productSubTotal) }}</span>
+            </div>
+            
+            <div class="flex justify-between text-sm">
+              <span>Total Tax ({{ invoice.taxRate }}%):</span>
+              <span class="font-mono">{{ formatCurrency(invoice.productTotalTax) }}</span>
+            </div>
+            
+            <div class="flex justify-between text-sm">
+              <span>Total VAT ({{ invoice.vatRate }}%):</span>
+              <span class="font-mono">{{ formatCurrency(invoice.productTotalVat) }}</span>
+            </div>
+            
+            <div class="flex justify-between text-sm">
+              <span>Total Discount:</span>
+              <span class="font-mono text-green-600">-{{ formatCurrency(invoice.totalDiscount) }}</span>
+            </div>
+            
+            <div class="flex justify-between text-sm">
+              <span>Delivery Charge:</span>
+              <span class="font-mono">{{ formatCurrency(invoice.deliveryCharge) }}</span>
+            </div>
+            
+            <div class="border-t border-gray-300 pt-3">
+              <div class="flex justify-between text-base font-semibold">
+                <span>Total Amount:</span>
+                <span class="font-semibold ">{{ formatCurrency(invoice.totalAmount) }}</span>
+              </div>
+            </div>
+            
+            <div class="flex justify-between text-sm">
+              <span>Total Paid:</span>
+              <span class="font-semibold text-green-600">{{ formatCurrency(invoice.totalPaid) }}</span>
+            </div>
+            
+            <div class="flex justify-between text-base font-semibold border-t border-gray-300 pt-3">
+              <span>Amount Due:</span>
+              <span class="font-mono" [ngClass]="getAmountDueColor()">{{ formatCurrency(invoice.remainingAmount) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Amount in Words -->
+    <div class="pt-4">
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <p class="text-sm text-muted-foreground">
+          <strong>Amount in words:</strong> 
+          <span class="font-medium">{{ toWords.convert(invoice.totalAmount) }}</span>
+        </p>
+      </div>
+    </div>
+    
+    <!-- Notes -->
+    <div class="pt-4">
+      <h3 class="text-lg font-semibold text-muted-foreground mb-3">Notes</h3>
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <p class="text-sm text-muted-foreground">
+          Thank you for your business! If you have any questions about this invoice, please contact us at
+          <a href="mailto:contacts.tallyapp&#64;gmail.com" class="font-semibold">
+            contacts.tallyapp&#64;gmail.com
+          </a>.
+        </p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-row justify-end pt-6 gap-3" id="buttonSection">
+      <button 
+        class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        (click)="downloadInvoice()"
+        [disabled]="downloadingBackend">
+        <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        <span>{{ downloadingBackend ? 'Downloading...' : 'Download Official' }}</span>
+      </button>
+      
+      <button 
+        class="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+        (click)="editInvoice()">
+        <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        <span>Edit Invoice</span>
+      </button>
+
+      <button
+        class="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+        (click)="backToInvoiceList()">
+        <svg-icon src="./assets/icons/heroicons/outline/arrow-left.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        <span>Back to List</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Error State -->
+<div *ngIf="!loading && !invoice" class="flex justify-center items-center min-h-screen">
+  <div class="text-center">
+    <svg-icon src="./assets/icons/heroicons/outline/exclamation-triangle.svg" [svgClass]="'h-16 w-16 text-red-500 mx-auto mb-4'"></svg-icon>
+    <h2 class="text-xl font-semibold text-muted-foreground mb-2">Invoice Not Found</h2>
+    <p class="text-muted-foreground mb-4">The requested invoice could not be loaded.</p>
+    <button 
+      class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
+      (click)="backToInvoiceList()">
+      Back to Invoice List
+    </button>
+  </div>
 </div>

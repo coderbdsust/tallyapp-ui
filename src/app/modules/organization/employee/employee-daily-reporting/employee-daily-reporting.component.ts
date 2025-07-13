@@ -8,6 +8,8 @@ import { ButtonComponent } from "../../../../common/components/button/button.com
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { DailyWorkService } from '../../service/daily-work.service';
 import { DailyWork, EmployeeWorkUnit } from '../../service/model/daily-work.model';
+import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-employee-daily-reporting',
@@ -24,6 +26,7 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
 
   constructor(
     private fb: FormBuilder,
+    public dialog: MatDialog,
     private readonly dailyWorkService: DailyWorkService,
     private readonly orgService: OrganizationService) {
     super();
@@ -36,11 +39,11 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
       entryDate: [entryDate, Validators.required],
       employeeWorkUnits: this.fb.array([])
     });
-    
+
     // Clear existing form array first
     const formArray = this.employeeWorkUnits;
     formArray.clear();
-    
+
     // Add employee work units if provided
     if (employeeWorkUnits && employeeWorkUnits.length > 0) {
       employeeWorkUnits.forEach(e => this.addEmployeeWorkUnitRow(e));
@@ -60,7 +63,7 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
     this.dailyWorkService.getPendingDailyWorkEntries(org.id).subscribe({
       next: (response) => {
         this.dailyWorks = response;
-      }, 
+      },
       error: (error) => {
         this.dailyWorkService.showToastErrorResponse(error);
       }
@@ -119,7 +122,7 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
   private setupFormGroupSubscriptions(group: FormGroup): void {
     const isPresentControl = group.get('isPresent');
     const workUnitControl = group.get('workUnit');
-    
+
     if (isPresentControl && workUnitControl) {
       // Handle presence change
       isPresentControl.valueChanges.subscribe((isPresent) => {
@@ -168,22 +171,20 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
   onSubmit(): void {
     if (this.expenditureForm.valid) {
       const formData = this.expenditureForm.value as DailyWork;
-      
+
       // Ensure we have a valid dailyWorkId
       if (!formData.dailyWorkId) {
         this.dailyWorkService.showToastInfo('Please initiate a new report first.');
         return;
       }
 
-      console.log('Form Data:', formData);
-      
       this.dailyWorkService.editDailyWorkEntry(formData.dailyWorkId, formData).subscribe({
         next: (response) => {
           this.dailyWorkService.showToastSuccess('Daily work entry updated successfully');
           if (this.organzation) {
             this.pendingDailyWorks(this.organzation);
           }
-        }, 
+        },
         error: (err) => {
           this.dailyWorkService.showToastErrorResponse(err);
         }
@@ -195,12 +196,18 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
   }
 
   clearAll(): void {
-    if (confirm('Are you sure you want to clear all employee data?')) {
-      this.employeeWorkUnits.clear();
-      // Reset daily work
-      this.dailyWork = null;
-      this.expenditureForm.get('dailyWorkId')?.setValue('');
-    }
+    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+      width: '350px',
+      data: { message: `Are you sure you want to clear all employee data?` },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.employeeWorkUnits.clear();
+        this.dailyWork = null;
+        this.expenditureForm.get('dailyWorkId')?.setValue('');
+      }
+    });
   }
 
   private markFormGroupTouched(): void {
@@ -223,16 +230,13 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
   newReport(): void {
     if (this.organzation) {
       const entryDate = this.expenditureForm.get('entryDate')?.value;
-      
       if (!entryDate) {
-        this.dailyWorkService.showToastInfo('Please select an entry date.');
+        this.dailyWorkService.showToastInfo('Please select an entry date');
         return;
       }
-      
-      console.log('Entry Date: ', entryDate);
       this.newReportForm(this.organzation, entryDate);
     } else {
-      this.dailyWorkService.showToastError('Organization not found.');
+      this.dailyWorkService.showToastError('Organization not found');
     }
   }
 
@@ -243,45 +247,63 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
   }
 
   deleteReport(dailyWork: DailyWork): void {
-    if (confirm('Are you sure you want to delete this daily work entry?')) {
-      this.dailyWorkService.removeDailyWorkEntry(dailyWork.dailyWorkId).subscribe({
-        next: (response) => {
-          this.dailyWorkService.showToastSuccess(response.message || 'Daily work entry deleted successfully');
-          if (this.organzation) {
-            this.pendingDailyWorks(this.organzation);
+    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+      width: '350px',
+      data: { message: `Are you sure you want to delete this daily work entry?` },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.dailyWorkService.removeDailyWorkEntry(dailyWork.dailyWorkId).subscribe({
+          next: (response) => {
+            this.dailyWorkService.showToastSuccess(response.message || 'Daily work entry deleted successfully');
+            if (this.organzation) {
+              this.pendingDailyWorks(this.organzation);
+            }
+
+            // Clear form if deleted entry was being edited
+            if (this.dailyWork?.dailyWorkId === dailyWork.dailyWorkId) {
+              this.employeeWorkUnits.clear();
+              this.dailyWork = null;
+              this.expenditureForm.get('dailyWorkId')?.setValue('');
+            }
+
+          },
+          error: (err) => {
+            this.dailyWorkService.showToastErrorResponse(err);
           }
-          
-          // Clear form if deleted entry was being edited
-          if (this.dailyWork?.dailyWorkId === dailyWork.dailyWorkId) {
-            this.clearAll();
-          }
-        }, 
-        error: (err) => {
-          this.dailyWorkService.showToastErrorResponse(err);
-        }
-      });
-    }
+        });
+      }
+    });
   }
 
   approveReport(dailyWork: DailyWork): void {
-    if (confirm('Are you sure you want to approve this daily work entry?')) {
-      // Implement approval logic here
-      this.dailyWorkService.approveDailyWorkEntry(dailyWork.dailyWorkId, dailyWork).subscribe({
-        next: (response) => {
-          this.dailyWorkService.showToastSuccess('Daily work entry approved successfully');
-          if (this.organzation) {
-            this.pendingDailyWorks(this.organzation);
+    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+      width: '350px',
+      data: { message: `Are you sure you want to approve this daily work entry?` },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+
+      if (result) {
+        this.dailyWorkService.approveDailyWorkEntry(dailyWork.dailyWorkId, dailyWork).subscribe({
+          next: (response) => {
+            this.dailyWorkService.showToastSuccess('Daily work entry approved successfully');
+            if (this.organzation) {
+              this.pendingDailyWorks(this.organzation);
+            }
+
+            // Clear form if approved entry was being edited
+            if (this.dailyWork?.dailyWorkId === dailyWork.dailyWorkId) {
+              this.clearAll();
+            }
+          },
+          error: (err) => {
+            this.dailyWorkService.showToastErrorResponse(err);
           }
-          
-          // Clear form if approved entry was being edited
-          if (this.dailyWork?.dailyWorkId === dailyWork.dailyWorkId) {
-            this.clearAll();
-          }
-        },
-        error: (err) => {
-          this.dailyWorkService.showToastErrorResponse(err);
-        }
-      });
-    }
+        });
+      }
+    });
+
   }
 }

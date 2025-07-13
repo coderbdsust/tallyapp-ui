@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,6 +10,7 @@ import { ProductService } from '../../service/product.service';
 import { OrganizationService } from '../../service/organization.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Product } from '../../service/model/product.model';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-product-list',
@@ -17,14 +18,17 @@ import { Product } from '../../service/model/product.model';
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss',
 })
-export class ProductListComponent extends PaginatedComponent<Product> {
+export class ProductListComponent extends PaginatedComponent<Product> implements OnInit, OnDestroy {
   @ViewChild('addProductModal', { static: false }) addProductModal!: AddProductComponent;
+  
   search: string = '';
   searchCriteria: string = '';
   loading: boolean = false;
   submitted = false;
   errorMessage = '';
   organization!: Organization;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private productService: ProductService,
@@ -35,37 +39,87 @@ export class ProductListComponent extends PaginatedComponent<Product> {
   }
 
   ngOnInit(): void {
-    this.orgService.organization$.subscribe((org) => {
-      if(org) {
-        this.organization = org;
-        this.loadProducts(org.id, this.currentPage, this.selectedRows, this.search, this.searchCriteria);
-      }
-    });
-  }
-  
-  loadProducts(orgId: string, page: number, size: number, search: string, searchCriteria: string = '') {
-    this.loading = true;
-    this.productService.getProductByOrganization(orgId, this.currentPage, this.selectedRows, this.search, this.searchCriteria).subscribe({
-      next: (response) => {
-        this.pageResponse = response;
-        this.currentPage = response.pageNo;
-        this.totalRows = response.totalElements;
-        this.totalPages = response.totalPages;
-        this.updatePagesArray();
-        this.loading = false;
-      },
-      error: (error) => {
-        this.loading = false;
-        this.productService.showToastErrorResponse(error);
-      },
-    });
+    this.subscribeToOrganization();
   }
 
-  editProduct(selectedProduct: Product) {
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  // Abstract method implementation
+  loadData(): void {
+    if (!this.organization) return;
+
+    this.loading = true;
+    this.productService
+      .getProductByOrganization(
+        this.organization.id,
+        this.currentPage,
+        this.selectedRows,
+        this.search,
+        this.searchCriteria
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.updatePaginationState(response);
+          this.loading = false;
+        },
+        error: (error) => {
+          this.loading = false;
+          this.productService.showToastErrorResponse(error);
+        },
+      });
+  }
+
+  private subscribeToOrganization(): void {
+    this.orgService.organization$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((org) => {
+        if (org) {
+          this.organization = org;
+          this.loadData();
+        }
+      });
+  }
+
+  // Event handlers
+  onSearchChange(event: Event): void {
+    const input = (event.target as HTMLInputElement).value;
+    this.search = input;
+
+    if (this.searchCriteria === '' && this.search !== '') {
+      this.productService.showToastError('Please select a search criteria');
+      return;
+    }
+
+    this.onFilterChange();
+  }
+
+  onSelectChange(event: Event): void {
+    const rows = parseInt((event.target as HTMLSelectElement).value, 10);
+    this.onPageSizeChange(rows);
+  }
+
+  onSearchCriteriaChange(event: Event): void {
+    const input = (event.target as HTMLSelectElement).value;
+    this.searchCriteria = input;
+    
+    // If search criteria is cleared and there's a search term, clear the search
+    if (this.searchCriteria === '' && this.search !== '') {
+      this.search = '';
+    }
+    
+    this.onFilterChange();
+  }
+
+  // Product actions
+  editProduct(selectedProduct: Product): void {
     this.addProductModal.openModal(selectedProduct, this.organization.id);
   }
 
-  deleteProduct(selectedProduct: Product) {
+  deleteProduct(selectedProduct: Product): void {
     const dialogRef = this.dialog.open(ConfirmationModalComponent, {
       width: '350px',
       data: { message: `Are you sure you want to delete ${selectedProduct.name}?` },
@@ -73,75 +127,57 @@ export class ProductListComponent extends PaginatedComponent<Product> {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.productService.deleteProduct(selectedProduct.id).subscribe({
-          next: (response) => {
-            this.removeFromPage(selectedProduct.id, 'id');
-            this.productService.showToastSuccess(response.message);
-          },
-          error: (errRes) => {
-            this.productService.showToastErrorResponse(errRes);
-          },
-        });
+        this.productService
+          .deleteProduct(selectedProduct.id)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (response) => {
+              this.removeFromPage(selectedProduct.id, 'id');
+              this.productService.showToastSuccess(response.message);
+            },
+            error: (errRes) => {
+              this.productService.showToastErrorResponse(errRes);
+            },
+          });
       }
     });
   }
 
-  addProduct() {
+  addProduct(): void {
     this.addProductModal.openModal(null, this.organization.id);
   }
 
-  onSearchChange(event: Event) {
-    const input = (event.target as HTMLInputElement).value;
-    this.search = input;
-    
-    if(this.searchCriteria === '' && this.search !== '') {
-      this.productService.showToastError('Please select a search criteria');
-      return;
-    }
-
-    this.loadProducts(this.organization.id, 0, this.selectedRows, this.search, this.searchCriteria);
-  }
-
-  onSelectChange(event: Event) {
-    const rows = parseInt((event.target as HTMLSelectElement).value, 10);
-    this.selectedRows = rows === -1 ? this.totalRows || 0 : rows;
-    this.loadProducts(this.organization.id, 0, this.selectedRows, this.search, this.searchCriteria);
-  }
-
-  onSearchCriteria(event:Event){
-    const input = (event.target as HTMLInputElement).value;
-    this.searchCriteria = input;
-    console.log(this.searchCriteria);
-  }
-
-  goToPreviousPage() {
-    if (!this.first) {
-      this.currentPage--;
-      this.updatePagination();
-    }
-  }
-
-  goToNextPage() {
-    if (!this.last) {
-      this.currentPage++;
-      this.updatePagination();
-    }
-  }
-
-  goToPage(page: number) {
-    if (page >= 0 && page < this.totalPages) {
-      this.currentPage = page;
-      this.updatePagination();
-    }
-  }
-
-  updatePagination() {
-    this.loadProducts(this.organization.id, this.currentPage, this.selectedRows, this.search, this.searchCriteria);
-  }
-
-  productListRefresh(status: Boolean) {
+  productListRefresh(status: Boolean): void {
     if (status) {
-      this.loadProducts(this.organization.id, this.currentPage, this.selectedRows, this.search, this.searchCriteria);
+      this.loadData();
     }
+  }
+
+  // Utility methods
+  getSearchCriteriaOptions(): { value: string; label: string }[] {
+    return [
+      { value: '', label: 'Search Criteria' },
+      { value: 'name', label: 'Product Name' },
+      { value: 'code', label: 'Product Code' },
+      { value: 'madeBy', label: 'Made By' }
+    ];
+  }
+
+  isSearchDisabled(): boolean {
+    return this.searchCriteria === '';
+  }
+
+  getSearchPlaceholder(): string {
+    if (this.searchCriteria === '') {
+      return 'Select search criteria first';
+    }
+    
+    const criteriaMap: { [key: string]: string } = {
+      'name': 'Search by product name...',
+      'code': 'Search by product code...',
+      'madeBy': 'Search by maker...'
+    };
+    
+    return criteriaMap[this.searchCriteria] || 'Search...';
   }
 }

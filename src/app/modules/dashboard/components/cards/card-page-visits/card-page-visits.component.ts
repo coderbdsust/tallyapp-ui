@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Organization } from 'src/app/modules/organization/service/model/organization.model';
-import {  Transaction } from '../../../models/organization-balance';
-import { CommonModule, NgFor } from '@angular/common';
+import { Transaction } from '../../../models/organization-balance';
+import { CommonModule } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
 import { AccountingService } from '../../../service/accounting.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { OrganizationService } from 'src/app/modules/organization/service/organization.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-card-page-visits',
@@ -15,198 +16,196 @@ import { OrganizationService } from 'src/app/modules/organization/service/organi
   standalone: true,
   imports: [CommonModule, AngularSvgIconModule, WordPipe],
 })
-export class CardPageVisitsComponent extends PaginatedComponent<Transaction> implements OnInit {
+export class CardPageVisitsComponent extends PaginatedComponent<Transaction> implements OnInit, OnDestroy {
   organization: Organization | null = null;
   search: string = '';
   allTransactionTypes: string[] = [];
   startDate: string | null = null;
   endDate: string | null = null;
   transactionType: string = '';
+  loading: boolean = false;
 
-  constructor(private orgService: OrganizationService, private accService: AccountingService) {
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private orgService: OrganizationService, 
+    private accService: AccountingService
+  ) {
     super();
   }
 
   ngOnInit(): void {
-    this.accService.getTransactionType().subscribe({
-      next: (data: string[]) => {
-        this.allTransactionTypes = data;
-      },
-      error: (error) => {
-        console.error('Error fetching transaction types:', error);
-      },
-    });
-
-    this.orgService.organization$.subscribe((org) => {
-      if (org) {
-        this.organization = org;
-        this.loadTransactionSummary(
-          this.transactionType,
-          this.startDate,
-          this.endDate,
-          this.currentPage,
-          this.selectedRows,
-        );
-      }
-    });
+    this.initializeComponent();
   }
 
-  onSelectTxnTypeChange(event: Event) {
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  // Abstract method implementation
+  loadData(): void {
+    if (!this.organization) return;
+
+    this.loading = true;
+    this.accService
+      .getTransactionSummaryByPage(
+        this.organization.id,
+        this.transactionType,
+        this.startDate,
+        this.endDate,
+        this.currentPage,
+        this.selectedRows
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.updatePaginationState(response);
+          this.loading = false;
+        },
+        error: (error) => {
+          this.loading = false;
+          console.error('Error fetching transaction summary:', error);
+        },
+      });
+  }
+
+  private initializeComponent(): void {
+    this.loadTransactionTypes();
+    this.subscribeToOrganization();
+  }
+
+  private loadTransactionTypes(): void {
+    this.accService.getTransactionType()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data: string[]) => this.allTransactionTypes = data,
+        error: (error) => {
+          console.error('Error fetching transaction types:', error);
+        },
+      });
+  }
+
+  private subscribeToOrganization(): void {
+    this.orgService.organization$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((org) => {
+        if (org) {
+          this.organization = org;
+          this.loadData();
+        }
+      });
+  }
+
+  // Event handlers
+  onSelectTxnTypeChange(event: Event): void {
     const selectedValue = (event.target as HTMLSelectElement).value;
-    if (selectedValue) {
-      this.transactionType = selectedValue;
-    } else {
-      this.transactionType = '';
-    }
-    this.currentPage = 0; // Reset to first page when filtering
-    this.loadTransactionSummary(
-      this.transactionType,
-      this.startDate,
-      this.endDate,
-      this.currentPage,
-      this.selectedRows,
-    );
+    this.transactionType = selectedValue || '';
+    this.onFilterChange();
   }
 
-  onStartDateChange(event: Event) {
+  onStartDateChange(event: Event): void {
     const input = (event.target as HTMLInputElement).value;
-    this.startDate = input ? input : null;
-    this.currentPage = 0; // Reset to first page when filtering
-    this.loadTransactionSummary(
-      this.transactionType,
-      this.startDate,
-      this.endDate,
-      this.currentPage,
-      this.selectedRows,
-    );
+    this.startDate = input || null;
+    this.onFilterChange();
   }
 
-  onEndDateChange(event: Event) {
+  onEndDateChange(event: Event): void {
     const input = (event.target as HTMLInputElement).value;
-    this.endDate = input ? input : null;
-    this.currentPage = 0; // Reset to first page when filtering
-    this.loadTransactionSummary(
-      this.transactionType,
-      this.startDate,
-      this.endDate,
-      this.currentPage,
-      this.selectedRows,
-    );
+    this.endDate = input || null;
+    this.onFilterChange();
   }
 
-  onSearchChange(event: Event) {
+  onSearchChange(event: Event): void {
     const input = (event.target as HTMLInputElement).value;
     this.search = input;
-    this.currentPage = 0; // Reset to first page when searching
-    this.loadTransactionSummary(
-      this.transactionType,
-      this.startDate,
-      this.endDate,
-      this.currentPage,
-      this.selectedRows,
-    );
+    this.onFilterChange();
   }
 
-  onSelectChange(event: Event) {
+  onSelectChange(event: Event): void {
     const rows = parseInt((event.target as HTMLSelectElement).value, 10);
-    this.selectedRows = rows === -1 ? this.totalRows || 0 : rows;
-    this.currentPage = 0; // Reset to first page when changing page size
-    this.loadTransactionSummary(
-      this.transactionType,
-      this.startDate,
-      this.endDate,
-      this.currentPage,
-      this.selectedRows,
-    );
+    this.onPageSizeChange(rows);
   }
 
-  goToPreviousPage() {
-    if (!this.first) {
-      this.currentPage--;
-      this.updatePagination();
+  // Utility methods
+  getTransactionIndex(index: number): number {
+    return index + this.startIndex;
+  }
+
+  formatCurrency(amount: number): string {
+    return new Intl.NumberFormat('en-BD', {
+      style: 'currency',
+      currency: 'BDT',
+      minimumFractionDigits: 2
+    }).format(amount || 0);
+  }
+
+  getTransactionParty(txn: Transaction): { name: string; type: string } {
+    if (txn.supplierName) {
+      return { name: txn.supplierName, type: 'Supplier' };
     }
-  }
-
-  goToNextPage() {
-    if (!this.last) {
-      this.currentPage++;
-      this.updatePagination();
+    if (txn.customerName) {
+      return { name: txn.customerName, type: 'Customer' };
     }
-  }
-
-  goToPage(page: number | string) {
-    // Only handle number pages, ignore ellipsis
-    if (typeof page === 'number' && page >= 0 && page < this.totalPages) {
-      this.currentPage = page;
-      this.updatePagination();
+    if (txn.employeeName) {
+      return { name: txn.employeeName, type: 'Employee' };
     }
+    return { name: 'N/A', type: '' };
   }
 
-  private updatePagination() {
-    this.loadTransactionSummary(
-      this.transactionType,
-      this.startDate,
-      this.endDate,
-      this.currentPage,
-      this.selectedRows,
-    );
-  }
-
-  loadTransactionSummary(
-    transactionType: string = '',
-    startDate: string | null = null,
-    endDate: string | null = null,
-    page: number = 0,
-    size: number = 10,
-  ) {
-    if (this.organization) {
-      this.accService
-        .getTransactionSummaryByPage(this.organization.id, transactionType, startDate, endDate, page, size)
-        .subscribe({
-          next: (response) => {
-             this.pageResponse = response;
-             this.currentPage = response.pageNo;
-             this.totalRows = response.totalElements;
-             this.totalPages = response.totalPages;
-             this.updatePagesArray();
-          },
-          error: (error) => {
-            console.error('Error fetching transaction summary:', error);
-          },
-        });
+  getAmountColor(type: string, amount: number): string {
+    const incomingTypes = ['CASH_IN', 'SALE', 'PAYMENT_RECEIVED', 'REFUND'];
+    const outgoingTypes = ['CASH_OUT', 'PURCHASE', 'PAYMENT_MADE', 'EXPENSE', 'EMPLOYEE_EXPENSE'];
+    
+    if (incomingTypes.includes(type)) {
+      return 'text-green-600 font-semibold';
     }
+    if (outgoingTypes.includes(type)) {
+      return 'text-red-600 font-semibold';
+    }
+    return 'text-gray-900 font-medium';
   }
 
+  // Transaction type styling
   getTransactionTypeColor(type: string): { bg: string; text: string } {
-    switch (type) {
-      case 'CASH_IN':
-        return { bg: 'bg-green-200', text: 'text-green-800' };
-      case 'CASH_OUT':
-        return { bg: 'bg-red-200', text: 'text-red-800' };
-      case 'PURCHASE':
-        return { bg: 'bg-purple-100', text: 'text-purple-800' };
-      case 'SALE':
-        return { bg: 'bg-blue-100', text: 'text-blue-800' };
-      case 'PAYMENT_RECEIVED':
-        return { bg: 'bg-green-200', text: 'text-green-900' };
-      case 'PAYMENT_MADE':
-        return { bg: 'bg-red-200', text: 'text-red-900' };
-      case 'EXPENSE':
-        return { bg: 'bg-red-200', text: 'text-yellow-800' };
-      case 'REFUND':
-        return { bg: 'bg-pink-100', text: 'text-pink-800' };
-      case 'ADJUSTMENT':
-        return { bg: 'bg-gray-100', text: 'text-gray-800' };
-      case 'REVERSAL':
-        return { bg: 'bg-orange-100', text: 'text-orange-800' };
-      case 'ACCOUNTS_RECEIVABLE':
-        return { bg: 'bg-indigo-100', text: 'text-indigo-800' };
-      case 'EQUITY':
-        return { bg: 'bg-teal-100', text: 'text-teal-800' };
-      case 'EMPLOYEE_EXPENSE':
-        return { bg: 'bg-rose-100', text: 'text-rose-800' };
-      default:
-        return { bg: 'bg-yellow-100', text: 'text-yellow-800' };
-    }
+    const colorMap: Record<string, { bg: string; text: string }> = {
+      'CASH_IN': { bg: 'bg-green-200', text: 'text-green-800' },
+      'CASH_OUT': { bg: 'bg-red-200', text: 'text-red-800' },
+      'PURCHASE': { bg: 'bg-purple-100', text: 'text-purple-800' },
+      'SALE': { bg: 'bg-blue-100', text: 'text-blue-800' },
+      'PAYMENT_RECEIVED': { bg: 'bg-green-200', text: 'text-green-900' },
+      'PAYMENT_MADE': { bg: 'bg-red-200', text: 'text-red-900' },
+      'EXPENSE': { bg: 'bg-orange-100', text: 'text-orange-800' },
+      'REFUND': { bg: 'bg-pink-100', text: 'text-pink-800' },
+      'ADJUSTMENT': { bg: 'bg-gray-100', text: 'text-gray-800' },
+      'REVERSAL': { bg: 'bg-yellow-100', text: 'text-yellow-800' },
+      'ACCOUNTS_RECEIVABLE': { bg: 'bg-indigo-100', text: 'text-indigo-800' },
+      'EQUITY': { bg: 'bg-teal-100', text: 'text-teal-800' },
+      'EMPLOYEE_EXPENSE': { bg: 'bg-rose-100', text: 'text-rose-800' }
+    };
+
+    return colorMap[type] || { bg: 'bg-gray-100', text: 'text-gray-800' };
+  }
+
+  // Clear filters
+  clearFilters(): void {
+    this.search = '';
+    this.transactionType = '';
+    this.startDate = null;
+    this.endDate = null;
+    this.onFilterChange();
+  }
+
+  hasActiveFilters(): boolean {
+    return !!(this.search || this.transactionType || this.startDate || this.endDate);
+  }
+
+  getFilterSummary(): string {
+    const filters: string[] = [];
+    if (this.transactionType) filters.push(`Type: ${this.transactionType}`);
+    if (this.startDate) filters.push(`From: ${this.startDate}`);
+    if (this.endDate) filters.push(`To: ${this.endDate}`);
+    if (this.search) filters.push(`Search: "${this.search}"`);
+    return filters.join(', ');
   }
 }

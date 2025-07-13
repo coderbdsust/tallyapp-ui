@@ -5,31 +5,32 @@
   </div>
   <div class="inline-block space-x-4">
     <div class="flex items-center justify-center gap-4">
-
       <button *ngIf="organization"
         class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
         (click)="openEmployeeDrawer()">
         <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4'"></svg-icon>
         <p>Add Employee</p>
       </button>
-
     </div>
   </div>
 </div>
+
 <div class="flex min-w-full flex-col rounded-xl border border-muted/40 bg-background p-2">
+  <!-- Filters and Search Section -->
   <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
     <h3 class="text-sm font-medium text-muted-foreground">
-      Showing <span>{{ startIndex }}-{{ endIndex }} of {{ this.totalRows }}</span> rows
+      Showing <span>{{ startIndex }}-{{ endIndex }} of {{ totalRows }}</span> rows
     </h3>
     <div class="flex flex-wrap gap-2">
       <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
         <div class="order-2 flex items-center gap-2 md:order-1">
           Show
           <select class="w-16 p-2" name="rowSize" (change)="onSelectChange($event)">
-            <option value="10" selected>10</option>
-            <option value="20">20</option>
-            <option value="30">30</option>
-            <option value="-1">All</option>
+            <option *ngFor="let option of getPageSizeOptions()" 
+                    [value]="option.value" 
+                    [selected]="option.value === selectedRows">
+              {{ option.label }}
+            </option>
           </select>
           per page
         </div>
@@ -37,15 +38,29 @@
       <div class="flex">
         <label class="relative text-muted-foreground">
           <div class="absolute left-2.5 top-2.5">
-            <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
+            <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'">
+            </svg-icon>
           </div>
-          <input name="search" class="py-2 pl-8 pr-2" placeholder="Search" type="text" value=""
-            (keydown.enter)="onSearchChange($event)" />
+          <input 
+            name="search" 
+            class="py-2 pl-8 pr-2" 
+            placeholder="Search Employee" 
+            type="text" 
+            [value]="search"
+            (keydown.enter)="onSearchChange($event)"
+            (input)="onSearchChange($event)" />
         </label>
       </div>
     </div>
   </div>
-  <div
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-8">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+
+  <!-- Table Section -->
+  <div *ngIf="!loading"
     class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
     <table
       class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
@@ -53,7 +68,7 @@
         <tr>
           <th># No</th>
           <th>Full Name</th>
-          <th>Date or Birth</th>
+          <th>Date of Birth</th>
           <th>Mobile No</th>
           <th>Employee Type</th>
           <th>Billing Type</th>
@@ -65,14 +80,15 @@
       </thead>
       <tbody>
         <tr *ngFor="let emp of pageResponse?.content; let i = index" class="gap-4 hover:bg-card/50">
-          <td>{{ i + startIndex}}</td>
+          <td>{{ getEmployeeIndex(i) }}</td>
           <td class="relative">
             <div class="flex items-center gap-2.5 group">
               <!-- Avatar -->
               <img 
                 [src]="emp.profileImage || 'https://placehold.co/400'" 
                 alt="user avatar" 
-                class="h-9 w-9 shrink-0 rounded-full"
+                class="h-9 w-9 shrink-0 rounded-full object-cover"
+                loading="lazy"
               />
           
               <!-- Name -->
@@ -82,7 +98,7 @@
                 </a>
               </div>
           
-              <!-- Hover Image Preview (Fix for table cutting issue) -->
+              <!-- Hover Image Preview -->
               <div 
                 class="absolute left-12 top-0 w-32 h-32 bg-white shadow-lg rounded-lg border border-gray-300 p-1
                        opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
@@ -92,65 +108,138 @@
                   [src]="emp.profileImage || 'https://placehold.co/400'" 
                   alt="Preview" 
                   class="w-full h-full object-cover rounded-lg"
+                  loading="lazy"
                 >
               </div>
             </div>
           </td>
-          <td>{{ emp.dateOfBirth }}</td>
+          <td>{{ emp.dateOfBirth | date: 'dd-MM-yyyy' }}</td>
           <td>{{ emp.mobileNo }}</td>
-          <td>{{ emp.employeeType | word}}</td>
+          <td>{{ emp.employeeType | word }}</td>
           <td>{{ emp.employeeBillingType | word }}</td>
-          <td>{{ emp.billingRate }}</td>
-          <td>{{ emp.dailyAllowance }}</td>
-          <td>{{ emp.status | word }}</td>
+          <td>{{ emp.billingRate | currency }}</td>
+          <td>{{ emp.dailyAllowance | currency }}</td>
+          <td>
+            <span 
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+              [ngClass]="{
+                'bg-green-100 text-green-800': emp.status === 'ACTIVE',
+                'bg-red-100 text-red-800': emp.status === 'INACTIVE',
+                'bg-gray-100 text-gray-800': emp.status !== 'ACTIVE' && emp.status !== 'INACTIVE'
+              }">
+              {{ emp.status | word }}
+            </span>
+          </td>
           <td class="text-center">
-            <div class="flex items-center gap-4">
-              <a (click)="editEmployee(emp)" class="hover:text-red-700">
-                <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
-              </a>
+            <div class="flex items-center justify-center gap-4">
+              <button 
+                (click)="editEmployee(emp)" 
+                class="p-1 hover:text-primary transition-colors"
+                title="Edit Employee">
+                <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'">
+                </svg-icon>
+              </button>
 
-              <a (click)="deleteEmployee(emp)" class="hover:text-red-700">
-                <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
-              </a>
+              <button 
+                (click)="deleteEmployee(emp)" 
+                class="p-1 hover:text-red-600 transition-colors"
+                title="Delete Employee">
+                <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'">
+                </svg-icon>
+              </button>
             </div>
           </td>
         </tr>
-        <tr *ngIf="pageResponse?.content?.length === 0">
-          <td class="py-4 text-center text-sm" colspan="7">No employee found</td>
+        <tr *ngIf="!hasData">
+          <td class="py-8 text-center text-sm" colspan="10">
+            <div class="flex flex-col items-center gap-2">
+              <svg-icon src="./assets/icons/heroicons/outline/users.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
+              </svg-icon>
+              <span>No employees found</span>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
-  <div class="flex flex-wrap items-center justify-end gap-2 py-3 px-5 text-xs text-muted-foreground">
-    <div class="order-1 flex items-center gap-4 md:order-2">
-      <!-- Pagination buttons -->
+
+  <!-- Pagination Section -->
+  <div *ngIf="showPagination && !loading" 
+       class="flex flex-wrap items-center justify-between gap-2 py-3 px-5 text-xs text-muted-foreground">
+    <!-- Page Info -->
+    <div class="flex items-center gap-2">
+      <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
+    </div>
+    
+    <!-- Pagination Controls -->
+    <div class="flex items-center gap-4">
       <div class="inline-flex items-center gap-1">
-        <!-- Previous button -->
+        <!-- First Page Button -->
         <button
-          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50"
-          [disabled]="first" (click)="goToPreviousPage()">
-          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+          *ngIf="!first"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToFirstPage()"
+          title="First Page">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
         </button>
 
-        <!-- Page buttons -->
-        <button *ngFor="let page of getPagesArray(); let i = index"
-          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm" [ngClass]="{
-            'bg-gray-200': i === this.currentPage,
-            'hover:bg-muted-foreground/10': i !== this.currentPage
-          }" (click)="goToPage(i)">
-          {{ i + 1 }}
+        <!-- Previous Page Button -->
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="first" 
+          (click)="goToPreviousPage()"
+          title="Previous Page">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
         </button>
 
+        <!-- Page Numbers -->
+        <ng-container *ngFor="let page of getVisiblePages()">
+          <button 
+            *ngIf="isClickablePage(page)"
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm transition-colors" 
+            [ngClass]="{
+              'bg-primary text-primary-foreground': isCurrentPage(page),
+              'hover:bg-muted-foreground/10': !isCurrentPage(page)
+            }" 
+            (click)="goToPage(page)">
+            {{ getPageNumber(page) }}
+          </button>
+          
+          <span 
+            *ngIf="!isClickablePage(page)" 
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center text-sm">
+            ...
+          </span>
+        </ng-container>
+
+        <!-- Next Page Button -->
         <button
-          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50"
-          [disabled]="last" (click)="goToNextPage()">
-          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="last" 
+          (click)="goToNextPage()"
+          title="Next Page">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+
+        <!-- Last Page Button -->
+        <button
+          *ngIf="!last"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToLastPage()"
+          title="Last Page">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
         </button>
       </div>
     </div>
   </div>
 </div>
 
-<app-add-employee #employeeDrawer (employeeEmitter)="onAddEmployee($event)" [organization]="organization">
-
+<app-add-employee 
+  #employeeDrawer 
+  (employeeEmitter)="onAddEmployee($event)" 
+  [organization]="organization">
 </app-add-employee>

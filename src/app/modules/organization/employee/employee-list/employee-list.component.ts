@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, NgIf } from '@angular/common';
@@ -11,6 +11,7 @@ import { Employee } from '../../service/model/employee.model';
 import { Organization } from '../../service/model/organization.model';
 import { OrganizationService } from '../../service/organization.service';
 import { EmployeeService } from '../../service/employee.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-employee-list',
@@ -27,14 +28,17 @@ import { EmployeeService } from '../../service/employee.service';
   templateUrl: './employee-list.component.html',
   styleUrl: './employee-list.component.scss'
 })
-export class EmployeeListComponent extends PaginatedComponent<Employee> {
+export class EmployeeListComponent extends PaginatedComponent<Employee> implements OnInit, OnDestroy {
   @ViewChild('employeeDrawer') employeeDrawer!: AddEmployeeComponent;
+  
   search: string = '';
   loading: boolean = false;
   submitted = false;
   errorMessage = '';
   organization!: Organization;
   allOrganizations: Organization[] = [];
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private orgService: OrganizationService,
@@ -45,19 +49,69 @@ export class EmployeeListComponent extends PaginatedComponent<Employee> {
   }
 
   ngOnInit(): void {
-    this.orgService.organization$.subscribe((org) => {
-      if(org) {
-        this.organization = org;
-        this.loadEmployeeByOrganization(org.id, this.currentPage, this.selectedRows, this.search);
-      }
-    });
+    this.subscribeToOrganization();
   }
 
-  editEmployee(selectedEmployee: Employee) {
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  // Abstract method implementation
+  loadData(): void {
+    if (!this.organization) return;
+
+    this.loading = true;
+    this.empService
+      .getEmployeesByOrganization(this.organization.id, this.currentPage, this.selectedRows, this.search)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.updatePaginationState(response);
+          this.loading = false;
+        },
+        error: (error) => {
+          this.loading = false;
+          this.empService.showToastErrorResponse(error);
+        },
+      });
+  }
+
+  private subscribeToOrganization(): void {
+    this.orgService.organization$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((org) => {
+        if (org) {
+          this.organization = org;
+          this.loadData();
+        }
+      });
+  }
+
+  // Event handlers
+  onSearchChange(event: Event): void {
+    const input = (event.target as HTMLInputElement).value;
+    this.search = input;
+    this.onFilterChange();
+  }
+
+  onSelectChange(event: Event): void {
+    const rows = parseInt((event.target as HTMLSelectElement).value, 10);
+    this.onPageSizeChange(rows);
+  }
+
+  onSelectOrganization(event: Event): void {
+    const orgId = (event.target as HTMLSelectElement).value;
+    this.organization = this.allOrganizations.find(org => org.id === orgId) || this.organization;
+    this.onFilterChange();
+  }
+
+  // Employee actions
+  editEmployee(selectedEmployee: Employee): void {
     this.employeeDrawer.openDrawer(selectedEmployee);
   }
 
-  deleteEmployee(selectedEmployee: Employee) {
+  deleteEmployee(selectedEmployee: Employee): void {
     const dialogRef = this.dialog.open(ConfirmationModalComponent, {
       width: '350px',
       data: { message: `Are you sure you want to delete ${selectedEmployee.fullName}?` },
@@ -65,90 +119,37 @@ export class EmployeeListComponent extends PaginatedComponent<Employee> {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.empService.deleteEmployee(selectedEmployee.id).subscribe({
-          next: (response) => {
-            this.removeFromPage(selectedEmployee.id, 'id');
-            this.empService.showToastSuccess(response.message);
-          },
-          error: (errRes) => {
-            this.empService.showToastErrorResponse(errRes);
-          },
-        });
+        this.empService.deleteEmployee(selectedEmployee.id)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (response) => {
+              this.removeFromPage(selectedEmployee.id, 'id');
+              this.empService.showToastSuccess(response.message);
+            },
+            error: (errRes) => {
+              this.empService.showToastErrorResponse(errRes);
+            },
+          });
       }
     });
   }
 
-  private loadEmployeeByOrganization(orgId: string, page: number, size: number, search: string) {
-    this.loading = true;
-    this.empService.getEmployeesByOrganization(orgId, page, size, search).subscribe({
-      next: (response) => {
-        this.pageResponse = response;
-        this.currentPage = response.pageNo;
-        this.totalRows = response.totalElements;
-        this.totalPages = response.totalPages;
-        this.updatePagesArray();
-        this.loading = false;
-      },
-      error: (error) => {
-        this.loading = false;
-        this.empService.showToastErrorResponse(error);
-      },
-    });
+  openEmployeeDrawer(): void {
+    this.employeeDrawer.openDrawer();
   }
 
-  onSearchChange(event: Event) {
-    const input = (event.target as HTMLInputElement).value;
-    this.search = input;
-    this.loadEmployeeByOrganization(this.organization.id, 0, this.selectedRows, this.search);
-  }
-
-  onSelectChange(event: Event) {
-    const rows = parseInt((event.target as HTMLSelectElement).value, 10);
-    this.selectedRows = rows === -1 ? this.totalRows || 0 : rows;
-    this.loadEmployeeByOrganization(this.organization.id, 0, this.selectedRows, this.search);
-  }
-
-  onSelectOrganization(event:Event){
-    const orgId = (event.target as HTMLSelectElement).value;
-    this.organization = this.allOrganizations.find(org => org.id === orgId) || this.organization;
-    this.loadEmployeeByOrganization(this.organization.id, 0, this.selectedRows, this.search);
-  }
-
-  goToPreviousPage() {
-    if (!this.first) {
-      this.currentPage--;
-      this.updatePagination();
-    }
-  }
-
-  goToNextPage() {
-    if (!this.last) {
-      this.currentPage++;
-      this.updatePagination();
-    }
-  }
-
-  goToPage(page: number) {
-    if (page >= 0 && page < this.totalPages) {
-      this.currentPage = page;
-      this.updatePagination();
-    }
-  }
-
-  private updatePagination() {
-    this.loadEmployeeByOrganization(this.organization.id, this.currentPage, this.selectedRows, this.search);
-  }
-
-  onAddOrganization(org: Organization) {
+  // Event callbacks
+  onAddOrganization(org: Organization): void {
     this.organization = org;
     this.allOrganizations.push(org);
   }
 
-  onAddEmployee(emp: Employee) {
+  onAddEmployee(emp: Employee): void {
     this.updateInPage(emp, 'id');
   }
 
-  openEmployeeDrawer() {
-    this.employeeDrawer.openDrawer();
+  // Utility methods
+  getEmployeeIndex(index: number): number {
+    return index + this.startIndex;
   }
 }

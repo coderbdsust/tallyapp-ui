@@ -1,4 +1,4 @@
-import { Component, signal, computed, OnInit, ViewChild, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, ViewChild, CUSTOM_ELEMENTS_SCHEMA, OnInit, OnDestroy } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -7,152 +7,211 @@ import { RegisteredUser } from './registered-user.model';
 import { RegisterUserService } from './service/register-user.service';
 import { EditAppPropertiesComponent } from '../app-properties/modal/edit-app-properties.component';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-    selector: 'app-registered-user',
-    imports: [AngularSvgIconModule, FormsModule, CommonModule],
-    templateUrl: './registered-user.component.html',
-    styleUrl: './registered-user.component.scss'
+  selector: 'app-registered-user',
+  imports: [AngularSvgIconModule, FormsModule, CommonModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  templateUrl: './registered-user.component.html',
+  styleUrl: './registered-user.component.scss'
 })
-export class RegisteredUserComponent extends PaginatedComponent<RegisteredUser>{
+export class RegisteredUserComponent extends PaginatedComponent<RegisteredUser> implements OnInit, OnDestroy {
   search: string = '';
   loading: boolean = false;
-  @ViewChild('modal', { static: false }) modal!: EditAppPropertiesComponent;
   registeredUser!: RegisteredUser;
   roles: string[] = [];
 
-  constructor(private registerUserService: RegisterUserService, private authService: AuthService) {super();}
+  @ViewChild('modal', { static: false }) modal!: EditAppPropertiesComponent;
+
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private registerUserService: RegisterUserService, 
+    private authService: AuthService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.loadAllRoles();
-    this.loadRegisteredUsers(this.currentPage, this.selectedRows, this.search);
+    this.initializeComponent();
   }
 
-  loadAllRoles() {
-    this.registerUserService.getAllRoles().subscribe({
-      next: (response) => {
-        this.roles = response;
-      },
-      error: (error) => {
-        this.registerUserService.showToastErrorResponse(error);
-      },
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  addUser() {
-    this.authService.showToastError('Not implemented');
-  }
-
-  assignUser(user: any) {
-    this.authService.showToastError('Not implemented');
-  }
-
-  forceLogout(user: any) {
-    let username = { username: user.username };
-    this.registerUserService.forceLogout(username).subscribe({
-      next: (response) => {
-        this.registerUserService.showToastSuccess(response.message);
-      },
-      error: (error) => {
-        this.registerUserService.showToastErrorResponse(error);
-      },
-    });
-  }
-
-  private loadRegisteredUsers(page: number, size: number, search: string) {
+  // Abstract method implementation
+  loadData(): void {
     this.loading = true;
-    this.registerUserService.getRegisteredUsers(page, size, search).subscribe({
-      next: (response) => {
-        this.pageResponse = response;
-        this.currentPage = response.pageNo;
-        this.totalRows = response.totalElements;
-        this.totalPages = response.totalPages;
-        this.updatePagesArray();
-        this.loading = false;
-      },
-      error: (error) => {
-        this.loading = false;
-        this.registerUserService.showToastErrorResponse(error);
-      },
-    });
-  }
-
-  onSearchChange(event: Event) {
-    const input = (event.target as HTMLInputElement).value;
-    this.search = input;
-    this.loadRegisteredUsers(0, this.selectedRows, this.search);
-  }
-
-  onSelectChange(event: Event) {
-    const rows = parseInt((event.target as HTMLSelectElement).value, 10);
-    this.selectedRows = rows === -1 ? this.totalRows || 0 : rows;
-    this.loadRegisteredUsers(0, this.selectedRows, this.search);
-  }
-
-  onRoleChange(event: Event, user: RegisteredUser) {
-    const role = (event.target as HTMLSelectElement).value;
-    if (role !== '-1') {
-      let roleChange = { username: user.username, role: role };
-      this.registerUserService.changeRole(roleChange).subscribe({
+    this.registerUserService
+      .getRegisteredUsers(this.currentPage, this.selectedRows, this.search)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
         next: (response) => {
-          if (response.sucs) {
-            this.registerUserService.showToastSuccess(response.message);
-          } else {
-            this.registerUserService.showToastError(response.message);
-          }
+          this.updatePaginationState(response);
+          this.loading = false;
+        },
+        error: (error) => {
+          this.loading = false;
+          this.registerUserService.showToastErrorResponse(error);
+        },
+      });
+  }
+
+  private initializeComponent(): void {
+    this.loadAllRoles();
+    this.loadData();
+  }
+
+  private loadAllRoles(): void {
+    this.registerUserService
+      .getAllRoles()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.roles = response;
         },
         error: (error) => {
           this.registerUserService.showToastErrorResponse(error);
         },
       });
+  }
+
+  // Event handlers
+  onSearchChange(event: Event): void {
+    const input = (event.target as HTMLInputElement).value;
+    this.search = input;
+    this.onFilterChange();
+  }
+
+  onSelectChange(event: Event): void {
+    const rows = parseInt((event.target as HTMLSelectElement).value, 10);
+    this.onPageSizeChange(rows);
+  }
+
+  onRoleChange(event: Event, user: RegisteredUser): void {
+    const role = (event.target as HTMLSelectElement).value;
+    if (role !== '-1') {
+      const roleChange = { username: user.username, role: role };
+      this.registerUserService
+        .changeRole(roleChange)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (response) => {
+            if (response.sucs) {
+              this.registerUserService.showToastSuccess(response.message);
+              // Update the user's role in the current page data
+              this.updateUserInPage(user, 'roles', [role]);
+            } else {
+              this.registerUserService.showToastError(response.message);
+              // Reset the select to original value
+              (event.target as HTMLSelectElement).value = user.roles[0] || '';
+            }
+          },
+          error: (error) => {
+            this.registerUserService.showToastErrorResponse(error);
+            // Reset the select to original value
+            (event.target as HTMLSelectElement).value = user.roles[0] || '';
+          },
+        });
     }
   }
 
-  onVerificationChange(event: Event, user: RegisteredUser) {
-    const checkbox = event.target as HTMLInputElement;
+  onVerificationChange(event: Event, user: RegisteredUser): void {
+    // Prevent the checkbox from changing
+    event.preventDefault();
     this.registerUserService.showToastError(`You can't change verification status, It's view only`);
   }
 
-  onAccountLocked(event: Event, user: RegisteredUser) {
+  onAccountLocked(event: Event, user: RegisteredUser): void {
     const checkbox = event.target as HTMLInputElement;
-    let accountLocking = { accountLocked: checkbox.checked, username: user.username };
-    this.registerUserService.lockOrUnlockAccount(accountLocking).subscribe({
-      next: (response) => {
-        if (response.sucs) {
+    const accountLocking = { accountLocked: checkbox.checked, username: user.username };
+    
+    this.registerUserService
+      .lockOrUnlockAccount(accountLocking)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          if (response.sucs) {
+            this.registerUserService.showToastSuccess(response.message);
+            // Update the user's lock status in the current page data
+            this.updateUserInPage(user, 'accountLocked', checkbox.checked);
+          } else {
+            this.registerUserService.showToastError(response.message);
+            // Reset the checkbox to original state
+            checkbox.checked = !checkbox.checked;
+          }
+        },
+        error: (error) => {
+          this.registerUserService.showToastErrorResponse(error);
+          // Reset the checkbox to original state
+          checkbox.checked = !checkbox.checked;
+        },
+      });
+  }
+
+  // User actions
+  addUser(): void {
+    this.authService.showToastError('Not implemented');
+  }
+
+  assignUser(user: RegisteredUser): void {
+    this.authService.showToastError('Not implemented');
+  }
+
+  forceLogout(user: RegisteredUser): void {
+    const username = { username: user.username };
+    this.registerUserService
+      .forceLogout(username)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
           this.registerUserService.showToastSuccess(response.message);
-        } else {
-          this.registerUserService.showToastError(response.message);
-        }
-      },
-      error: (error) => {
-        this.registerUserService.showToastErrorResponse(error);
-      },
-    });
+        },
+        error: (error) => {
+          this.registerUserService.showToastErrorResponse(error);
+        },
+      });
   }
 
-  goToPreviousPage() {
-    if (!this.first) {
-      this.currentPage--;
-      this.updatePagination();
+  // Utility methods
+  private updateUserInPage(user: RegisteredUser, property: keyof RegisteredUser, value: any): void {
+    if (this.pageResponse?.content) {
+      const userIndex = this.pageResponse.content.findIndex(u => u.username === user.username);
+      if (userIndex !== -1) {
+        (this.pageResponse.content[userIndex] as any)[property] = value;
+      }
     }
   }
 
-  goToNextPage() {
-    if (!this.last) {
-      this.currentPage++;
-      this.updatePagination();
-    }
+  getUserIndex(index: number): number {
+    return index + this.startIndex;
   }
 
-  goToPage(page: number) {
-    if (page >= 0 && page < this.totalPages) {
-      this.currentPage = page;
-      this.updatePagination();
-    }
+  getAccountStatusText(user: RegisteredUser): string {
+    if (!user.enabled) return 'Unverified';
+    if (user.accountLocked) return 'Locked';
+    return 'Active';
   }
 
-  private updatePagination() {
-    this.loadRegisteredUsers(this.currentPage, this.selectedRows, this.search);
+  getAccountStatusColor(user: RegisteredUser): string {
+    if (!user.enabled) return 'text-yellow-600';
+    if (user.accountLocked) return 'text-red-600';
+    return 'text-green-600';
   }
 
+  getRoleDisplayName(role: string): string {
+    // Convert role names to display format
+    return role.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+  }
+
+  getAvatarUrl(user: RegisteredUser): string {
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&background=random&color=fff`;
+  }
+
+  isCurrentUserRole(user: RegisteredUser, role: string): boolean {
+    return user.roles && user.roles.includes(role);
+  }
 }

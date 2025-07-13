@@ -1,162 +1,276 @@
 <div class="mb-4 flex justify-between">
-    <div class="inline-block">
-        <h2 class="font-semibold text-foreground">Tally App Users</h2>
-        <div class="space-x-1 text-xs font-medium text-muted-foreground">
-        </div>
+  <div class="inline-block">
+    <h2 class="font-semibold text-foreground">Tally App Users</h2>
+    <div class="space-x-1 text-xs font-medium text-muted-foreground">
+      <span>Manage application users and their permissions</span>
     </div>
-    <div class="inline-block space-x-4">
-        <button class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
-            (click)="addUser()">
-            <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-            <p>Add User</p>
-        </button>
-    </div>
+  </div>
+  <div class="inline-block space-x-4">
+    <button 
+      class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+      (click)="addUser()">
+      <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
+      <p>Add User</p>
+    </button>
+  </div>
 </div>
+
 <div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
-    <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
-        <h3 class="text-sm font-medium text-muted-foreground">
-            Showing <span>{{ startIndex }}-{{ endIndex }} of {{ this.totalRows }}</span> rows
-        </h3>
-           
-        <div class="flex flex-wrap gap-2">
-            <div class="flex flex-wrap items-center justify-between gap-2  px-8 text-xs text-muted-foreground">
-                <div class="order-2 flex items-center gap-2 md:order-1">
-                    Show
-                    <select class="w-16 p-2" name="rowSize" (change)="onSelectChange($event)">
-                        <option value="10" selected>10</option>
-                        <option value="20">20</option>
-                        <option value="30">30</option>
-                        <option value="-1">All</option>
-                    </select>
-                    per page
+  <!-- Filters and Search Section -->
+  <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
+    <h3 class="text-sm font-medium text-muted-foreground">
+      Showing <span>{{ startIndex }}-{{ endIndex }} of {{ totalRows }}</span> rows
+    </h3>
+    
+    <div class="flex flex-wrap gap-2">
+      <!-- Page Size Selector -->
+      <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
+        <div class="order-2 flex items-center gap-2 md:order-1">
+          Show
+          <select class="w-16 p-2" name="rowSize" (change)="onSelectChange($event)">
+            <option *ngFor="let option of getPageSizeOptions()" 
+                    [value]="option.value" 
+                    [selected]="option.value === selectedRows">
+              {{ option.label }}
+            </option>
+          </select>
+          per page
+        </div>
+      </div>
+
+      <!-- Search Input -->
+      <div class="flex">
+        <label class="relative text-muted-foreground">
+          <div class="absolute left-2.5 top-2.5">
+            <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'">
+            </svg-icon>
+          </div>
+          <input 
+            name="search" 
+            class="py-2 pl-8 pr-2" 
+            placeholder="Search users..." 
+            type="text" 
+            [value]="search"
+            (keydown.enter)="onSearchChange($event)"
+            (input)="onSearchChange($event)" />
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-8">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+
+  <!-- Table Section -->
+  <div *ngIf="!loading"
+    class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+    <table
+      class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+      <thead class="border border-muted/20 text-xs text-muted-foreground bg-black-100 text-white">
+        <tr>
+          <th class="min-w-[200px]">User</th>
+          <th class="min-w-[120px]">Username</th>
+          <th class="min-w-[140px]">Account Created</th>
+          <th class="min-w-[120px]">Role</th>
+          <th class="min-w-[100px]">Verified</th>
+          <th class="min-w-[120px]">Account Status</th>
+          <th class="min-w-[100px]">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of pageResponse?.content; let i = index" class="hover:bg-card/50 gap-4">
+          <!-- User Info -->
+          <td>
+            <div class="flex items-center gap-2.5">
+              <img 
+                alt="user avatar" 
+                class="h-9 w-9 shrink-0 rounded-full object-cover" 
+                [src]="getAvatarUrl(user)"
+                loading="lazy" />
+              <div class="flex flex-col">
+                <a class="text-sm font-semibold text-foreground hover:text-primary" href="#"> 
+                  {{ user.fullName }} 
+                </a>
+                <a class="text-xs font-medium text-muted-foreground/70 hover:text-primary" href="#">
+                  {{ user.email }}
+                </a>
+              </div>
+            </div>
+          </td>
+
+          <!-- Username -->
+          <td>
+            <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
+              {{ user.username }}
+            </span>
+          </td>
+
+          <!-- Account Created -->
+          <td>
+            <span class="text-sm">{{ user.createdDate | date: 'dd-MM-yyyy HH:mm' }}</span>
+          </td>
+
+          <!-- Role Selection -->
+          <td>
+            <select 
+              [id]="'roles-' + i" 
+              (change)="onRoleChange($event, user)"
+              class="block py-2.5 px-2 w-full text-sm text-gray-500 bg-transparent border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+              <option value="-1">Change Role</option>
+              <option *ngFor="let role of roles" 
+                      [value]="role" 
+                      [selected]="isCurrentUserRole(user, role)">
+                {{ getRoleDisplayName(role) }}
+              </option>
+            </select>
+          </td>
+
+          <!-- Verification Status -->
+          <td>
+            <div class="flex items-center">
+              <label class="inline-flex items-center cursor-not-allowed" title="View only - cannot be changed">
+                <input 
+                  type="checkbox" 
+                  disabled
+                  [checked]="user.enabled" 
+                  (click)="onVerificationChange($event, user)"
+                  class="sr-only peer">
+                <div class="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600 opacity-75">
                 </div>
+              </label>
+              <span class="ml-2 text-xs" [ngClass]="user.enabled ? 'text-green-600' : 'text-red-600'">
+                {{ user.enabled ? 'Verified' : 'Unverified' }}
+              </span>
             </div>
-            <div class="flex">
-                <label class="relative text-muted-foreground">
-                    <div class="absolute left-2.5 top-2.5">
-                        <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'">
-                        </svg-icon>
-                    </div>
-                    <input name="search" class="py-2 pl-8 pr-2" placeholder="Search User" type="text" value=""
-                        (keydown.enter)="onSearchChange($event)" />
-                </label>
-            </div>
-        </div>
-    </div>
-    <div
-        class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
-        <table
-            class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
-            <thead class="border border-muted/20 text-xs text-muted-foreground bg-black-100 text-white">
-                <tr class="text-center">
-                    <th class="min-w-[80px]">Name</th>
-                    <th class="min-w-[50px]">Username</th>
-                    <th class="min-w-[50px]">Account Created</th>
-                    <th class="min-w-[20px]">Role</th>
-                    <th class="w-[10px]">Verified</th>
-                    <th class="w-[10px]">Account Locked</th>
-                    <th class="w-[10px]">Force Logout</th>
-                    <!-- <th class="w-[10px]">Assign</th> -->
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let user of pageResponse?.content; let i = index" class="hover:bg-card/50  gap-4">
-                    <td>
-                        <div class="flex items-center gap-2.5">
-                            <img alt="user avatar" class="h-9 w-9 shrink-0 rounded-full"
-                                src="https://ui-avatars.com/api/?name={{ user.fullName }}&background=random" />
-                            <div class="flex flex-col">
-                                <a class="text-sm font-semibold text-foreground hover:text-primary" href="#"> {{
-                                    user.fullName }} </a>
-                                <a class="text-xs font-medium text-muted-foreground/70 hover:text-primary" href="#">
-                                    {{ user.email }}
-                                </a>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="hover:text-red-400">{{ user.username }}</td>
-                    <td class="hover:text-red-400">{{ user.createdDate | date:'medium' }}</td>
-                    <td>
-                        <select id="roles-{{i}}" 
-                            (change)="onRoleChange($event, user)"
-                            class=" block py-2.5 px-0 w-full indent-4 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                            <option value="-1">Change Role</option>
-                            <ng-container *ngFor="let role of roles; let i = index;">
-                                <option [value]="role" [selected]="role==user.roles[0]">{{role}}</option>
-                            </ng-container>
-                        </select>
-                    </td>
-                    <td>
-                         <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" 
-                            disabled
-                            [checked]="user.enabled" 
-                            (change)="onVerificationChange($event, user)"
-                            class="sr-only peer">
-                            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
-                            </div>
-                        </label>
-                    </td>
-                    <td>
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" 
-                            [checked]="user.accountLocked" 
-                            (change)="onAccountLocked($event, user)"
-                            class="sr-only peer">
-                            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600">
-                            </div>
-                        </label>
-                    </td>
-                    <td class="text-center">
-                        <div class="flex items-center gap-4">
-                          <a (click)="forceLogout(user)" class="hover:text-red-700">
-                            <svg-icon src="./assets/icons/heroicons/outline/power.svg" [svgClass]="'h-5 w-5 hover:h-7 w-7'"> </svg-icon>
-                          </a>
-                        </div>
-                      </td>
-                    <!-- <td class="text-center">
-                        <div class="flex items-center gap-4">
-                          <a (click)="assignUser(user)" class="hover:text-red-700">
-                            <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-5 w-5 hover:h-7 w-7'"> </svg-icon>
-                          </a>
-                        </div>
-                      </td> -->
-                </tr>
-                <tr *ngIf="pageResponse?.content?.length === 0">
-                    <td class="py-4 text-center text-sm" colspan="7">No registered users found</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="flex flex-wrap items-center justify-end gap-2 py-3 px-5 text-xs text-muted-foreground">
-        <div class="order-1 flex items-center gap-4 md:order-2">
-            <!-- Pagination buttons -->
-            <div class="inline-flex items-center gap-1">
-                <!-- Previous button -->
-                <button
-                    class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50"
-                    [disabled]="first" (click)="goToPreviousPage()">
-                    <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg"
-                        [svgClass]="'h-4 w-4'"></svg-icon>
-                </button>
+          </td>
 
-                <!-- Page buttons -->
-                <button *ngFor="let page of getPagesArray(); let i = index"
-                    class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm" [ngClass]="{
-              'bg-gray-200': i ===this.currentPage,
-              'hover:bg-muted-foreground/10': i !== this.currentPage
-            }" (click)="goToPage(i)">
-                    {{ i + 1 }}
-                </button>
-
-                <button
-                    class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50"
-                    [disabled]="last" (click)="goToNextPage()">
-                    <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg"
-                        [svgClass]="'h-4 w-4'"></svg-icon>
-                </button>
+          <!-- Account Lock Status -->
+          <td>
+            <div class="flex items-center">
+              <label class="inline-flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  [checked]="user.accountLocked" 
+                  (change)="onAccountLocked($event, user)"
+                  class="sr-only peer">
+                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600">
+                </div>
+              </label>
+              <span class="ml-2 text-xs" [ngClass]="user.accountLocked ? 'text-red-600' : 'text-green-600'">
+                {{ user.accountLocked ? 'Locked' : 'Active' }}
+              </span>
             </div>
-        </div>
+          </td>
+
+          <!-- Actions -->
+          <td>
+            <div class="flex items-center gap-2">
+              <button 
+                (click)="forceLogout(user)" 
+                class="p-1 hover:text-red-600 transition-colors"
+                title="Force Logout">
+                <svg-icon src="./assets/icons/heroicons/outline/power.svg" [svgClass]="'h-5 w-5'">
+                </svg-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Empty State -->
+        <tr *ngIf="!hasData">
+          <td class="py-8 text-center text-sm" colspan="7">
+            <div class="flex flex-col items-center gap-2">
+              <svg-icon src="./assets/icons/heroicons/outline/users.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
+              </svg-icon>
+              <span>No registered users found</span>
+              <button 
+                class="mt-2 text-primary hover:text-primary/80 text-xs underline"
+                (click)="addUser()">
+                Add your first user
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Section -->
+  <div *ngIf="showPagination && !loading" 
+       class="flex flex-wrap items-center justify-between gap-2 py-3 px-5 text-xs text-muted-foreground">
+    <!-- Page Info -->
+    <div class="flex items-center gap-2">
+      <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
     </div>
+    
+    <!-- Pagination Controls -->
+    <div class="flex items-center gap-4">
+      <div class="inline-flex items-center gap-1">
+        <!-- First Page Button -->
+        <button
+          *ngIf="!first"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToFirstPage()"
+          title="First Page">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+
+        <!-- Previous Page Button -->
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="first" 
+          (click)="goToPreviousPage()"
+          title="Previous Page">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+
+        <!-- Page Numbers -->
+        <ng-container *ngFor="let page of getVisiblePages()">
+          <button 
+            *ngIf="isClickablePage(page)"
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm transition-colors" 
+            [ngClass]="{
+              'bg-primary text-primary-foreground': isCurrentPage(page),
+              'hover:bg-muted-foreground/10': !isCurrentPage(page)
+            }" 
+            (click)="goToPage(page)">
+            {{ getPageNumber(page) }}
+          </button>
+          
+          <span 
+            *ngIf="!isClickablePage(page)" 
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center text-sm">
+            ...
+          </span>
+        </ng-container>
+
+        <!-- Next Page Button -->
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="last" 
+          (click)="goToNextPage()"
+          title="Next Page">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+
+        <!-- Last Page Button -->
+        <button
+          *ngIf="!last"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToLastPage()"
+          title="Last Page">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- Uncomment when modal is needed -->
 <!-- <app-edit-app-properties #modal [appProperty]="appProperty"></app-edit-app-properties> -->
