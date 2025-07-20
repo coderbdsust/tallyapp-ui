@@ -30,27 +30,33 @@
                     {{ getErrorMessage(form, 'toDate') }}
                 </div>
             </div>
-            <div class="w-full">
-                <label class="text-sm text-muted-foreground">Report</label>
-                <div class="flex flex-row gap-2">
-                    <!-- <label class="text-sm text-muted-foreground">Submit</label> -->
-                    <button class="flex flex-row px-4 py-2 rounded-md" [disabled]="form.invalid" [ngClass]="{
-                            'bg-primary text-white': !form.invalid,
-                            'bg-gray-400 text-gray-200 cursor-not-allowed': form.invalid
-                        }">
-                        <svg-icon src="./assets/icons/heroicons/outline/search.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                        <span class="ml-2">Summary</span>
-                    </button>
+            <div class="flex flex-row gap-2">
+                    <div class="w-full">
+                        <label class="text-sm text-muted-foreground">Report</label>
+                        <div class="flex flex-row gap-2">
+                            <!-- <label class="text-sm text-muted-foreground">Submit</label> -->
+                            <button class="flex flex-row px-4 py-2 rounded-md" [disabled]="form.invalid" [ngClass]="{
+                                    'bg-primary text-white': !form.invalid,
+                                    'bg-gray-400 text-gray-200 cursor-not-allowed': form.invalid
+                                }">
+                                <svg-icon src="./assets/icons/heroicons/outline/search.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+                                <span class="ml-2">Summary</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="w-full">
+                        <label class="text-sm text-muted-foreground">Download</label>
 
-                    <!-- <label class="text-sm text-muted-foreground">Report</label> -->
-                    <button class="flex flex-row px-4 py-2 rounded-md" [disabled]="form.invalid" [ngClass]="{
-                            'bg-primary text-white': !form.invalid,
-                            'bg-purple-400 text-gray-200 cursor-not-allowed': form.invalid
-                        }">
-                        <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                        <span class="ml-2">Report</span>
-                    </button>
-                </div>
+                        <!-- <label class="text-sm text-muted-foreground">Report</label> -->
+                        <button (click)="generateReport()" class="flex flex-row px-4 py-2 rounded-md" [disabled]="form.invalid"
+                            [ngClass]="{
+                                    'bg-primary text-white': !form.invalid,
+                                    'bg-purple-400 text-gray-200 cursor-not-allowed': form.invalid
+                                }">
+                            <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+                            <span class="ml-2"> Download</span>
+                        </button>
+                    </div>
             </div>
         </div>
     </form>

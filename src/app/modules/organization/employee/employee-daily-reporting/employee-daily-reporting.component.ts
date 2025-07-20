@@ -10,6 +10,8 @@ import { DailyWorkService } from '../../../../core/services/daily-work.service';
 import { DailyWork, EmployeeWorkUnit } from '../../../../core/models/daily-work.model';
 import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-employee-daily-reporting',
@@ -28,7 +30,8 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
     private fb: FormBuilder,
     public dialog: MatDialog,
     private readonly dailyWorkService: DailyWorkService,
-    private readonly orgService: OrganizationService) {
+    private readonly orgService: OrganizationService,
+    private route: ActivatedRoute) {
     super();
     this.initializeDailyWorkForm('', this.getCurrentDate(), []);
   }
@@ -50,13 +53,31 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
     }
   }
 
+  private hasProcessedRoute = false;
+
   ngOnInit(): void {
-    this.orgService.organization$.subscribe((org) => {
-      if (org) {
-        this.organzation = org;
-        this.pendingDailyWorks(org);
+    combineLatest([
+    this.orgService.organization$,
+    this.route.queryParams
+  ]).subscribe(([org, params]) => {
+    if (org) {
+      this.organzation = org;
+      this.pendingDailyWorks(org);
+
+      const date = params['date'];
+      if (date && !this.hasProcessedRoute) {
+        this.hasProcessedRoute = true;
+        this.handleRouteAction(date);
       }
-    });
+    }
+  });
+  }
+
+  private handleRouteAction(date: string): void {
+    if (this.organzation) {
+        this.expenditureForm.get('entryDate')?.setValue(date);
+        this.newReportForm(this.organzation, date);
+    }
   }
 
   pendingDailyWorks(org: Organization) {
@@ -84,6 +105,13 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
 
   get employeeWorkUnits(): FormArray {
     return this.expenditureForm.get('employeeWorkUnits') as FormArray;
+  }
+
+  getTotalWorkUnits(): number {
+    return this.employeeWorkUnits.controls.reduce((total, control) => {
+      const workUnit = control.get('workUnit')?.value;
+      return total + (typeof workUnit === 'number' ? workUnit : 0);
+    }, 0);
   }
 
   get totalEmployees(): number {
@@ -128,7 +156,7 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
       isPresentControl.valueChanges.subscribe((isPresent) => {
         if (!isPresent) {
           workUnitControl.setValue(0);
-          workUnitControl.disable({ emitEvent: false });
+          // workUnitControl.disable({ emitEvent: false });
         } else {
           workUnitControl.enable({ emitEvent: false });
           if (workUnitControl.value === 0) {
@@ -140,7 +168,7 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
       // Initial state setup
       if (!isPresentControl.value) {
         workUnitControl.setValue(0);
-        workUnitControl.disable({ emitEvent: false });
+        // workUnitControl.disable({ emitEvent: false });
       }
     }
   }
@@ -305,5 +333,26 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
       }
     });
 
+  }
+  onDateSelectedFromCalendar(event: { date: string, hasEntry: boolean, dailyWorkId?: string }): void {
+    if (event.hasEntry && event.dailyWorkId) {
+      // Find and edit existing daily work
+      const existingDailyWork = this.dailyWorks.find(dw => dw.dailyWorkId === event.dailyWorkId);
+      if (existingDailyWork) {
+        this.editReport(existingDailyWork);
+      } else {
+        this.dailyWorkService.showToastError('Daily work entry not found');
+      }
+    } else {
+      // Create new report for selected date
+      if (this.organzation) {
+        // Update the entry date in form first
+        this.expenditureForm.get('entryDate')?.setValue(event.date);
+        // Then create new report
+        this.newReportForm(this.organzation, event.date);
+      } else {
+        this.dailyWorkService.showToastError('Organization not found');
+      }
+    }
   }
 }

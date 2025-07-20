@@ -6,10 +6,19 @@ import { NgFor, NgIf } from '@angular/common';
 import { EmployeeListComponent } from './employee-list/employee-list.component';
 import { EmployeeDailyReportingComponent } from './employee-daily-reporting/employee-daily-reporting.component';
 import { EmployeeIncomeComponent } from './employee-income/employee-income.component';
+import { EmployeeDailyReportingCalendarComponent } from "./employee-daily-reporting-calendar/employee-daily-reporting-calendar.component";
 
 @Component({
   selector: 'app-employee',
-  imports: [EmployeeListComponent, EmployeeExpenseComponent,EmployeeDailyReportingComponent, EmployeeIncomeComponent, NgIf, NgFor],
+  imports: [
+    EmployeeListComponent, 
+    EmployeeExpenseComponent,
+    EmployeeDailyReportingComponent, 
+    EmployeeIncomeComponent, 
+    EmployeeDailyReportingCalendarComponent, 
+    NgIf, 
+    NgFor, 
+    EmployeeDailyReportingCalendarComponent],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss'
 })
@@ -21,19 +30,20 @@ export class EmployeeComponent {
     { id: 'employee', label: 'Employee List' },
     { id: 'expense', label: 'Employee Expense' },
     { id: 'daily-reporting', label: 'Employee Daily Reporting' },
+    { id: 'daily-reporting-calendar', label: 'Employee Reporting Calendar' },
     { id: 'income', label: 'Employee Income' },
   ];
 
   constructor(
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Subscribe to query parameter changes
     const queryParamSub = this.route.queryParams.subscribe(params => {
       // console.log('Transaction component received query params:', params);
-      
+
       const tab = params['tab'];
       if (tab && this.tabs.some(t => t.id === tab)) {
         this.activeTab = tab;
@@ -44,7 +54,7 @@ export class EmployeeComponent {
         this.updateQueryParam('employee', true); // true = replace URL
       }
     });
-    
+
     this.subscription.add(queryParamSub);
   }
 

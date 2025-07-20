@@ -14,7 +14,7 @@ import { Product } from '../../../core/models/product.model';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { ToWords } from 'to-words';
 import { CustomerService } from '../../../core/services/customer.service';
-import { ButtonComponent } from "../../../common/components/button/button.component";
+import { FormError } from 'src/app/common/components/form-error/form-error.component';
 
 @Component({
   selector: 'app-add-invoice',
@@ -31,7 +31,7 @@ import { ButtonComponent } from "../../../common/components/button/button.compon
   templateUrl: './add-invoice.component.html',
   styleUrl: './add-invoice.component.scss'
 })
-export class AddInvoiceComponent implements OnInit {
+export class AddInvoiceComponent extends FormError implements OnInit {
   invoice: Invoice | null = null;
   invForm!: FormGroup;
   paymentForm!: FormGroup;
@@ -72,7 +72,7 @@ export class AddInvoiceComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly fb: FormBuilder
-  ) { }
+  ) { super();}
 
   ngOnInit(): void {
     this.initForms();
@@ -222,8 +222,8 @@ export class AddInvoiceComponent implements OnInit {
       productName: product.name,
       productDescription: product.description,
       productUnitRate: product.unitPrice,
-      productQuantity: product.availableQuantity,
-      productAmount: product.unitPrice * product.availableQuantity
+      productQuantity: 1,
+      productAmount: product.unitPrice
     });
 
     const quantityControl = this.productForm.get('productQuantity');
@@ -258,7 +258,7 @@ export class AddInvoiceComponent implements OnInit {
       next: page => {
         this.allProducts = page.content.map(p => ({
           ...p,
-          label: `${p.code} - ${p.name}`
+          label: `${p.code} - ${p.name} - ${p.madeBy.fullName}`
         }));
       },
       error: err => console.error(err)
@@ -353,36 +353,6 @@ export class AddInvoiceComponent implements OnInit {
          this.invoiceService.showToastErrorResponse(err)
        }
     });
-  }
-
-  // Utility function to get error messages dynamically
-  getErrorMessage(form:FormGroup, controlName: string): string | null {
-    const control = form.get(controlName);
-    if (control && control.errors) {
-      const errorKeys = Object.keys(control.errors);
-      if (errorKeys.length > 0) {
-        const errorKey = errorKeys[0]; // Get the first error key
-        return this.getErrorText(errorKey, control.errors[errorKey]);
-      }
-    }
-    return null;
-  }
-
-  // Map error keys to error messages
-  private getErrorText(errorKey: string, errorValue: any): string {
-    const errorMessages: { [key: string]: string } = {
-      required: 'This field is required.',
-      minlength: `Minimum length is ${errorValue.requiredLength}.`,
-      email: 'Please enter a valid email address.',
-      pattern: 'Invalid format.',
-    };
-    return errorMessages[errorKey] || 'Invalid value.';
-  }
-
-  // Check if a field is invalid
-  isFieldInvalid(form:FormGroup, controlName: string): boolean {
-    const control = form.get(controlName);
-    return !!(control && control.invalid && (control.dirty || control.touched));
   }
 
   previewInvoice(){

@@ -1,400 +1,558 @@
-<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
+<div class="flex min-w-full flex-col -xl border border-muted/20 bg-background p-2">
     <form [formGroup]="invForm" (ngSubmit)="submitInvoice()">
-        <div class="flex flex-col m-6 gap-4 divide-y-2 divide-dashed">
+        <div class="flex flex-col m-6 gap-6 divide-y-2 divide-dashed divide-gray-200">
+            
+            <!-- Invoice Header Section (Keep your existing organization info) -->
             <div class="flex flex-row justify-between">
-                <div class="w-2/6 pr-2 ">
+                <div class="w-2/6 pr-2">
                     <img [src]="invoice?.ownerOrganization?.logoB64 || 'https://placehold.co/400'" alt="Invoice Image"
-                        class="w-auto h-20 border border-dashed border-border rounded shadow-md mb-4">
+                        class="w-auto h-20 border border-dashed border-border  shadow-md mb-4">
 
-                    <div class="flex flex-col ">
+                    <div class="flex flex-col">
                         <input type="hidden" formControlName="id" />
 
                         <label class="text-sm text-muted-foreground">Invoice No</label>
                         <input type="text" placeholder=" " [value]="invoice?.invoiceNumber" readonly
-                            class="bg-gray-100 mb-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+                            class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
                         <label class="text-sm text-muted-foreground">Invoice Date</label>
                         <input type="date" placeholder=" " [value]="invoice?.invoiceDate" formControlName="invoiceDate"
-                            class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+                            class="mb-2 w-full  border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
                         <label class="text-sm text-muted-foreground">Payment Status</label>
                         <select type="text" placeholder=" " [value]="invoice?.invoiceStatus"
                             formControlName="invoiceStatus"
-                            class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                            class="mb-2 w-full  border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
                             <option *ngFor="let status of invoiceStatus" [value]="status">{{ status | word }}</option>
                         </select>
 
                         <label class="text-sm text-muted-foreground">Delivery Date</label>
                         <input type="date" placeholder=" " [value]="invoice?.deliveryDate"
                             formControlName="deliveryDate"
-                            class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
-
+                            class="mb-2 w-full  border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
                     </div>
-
                 </div>
-                <div class="w-2/6 pl-2 ">
+
+                <div class="w-2/6 pl-2">
                     <img [src]="invoice?.barcode || './assets/img/barcode-v2.png'" alt="Invoice QR Code"
-                        class="w-full h-12 rounded bg-gray-100">
+                        class="w-full h-12  bg-gray-100">
 
                     <label class="text-sm text-muted-foreground">Organization Name</label>
                     <input type="text" placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgName"
-                        class="bg-gray-100 mb-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+                        class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
                     <label class="text-sm text-muted-foreground">Address</label>
                     <textarea placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgAddressLine"
-                        class="bg-gray-100 mb-2 w-full rounded-md border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
+                        class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
 
                     <label class="text-sm text-muted-foreground">Postcode</label>
                     <input type="text" placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgAddressPostcode"
-                        class="bg-gray-100 mb-2 w-full rounded-md border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+                        class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
                     <label class="text-sm text-muted-foreground">TIN No</label>
                     <input type="text" placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgTinNumber"
-                        class="bg-gray-100 mb-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+                        class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
                     <label class="text-sm text-muted-foreground">VAT Registration No</label>
                     <input type="text" placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgVatNumber"
-                        class="bg-gray-100 mb-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+                        class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
                     <label class="text-sm text-muted-foreground">Email</label>
                     <input type="text" placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgEmail"
-                        class="bg-gray-100 mb-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+                        class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
                     <label class="text-sm text-muted-foreground">Contact No</label>
                     <input type="text" placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgMobileNo"
-                        class="bg-gray-100 mb-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
-
+                        class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
                 </div>
             </div>
-            <div class="flex flex-row">
-                <div class="w-2/6 pr-2">
-                    <label class="text-lg font-semibold text-muted-foreground">Billing Address</label>
-                    <div class="flex flex-col mt-2">
 
-                        <ng-select [items]="allCustomers" bindValue="id" bindLabel="label" formControlName="customerId"
-                            placeholder="Search customer name or mobile or email" (change)="onSelectCustomer($event)"
-                            (keydown.enter)="onCustomerSearchKeyType($event)">
-                        </ng-select>
-                        <div class="flex flex-row gap-1">
-                            <label class="text-sm text-muted-foreground">Customer Name</label>
-                            <a class="text-primary hover:text-red-500" (click)="createNewCustomer()"
-                                tooltips="Create New Customer">
-                                <svg-icon src="./assets/icons/heroicons/outline/eye-dropper.svg" [svgClass]="'h-4 w-4'">
-                                </svg-icon>
-                            </a>
+            <!-- REFACTORED CUSTOMER SECTION -->
+            <div class="flex flex-row pt-6">
+                <div class="w-5/12 pr-4">
+                    <div class="bg-white  border-gray-200 p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-gray-800">Billing Address</h2>
                         </div>
-                        <div>
-                            <input type="text" placeholder=" " [value]="invoice?.customer?.name"
-                                formControlName="customerName"
-                                class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                            <div class="is__invalid-error"
-                                *ngIf="isFieldInvalid(invForm, 'customerName')">
-                                {{ getErrorMessage(invForm, 'customerName') }}
+
+                        <!-- Customer Search -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Search Customer</label>
+                            <ng-select [items]="allCustomers" 
+                                      bindValue="id" 
+                                      bindLabel="label" 
+                                      formControlName="customerId"
+                                      placeholder="Search by name, mobile, or email" 
+                                      (change)="onSelectCustomer($event)"
+                                      (keydown.enter)="onCustomerSearchKeyType($event)"
+                                      class="min-h-[38px]">
+                            </ng-select>
+                        </div>
+
+                        <!-- Customer Details Grid -->
+                        <div class="space-y-4">
+                            <!-- Customer Name -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Customer Name *</label>
+                                <input type="text" 
+                                       placeholder="Enter customer name" 
+                                       [value]="invoice?.customer?.name"
+                                       formControlName="customerName"
+                                       class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerName')">
+                                    {{ getErrorMessage(invForm, 'customerName') }}
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <label class="text-sm text-muted-foreground">Customer Phone</label>
-                            <input type="text" placeholder=" " [value]="invoice?.customer?.mobile"
-                                formControlName="customerMobile"
-                                class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                            <div class="is__invalid-error"
-                                *ngIf="isFieldInvalid(invForm, 'customerMobile')">
-                                {{ getErrorMessage(invForm, 'customerMobile') }}
+
+                            <!-- Phone and Email Row -->
+                            <div class="flex flex-row gap-3">
+                                <div class="w-5/12">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                                    <input type="text" 
+                                           placeholder="Phone number" 
+                                           [value]="invoice?.customer?.mobile"
+                                           formControlName="customerMobile"
+                                           class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerMobile')">
+                                        {{ getErrorMessage(invForm, 'customerMobile') }}
+                                    </div>
+                                </div>
+                                <div class="w-7/12">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <input type="email" 
+                                           placeholder="Email address" 
+                                           [value]="invoice?.customer?.email"
+                                           formControlName="customerEmail"
+                                           class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerEmail')">
+                                        {{ getErrorMessage(invForm, 'customerEmail') }}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <label class="text-sm text-muted-foreground">Customer Email</label>
-                            <input type="text" placeholder=" " [value]="invoice?.customer?.email"
-                                formControlName="customerEmail"
-                                class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                            <div class="is__invalid-error"
-                                *ngIf="isFieldInvalid(invForm, 'customerEmail')">
-                                {{ getErrorMessage(invForm, 'customerEmail') }}
+
+                            <!-- Address -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Address *</label>
+                                <textarea placeholder="Enter full address" 
+                                          [value]="invoice?.customer?.address"
+                                          formControlName="customerAddressLine"
+                                          rows="3"
+                                          class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm resize-none"></textarea>
+                                <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerAddressLine')">
+                                    {{ getErrorMessage(invForm, 'customerAddressLine') }}
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <label class="text-sm text-muted-foreground">Customer Address</label>
-                            <textarea placeholder=" " [value]="invoice?.customer?.address"
-                                formControlName="customerAddressLine"
-                                class=" mb-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
-                            <div class="is__invalid-error"
-                                *ngIf="isFieldInvalid(invForm, 'customerAddressLine')">
-                                {{ getErrorMessage(invForm, 'customerAddressLine') }}
+
+                            <!-- Postcode -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Postcode</label>
+                                <input type="text" 
+                                       placeholder="Postal code" 
+                                       [value]="invoice?.customer?.postcode"
+                                       formControlName="customerPostcode"
+                                       class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerPostcode')">
+                                    {{ getErrorMessage(invForm, 'customerPostcode') }}
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <label class="text-sm text-muted-foreground">Customer Postcode</label>
-                            <input type="text" placeholder=" " [value]="invoice?.customer?.postcode"
-                                formControlName="customerPostcode"
-                                class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                            <div class="is__invalid-error"
-                                *ngIf="isFieldInvalid(invForm, 'customerPostcode')">
-                                {{ getErrorMessage(invForm, 'customerPostcode') }}
+                             <div class="flex items-center justify-end mb-4 gap-1">
+                                <button type="submit"
+                                        class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-600 bg-green-50 border border-green-200 transition-colors"
+                                        title="Save Customer"
+                                        [disabled]="invForm.invalid" 
+                                        [ngClass]="{
+                                            'hover:bg-green-200': !invForm.invalid,
+                                            'hover:bg-red-200 cursor-not-allowed': invForm.invalid
+                                        }">
+                                    <svg-icon src="./assets/icons/heroicons/outline/folder.svg" [svgClass]="'h-3 w-3 mr-1'"></svg-icon>
+                                    Save Customer
+                                </button>
+
+                                <button type="button" 
+                                    (click)="createNewCustomer()"
+                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200  hover:bg-red-100 transition-colors"
+                                    title="Create New Customer">
+                                    <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-3 w-3 mr-1'"></svg-icon>
+                                    Clear
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col">
-                <h1 class="text-lg font-semibold text-muted-foreground">Purchase History</h1>
-                <form [formGroup]="productForm">
-                    <div
-                        class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
-                        <table
-                            class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
-                            <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
-                                <tr>
-                                    <th>SL</th>
-                                    <th>Product Details</th>
-                                    <th>Unit Rate</th>
-                                    <th>Units</th>
-                                    <th>Amount</th>
-                                    <th class="flex flex-row gap-2">
-                                        <span>Action</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let prod of invoice?.productSales; let i = index">
-                                    <td class="py-4 text-sm">{{i+1}}</td>
-                                    <td class="py-4 text-sm">
-                                        <div class="flex flex-col">
-                                            <span class="font-semibold">{{prod.name}}</span>
-                                            <p class="text-xs">{{prod.code}}</p>
-                                            <span class="text-xs text-muted-foreground">{{prod.description}}</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 text-sm">{{prod.pricePerUnit | number}}</td>
-                                    <td class="py-4 text-sm">{{prod.quantitySold}}</td>
-                                    <td class="py-4 text-sm">{{prod.totalAmount | number}}</td>
-                                    <td class="py-4 text-sm">
-                                        <div class="flex items-center gap-4">
-                                            <a class="text-primary hover:text-red-500" (click)="deleteProduct(prod)">
-                                                <svg-icon src="./assets/icons/heroicons/outline/trash.svg"
-                                                    [svgClass]="'h-4 w-4'"> </svg-icon>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="py-4 text-sm">2</td>
-                                    <td class="py-4 text-sm">
-                                        <ng-select [items]="allProducts" bindValue="id" bindLabel="label"
-                                            formControlName="productId" placeholder="Product name or code"
-                                            (change)="onSelectProduct($event)"
-                                            (keydown.enter)="onSearchKeyType($event)">
-                                        </ng-select>
-                                        <textarea type="text" placeholder="Product Details"
-                                            formControlName="productDescription" readonly
-                                            class="bg-gray-100 border border-border mt-2 w-full rounded bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
-                                    </td>
 
-                                    <td class="py-4 text-sm">
-                                        <input type="number" value="৳0.00" step="1" placeholder="Rate"
-                                            formControlName="productUnitRate"
-                                            class=" mt-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                                    </td>
-                                    <td class="py-4 text-sm">
-                                        <input type="number" value="1" min="1" placeholder="Quantity"
-                                            formControlName="productQuantity"
-                                            class=" mt-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                                    </td>
-                                    <td class="py-4 text-sm">
-                                        <input type="text" value="৳0.00" readonly formControlName="productAmount"
-                                            placeholder="Total Amount"
-                                            class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                                    </td>
-                                    <td class="py-4 text-sm">
-                                        <div class="flex items-center gap-4">
-                                            <a class="text-primary rounded-md" [ngClass]="{
-                                                'hover:font-bold cursor-pointer': productForm.valid,
-                                                'opacity-50 pointer-events-none cursor-not-allowed': !productForm.valid
-                                            }" (click)="productForm.valid && submitProduct()">
-                                                <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg"
-                                                    [svgClass]="'h-6 w-6'"></svg-icon>
-                                            </a>
-
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </form>
+            <!-- REFACTORED PURCHASE HISTORY SECTION -->
+          <div class="flex flex-col pt-6">
+    <div class="w-full bg-white   border-gray-200 p-4">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Purchase History</h2>
+        
+        <form [formGroup]="productForm">
+            <div class="overflow-x-auto   border-gray-200">
+                <table class="w-full table-auto border-collapse text-left text-sm">
+                    <!-- Table Header -->
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">SL</th>
+                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Product Details</th>
+                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">Unit Rate</th>
+                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-24 text-center">Qty</th>
+                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">Amount</th>
+                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-16 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody class="divide-y divide-gray-200">
+                        <!-- Existing Products -->
+                        <tr *ngFor="let prod of invoice?.productSales; let i = index" 
+                            class="hover:bg-gray-50 transition-colors">
+                            <td class="px-3 py-4 text-gray-700 font-medium">{{i+1}}</td>
+                            <td class="px-3 py-4">
+                                <div class="space-y-1">
+                                    <div class="font-semibold text-gray-900 text-sm">{{prod.name}}</div>
+                                    <div class="text-xs text-gray-500 font-mono">{{prod.code}}</div>
+                                    <div class="text-xs text-gray-600 leading-relaxed">{{prod.description}}</div>
+                                </div>
+                            </td>
+                            <td class="px-3 py-4 text-right text-gray-700 font-medium">
+                                <span class="text-sm">৳{{prod.pricePerUnit | number:'1.2-2'}}</span>
+                            </td>
+                            <td class="px-3 py-4 text-center text-gray-700 font-medium">
+                                <span class="inline-flex items-center justify-center w-12 h-8 bg-gray-100  text-sm">
+                                    {{prod.quantitySold}}
+                                </span>
+                            </td>
+                            <td class="px-3 py-4 text-right text-gray-900 font-semibold">
+                                <span class="text-sm">৳{{prod.totalAmount | number:'1.2-2'}}</span>
+                            </td>
+                            <td class="px-3 py-4 text-center">
+                                <button type="button" 
+                                        (click)="deleteProduct(prod)"
+                                        class="inline-flex items-center justify-center w-8 h-8 text-red-500 hover:text-red-700 hover:bg-red-50 -full transition-colors"
+                                        title="Remove product">
+                                    <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+                                </button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Add New Product Row -->
+                        <tr class="bg-gray-50 border-t-2 border-gray-300">
+                            <td class="px-3 py-4 text-gray-700 font-medium align-top">
+                                <!-- <span class="inline-flex items-center justify-center w-6 h-6 bg-green-100 text-green-600 -full text-xs font-bold">+</span> -->
+                            </td>
+                            <td class="px-3 py-4">
+                                <!-- Product Selection -->
+                                <div class="space-y-2">
+                                    <ng-select [items]="allProducts" 
+                                              bindValue="id" 
+                                              bindLabel="label"
+                                              formControlName="productId" 
+                                              placeholder="Search product by name or code"
+                                              (change)="onSelectProduct($event)"
+                                              (keydown.enter)="onSearchKeyType($event)"
+                                              class="text-sm">
+                                    </ng-select>
+                                    
+                                    <!-- Product Description -->
+                                    <textarea formControlName="productDescription" 
+                                             readonly
+                                             placeholder="Product description will appear here..."
+                                             rows="2"
+                                             class="w-full px-2 py-1 bg-gray-50 border border-gray-200  text-xs text-gray-600 resize-none focus:outline-none"></textarea>
+                                </div>
+                            </td>
+                            <td class="px-3 py-4 align-top">
+                                <div class="w-32">
+                                    <input type="number" 
+                                           step="0.01"
+                                           placeholder="0.00"
+                                           formControlName="productUnitRate"
+                                           class="w-full px-3 py-2 border border-gray-300  text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                            </td>
+                            <td class="px-3 py-4 align-top">
+                                <div class="w-32">
+                                    <input type="number" 
+                                           min="1"
+                                           placeholder="1"
+                                           formControlName="productQuantity"
+                                           class="w-full px-3 py-2 border border-gray-300  text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                            </td>
+                            <td class="px-3 py-4 align-top">
+                                <div class="w-32">
+                                    <input type="text" 
+                                           readonly 
+                                           formControlName="productAmount"
+                                           placeholder="0.00"
+                                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200  text-sm text-right text-gray-600 focus:outline-none">
+                                </div>
+                            </td>
+                            <td class="px-3 py-4 text-center align-top">
+                                <button type="button"
+                                        [disabled]="!productForm.valid"
+                                        [ngClass]="{
+                                            'text-green-600 hover:text-green-700 hover:bg-green-50 cursor-pointer': productForm.valid,
+                                            'text-gray-400 cursor-not-allowed': !productForm.valid
+                                        }"
+                                        (click)="productForm.valid && submitProduct()"
+                                        class="inline-flex items-center justify-center w-8 h-8 -full transition-colors"
+                                        title="Add product">
+                                    <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="flex flex-row justify-between">
+        </form>
+    </div>
+</div>
+
+            <!-- REFACTORED PAYMENT HISTORY AND SUMMARY SECTION -->
+            <div class="flex flex-row justify-between gap-6 pt-6">
+                <!-- Payment History Table -->
                 <div class="w-4/6">
-                    <h1 class="text-lg font-semibold text-muted-foreground">Customer Payment History</h1>
-                    <form [formGroup]="paymentForm">
-                        <div
-                            class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
-                            <table
-                                class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
-                                <thead
-                                    class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Method</th>
-                                        <th>Txn Ref#</th>
-                                        <th>Amount</th>
-                                        <th class="flex flex-row gap-2">
-                                            <span>#</span>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let pay of invoice?.payments; let i = index"
-                                        class="gap-4 hover:bg-card/50">
-                                        <td class="py-4 text-sm">{{pay.paymentDate}}</td>
-                                        <td class="py-4 text-sm">{{pay.paymentMethod}}</td>
-                                        <td class="py-4 text-sm">{{pay.reference}}</td>
-                                        <td class="py-4 text-sm">{{pay.amount | number}}</td>
-                                        <td class="py-4 text-sm">
-                                            <div class="flex items-center gap-4">
-                                                <a class="text-primary hover:text-red-500" (click)="deletePayment(pay)">
-                                                    <svg-icon src="./assets/icons/heroicons/outline/trash.svg"
-                                                        [svgClass]="'h-4 w-4'"> </svg-icon>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-4 text-sm">
-                                            <input type="date" value="2024-10-01" formControlName="paymentDate"
-                                                class=" mt-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                                            <div class="is__invalid-error"
-                                                *ngIf="isFieldInvalid(paymentForm, 'paymentDate')">
-                                                {{ getErrorMessage(paymentForm, 'paymentDate') }}
-                                            </div>
-                                        </td>
-                                        <td class="py-4 text-sm w-[220px]">
-                                            <select formControlName="paymentMethod"
-                                                class="mt-2 block py-2  w-full  text-sm text-gray-500 bg-transparent border-1 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                                <option value="" disabled selected>Select Payment Method</option>
-                                                <ng-container *ngFor="let method of allPaymentMethods; let i = index;">
-                                                    <option [value]="method">{{method}}</option>
-                                                </ng-container>
-                                            </select>
-                                            <div class="is__invalid-error"
-                                                *ngIf="isFieldInvalid(paymentForm, 'paymentMethod')">
-                                                {{ getErrorMessage(paymentForm, 'paymentMethod') }}
-                                            </div>
-                                        </td>
-                                        <td class="py-4 text-sm">
-                                            <input type="text" placeholder="Reference" formControlName="paymentRef"
-                                                class=" mt-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                                            <div class="is__invalid-error"
-                                                *ngIf="isFieldInvalid(paymentForm, 'paymentRef')">
-                                                {{ getErrorMessage(paymentForm, 'paymentRef') }}
-                                            </div>
-                                        </td>
-                                        <td class="py-4 text-sm">
-                                            <input type="number" value="0.00" formControlName="paymentAmount"
-                                                class=" mt-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                                            <div class="is__invalid-error"
-                                                *ngIf="isFieldInvalid(paymentForm, 'paymentAmount')">
-                                                {{ getErrorMessage(paymentForm, 'paymentAmount') }}
-                                            </div>
-                                        </td>
-                                        <td class="py-4 text-sm">
-                                            <div class="flex items-center gap-4">
-                                                <a class="text-primary rounded-md" [ngClass]="{
-                                                    'hover:font-bold cursor-pointer': paymentForm.valid,
-                                                    'opacity-50 pointer-events-none cursor-not-allowed': !paymentForm.valid
-                                                }" (click)="paymentForm.valid && submitPayment()">
-                                                    <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg"
-                                                        [svgClass]="'h-6 w-6'"></svg-icon>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </form>
+                    <div class="bg-white   border-gray-200 p-4">
+                        <h2 class="text-lg font-semibold text-gray-800 mb-4">Customer Payment History</h2>
+                        
+                        <form [formGroup]="paymentForm">
+                            <div class="overflow-x-auto   border-gray-200">
+                                <table class="w-full table-auto border-collapse text-left text-sm">
+                                    <!-- Table Header -->
+                                    <thead class="bg-gray-50 border-b border-gray-200">
+                                        <tr>
+                                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
+                                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Method</th>
+                                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Reference</th>
+                                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">Amount</th>
+                                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-16 text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody class="divide-y divide-gray-200">
+                                        <!-- Existing Payments -->
+                                        <tr *ngFor="let pay of invoice?.payments; let i = index" 
+                                            class="hover:bg-gray-50 transition-colors">
+                                            <td class="px-3 py-3 text-gray-700">
+                                                <span class="text-sm">{{pay.paymentDate | date:'MMM dd, yyyy'}}</span>
+                                            </td>
+                                            <td class="px-3 py-3">
+                                                <span class="inline-flex items-center px-2 py-1 -full text-xs font-medium bg-blue-100 text-blue-800">
+                                                    {{pay.paymentMethod}}
+                                                </span>
+                                            </td>
+                                            <td class="px-3 py-3 text-gray-600 text-sm font-mono">{{pay.reference || '-'}}</td>
+                                            <td class="px-3 py-3 text-right text-gray-900 font-semibold">
+                                                <span class="text-sm">৳{{pay.amount | number:'1.2-2'}}</span>
+                                            </td>
+                                            <td class="px-3 py-3 text-center">
+                                                <button type="button"
+                                                        (click)="deletePayment(pay)"
+                                                        class="inline-flex items-center justify-center w-8 h-8 text-red-500 hover:text-red-700 hover:bg-red-50 -full transition-colors"
+                                                        title="Remove payment">
+                                                    <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        
+                                        <!-- Add New Payment Row -->
+                                        <tr class="bg-gray-50 border-t-2 ">
+                                            <td class="px-3 py-4">
+                                                <input type="date" 
+                                                       formControlName="paymentDate"
+                                                       class="w-full px-2 py-2 border border-gray-300  text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                                <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(paymentForm, 'paymentDate')">
+                                                    {{ getErrorMessage(paymentForm, 'paymentDate') }}
+                                                </div>
+                                            </td>
+                                            <td class="px-3 py-4">
+                                                <select formControlName="paymentMethod"
+                                                        class="w-full px-2 py-2 border border-gray-300  text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                                    <option value="" disabled>Select Method</option>
+                                                    <option *ngFor="let method of allPaymentMethods" [value]="method">{{method}}</option>
+                                                </select>
+                                                <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(paymentForm, 'paymentMethod')">
+                                                    {{ getErrorMessage(paymentForm, 'paymentMethod') }}
+                                                </div>
+                                            </td>
+                                            <td class="px-3 py-4">
+                                                <input type="text" 
+                                                       placeholder="Transaction ID/Reference"
+                                                       formControlName="paymentRef"
+                                                       class="w-full px-2 py-2 border border-gray-300  text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                                <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(paymentForm, 'paymentRef')">
+                                                    {{ getErrorMessage(paymentForm, 'paymentRef') }}
+                                                </div>
+                                            </td>
+                                            <td class="px-3 py-4">
+                                                <input type="number" 
+                                                       step="0.01"
+                                                       placeholder="0.00"
+                                                       formControlName="paymentAmount"
+                                                       class="w-full px-2 py-2 border border-gray-300  text-sm text-right focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                                <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(paymentForm, 'paymentAmount')">
+                                                    {{ getErrorMessage(paymentForm, 'paymentAmount') }}
+                                                </div>
+                                            </td>
+                                            <td class="px-3 py-4 text-center">
+                                                <button type="button"
+                                                        [disabled]="!paymentForm.valid"
+                                                        [ngClass]="{
+                                                            'text-green-600 hover:text-green-700 hover:bg-green-100 cursor-pointer': paymentForm.valid,
+                                                            'text-gray-400 cursor-not-allowed': !paymentForm.valid
+                                                        }"
+                                                        (click)="paymentForm.valid && submitPayment()"
+                                                        class="inline-flex items-center justify-center w-8 h-8 -full transition-colors"
+                                                        title="Add payment">
+                                                    <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="w-2/6 ">
-                    <div class="flex flex-col items-end mt-4">
-                        <div class="w-4/6 pl-2">
-                            <label class="text-base text-muted-foreground">Sub Total</label>
-                            <input type="text" value="0.00" readonly [value]="invoice?.productSubTotal"
-                                class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div class="w-4/6 pl-2">
-                            <label class="text-sm text-muted-foreground">Total TAX ({{invoice?.taxRate}} %)</label>
-                            <input type="text" value="0.00" readonly [value]="invoice?.productTotalTax"
-                                class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div class="w-4/6 pl-2">
-                            <label class="text-sm text-muted-foreground">Total VAT ({{invoice?.vatRate}} %)</label>
-                            <input type="text" value="0.00" readonly [value]="invoice?.productTotalVat"
-                                class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div class="w-4/6 pl-2">
-                            <label class="text-base text-muted-foreground">Total Discount</label>
-                            <input type="number" value="0.00" formControlName="totalDiscount"
-                                class=" mt-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div class="w-4/6 pl-2">
-                            <label class="text-base text-muted-foreground">Delivery Charge</label>
-                            <input type="number" value="0.00" formControlName="deliveryCharge"
-                                class=" mt-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div class="w-4/6 pl-2">
-                            <label class="text-base font font-semibold text-muted-foreground">Total Amount</label>
-                            <input type="text" value="0.00" readonly [value]="invoice?.totalAmount"
-                                class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div class="w-4/6 pl-2">
-                            <label class="text-base text-muted-foreground">Total Paid</label>
-                            <input type="text" value="0.00" readonly [value]="invoice?.totalPaid"
-                                class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div class="w-4/6 pl-2">
-                            <label class="text-base text-muted-foreground">Total Due</label>
-                            <input type="text" value="0.00" readonly [value]="invoice?.remainingAmount"
-                                class="bg-gray-100 mt-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+
+                <!-- Invoice Summary -->
+                <div class="w-2/6">
+                    <div class="bg-gray-50  border-gray-200 p-4 sticky top-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Invoice Summary</h3>
+                        
+                        <div class="space-y-3">
+                            <!-- Sub Total -->
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm text-gray-600">Sub Total</label>
+                                <input type="text" 
+                                       readonly 
+                                       [value]="'৳' + (invoice?.productSubTotal | number:'1.2-2')"
+                                       class="w-32 px-2 py-1 bg-white border border-gray-200  text-sm text-right text-gray-700">
+                            </div>
+
+                            <!-- Tax -->
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm text-gray-600">Tax ({{invoice?.taxRate || 0}}%)</label>
+                                <input type="text" 
+                                       readonly 
+                                       [value]="'৳' + (invoice?.productTotalTax | number:'1.2-2')"
+                                       class="w-32 px-2 py-1 bg-white border border-gray-200  text-sm text-right text-gray-700">
+                            </div>
+
+                            <!-- VAT -->
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm text-gray-600">VAT ({{invoice?.vatRate || 0}}%)</label>
+                                <input type="text" 
+                                       readonly 
+                                       [value]="'৳' + (invoice?.productTotalVat | number:'1.2-2')"
+                                       class="w-32 px-2 py-1 bg-white border border-gray-200  text-sm text-right text-gray-700">
+                            </div>
+
+                            <!-- Discount -->
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm text-gray-600">Discount</label>
+                                <input type="number" 
+                                       min="0"
+                                       step="50"
+                                       placeholder="0.00"
+                                       formControlName="totalDiscount"
+                                       class="w-32 px-2 py-1 border border-gray-300  text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <!-- Delivery Charge -->
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm text-gray-600">Delivery</label>
+                                <input type="number" 
+                                       min="0"
+                                       step="50"
+                                       placeholder="0.00"
+                                       formControlName="deliveryCharge"
+                                       class="w-32 px-2 py-1 border border-gray-300  text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <hr class="border-gray-300">
+
+                            <!-- Total Amount -->
+                            <div class="flex justify-between items-center p-2 ">
+                                <label class="text-base font-semibold text-gray-800">Total Amount</label>
+                                <input type="text" 
+                                       readonly 
+                                       [value]="'৳' + (invoice?.totalAmount | number:'1.2-2')"
+                                       class="w-32 px-2 py-1 bg-white border border-blue-200  text-base font-bold text-right text-blue-900">
+                            </div>
+
+                            <!-- Total Paid -->
+                            <div class="flex justify-between items-center  p-2 ">
+                                <label class="text-sm font-medium text-gray-700">Total Paid</label>
+                                <input type="text" 
+                                       readonly 
+                                       [value]="'৳' + (invoice?.totalPaid | number:'1.2-2')"
+                                       class="w-32 px-2 py-1 bg-white border border-green-200  text-sm text-right font-medium text-green-700">
+                            </div>
+
+                            <!-- Total Due -->
+                            <div class="flex justify-between items-center p-2 ">
+                                <label class="text-sm font-medium text-gray-700">Amount Due</label>
+                                <input type="text" 
+                                       readonly 
+                                       [value]="'৳' + (invoice?.remainingAmount | number:'1.2-2')"
+                                       class="w-32 px-2 py-1 bg-white border border-red-200  text-sm text-right font-medium text-red-700">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <h1 class="text-muted-foreground"><strong>In words:
-                </strong>{{this.toWords.convert(this.invoice?.totalAmount ?? 0)}}</h1>
-            <div class="flex flex-col mt-6">
-                <label class="text-lg font-semibold text-muted-foreground">Notes</label>
-                <p class="text-sm text-muted-foreground">
-                    Thank you for your business! If you have any questions about this invoice, please contact us at
-                    <a href="mailto:contacts.tallyapp&#64;gmail.com"
-                        class="font-semibold">contacts.tallyapp&#64;gmail.com</a>.
-                </p>
-
+            <!-- Invoice Total in Words -->
+            <div class="pt-4">
+                <h3 class="text-gray-700">
+                    <strong>In words: </strong>
+                    <span class="text-gray-600">{{this.toWords.convert(this.invoice?.totalAmount ?? 0)}}</span>
+                </h3>
             </div>
-            <div class="flex flex-row justify-end mt-2 gap-2">
-                <button class="flex flex-row px-4 py-2 rounded-md" [disabled]="invForm.invalid" [ngClass]="{
-                    'bg-primary text-white': !invForm.invalid,
-                    'bg-gray-400 text-gray-200 cursor-not-allowed': invForm.invalid
-                }">
+
+            <!-- Notes Section -->
+            <div class="flex flex-col pt-4">
+                <label class="text-lg font-semibold text-gray-800 mb-2">Notes</label>
+                <p class="text-sm text-gray-600 bg-gray-50 p-3  border">
+                    Thank you for your business! If you have any questions about this invoice, please contact us at
+                    <a href="mailto:contacts.tallyapp&#64;gmail.com" class="font-semibold text-blue-600 hover:text-blue-700">
+                        contacts.tallyapp&#64;gmail.com
+                    </a>.
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-row justify-end pt-6 gap-3">
+                <button type="submit" 
+                        class="flex items-center px-4 py-2  transition-colors" 
+                        [disabled]="invForm.invalid" 
+                        [ngClass]="{
+                            'bg-blue-600 text-white hover:bg-blue-700': !invForm.invalid,
+                            'bg-gray-400 text-gray-200 cursor-not-allowed': invForm.invalid
+                        }">
                     <svg-icon src="./assets/icons/heroicons/outline/folder.svg" [svgClass]="'h-5 w-5'"></svg-icon>
                     <span class="ml-2">Save</span>
                 </button>
 
-                <button class="flex flex-row px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-primary/80"
-                    (click)="previewInvoice()">
-                    <svg-icon src="./assets/icons/heroicons/outline/eye.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
+                <button type="button"
+                        class="flex items-center px-4 py-2 bg-purple-600 text-white  hover:bg-purple-700 transition-colors"
+                        (click)="previewInvoice()">
+                    <svg-icon src="./assets/icons/heroicons/outline/eye.svg" [svgClass]="'h-5 w-5'"></svg-icon>
                     <span class="ml-2">Preview</span>
                 </button>
 
-                <button class="flex flex-row px-4 py-2 bg-green-600 text-white rounded-md hover:bg-primary/80"
-                    (click)="downloadInvoice()">
-                    <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
+                <button type="button"
+                        class="flex items-center px-4 py-2 bg-green-600 text-white  hover:bg-green-700 transition-colors"
+                        (click)="downloadInvoice()">
+                    <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"></svg-icon>
                     <span class="ml-2">Download</span>
                 </button>
 
-                <button class="flex flex-row px-4 py-2 bg-destructive text-white rounded-md hover:bg-primary/80"
-                    (click)="backToInvoiceList()">
-                    <svg-icon src="./assets/icons/heroicons/outline/back.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
+                <button type="button"
+                        class="flex items-center px-4 py-2 bg-red-600 text-white  hover:bg-red-700 transition-colors"
+                        (click)="backToInvoiceList()">
+                    <svg-icon src="./assets/icons/heroicons/outline/arrow-left.svg" [svgClass]="'h-5 w-5'"></svg-icon>
                     <span class="ml-2">Back</span>
                 </button>
             </div>

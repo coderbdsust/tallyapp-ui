@@ -24,6 +24,8 @@ export interface EmployeeExpense {
 export interface ExpenseTypeSummary {
   expenseType: string;
   totalAmount: number;
+  percentage: number | 0.0;
+  count: number;
 }
 
 export interface EmployeeEarningSummary {

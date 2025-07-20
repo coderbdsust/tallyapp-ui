@@ -116,4 +116,33 @@ export class EmployeeIncomeComponent extends FormError implements OnInit {
     return ((amount / expenses) * 100).toFixed(1);
   }
 
+  generateReport(){
+    const emp = this.form.value;
+    this.empExpenseService.getIncomeReports(emp.employeeId, emp.fromDate, emp.toDate).subscribe({
+      next: (pdfRes:Blob) => {
+        this.handleBlobDownload(pdfRes, emp.employeeId);
+      },
+      error: (error) => {
+        this.empExpenseService.showToastErrorResponse(error);
+      }
+    });
+  }
+
+  private handleBlobDownload(blob: Blob, empId:string): void {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    
+    a.href = url;
+    a.download = `income-report-${empId}.pdf`;
+    a.style.display = 'none';
+    
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    // Clean up the blob URL
+    setTimeout(() => window.URL.revokeObjectURL(url), 100);
+    
+  }
+
 }

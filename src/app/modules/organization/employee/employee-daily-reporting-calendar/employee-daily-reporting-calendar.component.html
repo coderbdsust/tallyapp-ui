@@ -1,0 +1,229 @@
+<div class="daily-work-calendar p-6 bg-white rounded-lg shadow-lg">
+  <!-- Calendar Header -->
+  <div class="calendar-header flex items-center justify-between mb-6">
+    <div class="flex items-center space-x-4">
+      <h2 class="text-2xl font-bold text-gray-900">
+        {{ monthlyCalendar?.monthName }} {{ selectedYear }}
+      </h2>
+      <button 
+        (click)="goToCurrentMonth()"
+        class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+        Today
+      </button>
+    </div>
+    
+    <div class="flex items-center space-x-2">
+      <button 
+        (click)="previousMonth()"
+        class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+      
+      <span class="px-4 py-2 bg-gray-50 rounded text-sm font-medium">
+        {{ selectedMonth }}/{{ selectedYear }}
+      </span>
+      
+      <button 
+        (click)="nextMonth()"
+        class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Monthly Summary -->
+  <div class="monthly-summary bg-gray-50 rounded-lg p-4 mb-6" *ngIf="monthlyCalendar?.summary">
+    <h3 class="text-lg font-semibold text-gray-900 mb-3">Monthly Summary</h3>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="summary-card bg-white p-3 rounded shadow-md">
+        <div class="text-sm text-gray-600">Employee Total Expenses</div>
+        <div class="text-lg font-bold text-red-600">
+          {{ formatCurrency(monthlyCalendar?.orgMonthlyExpenseReport?.totalApprovedExpenses ?? 0) }}
+        </div>
+      </div>
+      
+      <div class="summary-card bg-white p-3 rounded shadow-md">
+        <div class="text-sm text-gray-600">Working Days</div>
+        <div class="text-lg font-bold text-blue-600">
+          {{ monthlyCalendar?.summary?.daysWithEntries }} / {{ monthlyCalendar?.summary?.totalWorkingDays }}
+        </div>
+      </div>
+      
+      <div class="summary-card bg-white p-3 rounded shadow-md">
+        <div class="text-sm text-gray-600">Status</div>
+        <div class="text-sm">
+          <span class="inline-block px-2 py-1 bg-green-100 text-green-800 rounded mr-1">
+            Approved: {{ monthlyCalendar?.summary?.approvedEntries }}
+          </span>
+          <span class="inline-block px-2 py-1 bg-yellow-100 text-yellow-800 rounded mr-1">
+            Pending: {{ monthlyCalendar?.summary?.pendingEntries }}
+          </span>
+          <span class="inline-block px-2 py-1 bg-gray-100 text-gray-800 rounded">
+            Draft: {{ monthlyCalendar?.summary?.draftEntries }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center py-12">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+    <span class="ml-2 text-gray-600">Loading calendar...</span>
+  </div>
+
+  <!-- Calendar Grid -->
+  <div class="calendar-grid" *ngIf="!loading && monthlyCalendar">
+    <!-- Week Days Header -->
+    <div class="grid grid-cols-7 gap-1 mb-2">
+      <div 
+        *ngFor="let day of weekDays" 
+        class="text-center py-2 text-sm font-medium text-gray-600 bg-gray-50 rounded">
+        {{ day }}
+      </div>
+    </div>
+
+    <!-- Calendar Weeks -->
+    <div class="grid grid-cols-7 gap-2 " *ngFor="let week of calendarWeeks">
+      <div
+        *ngFor="let entry of week"
+        (click)="onDateClick(entry)"
+        class="calendar-day p-2 mt-2 border rounded cursor-pointer transition-all duration-200 hover:shadow-lg"
+        [ngClass]="{
+          'bg-white border-gray-200': isCurrentMonth(entry.entryDate),
+          'bg-gray-50 border-gray-100 text-gray-400': !isCurrentMonth(entry.entryDate),
+          'ring-2 ring-blue-500 bg-blue-50': isToday(entry.entryDate),
+          'bg-green-50 border-green-200': entry.hasEntry && entry.status === 'APPROVED',
+          'bg-yellow-50 border-yellow-200': entry.hasEntry && entry.status === 'PENDING',
+          'bg-gray-100 border-gray-300': entry.hasEntry && entry.status === 'DRAFT'
+        }">
+        
+        <!-- Date Number -->
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium" 
+                [ngClass]="{
+                  'text-blue-600 font-bold': isToday(entry.entryDate),
+                  'text-gray-900': isCurrentMonth(entry.entryDate) && !isToday(entry.entryDate),
+                  'text-gray-400': !isCurrentMonth(entry.entryDate)
+                }">
+           {{ getDayNumber(entry.entryDate) }}
+          </span>
+          
+          <!-- Status Indicator -->
+          <div *ngIf="entry.hasEntry" class="flex items-center space-x-1">
+            <div class="w-2 h-2 rounded-full"
+                 [ngClass]="{
+                   'bg-green-500': entry.status === 'APPROVED',
+                   'bg-yellow-500': entry.status === 'PENDING',
+                   'bg-gray-500': entry.status === 'DRAFT'
+                 }">
+            </div>
+          </div>
+        </div>
+
+        <!-- Entry Details (only for current month dates with entries) -->
+        <div *ngIf="entry.hasEntry && isCurrentMonth(entry.entryDate)" class="mt-1 space-y-1">
+          <!-- Employees Info -->
+          <div class="text-xs text-gray-600">
+            <span class="font-medium">{{ entry.presentEmployees }}</span>/{{ entry.totalEmployees }} present
+          </div>
+          
+          <!-- Expense Amount -->
+          <div class="text-xs font-medium"
+               [ngClass]="{
+                 'text-red-600': entry.totalExpenseAmount > 0,
+                 'text-gray-500': entry.totalExpenseAmount === 0
+               }">
+            {{ formatCurrency(entry.totalExpenseAmount) }}
+          </div>
+          
+          <!-- Work Units -->
+          <div class="text-xs text-blue-600" *ngIf="entry.totalWorkUnits > 0">
+            {{ entry.totalWorkUnits }} units
+          </div>
+          
+          <!-- Status Badge -->
+          <div class="text-xs">
+            <span class="px-1 py-0.5 rounded text-xs font-medium"
+                  [ngClass]="getStatusColor(entry.status)">
+              {{ entry.status }}
+            </span>
+          </div>
+        </div>
+
+        <!-- No Entry Indicator -->
+        <div *ngIf="!entry.hasEntry && isCurrentMonth(entry.entryDate)" 
+             class="mt-1 text-center">
+          <div class="text-xs text-gray-400 italic">No entry</div>
+          <div class="text-xs text-blue-500 hover:text-blue-700">+ Add</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Data State -->
+  <div *ngIf="!loading && !monthlyCalendar" class="text-center py-12">
+    <div class="text-gray-500">
+      <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2v12a2 2 0 002 2z"></path>
+      </svg>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">No calendar data available</h3>
+      <p class="text-gray-600">Unable to load calendar data for this organization.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Expense Breakdown Section -->
+<div class="expense-breakdown-section bg-white rounded-lg shadow-lg p-6 mt-6" 
+     *ngIf="!loading && monthlyCalendar?.orgMonthlyExpenseReport && hasExpenseBreakdown()">
+
+  <!-- Expense Category Cards Grid -->
+  <div class="expense-cards-grid">
+    <h4 class="text-lg font-semibold text-gray-900 mb-4">Expense Categories</h4>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+      <div 
+        *ngFor="let expense of monthlyCalendar?.orgMonthlyExpenseReport?.expenseBreakdown" 
+        class="expense-card bg-white rounded-lg shadow-md p-4 border-l-4 hover:shadow-lg transition-all duration-300 hover:transform hover:-translate-y-1"
+        [style.border-left-color]="getExpenseTypeColor(expense.expenseType)">
+        
+        <div class="flex items-center justify-between mb-3">
+          <h5 class="font-semibold text-gray-900 text-sm">{{ expense.expenseType | word }}</h5>
+        </div>
+        
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-gray-600">Total Amount</span>
+            <span class="font-bold text-lg" [style.color]="getExpenseTypeColor(expense.expenseType)">
+              {{ formatCurrency(expense.totalAmount) }}
+            </span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- No Expense Data State -->
+<div 
+  class="expense-breakdown-section bg-white rounded-lg shadow-lg p-6 mt-6" 
+  *ngIf="!loading && monthlyCalendar && !hasExpenseBreakdown()">
+  
+  <div class="text-center py-12">
+    <div class="text-gray-500">
+      <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2-2V7a2 2 0 012-2h2a2 2 0 002 2v2a2 2 0 002 2h2a2 2 0 012-2V7a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 00-2 2h-2a2 2 0 00-2 2v6a2 2 0 01-2 2H9z"></path>
+      </svg>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">No expense data available</h3>
+      <p class="text-gray-600">No approved expenses found for {{ monthlyCalendar.monthName }} {{ monthlyCalendar.year }}.</p>
+    </div>
+  </div>
+</div>
