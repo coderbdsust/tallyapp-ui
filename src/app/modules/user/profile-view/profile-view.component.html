@@ -1,0 +1,423 @@
+<div class="min-h-screen">
+  <div class="max-w-7xl mx-auto px-2 sm:px-2 lg:px-2">
+    
+    <!-- Header Section with Breadcrumb -->
+    <div class="mb-8">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">My Profile</h1>
+          <p class="text-gray-600 mt-1">Manage your personal information and settings</p>
+        </div>
+        <app-button 
+          impact="bold" 
+          tone="primary" 
+          shape="rounded" 
+          size="medium"
+          (click)="navigateToEdit()"
+          class="shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+          </svg>
+          Edit Profile
+        </app-button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Left Sidebar - Profile Card -->
+      <div class="lg:col-span-4 space-y-4">
+        
+        <!-- Main Profile Card -->
+        <div class="bg-white rounded-lg shadow-xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-500">
+          <!-- Cover Image -->
+          <div class="h-32 bg-gradient-to-r from-gray-400 via-white-200 to-gray-100 relative">
+            <div class="absolute inset-0 bg-black bg-opacity-10"></div>
+          </div>
+          
+          <!-- Profile Content -->
+          <div class="relative px-8 pb-8">
+            <!-- Profile Image -->
+            <div class="flex justify-center -mt-16 mb-6">
+              <div class="relative">
+                <div class="w-36 h-36 rounded-full bg-white p-0.5 shadow-xl">
+                  <img 
+                    [src]="userProfile?.profileImage || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'" 
+                    [alt]="userProfile?.fullName || 'Profile'"
+                    class="w-full h-full object-cover rounded-full">
+                </div>
+
+              </div>
+            </div>
+            
+            <!-- Profile Info -->
+            <div class="text-center space-y-4">
+              <div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-1">
+                  {{userProfile?.fullName || 'Full Name'}}
+                </h2>
+                <p class="text-gray-600 font-medium">
+                  {{userProfile?.shortProfileList?.[0]?.designation || 'Professional'}}
+                </p>
+              </div>
+              
+              <div class="flex items-center justify-center text-gray-500 space-x-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-sm">{{userProfile?.addressList?.[0]?.city || 'City'}}, {{userProfile?.addressList?.[0]?.country || 'Country'}}</span>
+              </div>
+              
+              <div class="flex items-center justify-center text-gray-500 space-x-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+                </svg>
+                <span class="text-sm">{{userProfile?.shortProfileList?.[0]?.companyName || 'Company'}}</span>
+              </div>
+            </div>
+            
+            <!-- Skills Section -->
+            <div class="mt-8 pt-6 border-t border-gray-100">
+              <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wide">Skills & Expertise</h3>
+              <div class="flex flex-wrap gap-2">
+                @for (skill of getAllSkills(); track $index) {
+                  <span class="px-3 py-1 bg-gradient-to-r from-yellow-50 to-yello-200 text-gray-700 text-xs font-medium rounded-full border border-indigo-200 hover:from-indigo-200 hover:to-purple-200 transition-all duration-300 cursor-default">
+                    {{ skill.trim() }}
+                  </span>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Status Card -->
+        <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">Security Status</h3>
+            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+          </div>
+          
+          <div class="space-y-4">
+            <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Email Authentication</p>
+                  <p class="text-xs text-gray-500">Primary method</p>
+                </div>
+              </div>
+              <div class="flex items-center">
+                @if (tfaStatus?.byEmail) {
+                  <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                    <svg class="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                } @else {
+                  <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+                    <svg class="w-3 h-3 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                }
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                  <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">SMS Authentication</p>
+                  <p class="text-xs text-gray-500">Mobile verification</p>
+                </div>
+              </div>
+              <div class="flex items-center">
+                @if (tfaStatus?.byMobile) {
+                  <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                    <svg class="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                } @else {
+                  <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+                    <svg class="w-3 h-3 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                }
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <svg class="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Authenticator App</p>
+                  <p class="text-xs text-gray-500">TOTP verification</p>
+                </div>
+              </div>
+              <div class="flex items-center">
+                @if (tfaStatus?.byAuthenticator) {
+                  <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                    <svg class="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                } @else {
+                  <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+                    <svg class="w-3 h-3 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="lg:col-span-8 space-y-4">
+        
+        <!-- Personal Information Card -->
+        <div class="bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300">
+          <div class="bg-gradient-to-r from-gray-400 via-white-200 to-gray-100 px-4 py-4 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <h2 class="text-xl font-bold text-gray-900">Personal Information</h2>
+            </div>
+          </div>
+          
+          <div class="p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div class="space-y-6">
+                <div class="group">
+                  <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Username</label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                      </svg>
+                    </div>
+                    <div class="pl-10 pr-4 py-3 bg-gray-50 rounded-xl text-gray-900 font-medium group-hover:bg-gray-100 transition-colors duration-200">
+                      {{userProfile?.username || 'Not specified'}}
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="group">
+                  <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Full Name</label>
+                  <div class="pl-4 pr-4 py-3 bg-gray-50 rounded-xl text-gray-900 font-medium group-hover:bg-gray-100 transition-colors duration-200">
+                    {{userProfile?.fullName || 'Not specified'}}
+                  </div>
+                </div>
+                
+                <div class="group">
+                  <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Gender</label>
+                  <div class="pl-4 pr-4 py-3 bg-gray-50 rounded-xl text-gray-900 font-medium group-hover:bg-gray-100 transition-colors duration-200">
+                    {{userProfile?.gender || 'Not specified'}}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="space-y-6">
+                <div class="group">
+                  <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Email Address</label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                      </svg>
+                    </div>
+                    <div class="pl-10 pr-4 py-3 bg-gray-50 rounded-xl text-gray-900 font-medium group-hover:bg-gray-100 transition-colors duration-200">
+                      {{userProfile?.email || 'Not specified'}}
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="group">
+                  <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Date of Birth</label>
+                  <div class="pl-4 pr-4 py-3 bg-gray-50 rounded-xl text-gray-900 font-medium group-hover:bg-gray-100 transition-colors duration-200">
+                    {{userProfile?.dateOfBirth || 'Not specified'}}
+                  </div>
+                </div>
+                
+                <div class="group">
+                  <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Mobile Number</label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                      </svg>
+                    </div>
+                    <div class="pl-10 pr-4 py-3 bg-gray-50 rounded-xl text-gray-900 font-medium group-hover:bg-gray-100 transition-colors duration-200">
+                      {{userProfile?.mobileNo || 'Not specified'}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Addresses Section -->
+        <div class="bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300">
+          <div class="bg-gradient-to-r from-gray-400 via-white-200 to-gray-100 px-4 py-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                  <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900">Contact Addresses</h2>
+              </div>
+            </div>
+          </div>
+          
+          <div class="p-4">
+            @if (userProfile?.addressList) {
+              <div class="space-y-2">
+                @for (address of userProfile?.addressList; track address.id; let i = $index) {
+                  <div class="relative group">
+                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl transition-all duration-300">
+                       <div class="space-y-2 p-4">
+                      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="md:col-span-2 lg:col-span-3">
+                          <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Street Address</label>
+                          <p class="text-gray-900 font-medium bg-white p-3 rounded-lg">{{address.addressLine || 'Not specified'}}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">City</label>
+                          <p class="text-gray-900 font-medium bg-white p-3 rounded-lg">{{address.city || 'Not specified'}}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Postal Code</label>
+                          <p class="text-gray-900 font-medium bg-white p-3 rounded-lg">{{address.postCode || 'Not specified'}}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Country</label>
+                          <p class="text-gray-900 font-medium bg-white p-3 rounded-lg">{{address.country || 'Not specified'}}</p>
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="text-center py-16">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No addresses added yet</h3>
+                <p class="text-gray-500">Add your contact addresses to complete your profile</p>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Work Information Section -->
+        <div class="bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300">
+          <div class="bg-gradient-to-r from-gray-400 via-white-200 to-gray-100 px-4 py-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                  <svg class="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900">Work Information</h2>
+              </div>
+            </div>
+          </div>
+          
+          <div class="p-4">
+            @if (userProfile?.shortProfileList) {
+              <div class="space-y-2">
+                @for (profile of userProfile?.shortProfileList; track profile.id; let i = $index) {
+                  <div class="relative group">
+                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg  transition-all duration-300">
+                      <div class="space-y-2 p-4">
+                        <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+                          <div>
+                            <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Position</label>
+                            <div class="flex items-center space-x-2 bg-white p-3 rounded-lg">
+                              <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+                              </svg>
+                              <span class="text-gray-900 font-medium">{{profile.designation || 'Not specified'}}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+                          <div>
+                            <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Company</label>
+                            <div class="flex items-center space-x-2 bg-white p-3 rounded-lg">
+                              <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"></path>
+                              </svg>
+                              <span class="text-gray-900 font-medium">{{profile.companyName || 'Not specified'}}</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <label class="block text-sm font-medium text-gray-500 mb-3 uppercase tracking-wider">Skills & Technologies</label>
+                          <div class="bg-white p-4 rounded-lg">
+                            @if (profile.skills) {
+                              <div class="flex flex-wrap gap-2">
+                                @for (skill of profile.skills.split(','); track $index) {
+                                  <span class="px-3 py-1.5 bg-gradient-to-r from-yellow-50 to-yello-200 text-gray-700 text-sm font-medium rounded-full border border-purple-200 hover:from-purple-200 hover:to-indigo-200 transition-all duration-300 cursor-default">
+                                    {{ skill.trim() }}
+                                  </span>
+                                }
+                              </div>
+                            } @else {
+                              <p class="text-gray-500 italic">No skills specified</p>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="text-center py-16">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 01-2 2H10a2 2 0 01-2-2V6m8 0H8"></path>
+                  </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No work experience added yet</h3>
+                <p class="text-gray-500">Add your professional experience to showcase your career</p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

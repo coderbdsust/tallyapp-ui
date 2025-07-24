@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { CommonService } from './common.service';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
-import { Address, ShortProfile, TFAResponse, UserProfile } from '../../modules/user/profile/profile.model';
+import { Address, ShortProfile, TFAResponse, UserProfile } from '../../modules/user/profile-edit/profile.model';
 import { ApiResponse } from '../models/auth.model';
 
 @Injectable({

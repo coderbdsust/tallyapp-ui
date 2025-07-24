@@ -17,7 +17,7 @@
   <img alt="Preview" src="img/invoice-page-part-2.png">
   <img alt="Preview" src="img/invoice-page-part-3.png">
   <img alt="Preview" src="img/invoice-pdf.png">
-  <img alt="Preview" src="img/user-profile-v2.png">
+  <img alt="Preview" src="img/profile-view-v7.png">
   <img alt="Preview" src="img/2FA-By-Authenticator-App.png">
   <img alt="Preview" src="img/permission-matrix-v5.png">
   <img alt="Preview" src="img/app-property-v1.png">

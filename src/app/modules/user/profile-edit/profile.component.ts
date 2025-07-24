@@ -15,6 +15,7 @@ import { AuthenticatorAppService } from '../../../core/services/authenticator-ap
 import { AuthenticatorQrModalComponent } from '../modal/authenticator-qr-modal/authenticator-qr-modal.component';
 import { FileUploaderComponent } from 'src/app/common/components/file-uploader/file-uploader.component';
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -38,7 +39,8 @@ export class ProfileComponent implements OnInit {
     private readonly _formBuilder: FormBuilder,
     private dialog: MatDialog,
     private authenticatorAppService: AuthenticatorAppService,
-    private fileUploaderService: FileUploaderService
+    private fileUploaderService: FileUploaderService,
+    private router:Router
   ) { }
 
   ngOnInit(): void {
@@ -350,6 +352,7 @@ export class ProfileComponent implements OnInit {
           };
         }
         this.userProfileService.showToastSuccess(`${this.userProfile?.fullName}, Profile Updated`);
+        this.router.navigate(['/user/profile-view']);
       },
       error: (error) => {
         this.userProfileService.showToastErrorResponse(error);
