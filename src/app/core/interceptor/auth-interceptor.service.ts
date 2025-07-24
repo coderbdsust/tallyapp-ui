@@ -21,7 +21,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     const clonedReq = req.clone({ withCredentials: true });
 
     return next.handle(clonedReq).pipe(
-      delay(500),
+      delay(250),
       catchError((error: HttpErrorResponse) => {
         if (isAuthCall) {
           // Do NOT try to refresh on refresh call itself

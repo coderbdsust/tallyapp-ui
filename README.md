@@ -4,7 +4,7 @@
 
 <p>
   <img alt="Preview" src="img/dashboard-v6.png">
-  <img alt="Preview" src="img/report-v6.png">
+  <img alt="Preview" src="img/report-v7.png">
   <img alt="Preview" src="img/employee-v2.png">
   <img alt="Preview" src="img/employee-expense-v7.png">
   <img alt="Preview" src="img/daily-reporting-v7.png">

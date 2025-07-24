@@ -157,7 +157,7 @@
                             </div>
                              <div class="flex items-center justify-end mb-4 gap-1">
                                 <button type="submit"
-                                        class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-600 bg-green-50 border border-green-200 transition-colors"
+                                        class="inline-flex items-center px-3 py-1.5 text-xs rounded-lg  font-medium text-green-600 bg-green-50 border border-green-200 transition-colors"
                                         title="Save Customer"
                                         [disabled]="invForm.invalid" 
                                         [ngClass]="{
@@ -170,7 +170,7 @@
 
                                 <button type="button" 
                                     (click)="createNewCustomer()"
-                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200  hover:bg-red-100 transition-colors"
+                                    class="inline-flex items-center px-3 py-1.5 text-xs rounded-lg font-medium text-red-600 bg-red-50 border border-red-200  hover:bg-red-100 transition-colors"
                                     title="Create New Customer">
                                     <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-3 w-3 mr-1'"></svg-icon>
                                     Clear
@@ -516,7 +516,7 @@
                 <label class="text-lg font-semibold text-gray-800 mb-2">Notes</label>
                 <p class="text-sm text-gray-600 bg-gray-50 p-3  border">
                     Thank you for your business! If you have any questions about this invoice, please contact us at
-                    <a href="mailto:contacts.tallyapp&#64;gmail.com" class="font-semibold text-blue-600 hover:text-blue-700">
+                    <a href="mailto:contacts.tallyapp&#64;gmail.com" class="font-semibold">
                         contacts.tallyapp&#64;gmail.com
                     </a>.
                 </p>
@@ -525,7 +525,7 @@
             <!-- Action Buttons -->
             <div class="flex flex-row justify-end pt-6 gap-3">
                 <button type="submit" 
-                        class="flex items-center px-4 py-2  transition-colors" 
+                        class="flex items-center px-4 py-2 rounded-lg  transition-colors" 
                         [disabled]="invForm.invalid" 
                         [ngClass]="{
                             'bg-blue-600 text-white hover:bg-blue-700': !invForm.invalid,
@@ -536,21 +536,21 @@
                 </button>
 
                 <button type="button"
-                        class="flex items-center px-4 py-2 bg-purple-600 text-white  hover:bg-purple-700 transition-colors"
+                        class="flex items-center px-4 py-2 rounded-lg  bg-purple-600 text-white  hover:bg-purple-700 transition-colors"
                         (click)="previewInvoice()">
                     <svg-icon src="./assets/icons/heroicons/outline/eye.svg" [svgClass]="'h-5 w-5'"></svg-icon>
                     <span class="ml-2">Preview</span>
                 </button>
 
                 <button type="button"
-                        class="flex items-center px-4 py-2 bg-green-600 text-white  hover:bg-green-700 transition-colors"
+                        class="flex items-center px-4 py-2 rounded-lg  bg-green-600 text-white  hover:bg-green-700 transition-colors"
                         (click)="downloadInvoice()">
                     <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"></svg-icon>
                     <span class="ml-2">Download</span>
                 </button>
 
                 <button type="button"
-                        class="flex items-center px-4 py-2 bg-red-600 text-white  hover:bg-red-700 transition-colors"
+                        class="flex items-center px-4 py-2 rounded-lg  bg-red-600 text-white  hover:bg-red-700 transition-colors"
                         (click)="backToInvoiceList()">
                     <svg-icon src="./assets/icons/heroicons/outline/arrow-left.svg" [svgClass]="'h-5 w-5'"></svg-icon>
                     <span class="ml-2">Back</span>

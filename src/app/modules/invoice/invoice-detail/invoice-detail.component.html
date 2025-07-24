@@ -54,7 +54,7 @@
         <img 
           [src]="invoice.barcode || './assets/img/barcode-v2.png'" 
           alt="Invoice QR Code" 
-          class="w-full h-12 rounded  object-contain">
+          class="w-full h-12 rounded object-contain">
 
         <div class="grid grid-cols-1 gap-3">
           <div class="flex justify-between text-sm text-muted-foreground">
@@ -257,9 +257,9 @@
     
     <!-- Amount in Words -->
     <div class="pt-4">
-      <div class="bg-blue-50 p-4 rounded-lg">
+      <div class="rounded-lg">
         <p class="text-sm text-muted-foreground">
-          <strong>Amount in words:</strong> 
+          <strong>In words:</strong> 
           <span class="font-medium">{{ toWords.convert(invoice.totalAmount) }}</span>
         </p>
       </div>
