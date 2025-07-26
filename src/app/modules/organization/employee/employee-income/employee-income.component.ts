@@ -51,8 +51,8 @@ export class EmployeeIncomeComponent extends FormError implements OnInit {
   initiatlizeForm(org: Organization | null): void {
     this.form = this.fb.group({
       employeeId: ['', Validators.required],
-      fromDate: ['', Validators.required],
-      toDate: ['', Validators.required],
+      fromDate: [''],
+      toDate: [''],
     });
   }
 
@@ -74,11 +74,9 @@ export class EmployeeIncomeComponent extends FormError implements OnInit {
     }
 
     const formData = this.form.value;
-    console.log('Form Data:', formData);
     this.empExpenseService.getEmployeeIncomeSummary(formData.employeeId, formData.fromDate, formData.toDate).subscribe({
       next: (response) => {
         this.employeeData = response;
-        console.log('Employee Income Summary:', this.employeeData);
       },
       error: (error) => {
         this.empExpenseService.showToastErrorResponse(error);

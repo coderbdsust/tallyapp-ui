@@ -36,6 +36,7 @@ export interface EmployeeEarningSummary {
   accountOpened: string;
   fromDate: string;
   toDate: string;
+  lifeTimeEarnings:boolean;
   totalUnitEarnings: number;
   totalUnits: number;
   expenseTypeSummaries: ExpenseTypeSummary[];

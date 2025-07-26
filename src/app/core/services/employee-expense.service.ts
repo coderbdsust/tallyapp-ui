@@ -57,11 +57,17 @@ export class EmployeeExpenseService extends CommonService {
       .pipe(catchError(this.mapErrorResponse));
   }
 
-  public getIncomeReports(employeeId:string, fromDate:string, toDate:string) {
-      const url = `${environment.tallyURL}/pdf/v1/income/report/${employeeId}/${fromDate}/${toDate}/download`;
-      return this.http
-        .get(url, {responseType: 'blob'})
-        .pipe(catchError(this.mapErrorResponse));
-  }
+ public getIncomeReports(employeeId: string, fromDate: string, toDate: string) {
+  const url = `${environment.tallyURL}/pdf/v1/income/report/${employeeId}/download`;
+  return this.http
+    .get(url, {
+      responseType: 'blob',
+      params: {
+        fromDate,
+        toDate
+      }
+    })
+    .pipe(catchError(this.mapErrorResponse));
+}
 
 }
