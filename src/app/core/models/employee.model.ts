@@ -2,6 +2,7 @@ export interface Employee {
     id:                  string;
     fullName:            string;
     dateOfBirth:         Date;
+    joiningDate:         Date;
     profileImage:       string;
     mobileNo:            string;
     empAddressLine:      string;

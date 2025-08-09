@@ -34,6 +34,7 @@ export interface EmployeeEarningSummary {
   employeeBillingType: string;
   employeeProfileImage: string;
   accountOpened: string;
+  joiningDate: string;
   fromDate: string;
   toDate: string;
   lifeTimeEarnings:boolean;
@@ -44,4 +45,44 @@ export interface EmployeeEarningSummary {
   totalFoodAllowanceExpenses: number;
   totalSalaryExpenses: number;
   netEarnings: number;
+}
+
+// Monthly Income interfaces
+export interface AttendanceMetrics {
+  totalWorkingDays: number;
+  daysPresent: number;
+  daysAbsent: number;
+  attendancePercentage: number;
+  totalWorkUnits: number;
+  averageWorkUnitsPerDay: number;
+}
+
+export interface DailyAttendance {
+  date: string;
+  dayOfWeek: string;
+  isWeekend: boolean;
+  isPresent: boolean;
+  workUnits: number;
+  expense: number;
+  workUnitRate: number;
+  dailyIncome: number;
+}
+
+export interface MonthlyIncomeData {
+  employeeId: string;
+  employeeName: string;
+  joiningDate: string;
+  year: number;
+  month: number;
+  monthName: string;
+  startDate: string;
+  endDate: string;
+  monthlySalary: number;
+  baseSalary: number;
+  totalIncome:number;
+  attendanceMetrics: AttendanceMetrics;
+  dailyAttendance: DailyAttendance[];
+  totalExpenses: number;
+  netIncome: number;
+  expenseCount: number;
 }

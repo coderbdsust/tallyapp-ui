@@ -69,6 +69,7 @@
           <th># No</th>
           <th>Full Name</th>
           <th>Date of Birth</th>
+          <th>Joining Date</th>
           <th>Mobile No</th>
           <th>Employee Type</th>
           <th>Billing Type</th>
@@ -114,6 +115,7 @@
             </div>
           </td>
           <td>{{ emp.dateOfBirth | date: 'dd-MM-yyyy' }}</td>
+          <td>{{ emp.joiningDate | date: 'dd-MM-yyyy' }}</td>
           <td>{{ emp.mobileNo }}</td>
           <td>{{ emp.employeeType | word }}</td>
           <td>{{ emp.employeeBillingType | word }}</td>

@@ -118,6 +118,7 @@ export class AddEmployeeComponent {
         fullName: [employee?.fullName, Validators.required],
         profileImage: [employee?.profileImage],
         dateOfBirth: [employee?.dateOfBirth, Validators.required],
+        joiningDate: [employee?.joiningDate, Validators.required],
         mobileNo: [
           employee?.mobileNo,
           [

@@ -110,7 +110,7 @@ export abstract class PaginatedComponent<T> {
   // Update pagination state from API response
   updatePaginationState(response: PageResponse<T>): void {
     this.pageResponse = response;
-    this.currentPage = response.pageNo;
+    this.currentPage = response.page;
     this.totalRows = response.totalElements;
     this.totalPages = response.totalPages;
     this.updatePagesArray();

@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { formatCurrency } from 'src/app/common/utils/common';
 import { DailyWorkCalendarEntry, MonthlyCalendar } from 'src/app/core/models/calendar.model';
-import { ExpenseTypeSummary } from 'src/app/core/models/employee-expense.model';
 import { Organization } from 'src/app/core/models/organization.model';
 import { DailyWorkCalendarService } from 'src/app/core/services/daily-work-calendar-service.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
@@ -113,40 +112,46 @@ export class EmployeeDailyReportingCalendarComponent {
   }
 
   buildCalendarGrid(): void {
-    if (!this.monthlyCalendar) return;
+  if (!this.monthlyCalendar) return;
 
-    const firstDay = new Date(this.selectedYear, this.selectedMonth - 1, 1);
-    const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay()); // Start from Sunday
+  const firstDayOfMonth = new Date(this.selectedYear, this.selectedMonth - 1, 1);
+  const dayOfWeek = firstDayOfMonth.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
 
-    this.calendarWeeks = [];
-    let currentWeek: DailyWorkCalendarEntry[] = [];
+  // To start from Sunday:
+  const daysToGoBack = dayOfWeek;
 
-    for (let i = 0; i < 42; i++) { // 6 weeks * 7 days
-      const currentDate = new Date(startDate);
-      currentDate.setDate(startDate.getDate() + i);
+  // If you want to start from Monday:
+  // const daysToGoBack = (dayOfWeek + 6) % 7;
 
-      const dateString = currentDate.toISOString().split('T')[0];
-      const entry = this.monthlyCalendar.dailyEntries.find(e => e.entryDate === dateString);
+  this.calendarWeeks = [];
+  let currentWeek: DailyWorkCalendarEntry[] = [];
 
-      const calendarEntry: DailyWorkCalendarEntry = entry || {
-        entryDate: dateString,
-        hasEntry: false,
-        totalExpenseAmount: 0,
-        totalEmployees: 0,
-        presentEmployees: 0,
-        totalWorkUnits: 0,
-        totalIncome: 0
-      };
+  for (let i = 0; i < 42; i++) {
+    const currentDate = new Date(this.selectedYear, this.selectedMonth - 1, 1 - daysToGoBack + i);
 
-      currentWeek.push(calendarEntry);
+    // Format date to YYYY-MM-DD (safe for comparison)
+    const dateString = currentDate.toLocaleDateString('sv-SE', { timeZone: 'Asia/Dhaka' });
 
-      if (currentWeek.length === 7) {
-        this.calendarWeeks.push(currentWeek);
-        currentWeek = [];
-      }
+    const entry = this.monthlyCalendar.dailyEntries.find(e => e.entryDate === dateString);
+
+    const calendarEntry: DailyWorkCalendarEntry = entry || {
+      entryDate: dateString,
+      hasEntry: false,
+      totalExpenseAmount: 0,
+      totalEmployees: 0,
+      presentEmployees: 0,
+      totalWorkUnits: 0,
+      totalIncome: 0
+    };
+
+    currentWeek.push(calendarEntry);
+
+    if (currentWeek.length === 7) {
+      this.calendarWeeks.push(currentWeek);
+      currentWeek = [];
     }
   }
+}
 
   previousMonth(): void {
     if (this.selectedMonth === 1) {
@@ -199,7 +204,6 @@ export class EmployeeDailyReportingCalendarComponent {
 
   getStatusColor(status?: string): string {
     switch (status) {
-      case 'DRAFT': return 'bg-gray-200 text-gray-800';
       case 'PENDING': return 'bg-yellow-200 text-yellow-800';
       case 'APPROVED': return 'bg-green-200 text-green-800';
       default: return 'bg-gray-100 text-gray-600';

@@ -100,7 +100,7 @@
 
     </form>
 
-    <div class="mt-4 flex min-w-full flex-col rounded-xl border border-muted/40 bg-background p-2">
+    <div class="mt-4 flex min-w-full flex-col rounded-xl border border-muted/40 bg-background p-2" *ngIf="employeeExpenses && employeeExpenses.length > 0">
         <div
             class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
             <table

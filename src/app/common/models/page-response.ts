@@ -1,6 +1,6 @@
 export interface PageResponse<T = any> {
     content: T[];
-    pageNo:number;
+    page:number;
     size:number;
     totalElements:number;
     totalPages:number;
