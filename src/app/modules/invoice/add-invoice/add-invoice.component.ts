@@ -93,7 +93,6 @@ export class AddInvoiceComponent extends FormError implements OnInit {
 
       if (!this.orgId || !this.invoiceId) {
         this.router.navigate(['/invoice/list']);
-        //this.invoiceService.showToastError("Couldn't load invoice");
         return;
       }
       
@@ -265,18 +264,10 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     });
   }
 
-  cancel(): void {
-    console.log('Invoice creation cancelled.');
-  }
-
-  saveDraft(): void {
-    console.log('Invoice saved as draft.');
-  }
-
   submitProduct(): void {
     if (this.productForm.invalid) return;
     let product = this.productForm.value;
-    this.productService.addProductToInvoice(this.invoiceId, product).subscribe({
+    this.invoiceService.addProductToInvoice(this.invoiceId, product).subscribe({
       next: (inv) => {
         this.initiateProductForm();
         this.refreshInvoice();
@@ -290,7 +281,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   }
 
   deleteProduct(prod: ProductSale) {
-    this.productService.removeProductFromInvoice(this.invoiceId, prod.id).subscribe({
+    this.invoiceService.removeProductFromInvoice(this.invoiceId, prod.id).subscribe({
       next:(apiRes)=>{
         this.refreshInvoice();
       },

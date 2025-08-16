@@ -214,15 +214,16 @@
                                 </div>
                             </td>
                             <td class="px-3 py-4 text-right text-gray-700 font-medium">
-                                <span class="text-sm">৳{{prod.pricePerUnit | number:'1.2-2'}}</span>
+                                <span class="text-sm">{{prod.pricePerUnit | number:'1.2-2'}}</span>
                             </td>
-                            <td class="px-3 py-4 text-center text-gray-700 font-medium">
-                                <span class="inline-flex items-center justify-center w-12 h-8 bg-gray-100  text-sm">
-                                    {{prod.quantitySold}}
+                            <td class="px-6 py-4 text-center border-b border-gray-100">
+                                <span class="inline-flex items-center px-3 py-2 rounded-lg bg-gray-50 text-gray-800 text-sm font-medium">
+                                <span class="font-bold">{{ prod.quantitySold }}</span>
+                                <span class="ml-1 text-gray-600">{{ prod.unitType }}</span>
                                 </span>
                             </td>
                             <td class="px-3 py-4 text-right text-gray-900 font-semibold">
-                                <span class="text-sm">৳{{prod.totalAmount | number:'1.2-2'}}</span>
+                                <span class="text-sm">{{prod.totalAmount | number:'1.2-2'}}</span>
                             </td>
                             <td class="px-3 py-4 text-center">
                                 <button type="button" 
@@ -343,7 +344,7 @@
                                             </td>
                                             <td class="px-3 py-3 text-gray-600 text-sm font-mono">{{pay.reference || '-'}}</td>
                                             <td class="px-3 py-3 text-right text-gray-900 font-semibold">
-                                                <span class="text-sm">৳{{pay.amount | number:'1.2-2'}}</span>
+                                                <span class="text-sm">{{pay.amount | number:'1.2-2'}}</span>
                                             </td>
                                             <td class="px-3 py-3 text-center">
                                                 <button type="button"
@@ -426,7 +427,7 @@
                                 <label class="text-sm text-gray-600">Sub Total</label>
                                 <input type="text" 
                                        readonly 
-                                       [value]="'৳' + (invoice?.productSubTotal | number:'1.2-2')"
+                                       [value]="'' + (invoice?.productSubTotal | number:'1.2-2')"
                                        class="w-32 px-2 py-1 bg-white border border-gray-200  text-sm text-right text-gray-700">
                             </div>
 
@@ -435,7 +436,7 @@
                                 <label class="text-sm text-gray-600">Tax ({{invoice?.taxRate || 0}}%)</label>
                                 <input type="text" 
                                        readonly 
-                                       [value]="'৳' + (invoice?.productTotalTax | number:'1.2-2')"
+                                       [value]="'' + (invoice?.productTotalTax | number:'1.2-2')"
                                        class="w-32 px-2 py-1 bg-white border border-gray-200  text-sm text-right text-gray-700">
                             </div>
 
@@ -444,7 +445,7 @@
                                 <label class="text-sm text-gray-600">VAT ({{invoice?.vatRate || 0}}%)</label>
                                 <input type="text" 
                                        readonly 
-                                       [value]="'৳' + (invoice?.productTotalVat | number:'1.2-2')"
+                                       [value]="'' + (invoice?.productTotalVat | number:'1.2-2')"
                                        class="w-32 px-2 py-1 bg-white border border-gray-200  text-sm text-right text-gray-700">
                             </div>
 
@@ -477,7 +478,7 @@
                                 <label class="text-base font-semibold text-gray-800">Total Amount</label>
                                 <input type="text" 
                                        readonly 
-                                       [value]="'৳' + (invoice?.totalAmount | number:'1.2-2')"
+                                       [value]="'' + (invoice?.totalAmount | number:'1.2-2')"
                                        class="w-32 px-2 py-1 bg-white border border-blue-200  text-base font-bold text-right text-blue-900">
                             </div>
 
@@ -486,7 +487,7 @@
                                 <label class="text-sm font-medium text-gray-700">Total Paid</label>
                                 <input type="text" 
                                        readonly 
-                                       [value]="'৳' + (invoice?.totalPaid | number:'1.2-2')"
+                                       [value]="'' + (invoice?.totalPaid | number:'1.2-2')"
                                        class="w-32 px-2 py-1 bg-white border border-green-200  text-sm text-right font-medium text-green-700">
                             </div>
 
@@ -495,7 +496,7 @@
                                 <label class="text-sm font-medium text-gray-700">Amount Due</label>
                                 <input type="text" 
                                        readonly 
-                                       [value]="'৳' + (invoice?.remainingAmount | number:'1.2-2')"
+                                       [value]="'' + (invoice?.remainingAmount | number:'1.2-2')"
                                        class="w-32 px-2 py-1 bg-white border border-red-200  text-sm text-right font-medium text-red-700">
                             </div>
                         </div>

@@ -27,11 +27,11 @@ export class EmployeeComponent {
   private subscription = new Subscription();
 
   tabs = [
-    { id: 'employee', label: 'Employee List' },
-    { id: 'expense', label: 'Employee Expense' },
-    { id: 'daily-reporting', label: 'Employee Daily Reporting' },
-    { id: 'daily-reporting-calendar', label: 'Employee Reporting Calendar' },
-    { id: 'income', label: 'Employee Income' },
+    { id: 'employee', label: 'Employee' },
+    { id: 'expense', label: 'Expense' },
+    { id: 'daily-reporting', label: 'Daily Reporting' },
+    { id: 'daily-reporting-calendar', label: 'Daily Reporting Calendar' },
+    { id: 'income', label: 'Income' },
   ];
 
   constructor(

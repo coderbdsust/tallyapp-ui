@@ -2,7 +2,7 @@ import { CommonModule, NgClass } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { Product, ProductCategory, ProductStock } from '../../../../core/models/product.model';
+import { Product, ProductCategory, ProductStock, UnitType } from '../../../../core/models/product.model';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ProductService } from '../../../../core/services/product.service';
 import { EmployeeService } from '../../../../core/services/employee.service';
@@ -42,6 +42,7 @@ export class AddProductComponent {
   selectedFile: File | null = null;
   @ViewChild(FileUploaderComponent) fileUploader!: FileUploaderComponent;
   fileDeletedNeedToSubmit: boolean = false;
+  unitTypes: UnitType[] = [];
 
   constructor(
     private readonly _formBuilder: FormBuilder,
@@ -52,7 +53,19 @@ export class AddProductComponent {
   ) {}
 
   ngOnInit(): void {
+    this.loadProductUnitTypes();
     this.initializeForm();
+  }
+
+  loadProductUnitTypes(){
+    this.productService.getProductUnitTypes().subscribe({
+      next: (unitTypes) => {
+        this.unitTypes = unitTypes;
+      },
+      error: (errorRes) => {
+        this.productService.showToastErrorResponse(errorRes);
+      },
+    });
   }
 
   loadProductCategories(orgId:string|null){
@@ -124,6 +137,7 @@ export class AddProductComponent {
       id: [product?.id],
       name: [product?.name, [Validators.required]],
       code: [product?.code, [Validators.required]],
+      unitType:[product?.unitType,[Validators.required]],
       description: [product?.description],
       imageUrl: [product?.imageUrl],
       madeBy: [product?.madeBy || null, [Validators.required]],

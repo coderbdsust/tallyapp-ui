@@ -94,7 +94,7 @@
           <th class="min-w-[130px]">Employee Cost / Unit</th>
           <th class="min-w-[140px]">Production Cost / Unit</th>
           <th class="min-w-[120px]">Available Quantity</th>
-          <th class="min-w-[120px]">Made By</th>
+          <th class="min-w-[120px]">Service By</th>
           <th class="min-w-[100px]">Created</th>
           <th class="min-w-[80px]">Action</th>
         </tr>
@@ -153,7 +153,7 @@
                 'bg-yellow-100 text-yellow-800': p.availableQuantity > 0 && p.availableQuantity <= 10,
                 'bg-red-100 text-red-800': p.availableQuantity === 0
               }">
-              {{ p.availableQuantity }}
+              {{ p.availableQuantity }} ({{ p.unitType }})
             </span>
           </td>
           <td>

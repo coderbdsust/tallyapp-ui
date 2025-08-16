@@ -40,6 +40,7 @@ export interface ProductSale {
     totalAmount: number;
     code:string;
     description:string;
+    unitType:string;
     name:string;
 }
 

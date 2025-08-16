@@ -7,6 +7,7 @@ import { Invoice } from '../../modules/invoice/invoice.model';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { catchError, Observable } from 'rxjs';
 import { ApiResponse } from '../models/auth.model';
+import { Product, ProductToSale } from '../models/product.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,7 @@ export class InvoiceService extends CommonService {
 
    public createInvoice(organizationId: string) {
       return this.http
-        .post<Invoice>(`${environment.tallyURL}/invoice/v1/${organizationId}/create`,"")
+        .post<Invoice>(`${environment.tallyURL}/invoice/v1/${organizationId}/create`,{})
         .pipe(catchError(this.mapErrorResponse));
   }
 
@@ -52,6 +53,18 @@ export class InvoiceService extends CommonService {
       return this.http
         .get(url, {responseType: 'blob'})
         .pipe(catchError(this.mapErrorResponse));
+  }
+
+   public addProductToInvoice(invoiceId: String, product: ProductToSale) {
+    return this.http
+      .post<Invoice>(`${environment.tallyURL}/invoice/v1/${invoiceId}/add`, product)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public removeProductFromInvoice(invoiceId: string, productSaleId: string) {
+    return this.http
+      .delete<ApiResponse>(`${environment.tallyURL}/invoice/v1/${invoiceId}/${productSaleId}/remove`)
+      .pipe(catchError(this.mapErrorResponse));
   }
 
 

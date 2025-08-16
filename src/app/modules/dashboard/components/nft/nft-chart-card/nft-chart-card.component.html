@@ -1,7 +1,7 @@
 <div class="h-[420px] flex-col rounded-lg bg-background px-8 py-8 sm:flex-row">
 
   <!-- Wrapper with fixed height -->
-  <div class="h-[180px]">
+  <div class="h-full">
     <div class="relative w-full h-full" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
       <div class="relative h-full overflow-hidden rounded-lg">
         <div *ngFor="let item of productResponse?.content; let i = index"
@@ -42,19 +42,6 @@
           class="w-3 h-3 rounded-full transition-colors duration-300" [class.bg-white]="i === currentSlide"
           [class.bg-gray-300]="i !== currentSlide" (click)="goToSlide(i)"></button>
       </div>
-    </div>
-  </div>
-
-
-
-  <div class="flex flex-row justify-between mb-2 mt-4">
-    <div class="w-full mb-2">
-      <p class="text-sm text-gray-500 dark:text-gray-400">Total Production Cost</p>
-      <p class="text-md font-bold text-gray-700">BDT {{productStatistics?.totalProductionCostSum || 0}} </p>
-    </div>
-    <div class="w-full mb-2">
-      <p class="text-sm text-gray-500 dark:text-gray-400">Total Payment Collected</p>
-      <p class="text-md font-bold text-gray-700">BDT {{productStatistics?.totalPaymentCollectedSum || 0}}</p>
     </div>
   </div>
 </div>

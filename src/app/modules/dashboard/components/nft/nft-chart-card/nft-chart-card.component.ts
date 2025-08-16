@@ -1,15 +1,12 @@
 import { Component, OnDestroy, OnInit, effect } from '@angular/core';
-import { map, Subscription } from 'rxjs';
-import { ThemeService } from 'src/app/core/services/theme.service';
-import { ChartOptions } from '../../../../../common/models/chart-options';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Organization } from 'src/app/core/models/organization.model';
 import { ProductService } from 'src/app/core/services/product.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { PageResponse } from 'src/app/common/models/page-response';
-import { Product, ProductStatistics } from 'src/app/core/models/product.model';
-import { NgClass, NgFor } from '@angular/common';
+import { Product } from 'src/app/core/models/product.model';
+import { NgFor } from '@angular/common';
 
 @Component({
   selector: '[nft-chart-card]',
@@ -19,7 +16,6 @@ import { NgClass, NgFor } from '@angular/common';
 export class NftChartCardComponent implements OnInit, OnDestroy {
   public organization: Organization | null = null;
   public productResponse: PageResponse<Product> | null = null;
-  public productStatistics: ProductStatistics | null = null;
   currentSlide = 0;
   private intervalId: any;
 
@@ -34,8 +30,6 @@ export class NftChartCardComponent implements OnInit, OnDestroy {
     this.orgService.organization$.subscribe((org) => {
       if (org) {
         this.organization = org;
-        this.productStatistics = null;
-        this.loadProductStatistics(org.id);
         this.loadProductsByOrganization(org.id);
       }
     });
@@ -78,18 +72,6 @@ export class NftChartCardComponent implements OnInit, OnDestroy {
 
   onMouseLeave() {
     this.startAutoSlide();
-  }
-
-
-  loadProductStatistics(orgId: string) {
-    this.productService.getProductStatistics(orgId).subscribe({
-      next: (response) => {
-        this.productStatistics = response;
-      },
-      error: (err) => {
-        console.log(err);
-      }
-    });
   }
 
   loadProductsByOrganization(orgId: String) {

@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Product } from '../../../../core/models/product.model';
 import { Subject, takeUntil } from 'rxjs';
 import { formatCurrency } from 'src/app/common/utils/common';
+import { WordPipe } from 'src/app/common/pipes/word.pipe';
 
 @Component({
   selector: 'app-product-list',

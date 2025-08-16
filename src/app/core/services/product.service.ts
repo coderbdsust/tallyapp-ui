@@ -6,7 +6,7 @@ import { catchError } from 'rxjs';
 import { Router } from '@angular/router';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { ApiResponse } from '../models/auth.model';
-import { Product, ProductStatistics } from '../models/product.model';
+import { Product, ProductStatistics, UnitType } from '../models/product.model';
 import { Invoice } from '../../modules/invoice/invoice.model';
 
 @Injectable({
@@ -54,17 +54,10 @@ export class ProductService extends CommonService {
       .pipe(catchError(this.mapErrorResponse));
   }
 
-  public addProductToInvoice(invoiceId: String, product: Product) {
+  public getProductUnitTypes(){
     return this.http
-      .post<Invoice>(`${environment.tallyURL}/product/v1/invoice/${invoiceId}/add`, product)
+      .get<UnitType[]>(`${environment.tallyURL}/product/v1/unit-types`)
       .pipe(catchError(this.mapErrorResponse));
   }
-
-  public removeProductFromInvoice(invoiceId: string, productSaleId: string) {
-    return this.http
-      .delete<ApiResponse>(`${environment.tallyURL}/product/v1/invoice/${invoiceId}/${productSaleId}/remove`)
-      .pipe(catchError(this.mapErrorResponse));
-  }
-
-
+  
 }

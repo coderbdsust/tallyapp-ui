@@ -5,6 +5,7 @@ export interface Product {
   name: string,
   code: string,
   description: string,
+  unitType: UnitType,
   perUnitEmployeeCost: number,
   perUnitProductionCost: number,
   unitPrice: number,
@@ -13,7 +14,7 @@ export interface Product {
   imageUrl: string,
   createdDate: string,
   madeBy: Employee
-  productStockList:ProductStock[] | null;
+  productStockList: ProductStock[] | null;
   productCategory: ProductCategory;
 }
 
@@ -43,4 +44,19 @@ export interface ProductCategory{
   name:string;
   description:string;
   active:boolean;
+}
+
+export interface UnitType{
+  value: string;
+  symbol: string;
+  displayName: boolean;
+}
+
+export interface ProductToSale {
+  productId: string
+  productName: string
+  productDescription: string
+  productUnitRate: number
+  productQuantity: number
+  productAmount: number
 }
