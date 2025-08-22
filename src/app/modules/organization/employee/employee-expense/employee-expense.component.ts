@@ -12,16 +12,19 @@ import { EmployeeService } from '../../../../core/services/employee.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { EmployeeExpenseService } from '../../../../core/services/employee-expense.service';
 import { EmployeeExpense } from '../../../../core/models/employee-expense.model';
+import { CashBalanceViewerComponent } from 'src/app/modules/cash-management/cash-balance-viewer/cash-balance-viewer.component';
+import { CashFlowBalanceSummary } from 'src/app/core/models/organization-balance.model';
 
 @Component({
   selector: 'app-employee-expense',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, WordPipe],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, WordPipe, CashBalanceViewerComponent],
   templateUrl: './employee-expense.component.html',
   styleUrl: './employee-expense.component.scss'
 })
 export class EmployeeExpenseComponent extends FormError implements OnInit {
    form!: FormGroup;
    org: Organization|null=null;
+   balanceSummary:CashFlowBalanceSummary|null=null;
 
     public readonly allPaymentMethods = [
       'Cash',
@@ -57,6 +60,7 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
           this.loadAllExpenseTypes();
           this.loadAllEmployees(org);
           this.loadOrganizationExpenses(org);
+          this.loadBalanceSummary(org);
         }
       });
     }
@@ -137,6 +141,7 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
         next: (response) => {
           this.orgService.showToastSuccess('Employee expense approved successfully');
           this.loadOrganizationExpenses(this.org!);
+          this.loadBalanceSummary(this.org!);
         },
         error: (error) => {
           this.orgService.showToastErrorResponse(error);
@@ -156,5 +161,16 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
         }
       });
     }
-  
+
+    loadBalanceSummary(org: Organization) {
+      this.accService.getCashFlowBalanceSummary(org.id).subscribe({
+        next: (response) => {
+          this.balanceSummary = response;
+        },
+        error: (error) => {
+          this.orgService.showToastErrorResponse(error);
+        }
+      });
+    }
+
 }

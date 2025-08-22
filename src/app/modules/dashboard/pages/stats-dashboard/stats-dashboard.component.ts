@@ -32,7 +32,7 @@ export class StatsDashboardComponent {
     }
 
     loadOrganizationBalance(orgId: string) {
-        this.accService.getOrganizationBalance(orgId).subscribe({
+        this.accService.getOrganizationBalance(orgId, '').subscribe({
             next: (response) => {
                 this.organizationBalance = response;
             },

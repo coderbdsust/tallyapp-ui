@@ -1,3 +1,5 @@
+import { PageResponse } from "src/app/common/models/page-response"
+
 export interface OrganizationBalance {
   organizationId: string
   organizationName: string
@@ -28,4 +30,42 @@ export interface Transaction {
   accountCode: string
   reference: string
   isReversed: boolean
+}
+
+export interface CashFlow {
+  flowDate: string;
+  flowType: 'CASH_IN' | 'CASH_OUT' | 'PURCHASE' | 'SALE' | 'PAYMENT_RECEIVED' | 
+           'PAYMENT_MADE' | 'EXPENSE' | 'REFUND' | 'ADJUSTMENT' | 'REVERSAL' | 
+           'ACCOUNTS_RECEIVABLE' | 'EQUITY' | 'EMPLOYEE_EXPENSE';
+  amount: number;
+  description: string;
+  category: string | null;
+}
+
+export interface CashFlowReport {
+  reportDate: string;
+  totalCashIn: number;
+  totalCashOut: number;
+  netCashFlow: number;
+  cashFlows: CashFlow[];
+}
+
+export interface PageCashFlowReport {
+  reportDate: string;
+  balanceSummary: CashFlowBalanceSummary;
+  pageCashFlowResponse: PageResponse<CashFlow>;
+}
+
+export interface CashFlowBalanceSummary{
+  totalCashIn: number;
+  totalCashOut: number;
+  netCashBalance: number;
+}
+
+export interface FlowTypeStyle {
+  iconSvg: string;
+  bgColor: string;
+  textColor: string;
+  iconColor: string;
+  label: string;
 }

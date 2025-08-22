@@ -5,10 +5,12 @@ import { ExpenseComponent } from './expense/expense.component';
 import { NgFor, NgIf } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { CashFlowComponent } from "./cash-flow/cash-flow.component";
+import { JournalViewerComponent } from './journal-viewer/journal-viewer.component';
 
 @Component({
   selector: 'app-transaction',
-  imports: [CashInComponent, CashOutComponent, ExpenseComponent, NgIf, NgFor],
+  imports: [CashInComponent, CashOutComponent, ExpenseComponent, NgIf, NgFor, CashFlowComponent, JournalViewerComponent],
   templateUrl: './transaction.component.html',
   styleUrl: './transaction.component.scss'
 })
@@ -19,7 +21,9 @@ export class TransactionComponent implements OnInit, OnDestroy {
   tabs = [
     { id: 'cash-in', label: 'Cash In' },
     { id: 'cash-out', label: 'Cash Out' },
-    { id: 'expense', label: 'Expense' }
+    { id: 'expense', label: 'Expense' },
+    { id: 'cash-flow', label: 'Cash Flow' },
+    { id: 'journal-viewer', label: 'Journals' }
   ];
 
   constructor(

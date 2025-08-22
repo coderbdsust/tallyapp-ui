@@ -1,78 +1,99 @@
+<app-cash-balance-viewer [balanceSummary]="balanceSummary??null"></app-cash-balance-viewer>
+
 <div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
     <form [formGroup]="form" (ngSubmit)="submit()">
-        <div class="flex flex-col ">
-            <div class="w-4/12">
-                <div>
-                    <label class="text-sm text-muted-foreground">Organization Name</label>
-                    <input type="text" placeholder=" " readonly [value]="org?.orgName"
-                        class="bg-gray-100 mb-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+        <div class="flex flex-col">
+            <div class="flex flex-row gap-2">
+                <div class="w-1/2">
+                    <div>
+                        <label class="text-sm text-muted-foreground">Organization Name</label>
+                        <input type="text" placeholder=" " readonly [value]="org?.orgName"
+                            class="mb-2 w-full rounded border border-muted/20 bg-gray-100 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
-                    <input type="hidden" placeholder=" " formControlName="organizationId"
-                        class="bg-gray-100 mb-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
-                </div>
-                <div>
-                    <label class="text-sm text-muted-foreground">Date</label>
-                    <input type="date" placeholder=" " formControlName="transactionDate"
-                        class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
-                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'transactionDate')">
-                        {{ getErrorMessage(form, 'transactionDate') }}
+                        <input type="hidden" placeholder=" " formControlName="organizationId"
+                            class="mb-2 w-full rounded border border-muted/20 bg-gray-100 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
                     </div>
                 </div>
-                <div>
-                    <label class="text-sm text-muted-foreground">Amount</label>
-                    <input type="number" placeholder=" " formControlName="amount"
-                        class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
-                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'amount')">
-                        {{ getErrorMessage(form, 'amount') }}
+                <div class="w-1/2">
+                    <div>
+                        <label class="text-sm text-muted-foreground">Date</label>
+                        <input type="date" placeholder=" " formControlName="transactionDate"
+                            class="mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+                        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'transactionDate')">
+                            {{ getErrorMessage(form, 'transactionDate') }}
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <label class="text-sm text-muted-foreground">Payment Method</label>
-                    <select formControlName="paymentMethod"
-                        class="mt-2 block py-2  w-full  text-sm text-gray-500 bg-transparent border-1 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                        <option value="" disabled selected>Select Payment Method</option>
-                        <ng-container *ngFor="let method of allPaymentMethods; let i = index;">
-                            <option [value]="method">{{method}}</option>
-                        </ng-container>
-                    </select>
-                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'paymentMethod')">
-                        {{ getErrorMessage(form, 'paymentMethod') }}
+            </div>
+            <div class="flex flex-row gap-2">
+                <div class="w-1/2">
+                    <div>
+                        <label class="text-sm text-muted-foreground">Amount</label>
+                        <input type="number" placeholder=" " formControlName="amount"
+                            class="mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+                        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'amount')">
+                            {{ getErrorMessage(form, 'amount') }}
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <label class="text-sm text-muted-foreground">Reference</label>
-                    <input type="text" placeholder=" " formControlName="reference"
-                        class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
-                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'reference')">
-                        {{ getErrorMessage(form, 'reference') }}
+                <div class="w-1/2">
+                    <div>
+                        <label class="text-sm text-muted-foreground">Payment Method</label>
+                        <select formControlName="paymentMethod"
+                            class="border-1 peer block w-full appearance-none border-b-2 border-gray-200 bg-transparent py-2 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400">
+                            <option value="" disabled selected>Select Payment Method</option>
+                            <ng-container *ngFor="let method of allPaymentMethods; let i = index">
+                                <option [value]="method">{{ method }}</option>
+                            </ng-container>
+                        </select>
+                        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'paymentMethod')">
+                            {{ getErrorMessage(form, 'paymentMethod') }}
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <label class="text-sm text-muted-foreground">Description</label>
-                    <textarea placeholder="" formControlName="description"
-                        class=" mb-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-                    </textarea>
-                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'description')">
+            </div>
+
+            <div class="flex flex-row gap-2">
+                <div class="w-1/2">
+                    <div>
+                        <label class="text-sm text-muted-foreground">Reference</label>
+                        <input type="text" placeholder=" " formControlName="reference"
+                            class="mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+                        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'reference')">
+                            {{ getErrorMessage(form, 'reference') }}
+                        </div>
+                    </div>
+                </div>
+                <div class="w-1/2">
+                    <div>
+                        <label class="text-sm text-muted-foreground">Description</label>
+                        <textarea placeholder="" formControlName="description"
+                            class="mb-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+            </textarea>
+                        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'description')">
                             {{ getErrorMessage(form, 'description') }}
+                        </div>
                     </div>
                 </div>
-                <div class="flex flex-row justify-end mt-2 gap-2">
-                    <button class="flex flex-row px-4 py-2 rounded-md" [disabled]="form.invalid" [ngClass]="{
-                    'bg-primary text-white': !form.invalid,
-                    'bg-gray-400 text-gray-200 cursor-not-allowed': form.invalid
-                }">
-                        <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                        <span class="ml-2">Cash In</span>
-                    </button>
+            </div>
 
-                    <button class="flex flex-row px-4 py-2 bg-destructive text-white rounded-md hover:bg-primary/80"
-                        (click)="cancel()">
-                        <svg-icon src="./assets/icons/heroicons/outline/back.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
-                        <span class="ml-2">Cancel</span>
-                    </button>
-                </div>
+            <div class="mt-2 flex flex-row justify-end gap-2">
+                <button class="flex flex-row rounded-md px-4 py-2" [disabled]="form.invalid" [ngClass]="{
+            'bg-primary text-white': !form.invalid,
+            'cursor-not-allowed bg-gray-400 text-gray-200': form.invalid
+          }">
+                    <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+                    <span class="ml-2">Cash In</span>
+                </button>
 
+                <button class="flex flex-row rounded-md bg-destructive px-4 py-2 text-white hover:bg-primary/80"
+                    (click)="cancel()">
+                    <svg-icon src="./assets/icons/heroicons/outline/back.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
+                    <span class="ml-2">Cancel</span>
+                </button>
             </div>
         </div>
     </form>
 </div>
+
+<app-transaction-view [org]="org" [transactions]="organizationBalance?.recentTransactions ?? []"></app-transaction-view>

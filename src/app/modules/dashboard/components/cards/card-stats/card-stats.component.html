@@ -1,13 +1,22 @@
 <div
   [ngClass]="borderColor"
-  class="relative flex flex-col min-w-0 break-words rounded-lg bg-background p-4 xl:mb-0 shadow-lg border-l-4"
+  class="relative flex flex-col min-w-0 break-words rounded-lg bg-background p-4 xl:mb-0 shadow-lg border-l-4 group cursor-pointer"
 >
-  <div class="flex-auto p-4">
+  <!-- Tooltip on Card Hover -->
+  <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-4 py-3 bg-white text-gray-700 text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-lg border border-gray-200 z-10 max-w-xs whitespace-pre-line">
+    {{ statDescription }}
+    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-white"></div>
+  </div>
+
+  <div class="flex-auto">
     <div class="flex flex-wrap">
       <div class="relative w-full pr-4 max-w-full flex-grow flex-1">
-        <span class="font-semibold text-lg text-blueGray-700">
-           {{ formatCurrency(statTitle) }}
-        </span>
+        <div class="flex items-center gap-2">
+          <span class="font-semibold text-lg text-blueGray-700">
+             {{ formatCurrency(statTitle) }}
+          </span>
+        </div>
+        
         <h5 class="text-blueGray-400 uppercase font-bold text-xs mt-2">
           {{ statSubtitle }}
         </h5>
@@ -22,4 +31,5 @@
       </div>
     </div>
   </div>
+  
 </div>

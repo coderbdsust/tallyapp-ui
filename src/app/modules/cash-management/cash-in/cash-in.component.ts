@@ -7,16 +7,22 @@ import { Organization } from '../../../core/models/organization.model';
 import { OrganizationService } from '../../../core/services/organization.service';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { AccountingService } from '../../../core/services/accounting.service';
+import { CashFlowBalanceSummary, OrganizationBalance } from 'src/app/core/models/organization-balance.model';
+import { TransactionViewComponent } from '../../dashboard/components/transaction-view/transaction-view.component';
+import { CashBalanceViewerComponent } from '../cash-balance-viewer/cash-balance-viewer.component';
 
 @Component({
   selector: 'app-cash-in',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, CashBalanceViewerComponent, TransactionViewComponent],
   templateUrl: './cash-in.component.html',
   styleUrl: './cash-in.component.scss',
 })
 export class CashInComponent extends FormError implements OnInit {
   form!: FormGroup;
   org: Organization|null = null;
+  public organizationBalance: OrganizationBalance | null = null;
+  balanceSummary: CashFlowBalanceSummary | null = null;
+
   public readonly allPaymentMethods = [
     'Cash',
     'Bank Transfer',
@@ -33,7 +39,6 @@ export class CashInComponent extends FormError implements OnInit {
     private readonly accService: AccountingService
   ) {
     super();  
-    console.log('Cash In Component Initialized');
     this.initiatlizeForm(null)
   }
 
@@ -42,6 +47,8 @@ export class CashInComponent extends FormError implements OnInit {
       if (org) {
         this.org = org;
         this.initiatlizeForm(this.org);
+        this.loadOrganizationBalance(this.org);
+        this.loadBalanceSummary(this.org);
       }
     });
   }
@@ -58,8 +65,6 @@ export class CashInComponent extends FormError implements OnInit {
   }
 
   submit() {
-    console.log(this.form.value);
-
     if(this.form.invalid) {
       this.orgService.showToastError('Please fill in all required fields correctly.');
       return;
@@ -69,6 +74,8 @@ export class CashInComponent extends FormError implements OnInit {
       next: (response) => {
         this.orgService.showToastSuccess(response.message || 'Cash In recorded successfully');
         this.initiatlizeForm(this.org);
+        this.loadOrganizationBalance(this.org);
+        this.loadBalanceSummary(this.org);
       },
       error: (error) => {
         this.orgService.showToastErrorResponse(error);
@@ -81,6 +88,30 @@ export class CashInComponent extends FormError implements OnInit {
     this.form.reset();
   }
 
-  
-  
+  loadOrganizationBalance(org: Organization | null): void {
+    if (org) {
+      this.accService.getOrganizationBalance(org.id, 'CASH_IN').subscribe({
+        next: (response) => {
+          this.organizationBalance = response;
+        },
+        error: (error) => {
+          this.accService.showToastErrorResponse(error);
+        },
+      });
+    }
+  }
+
+  loadBalanceSummary(org:Organization | null){
+    if (org) {
+      this.accService.getCashFlowBalanceSummary(org.id).subscribe({
+        next: (response) => {
+          this.balanceSummary = response;
+        },
+        error: (error) => {
+          this.accService.showToastErrorResponse(error);
+        },
+      });
+    }
+  }
+
 }

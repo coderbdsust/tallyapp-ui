@@ -1,0 +1,23 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { JournalViewerComponent } from './journal-viewer.component';
+
+describe('JournalViewerComponent', () => {
+  let component: JournalViewerComponent;
+  let fixture: ComponentFixture<JournalViewerComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [JournalViewerComponent]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(JournalViewerComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

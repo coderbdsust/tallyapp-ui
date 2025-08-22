@@ -3,6 +3,7 @@
   <!-- Cash Balance - Blue theme -->
   <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
     <app-card-stats statSubtitle="Cash Balance" [statTitle]="organizationBalance?.cashBalance"
+      statDescription="Amount of cash currently available"
       statPercentColor="text-emerald-500" statIconName="fas fa-wallet"
       borderColor="border-blue-500"
       statIconColor="bg-gradient-to-r from-blue-200 to-blue-400">
@@ -12,6 +13,7 @@
   <!-- Total Expenses - Red theme -->
   <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
     <app-card-stats statSubtitle="Total Expenses" [statTitle]="organizationBalance?.totalExpenses"
+      statDescription="Total costs incurred in running the business"
       borderColor="border-red-500"
       statPercentColor="text-red-500" statIconName="fas fa-credit-card" 
       statIconColor="bg-gradient-to-r from-red-200 to-red-400">
@@ -21,16 +23,18 @@
   <!-- Net Income - Green theme -->
   <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
     <app-card-stats statSubtitle="Net Income" [statTitle]="organizationBalance?.netIncome"
-     borderColor="border-green-500"
+      statDescription="Profit or loss (Revenue - Expenses = Net Income)"
+      borderColor="border-green-500"
       statPercentColor="text-emerald-500" statIconName="fas fa-chart-line" 
       statIconColor="bg-gradient-to-r from-green-200 to-green-400">
     </app-card-stats>
   </div>
 
   <!-- Accounts Receivable - Teal theme -->
-  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2" *ngIf="showFullBalance">
     <app-card-stats statSubtitle="Accounts Receivable"
       [statTitle]="organizationBalance?.accountsReceivable" statPercentColor="text-emerald-500"
+      statDescription="Money owed to the business by customers"
       borderColor="border-teal-500"
       statIconName="fas fa-receipt" 
       statIconColor="bg-gradient-to-r from-teal-200 to-teal-400">
@@ -38,17 +42,19 @@
   </div>
 
   <!-- Accounts Payable - Orange theme -->
-  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2" *ngIf="showFullBalance">
     <app-card-stats statSubtitle="Accounts Payable" [statTitle]="organizationBalance?.accountsPayable"
-    borderColor="border-orange-500"
+      statDescription="Money the business owes to suppliers/vendors"
+      borderColor="border-orange-500"
       statPercentColor="text-orange-500" statIconName="fas fa-file-invoice-dollar" 
       statIconColor="bg-gradient-to-r from-orange-200 to-orange-400">
     </app-card-stats>
   </div>
 
   <!-- Total Revenue - Emerald theme -->
-  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2" *ngIf="showFullBalance">
     <app-card-stats statSubtitle="Total Revenue" [statTitle]="organizationBalance?.totalRevenue"
+    statDescription="Total income generated from business operations"
     borderColor="border-emerald-500"
       statPercentColor="text-emerald-500" statIconName="fas fa-dollar-sign" 
       statIconColor="bg-gradient-to-r from-emerald-200 to-emerald-400">
@@ -56,27 +62,30 @@
   </div>
 
   <!-- Total Assets - Purple theme -->
-  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2" *ngIf="showFullBalance">
     <app-card-stats statSubtitle="Total Assets" [statTitle]="organizationBalance?.totalAssets"
-    borderColor="border-purple-500"
+      statDescription="Sum of everything the business owns"
+      borderColor="border-purple-500"
       statPercentColor="text-purple-500" statIconName="fas fa-building" 
       statIconColor="bg-gradient-to-r from-purple-200 to-purple-400">
     </app-card-stats>
   </div>
 
   <!-- Total Liabilities - Rose theme -->
-  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2" *ngIf="showFullBalance">
     <app-card-stats statSubtitle="Total Liabilities" [statTitle]="organizationBalance?.totalLiabilities"
-    borderColor="border-rose-500"
+      statDescription="Sum of everything the business owes"
+      borderColor="border-rose-500"
       statPercentColor="text-rose-500" statIconName="fas fa-exclamation-triangle" 
       statIconColor="bg-gradient-to-r from-rose-200 to-rose-400">
     </app-card-stats>
   </div>
 
   <!-- Total Equity - Indigo theme -->
-  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
+  <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2" *ngIf="showFullBalance">
     <app-card-stats statSubtitle="Total Equity" [statTitle]="organizationBalance?.totalEquity"
-    borderColor="border-indigo-500"
+      statDescription="Owner's stake in the business (Assets - Liabilities = Equity)"
+      borderColor="border-indigo-500"
       statPercentColor="text-indigo-500" statIconName="fas fa-chart-pie" 
       statIconColor="bg-gradient-to-r from-indigo-200 to-indigo-400">
     </app-card-stats>

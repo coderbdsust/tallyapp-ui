@@ -118,6 +118,10 @@ export class CardPageVisitsComponent extends PaginatedComponent<Transaction> imp
 
   onSearchChange(event: Event): void {
     const input = (event.target as HTMLInputElement).value;
+    if (input.length < 4 && input.length > 0) {
+      this.orgService.showToastInfo('Search term must be at least 4 characters long.');
+      return;
+    }
     this.search = input;
     this.onFilterChange();
   }

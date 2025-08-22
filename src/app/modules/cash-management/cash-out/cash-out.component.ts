@@ -7,17 +7,23 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { AccountingService } from '../../../core/services/accounting.service';
+import { CashFlowBalanceSummary, OrganizationBalance } from 'src/app/core/models/organization-balance.model';
+import { HeaderStatsComponent } from '../../dashboard/components/header-stats/header-stats.component';
+import { TransactionViewComponent } from '../../dashboard/components/transaction-view/transaction-view.component';
+import { CashBalanceViewerComponent } from '../cash-balance-viewer/cash-balance-viewer.component';
 
 @Component({
   selector: 'app-cash-out',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, CashBalanceViewerComponent, TransactionViewComponent],
   templateUrl: './cash-out.component.html',
   styleUrl: './cash-out.component.scss'
 })
 export class CashOutComponent extends FormError implements OnInit{
  form!: FormGroup;
  org: Organization|null=null;
- 
+ public organizationBalance: OrganizationBalance | null = null;
+ balanceSummary: CashFlowBalanceSummary | null = null;
+
      public readonly allPaymentMethods = [
        'Cash',
        'Bank Transfer',
@@ -43,6 +49,8 @@ export class CashOutComponent extends FormError implements OnInit{
          if (org) {
            this.org = org;
            this.initiatlizeForm(this.org);
+           this.loadOrganizationBalance(this.org);
+            this.loadBalanceSummary(this.org);
          }
        });
      }
@@ -70,6 +78,8 @@ export class CashOutComponent extends FormError implements OnInit{
          next: (response) => {
            this.orgService.showToastSuccess(response.message || 'Cash Out recorded successfully');
            this.initiatlizeForm(this.org);
+           this.loadOrganizationBalance(this.org);
+           this.loadBalanceSummary(this.org);
          },
          error: (error) => {
            this.orgService.showToastErrorResponse(error);
@@ -81,4 +91,31 @@ export class CashOutComponent extends FormError implements OnInit{
      cancel() {
        this.form.reset();
      }
+
+  loadOrganizationBalance(org: Organization | null): void {
+    if (org) {
+      this.accService.getOrganizationBalance(org.id, 'CASH_OUT').subscribe({
+        next: (response) => {
+          this.organizationBalance = response;
+        },
+        error: (error) => {
+          this.accService.showToastErrorResponse(error);
+        },
+      });
+    }
+  }
+
+  loadBalanceSummary(org:Organization | null){
+    if (org) {
+      this.accService.getCashFlowBalanceSummary(org.id).subscribe({
+        next: (response) => {
+          this.balanceSummary = response;
+        },
+        error: (error) => {
+          this.accService.showToastErrorResponse(error);
+        },
+      });
+    }
+  }
+
 }

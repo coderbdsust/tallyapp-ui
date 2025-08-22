@@ -1,0 +1,95 @@
+<div class="flex flex-row justify-center mt-5 border border-muted/50 p-2 rounded-md">
+  <div class="flex flex-col">
+    <div class="flex items-center gap-2">
+      <img [src]="org?.logo || 'https://placehold.co/600x400'" alt="Organization Logo" class="h-12 w-auto" />
+      <h1 class="text-lg font-semibold text-muted-foreground">{{ org?.orgName || 'Organization Name'}}</h1>
+    </div>
+  </div>
+</div>
+
+<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2 mt-5">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-8">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+
+  <!-- Table Section -->
+  <div *ngIf="!loading" class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+    <table class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+      <thead class="border border-muted/20 text-xs text-muted-foreground bg-black-100 text-white bg-gray-100">
+        <tr>
+          <th class="min-w-[150px] px-4 py-3">Transaction Type</th>
+          <th class="min-w-[120px] px-4 py-3 text-right">Amount</th>
+          <th class="min-w-[140px] px-4 py-3">Date & Time</th>
+          <th class="min-w-[120px] px-4 py-3">Account</th>
+          <th class="min-w-[140px] px-4 py-3">Party</th>
+          <th class="min-w-[200px] px-4 py-3">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let txn of this.transactions; let i = index" class="hover:bg-card/50 border-b border-gray-100">
+          <!-- Transaction Type -->
+          <td class="px-4 py-3">
+            <span 
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" 
+              [ngClass]="[
+                getTransactionTypeColor(txn.transactionType).bg,
+                getTransactionTypeColor(txn.transactionType).text
+              ]">
+              {{ txn.transactionType | word }}
+            </span>
+          </td>
+
+          <!-- Amount -->
+          <td class="px-4 py-3 text-right">
+            <span [ngClass]="getAmountColor(txn.transactionType, txn.amount)">
+              {{ formatCurrency(txn.amount) }}
+            </span>
+          </td>
+
+          <!-- Date -->
+          <td class="px-4 py-3">
+            <div class="flex flex-col">
+              <span class="text-sm font-medium">{{ txn.transactionDate | date: 'dd-MM-yyyy' }}</span>
+              <span class="text-xs text-muted-foreground">{{ txn.transactionDate | date: 'HH:mm' }}</span>
+            </div>
+          </td>
+
+          <!-- Account -->
+          <td class="px-4 py-3">
+            <span class="text-sm">{{ txn.accountName || 'N/A' }}</span>
+          </td>
+
+          <!-- Party (From/To) -->
+          <td class="px-4 py-3">
+            <div class="flex flex-col" *ngIf="getTransactionParty(txn).name !== 'N/A'; else noParty">
+              <span class="text-sm font-medium">{{ getTransactionParty(txn).name }}</span>
+              <span class="text-xs text-muted-foreground">({{ getTransactionParty(txn).type }})</span>
+            </div>
+            <ng-template #noParty>
+              <span class="text-sm text-muted-foreground">N/A</span>
+            </ng-template>
+          </td>
+
+          <!-- Description -->
+          <td class="px-4 py-3">
+            <span class="text-sm" [title]="txn.description">
+              {{ txn.description || 'No description' }}
+            </span>
+          </td>
+        </tr>
+
+        <!-- Empty State -->
+        <tr *ngIf="!transactions || transactions.length === 0">
+          <td class="py-8 text-center text-sm" colspan="6">
+            <div class="flex flex-col items-center gap-2">
+              <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
+              </svg-icon>
+              <span>No transactions found</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

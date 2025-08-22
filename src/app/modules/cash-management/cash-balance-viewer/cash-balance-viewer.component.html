@@ -1,0 +1,72 @@
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <!-- Total Cash In -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Total Cash In</p>
+            <p class="text-2xl font-bold text-green-600 mt-1">
+              {{ formatCurrency(balanceSummary?.totalCashIn??0) }}
+            </p>
+          </div>
+          <div class="bg-green-100 p-3 rounded-full">
+            <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </div>
+        </div>
+        <!-- <div class="mt-4 flex items-center">
+          <svg class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="text-xs text-gray-500 ml-1">Cash inflows</span>
+        </div> -->
+      </div>
+
+
+
+      <!-- Total Cash Out -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Total Cash Out</p>
+            <p class="text-2xl font-bold text-red-600 mt-1">
+              {{ formatCurrency(balanceSummary?.totalCashOut??0) }}
+            </p>
+          </div>
+          <div class="bg-red-100 p-3 rounded-full">
+            <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+            </svg>
+          </div>
+        </div>
+        <!-- <div class="mt-4 flex items-center">
+          <svg class="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="text-xs text-gray-500 ml-1">Cash outflows</span>
+        </div> -->
+      </div>
+
+      <!-- Net Cash Flow -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Net Cash Balance</p>
+            <p class="text-2xl font-bold text-blue-600 mt-1">
+              {{ formatCurrency(balanceSummary?.netCashBalance??0) }}
+            </p>
+          </div>
+          <div class="bg-blue-100 p-3 rounded-full">
+            <svg class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>

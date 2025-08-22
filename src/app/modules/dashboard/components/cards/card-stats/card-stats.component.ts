@@ -1,4 +1,4 @@
-import { NgClass } from "@angular/common";
+import { NgClass, NgIf } from "@angular/common";
 import { Component, OnInit, Input } from "@angular/core";
 import { formatCurrency } from "src/app/common/utils/common";
 
@@ -95,6 +95,15 @@ export class CardStatsComponent implements OnInit {
       statIconColor === undefined ? "bg-red-500" : statIconColor;
   }
   private _statIconColor = "bg-red-500";
+
+  @Input()
+  statDescription: string = 'Description Not Available';
+  showDescription: boolean = false; 
+  
+  toggleDescription(event: Event): void {
+    event.stopPropagation(); 
+    this.showDescription = !this.showDescription;
+  }
 
   constructor() {}
 
