@@ -1,0 +1,15 @@
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+.space-y-4 > * + * {
+  margin-top: 1rem;
+}
+
+.space-y-1 > * + * {
+  margin-top: 0.25rem;
+}
+
+.space-x-3 > * + * {
+  margin-left: 0.75rem;
+}

@@ -1,0 +1,46 @@
+<div class="space-y-4">
+      <div class="mb-2">
+        <div 
+          class="flex items-center justify-between p-3 rounded-lg border cursor-pointer hover:shadow-sm transition-all"
+          [ngClass]="getCategoryColorClass(treeName)"
+          (click)="toggleNode()">
+          <div class="flex items-center space-x-3">
+            <div class="flex items-center">
+              <svg *ngIf="expandedNode" class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+              </svg>
+              <svg *ngIf="!expandedNode" class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <svg-icon [src]="getSvgIcon(treeName)" [svgClass]="'h-4 w-4'"></svg-icon>
+            <span class="font-semibold text-lg">{{ treeName | titlecase }}</span>
+            <span class="text-sm opacity-75">({{ accounts.length || 0 }} accounts)</span>
+          </div>
+          <span class="font-bold text-lg" [ngClass]="getBalanceColorClass(treeName, accountTotalBalance)">
+            {{ formatCurrency(accountTotalBalance || 0) }}
+          </span>
+        </div>
+
+        <div *ngIf="expandedNode" class="ml-8 mt-2 space-y-1">
+          <div
+            *ngFor="let account of accounts"
+            class="flex items-center justify-between p-2 bg-white rounded border border-gray-100 hover:border-gray-200 transition-colors">
+            <div class="flex items-center space-x-3">
+              <div class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
+                <svg class="w-3 h-3 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+              </div>
+              <div>
+                <p class="font-medium text-gray-900">{{ account.accountName }}</p>
+                <p class="text-xs text-gray-500">{{ account.accountCode }} • {{ account.description }}</p>
+              </div>
+            </div>
+            <span [ngClass]="getBalanceColorClass(treeName, accountTotalBalance)" class="font-semibold">
+              {{ formatCurrency(account.balance) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
