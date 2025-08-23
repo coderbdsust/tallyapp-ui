@@ -98,4 +98,4 @@
     </form>
 </div>
 
-<app-transaction-view [org]="org" [transactions]="organizationBalance?.recentTransactions ?? []"></app-transaction-view>
+<app-transaction-recent-view [transactionType]="'CASH_OUT'" [refreshTime]="refreshTime"></app-transaction-recent-view>

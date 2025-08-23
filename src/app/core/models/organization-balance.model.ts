@@ -16,6 +16,14 @@ export interface OrganizationBalance {
   recentTransactions: Transaction[]
 }
 
+export interface RecentTransactionReport {
+  organizationId: string
+  organizationName: string
+  orgLogo: string
+  reportTime: string
+  recentTransactions: Transaction[]
+}
+
 export interface Transaction {
   id: string
   transactionNumber: string

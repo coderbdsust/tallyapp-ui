@@ -27,8 +27,7 @@ export class Menu {
           route: '/dashboard',
           requiredModules: ['DASHBOARD'],
           children: [
-            { label: 'Home', route: '/dashboard/home' },
-            { label: 'Report', route: '/dashboard/report' },
+            { label: 'Home', route: '/dashboard/home' }
           ],
         }
       ],

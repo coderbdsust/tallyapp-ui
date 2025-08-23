@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
 import { NftComponent } from './pages/nft/nft.component';
-import { StatsDashboardComponent } from './pages/stats-dashboard/stats-dashboard.component';
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
 
 const routes: Routes = [
@@ -13,7 +12,6 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: NftComponent },
-      { path: 'report', component: StatsDashboardComponent },
       { path: '**', redirectTo: 'errors/404' },
     ],
   },

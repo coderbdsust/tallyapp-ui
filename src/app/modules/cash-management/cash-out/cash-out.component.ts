@@ -8,13 +8,13 @@ import { CommonModule } from '@angular/common';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { AccountingService } from '../../../core/services/accounting.service';
 import { CashFlowBalanceSummary, OrganizationBalance } from 'src/app/core/models/organization-balance.model';
-import { HeaderStatsComponent } from '../../dashboard/components/header-stats/header-stats.component';
-import { TransactionViewComponent } from '../../dashboard/components/transaction-view/transaction-view.component';
 import { CashBalanceViewerComponent } from '../cash-balance-viewer/cash-balance-viewer.component';
+import { TransactionRecentViewComponent } from '../transaction-recent-view/transaction-recent-view.component';
+
 
 @Component({
   selector: 'app-cash-out',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, CashBalanceViewerComponent, TransactionViewComponent],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, CashBalanceViewerComponent, TransactionRecentViewComponent],
   templateUrl: './cash-out.component.html',
   styleUrl: './cash-out.component.scss'
 })
@@ -23,6 +23,7 @@ export class CashOutComponent extends FormError implements OnInit{
  org: Organization|null=null;
  public organizationBalance: OrganizationBalance | null = null;
  balanceSummary: CashFlowBalanceSummary | null = null;
+ refreshTime: Date = new Date();
 
      public readonly allPaymentMethods = [
        'Cash',
@@ -80,6 +81,7 @@ export class CashOutComponent extends FormError implements OnInit{
            this.initiatlizeForm(this.org);
            this.loadOrganizationBalance(this.org);
            this.loadBalanceSummary(this.org);
+           this.refreshTime = new Date();
          },
          error: (error) => {
            this.orgService.showToastErrorResponse(error);

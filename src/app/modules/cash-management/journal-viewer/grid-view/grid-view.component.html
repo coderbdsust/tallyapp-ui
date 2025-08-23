@@ -1,0 +1,31 @@
+<div class="mt-6 bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+            <div class="w-6 h-6 rounded-full flex items-center justify-center mr-3" [ngClass]="getCategoryColorClass(treeName)">
+                <svg-icon [src]="getSvgIcon(treeName)" [svgClass]="'h-4 w-4'"></svg-icon>
+            </div>
+            {{treeName | titlecase}}
+            <span class="ml-2 text-sm font-normal text-gray-500">(Total: {{ formatCurrency(accountTotalBalance)
+                }})</span>
+        </h3>
+    </div>
+    <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-{{ columnGrid }} gap-4" *ngIf="accounts.length > 0; else noData">
+            <div *ngFor="let account of accounts"
+                class="border-l-4  pl-4 py-3 bg-gray-50 rounded-r-lg" [ngClass]="getCategoryColorClass(treeName)">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <p class="font-medium text-gray-900">{{ account.accountName }}</p>
+                        <p class="text-sm text-gray-500">{{ account.accountCode }} • {{ account.description }}</p>
+                    </div>
+                    <p class="font-semibold text-lg p-4" [ngClass]="getBalanceColorClass(treeName, accountTotalBalance)">
+                        {{ formatCurrency(account.balance) }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <ng-template #noData>
+            <p class="text-gray-500 italic">No {{treeName}} recorded</p>
+        </ng-template>
+    </div>
+</div>

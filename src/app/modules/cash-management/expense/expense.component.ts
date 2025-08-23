@@ -9,12 +9,12 @@ import { AccountingService } from '../../../core/services/accounting.service';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { CashFlowBalanceSummary, OrganizationBalance } from 'src/app/core/models/organization-balance.model';
-import { TransactionViewComponent } from '../../dashboard/components/transaction-view/transaction-view.component';
 import { CashBalanceViewerComponent } from '../cash-balance-viewer/cash-balance-viewer.component';
+import { TransactionRecentViewComponent } from '../transaction-recent-view/transaction-recent-view.component';
 
 @Component({
   selector: 'app-expense',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, WordPipe, CashBalanceViewerComponent, TransactionViewComponent],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, WordPipe, CashBalanceViewerComponent, TransactionRecentViewComponent],
   templateUrl: './expense.component.html',
   styleUrl: './expense.component.scss',
 })
@@ -23,6 +23,7 @@ export class ExpenseComponent extends FormError implements OnInit {
   org: Organization | null = null;
   public organizationBalance: OrganizationBalance | null = null;
   balanceSummary: CashFlowBalanceSummary| null = null;
+  refreshTime: Date = new Date();
 
   public readonly allPaymentMethods = ['Cash', 'Bank Transfer', 'Mobile Banking', 'Card', 'Cheque', 'Other'];
 
@@ -82,6 +83,7 @@ export class ExpenseComponent extends FormError implements OnInit {
         this.initiatlizeForm(this.org);
         this.loadOrganizationBalance(this.org);
         this.loadBalanceSummary(this.org);
+        this.refreshTime = new Date();
       },
       error: (error) => {
         this.orgService.showToastErrorResponse(error);

@@ -96,4 +96,4 @@
     </form>
 </div>
 
-<app-transaction-view [org]="org" [transactions]="organizationBalance?.recentTransactions ?? []"></app-transaction-view>
+<app-transaction-recent-view [transactionType]="'CASH_IN'" [refreshTime]="refreshTime"></app-transaction-recent-view>

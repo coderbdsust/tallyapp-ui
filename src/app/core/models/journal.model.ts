@@ -15,7 +15,6 @@ export interface FinancialData {
   equity: Account[];
   revenue: Account[];
   expenses: Account[];
-  netIncome: number;
   totalAssets: number;
   totalEquity: number;
   totalExpenses: number;

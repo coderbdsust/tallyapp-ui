@@ -6,11 +6,12 @@ import { Organization } from 'src/app/core/models/organization.model';
 import { AccountingService } from 'src/app/core/services/accounting.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { TreeViewComponent } from "./tree-view/tree-view.component";
+import { GridViewComponent } from './grid-view/grid-view.component';
 
 
 @Component({
   selector: 'app-journal-viewer',
-  imports: [CommonModule, TreeViewComponent],
+  imports: [CommonModule, TreeViewComponent, GridViewComponent],
   templateUrl: './journal-viewer.component.html',
   styleUrl: './journal-viewer.component.scss'
 })
@@ -49,14 +50,6 @@ export class JournalViewerComponent {
 
   setView(view: 'grid' | 'tree'): void {
     this.currentView = view;
-  }
-  
-  get netWorth(): number {
-    return (this.financialData?.totalAssets || 0) - (this.financialData?.totalLiabilities || 0);
-  }
-
-  get netIncome(): number {
-    return (this.financialData?.totalRevenue || 0) - (this.financialData?.totalExpenses || 0);
   }
 
   get totalAccounts(): number {

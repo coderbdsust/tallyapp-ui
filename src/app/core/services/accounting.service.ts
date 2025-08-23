@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { CommonService } from './common.service';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
-import { CashFlowBalanceSummary, CashFlowReport, OrganizationBalance, PageCashFlowReport, Transaction } from '../models/organization-balance.model';
+import { CashFlowBalanceSummary, OrganizationBalance, PageCashFlowReport, RecentTransactionReport, Transaction } from '../models/organization-balance.model';
 import { ApiResponse } from '../models/auth.model';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { FinancialData } from '../models/journal.model';
@@ -22,6 +22,17 @@ export class AccountingService extends CommonService {
       .get<OrganizationBalance>(`${environment.tallyURL}/accounting/v1/balance/${organizationId}`, {
         params: {
           transactionType,
+        },
+      })
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public getRecentTransactionByType(organizationId: string, transactionType: string, limit: number = 10) {
+    return this.http
+      .get<RecentTransactionReport>(`${environment.tallyURL}/accounting/v1/transactions/recent/${organizationId}`, {
+        params: {
+          transactionType,
+          limit: limit.toString(),
         },
       })
       .pipe(catchError(this.mapErrorResponse));

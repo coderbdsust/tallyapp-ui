@@ -1,81 +1,83 @@
 <div class="min-h-screen bg-gray-50 p-6">
   <div class="max-w-6xl mx-auto">
     <!-- Header -->
-   <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
-  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-    <div>
-      <h1 class="text-3xl font-bold text-gray-900 flex items-center">
-        <svg class="w-8 h-8 mr-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path>
-        </svg>
-        Financial Journal
-      </h1>
-      <p class="text-sm text-gray-600 mt-1">Organization ID: {{ financialData.organizationId }}</p>
-    </div>
-    
-    <div class="flex flex-col sm:flex-row items-center gap-4">
-      <!-- Date Section -->
-      <div class="text-right">
-        <p class="text-sm text-gray-500">As of Date</p>
-        <p class="text-lg font-semibold text-gray-900">{{ formatDate(financialData.asOfDate || '') }}</p>
-      </div>
-      
-      <!-- Segmented Control Toggle -->
-      <div class="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-1">
-        <button 
-          (click)="setView('grid')"
-          [class]="currentView === 'grid' ? 'bg-white shadow-sm text-gray-900 border border-gray-200' : 'text-gray-500 hover:text-gray-700'"
-          class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200">
-          <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-          </svg>
-          Grid
-        </button>
-        <button 
-          (click)="setView('tree')"
-          [class]="currentView === 'tree' ? 'bg-white shadow-sm text-gray-900 border border-gray-200' : 'text-gray-500 hover:text-gray-700'"
-          class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200">
-          <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm6 0a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1zm0 5a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1zm0 5a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1zM4 13a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1v-3a1 1 0 00-1-1H4z" clip-rule="evenodd"></path>
-          </svg>
-          Tree
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-    <div class="mb-4 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Financial Summary</h3>
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div class="text-center p-3 bg-green-50 rounded-lg border border-green-200">
-          <p class="text-sm text-green-600 font-medium">Net Worth</p>
-          <p class="text-xl font-bold text-green-700">
-            {{ formatCurrency(netWorth) }}
-          </p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+            <svg class="w-8 h-8 mr-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
+                clip-rule="evenodd"></path>
+            </svg>
+            Financial Journal
+          </h1>
+          <p class="text-sm text-gray-600 mt-1">Organization ID: {{ financialData.organizationId }}</p>
         </div>
-        <div class="text-center p-3 bg-emerald-50 rounded-lg border border-emerald-200">
-          <p class="text-sm text-emerald-600 font-medium">Net Income</p>
-          <p class="text-xl font-bold text-emerald-700">
-            {{ formatCurrency(netIncome) }}
-          </p>
-        </div>
-        <div class="text-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-          <p class="text-sm text-blue-600 font-medium">Total Accounts</p>
-          <p class="text-xl font-bold text-blue-700">
-            {{ totalAccounts }}
-          </p>
+
+        <div class="flex flex-col sm:flex-row items-center gap-4">
+          <!-- Date Section -->
+          <div class="text-right">
+            <p class="text-sm text-gray-500">As of Date</p>
+            <p class="text-lg font-semibold text-gray-900">{{ formatDate(financialData.asOfDate || '') }}</p>
+          </div>
+
+          <!-- Segmented Control Toggle -->
+          <div class="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-1">
+            <button (click)="setView('grid')"
+              [class]="currentView === 'grid' ? 'bg-white shadow-sm text-gray-900 border border-gray-200' : 'text-gray-500 hover:text-gray-700'"
+              class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200">
+              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                </path>
+              </svg>
+              Grid
+            </button>
+            <button (click)="setView('tree')"
+              [class]="currentView === 'tree' ? 'bg-white shadow-sm text-gray-900 border border-gray-200' : 'text-gray-500 hover:text-gray-700'"
+              class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200">
+              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm6 0a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1zm0 5a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1zm0 5a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1zM4 13a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1v-3a1 1 0 00-1-1H4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              Tree
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
     <ng-template [ngIf]="currentView === 'tree'">
-      <app-tree-view treeName="assets" [accounts]="financialData.assets" [accountTotalBalance]="financialData.totalAssets"></app-tree-view>
-      <app-tree-view treeName="liabilities" [accounts]="financialData.liabilities" [accountTotalBalance]="financialData.totalLiabilities"></app-tree-view>
-      <app-tree-view treeName="equity" [accounts]="financialData.equity" [accountTotalBalance]="financialData.totalEquity"></app-tree-view>
-      <app-tree-view treeName="revenue" [accounts]="financialData.revenue" [accountTotalBalance]="financialData.totalRevenue"></app-tree-view>
-      <app-tree-view treeName="expenses" [accounts]="financialData.expenses" [accountTotalBalance]="financialData.totalExpenses"></app-tree-view>
+      <app-tree-view treeName="assets" [accounts]="financialData.assets"
+        [accountTotalBalance]="financialData.totalAssets"></app-tree-view>
+      <app-tree-view treeName="liabilities" [accounts]="financialData.liabilities"
+        [accountTotalBalance]="financialData.totalLiabilities"></app-tree-view>
+      <app-tree-view treeName="equity" [accounts]="financialData.equity"
+        [accountTotalBalance]="financialData.totalEquity"></app-tree-view>
+      <app-tree-view treeName="revenue" [accounts]="financialData.revenue"
+        [accountTotalBalance]="financialData.totalRevenue"></app-tree-view>
+      <app-tree-view treeName="expenses" [accounts]="financialData.expenses"
+        [accountTotalBalance]="financialData.totalExpenses"></app-tree-view>
+    </ng-template>
+
+    <ng-template [ngIf]="currentView === 'grid'">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <app-grid-view treeName="assets" [accounts]="financialData.assets"
+          [accountTotalBalance]="financialData.totalAssets" [columnGrid]="1"></app-grid-view>
+        <app-grid-view treeName="liabilities" [accounts]="financialData.liabilities"
+          [accountTotalBalance]="financialData.totalLiabilities" [columnGrid]="1"></app-grid-view>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <app-grid-view treeName="equity" [accounts]="financialData.equity"
+          [accountTotalBalance]="financialData.totalEquity" [columnGrid]="1"></app-grid-view>
+        <app-grid-view treeName="revenue" [accounts]="financialData.revenue"
+          [accountTotalBalance]="financialData.totalRevenue" [columnGrid]="1"></app-grid-view>
+
+      </div>
+      <app-grid-view treeName="expenses" [accounts]="financialData.expenses"
+        [accountTotalBalance]="financialData.totalExpenses" [columnGrid]="2"></app-grid-view>
     </ng-template>
 
   </div>

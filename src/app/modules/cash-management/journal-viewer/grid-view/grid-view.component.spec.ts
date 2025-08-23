@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StatsDashboardComponent } from './stats-dashboard.component';
+import { GridViewComponent } from './grid-view.component';
 
-describe('StatsDashboardComponent', () => {
-  let component: StatsDashboardComponent;
-  let fixture: ComponentFixture<StatsDashboardComponent>;
+describe('GridViewComponent', () => {
+  let component: GridViewComponent;
+  let fixture: ComponentFixture<GridViewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StatsDashboardComponent]
+      imports: [GridViewComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(StatsDashboardComponent);
+    fixture = TestBed.createComponent(GridViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

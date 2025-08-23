@@ -101,5 +101,4 @@
         </div>
     </form>
 </div>
-
-<app-transaction-view [org]="org" [transactions]="organizationBalance?.recentTransactions ?? []"></app-transaction-view>
+<app-transaction-recent-view [transactionType]="'EXPENSE'" [refreshTime]="refreshTime"></app-transaction-recent-view>

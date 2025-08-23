@@ -1,13 +1,28 @@
-<div class="flex flex-row justify-center mt-5 border border-muted/50 p-2 rounded-md">
-  <div class="flex flex-col">
-    <div class="flex items-center gap-2">
-      <img [src]="org?.logo || 'https://placehold.co/600x400'" alt="Organization Logo" class="h-12 w-auto" />
-      <h1 class="text-lg font-semibold text-muted-foreground">{{ org?.orgName || 'Organization Name'}}</h1>
-    </div>
-  </div>
-</div>
+  <header class="bg-gray shadow-sm border border-gray-200 mt-4 rounded-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+            <!-- Top Header Bar -->
+            <div class="flex items-center justify-between py-4">
+                <!-- Company Logo & Name -->
+                <div class="flex items-center space-x-4">
+                    <img  [src]="transactionReport?.orgLogo || 'https://placehold.co/600x400'" alt="Org Logo" class="h-auto w-24 object-contain">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">{{transactionReport?.organizationName}}</h1>
+                        <p class="text-sm text-gray-500">Transaction Summary</p>
+                    </div>
+                </div>
+                <!-- Report Time & Actions -->
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm text-gray-500">Last Updated</p>
+                        <p class="text-sm font-medium text-gray-900" id="reportTime">{{transactionReport?.reportTime| date: 'dd-MM-yyyy HH:mm'}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2 mt-5">
+
+<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2 mt-4">
   <!-- Loading State -->
   <div *ngIf="loading" class="flex justify-center items-center py-8">
     <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -16,7 +31,7 @@
   <!-- Table Section -->
   <div *ngIf="!loading" class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
     <table class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
-      <thead class="border border-muted/20 text-xs text-muted-foreground bg-black-100 text-white bg-gray-100">
+      <thead class="border border-muted/20 text-xs text-muted-foreground bg-black-100 text-white">
         <tr>
           <th class="min-w-[150px] px-4 py-3">Transaction Type</th>
           <th class="min-w-[120px] px-4 py-3 text-right">Amount</th>
@@ -27,7 +42,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let txn of this.transactions; let i = index" class="hover:bg-card/50 border-b border-gray-100">
+        <tr *ngFor="let txn of transactionReport?.recentTransactions; let i = index" class="hover:bg-card/50 border-b border-gray-100">
           <!-- Transaction Type -->
           <td class="px-4 py-3">
             <span 
@@ -80,7 +95,7 @@
         </tr>
 
         <!-- Empty State -->
-        <tr *ngIf="!transactions || transactions.length === 0">
+        <tr *ngIf="!transactionReport?.recentTransactions?.length">
           <td class="py-8 text-center text-sm" colspan="6">
             <div class="flex flex-col items-center gap-2">
               <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
