@@ -33,9 +33,8 @@ export interface Transaction {
   customerName: string
   supplierName: string
   employeeName: string
-  accountName: string
-  accountCode: string
-  accountType: string
+  debitAccount: Account;
+  creditAccount: Account;
   reference: string
   isReversed: boolean
 }
@@ -74,4 +73,10 @@ export interface FlowTypeStyle {
   textColor: string;
   iconColor: string;
   label: string;
+}
+
+export interface Account {
+  accountName: string;
+  accountCode: string;
+  accountType: string;
 }

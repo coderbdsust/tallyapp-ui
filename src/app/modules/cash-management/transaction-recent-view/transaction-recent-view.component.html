@@ -36,7 +36,8 @@
           <th class="min-w-[150px] px-4 py-3">Transaction Type</th>
           <th class="min-w-[120px] px-4 py-3 text-right">Amount</th>
           <th class="min-w-[140px] px-4 py-3">Date & Time</th>
-          <th class="min-w-[120px] px-4 py-3">Account</th>
+          <th class="min-w-[120px] px-4 py-3">Primary Account</th>
+          <th class="min-w-[120px] px-4 py-3">Contra Account</th>
           <th class="min-w-[140px] px-4 py-3">Party</th>
           <th class="min-w-[200px] px-4 py-3">Description</th>
         </tr>
@@ -72,8 +73,13 @@
 
           <!-- Account -->
           <td class="px-4 py-3">
-            <span class="text-sm">{{ txn.accountName || 'N/A' }}</span>
-             <span class="text-xs text-muted-foreground"> ({{ txn.accountType || 'N/A' }})</span>
+            <span class="text-sm">{{ txn.debitAccount.accountName }}</span>
+             <span class="text-xs text-muted-foreground"> ({{ txn.debitAccount.accountType || 'N/A' }})</span>
+          </td>
+
+          <td class="px-4 py-3">
+            <span class="text-sm">{{ txn.creditAccount.accountName }}</span>
+            <span class="text-xs text-muted-foreground"> ({{ txn.creditAccount.accountType || 'N/A' }})</span>
           </td>
 
           <!-- Party (From/To) -->
