@@ -105,6 +105,7 @@
           <th class="min-w-[120px] px-4 py-3">Account</th>
           <th class="min-w-[140px] px-4 py-3">Party</th>
           <th class="min-w-[200px] px-4 py-3">Description</th>
+          <th class="min-w-[200px] px-4 py-3">Txn Number</th>
         </tr>
       </thead>
       <tbody>
@@ -139,6 +140,7 @@
           <!-- Account -->
           <td class="px-4 py-3">
             <span class="text-sm">{{ txn.accountName || 'N/A' }}</span>
+            <span class="text-xs text-muted-foreground"> ({{ txn.accountType || 'N/A' }})</span>
           </td>
 
           <!-- Party (From/To) -->
@@ -154,9 +156,15 @@
 
           <!-- Description -->
           <td class="px-4 py-3">
-            <span class="text-sm" [title]="txn.description">
-              {{ txn.description || 'No description' }}
-            </span>
+              <span class="text-sm" [title]="txn.description">
+                {{ txn.description || 'No description' }}
+              </span>
+          </td>
+          <td>
+              <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full border"
+                 >
+                  {{ txn.transactionNumber | uppercase}}
+              </span>
           </td>
         </tr>
 

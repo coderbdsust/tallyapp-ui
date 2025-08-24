@@ -10,11 +10,12 @@ import { FormError } from 'src/app/common/components/form-error/form-error.compo
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { CashFlowBalanceSummary, OrganizationBalance } from 'src/app/core/models/organization-balance.model';
 import { CashBalanceViewerComponent } from '../cash-balance-viewer/cash-balance-viewer.component';
-import { TransactionRecentViewComponent } from '../transaction-recent-view/transaction-recent-view.component';
+import { TransactionComponent } from "../transaction.component";
+import { TransactionViewComponent } from '../transaction-view/transaction-view.component';
 
 @Component({
   selector: 'app-expense',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, WordPipe, CashBalanceViewerComponent, TransactionRecentViewComponent],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, WordPipe, CashBalanceViewerComponent, TransactionViewComponent],
   templateUrl: './expense.component.html',
   styleUrl: './expense.component.scss',
 })
@@ -44,7 +45,6 @@ export class ExpenseComponent extends FormError implements OnInit {
       if (org) {
         this.org = org;
         this.initiatlizeForm(this.org);
-        this.loadOrganizationBalance(this.org);
         this.loadBalanceSummary(this.org);
       }
     });
@@ -81,7 +81,6 @@ export class ExpenseComponent extends FormError implements OnInit {
       next: (response) => {
         this.orgService.showToastSuccess(response.message || 'Expense recorded successfully');
         this.initiatlizeForm(this.org);
-        this.loadOrganizationBalance(this.org);
         this.loadBalanceSummary(this.org);
         this.refreshTime = new Date();
       },
@@ -93,19 +92,6 @@ export class ExpenseComponent extends FormError implements OnInit {
 
   cancel() {
     this.form.reset();
-  }
-
-  loadOrganizationBalance(org: Organization | null): void {
-    if (org) {
-      this.accService.getOrganizationBalance(org.id, 'EXPENSE').subscribe({
-        next: (response) => {
-          this.organizationBalance = response;
-        },
-        error: (error) => {
-          this.accService.showToastErrorResponse(error);
-        },
-      });
-    }
   }
 
   loadBalanceSummary(org:Organization| null){

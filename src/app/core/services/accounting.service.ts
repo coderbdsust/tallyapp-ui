@@ -7,6 +7,7 @@ import { CashFlowBalanceSummary, OrganizationBalance, PageCashFlowReport, Recent
 import { ApiResponse } from '../models/auth.model';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { FinancialData } from '../models/journal.model';
+import { CashType } from './cashtype.model';
 
 
 @Injectable({
@@ -17,13 +18,9 @@ export class AccountingService extends CommonService {
     super();
   }
 
-  public getOrganizationBalance(organizationId: string, transactionType: string) {
+  public getOrganizationBalance(organizationId: string) {
     return this.http
-      .get<OrganizationBalance>(`${environment.tallyURL}/accounting/v1/balance/${organizationId}`, {
-        params: {
-          transactionType,
-        },
-      })
+      .get<OrganizationBalance>(`${environment.tallyURL}/accounting/v1/balance/${organizationId}`)
       .pipe(catchError(this.mapErrorResponse));
   }
 
@@ -120,6 +117,18 @@ export class AccountingService extends CommonService {
           size: size.toString(),
         },
       })
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public getCashInTypes() {
+    return this.http
+      .get<CashType[]>(`${environment.tallyURL}/cash/v1/types/cash-in`)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public getCashOutTypes() {
+    return this.http
+      .get<CashType[]>(`${environment.tallyURL}/cash/v1/types/cash-out`)
       .pipe(catchError(this.mapErrorResponse));
   }
 }

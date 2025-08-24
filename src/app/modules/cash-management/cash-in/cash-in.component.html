@@ -66,13 +66,28 @@
                 </div>
                 <div class="w-1/2">
                     <div>
-                        <label class="text-sm text-muted-foreground">Description</label>
-                        <textarea placeholder="" formControlName="description"
-                            class="mb-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
-            </textarea>
-                        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'description')">
-                            {{ getErrorMessage(form, 'description') }}
+                        <label class="text-sm text-muted-foreground">Cash In Type</label>
+                        <select formControlName="cashInType"
+                            class="border-1 peer block w-full appearance-none border-b-2 border-gray-200 bg-transparent py-2 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400">
+                            <option value="" disabled selected>Select Cash In Type</option>
+                            <ng-container *ngFor="let type of cashTypes; let i = index">
+                                <option [value]="type.name">{{ type.displayName }}</option>
+                            </ng-container>
+                        </select>
+                        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'cashInType')">
+                            {{ getErrorMessage(form, 'cashInType') }}
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <label class="text-sm text-muted-foreground">Description</label>
+                    <textarea placeholder="" formControlName="description"
+                        class="mb-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
+                    </textarea>
+                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'description')">
+                        {{ getErrorMessage(form, 'description') }}
                     </div>
                 </div>
             </div>
@@ -96,4 +111,4 @@
     </form>
 </div>
 
-<app-transaction-recent-view [transactionType]="'CASH_IN'" [refreshTime]="refreshTime"></app-transaction-recent-view>
+<app-transaction-view [refreshTime]="refreshTime"></app-transaction-view>

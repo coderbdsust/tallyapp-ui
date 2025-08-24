@@ -13,7 +13,6 @@ export interface OrganizationBalance {
   cashBalance: number
   accountsReceivable: number
   accountsPayable: number
-  recentTransactions: Transaction[]
 }
 
 export interface RecentTransactionReport {
@@ -36,15 +35,14 @@ export interface Transaction {
   employeeName: string
   accountName: string
   accountCode: string
+  accountType: string
   reference: string
   isReversed: boolean
 }
 
 export interface CashFlow {
   flowDate: string;
-  flowType: 'CASH_IN' | 'CASH_OUT' | 'PURCHASE' | 'SALE' | 'PAYMENT_RECEIVED' | 
-           'PAYMENT_MADE' | 'EXPENSE' | 'REFUND' | 'ADJUSTMENT' | 'REVERSAL' | 
-           'ACCOUNTS_RECEIVABLE' | 'EQUITY' | 'EMPLOYEE_EXPENSE';
+  flowType: string;
   amount: number;
   description: string;
   category: string | null;

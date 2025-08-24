@@ -11,7 +11,7 @@ import { ReportComponent } from './report/report.component';
 
 @Component({
   selector: 'app-transaction',
-  imports: [CashInComponent, CashOutComponent, ExpenseComponent, NgIf, NgFor, CashFlowComponent, JournalViewerComponent, ReportComponent],
+  imports: [CashInComponent, CashOutComponent, NgIf, NgFor, CashFlowComponent, JournalViewerComponent, ReportComponent],
   templateUrl: './transaction.component.html',
   styleUrl: './transaction.component.scss'
 })
@@ -22,7 +22,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
   tabs = [
     { id: 'cash-in', label: 'Cash In' },
     { id: 'cash-out', label: 'Cash Out' },
-    { id: 'expense', label: 'Expense' },
+    // { id: 'expense', label: 'Expense' },
     { id: 'cash-flow', label: 'Cash Flow' },
     { id: 'journal-viewer', label: 'Journals' },
     { id: 'report', label: 'Statement & Report' }

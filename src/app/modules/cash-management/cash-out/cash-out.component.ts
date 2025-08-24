@@ -9,12 +9,13 @@ import { FormError } from 'src/app/common/components/form-error/form-error.compo
 import { AccountingService } from '../../../core/services/accounting.service';
 import { CashFlowBalanceSummary, OrganizationBalance } from 'src/app/core/models/organization-balance.model';
 import { CashBalanceViewerComponent } from '../cash-balance-viewer/cash-balance-viewer.component';
-import { TransactionRecentViewComponent } from '../transaction-recent-view/transaction-recent-view.component';
+import { CashType } from 'src/app/core/services/cashtype.model';
+import { TransactionViewComponent } from "../transaction-view/transaction-view.component";
 
 
 @Component({
   selector: 'app-cash-out',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, CashBalanceViewerComponent, TransactionRecentViewComponent],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, CashBalanceViewerComponent, TransactionViewComponent],
   templateUrl: './cash-out.component.html',
   styleUrl: './cash-out.component.scss'
 })
@@ -24,6 +25,7 @@ export class CashOutComponent extends FormError implements OnInit{
  public organizationBalance: OrganizationBalance | null = null;
  balanceSummary: CashFlowBalanceSummary | null = null;
  refreshTime: Date = new Date();
+ cashOutTypes: CashType[] = [];
 
      public readonly allPaymentMethods = [
        'Cash',
@@ -49,18 +51,30 @@ export class CashOutComponent extends FormError implements OnInit{
        this.orgService.organization$.subscribe((org) => {
          if (org) {
            this.org = org;
+           this.loadCashOutTypes();
            this.initiatlizeForm(this.org);
-           this.loadOrganizationBalance(this.org);
             this.loadBalanceSummary(this.org);
          }
        });
      }
-   
+
+     loadCashOutTypes(): void {
+       this.accService.getCashOutTypes().subscribe({
+         next: (response) => {
+           this.cashOutTypes = response;
+         },
+         error: (error) => {
+           this.accService.showToastErrorResponse(error);
+         },
+       });
+     }
+
      initiatlizeForm(org: Organization|null): void {
        this.form = this.fb.group({
          organizationId: [org?.id, Validators.required],
          transactionDate: ['', Validators.required],
          amount: [0, Validators.required],
+         cashOutType: ['', Validators.required],
          paymentMethod: ['', Validators.required],
          reference: ['', Validators.required],
          description: ['', Validators.required],
@@ -79,7 +93,6 @@ export class CashOutComponent extends FormError implements OnInit{
          next: (response) => {
            this.orgService.showToastSuccess(response.message || 'Cash Out recorded successfully');
            this.initiatlizeForm(this.org);
-           this.loadOrganizationBalance(this.org);
            this.loadBalanceSummary(this.org);
            this.refreshTime = new Date();
          },
@@ -93,19 +106,6 @@ export class CashOutComponent extends FormError implements OnInit{
      cancel() {
        this.form.reset();
      }
-
-  loadOrganizationBalance(org: Organization | null): void {
-    if (org) {
-      this.accService.getOrganizationBalance(org.id, 'CASH_OUT').subscribe({
-        next: (response) => {
-          this.organizationBalance = response;
-        },
-        error: (error) => {
-          this.accService.showToastErrorResponse(error);
-        },
-      });
-    }
-  }
 
   loadBalanceSummary(org:Organization | null){
     if (org) {
