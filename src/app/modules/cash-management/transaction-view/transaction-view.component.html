@@ -106,6 +106,7 @@
           <th class="min-w-[120px] px-4 py-3">Contra Account</th>
           <th class="min-w-[140px] px-4 py-3">Party</th>
           <th class="min-w-[200px] px-4 py-3">Description</th>
+          <th class="min-w-[200px] px-4 py-3 items-center">Entry By</th>
           <th class="min-w-[200px] px-4 py-3">Txn Number</th>
         </tr>
       </thead>
@@ -167,10 +168,16 @@
                 {{ txn.description || 'No description' }}
               </span>
           </td>
-          <td>
-              <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full border"
+          <td >
+              <span class="px-1 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full border"
                  >
-                  {{ txn.transactionNumber | uppercase}}
+                  {{ txn.entryBy || 'N/A' }}
+              </span>
+          </td>
+          <td>
+              <span class="px-1 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full border"
+                 >
+                  {{txn.transactionNumber | uppercase}}
               </span>
           </td>
         </tr>

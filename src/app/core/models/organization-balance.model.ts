@@ -35,8 +35,9 @@ export interface Transaction {
   employeeName: string
   debitAccount: Account;
   creditAccount: Account;
-  reference: string
-  isReversed: boolean
+  reference: string;
+  isReversed: boolean;
+  entryBy: string;
 }
 
 export interface CashFlow {
