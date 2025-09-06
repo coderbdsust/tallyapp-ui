@@ -25,7 +25,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
     // { id: 'expense', label: 'Expense' },
     { id: 'cash-flow', label: 'Cash Flow' },
     { id: 'journal-viewer', label: 'Journals' },
-    { id: 'report', label: 'Statement & Report' }
+    { id: 'report', label: 'Transaction & Report' }
   ];
 
   constructor(

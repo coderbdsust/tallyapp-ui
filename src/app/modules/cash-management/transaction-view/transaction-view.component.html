@@ -1,36 +1,35 @@
-
-<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2 mt-4">
-  <!-- Filters Section -->
-  <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
-    <div class="flex flex-row items-center gap-2 text-xs text-muted-foreground">
-      <!-- Transaction Type Filter -->
-      <select 
+<div class="flex min-w-full flex-col rounded-lg border border-muted/20 bg-background shadow-sm mt-2">
+  <!-- Compact Filters Section -->
+  <div class="flex flex-wrap items-center justify-between gap-2 p-2 border-b border-muted/20 bg-muted/5">
+    <div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+      
+      <!-- Compact Date Filters -->
+      <div class="flex items-center gap-2">
+        <select 
         name="transactionType" 
         [value]="transactionType"
         (change)="onSelectTxnTypeChange($event)"
-        class="py-2 px-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-        <option value="">All Transaction Types</option>
+        class="px-2 py-1 text-xs text-gray-700 bg-white border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
+        <option value="">All Types</option>
         <option *ngFor="let txn of allTransactionTypes" [value]="txn">
           {{ txn | word }}
         </option>
       </select>
 
-      <!-- Date Filters -->
-      <div class="flex items-center gap-2">
-        <label class="text-sm font-medium">From:</label>
+        <label class="text-xs font-medium">From:</label>
         <input 
           name="startDate" 
-          class="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+          class="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary" 
           type="date" 
           [value]="startDate || ''"
           (change)="onStartDateChange($event)" />
       </div>
       
-      <div class="flex items-center gap-2">
-        <label class="text-sm font-medium">To:</label>
+      <div class="flex items-center gap-1">
+        <label class="text-xs font-medium">To:</label>
         <input 
           name="endDate" 
-          class="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+          class="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary" 
           type="date" 
           [value]="endDate || ''"
           (change)="onEndDateChange($event)" />
@@ -40,82 +39,77 @@
       <button 
         *ngIf="hasActiveFilters()"
         (click)="clearFilters()"
-        class="px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+        class="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
         title="Clear all filters">
-        <svg-icon src="./assets/icons/heroicons/outline/x-mark.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        <svg-icon src="./assets/icons/heroicons/outline/x-mark.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         Clear
       </button>
     </div>
 
-    <!-- Page Size and Search Section -->
-    <div class="flex flex-wrap gap-2">
-      <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
-        <div class="flex items-center gap-2">
-          Show
-          <select class="w-16 p-2 border border-gray-300 rounded-md" name="rowSize" (change)="onSelectChange($event)">
-            <option *ngFor="let option of getPageSizeOptions()" 
-                    [value]="option.value" 
-                    [selected]="option.value === selectedRows">
-              {{ option.label }}
-            </option>
-          </select>
-          per page
-        </div>
+    <!-- Compact Search and Page Size -->
+    <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1 text-xs text-muted-foreground">
+        <span>Show</span>
+        <select class="px-2 py-1 border border-gray-300 rounded text-xs" name="rowSize" (change)="onSelectChange($event)">
+          <option *ngFor="let option of getPageSizeOptions()" 
+                  [value]="option.value" 
+                  [selected]="option.value === selectedRows">
+            {{ option.label }}
+          </option>
+        </select>
       </div>
-      <div class="flex">
-        <label class="relative text-muted-foreground">
-          <div class="absolute left-2.5 top-2.5">
-            <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'">
-            </svg-icon>
-          </div>
-          <input 
-            name="search" 
-            class="py-2 pl-8 pr-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-            placeholder="Search transactions..." 
-            type="text" 
-            [value]="search"
-            (keydown.enter)="onSearchChange($event)" 
-            (input)="onSearchChange($event)" />
-        </label>
+      <div class="relative">
+        <div class="absolute left-2 top-1.5">
+          <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-3 w-3'"></svg-icon>
+        </div>
+        <input 
+          name="search" 
+          class="pl-6 pr-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary" 
+          placeholder="Search..." 
+          type="text" 
+          [value]="search"
+          (keydown.enter)="onSearchChange($event)" 
+          (input)="onSearchChange($event)" />
       </div>
     </div>
   </div>
 
   <!-- Active Filters Summary -->
-  <div *ngIf="hasActiveFilters()" class="px-5 pb-3">
-    <div class="flex items-center gap-2 text-xs text-blue-600 bg-blue-50 px-3 py-2 rounded-md">
-      <svg-icon src="./assets/icons/heroicons/outline/funnel.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+  <div *ngIf="hasActiveFilters()" class="px-3 py-1">
+    <div class="flex items-center gap-1 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
+      <svg-icon src="./assets/icons/heroicons/outline/funnel.svg" [svgClass]="'h-3 w-3'"></svg-icon>
       <span>Active filters: {{ getFilterSummary() }}</span>
     </div>
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="flex justify-center items-center py-8">
-    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  <div *ngIf="loading" class="flex justify-center items-center py-6">
+    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
   </div>
 
-  <!-- Table Section -->
+  <!-- Compact Table Section -->
   <div *ngIf="!loading" class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
-    <table class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
-      <thead class="border border-muted/20 text-xs text-muted-foreground bg-black-100 text-white">
+    <table class="table w-full table-auto border-collapse border-0 text-left align-middle text-xs text-muted-foreground">
+      <thead class="border border-muted/20 text-xs text-muted-foreground bg-gray-200 text-white">
         <tr>
-          <th class="min-w-[150px] px-4 py-3">Transaction Type</th>
-          <th class="min-w-[120px] px-4 py-3 text-right">Amount</th>
-          <th class="min-w-[140px] px-4 py-3">Date & Time</th>
-          <th class="min-w-[120px] px-4 py-3">Primary Account</th>
-          <th class="min-w-[120px] px-4 py-3">Contra Account</th>
-          <th class="min-w-[140px] px-4 py-3">Party</th>
-          <th class="min-w-[200px] px-4 py-3">Description</th>
-          <th class="min-w-[200px] px-4 py-3 items-center">Entry By</th>
-          <th class="min-w-[200px] px-4 py-3">Txn Number</th>
+          <th class="min-w-[100px] px-2 py-2 border-r border-gray-100">Type</th>
+          <th class="min-w-[80px] px-2 py-2 text-right border-r border-gray-100">Amount</th>
+          <th class="min-w-[90px] px-2 py-2 border-r border-gray-100">Date/Time</th>
+          <th class="min-w-[100px] px-2 py-2 border-r border-gray-100">Primary Account</th>
+          <th class="min-w-[100px] px-2 py-2 border-r border-gray-100">Contra Account</th>
+          <th class="min-w-[90px] px-2 py-2 border-r border-gray-100">Party</th>
+          <th class="min-w-[120px] px-2 py-2 border-r border-gray-100">Description</th>
+          <th class="min-w-[120px] px-2 py-2 border-r border-gray-100">Reference</th>
+          <th class="min-w-[80px] px-2 py-2 border-r border-gray-100">Entry By</th>
+          <th class="min-w-[80px] px-2 py-2">Txn ID #</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let txn of pageResponse?.content; let i = index" class="hover:bg-card/50 border-b border-gray-100">
           <!-- Transaction Type -->
-          <td class="px-4 py-3">
+          <td class="px-2 py-1.5 border-r border-gray-100">
             <span 
-              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" 
+              class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium" 
               [ngClass]="[
                 getTransactionTypeColor(txn.transactionType).bg,
                 getTransactionTypeColor(txn.transactionType).text
@@ -125,69 +119,80 @@
           </td>
 
           <!-- Amount -->
-          <td class="px-4 py-3 text-right">
-            <span [ngClass]="getAmountColor(txn.transactionType, txn.amount)">
+          <td class="px-2 py-1.5 text-right border-r border-gray-100">
+            <span class="font-medium" [ngClass]="getAmountColor(txn.transactionType, txn.amount)">
               {{ formatCurrency(txn.amount) }}
             </span>
           </td>
 
           <!-- Date -->
-          <td class="px-4 py-3">
-            <div class="flex flex-col">
-              <span class="text-sm font-medium">{{ txn.transactionDate | date: 'dd-MM-yyyy' }}</span>
-              <span class="text-xs text-muted-foreground">{{ txn.transactionDate | date: 'HH:mm' }}</span>
+          <td class="px-2 py-1.5 border-r border-gray-100">
+            <div class="leading-tight">
+              <div class="font-medium">{{ txn.transactionDate | date: 'dd-MM-yyyy' }}</div>
+              <div class="text-muted-foreground">{{ txn.transactionDate | date: 'HH:mm' }}</div>
             </div>
           </td>
 
           <!-- Debit Account -->
-          <td class="px-4 py-3">
-            <span class="text-sm">{{ txn.debitAccount.accountName || 'N/A' }}</span>
-            <span class="text-xs text-muted-foreground"> ({{ txn.debitAccount.accountType || 'N/A' }})</span>
+          <td class="px-2 py-1.5 border-r border-gray-100">
+            <div class="leading-tight">
+              <div class="font-medium">{{ txn.debitAccount.accountName || 'N/A' }}</div>
+              <div class="text-muted-foreground">({{ txn.debitAccount.accountType || 'N/A' }})</div>
+            </div>
           </td>
 
           <!-- Credit Account -->
-          <td class="px-4 py-3">
-            <span class="text-sm">{{ txn.creditAccount.accountName || 'N/A' }}</span>
-            <span class="text-xs text-muted-foreground"> ({{ txn.creditAccount.accountType || 'N/A' }})</span>
+          <td class="px-2 py-1.5 border-r border-gray-100">
+            <div class="leading-tight">
+              <div class="font-medium">{{ txn.creditAccount.accountName || 'N/A' }}</div>
+              <div class="text-muted-foreground">({{ txn.creditAccount.accountType || 'N/A' }})</div>
+            </div>
           </td>
 
           <!-- Party (From/To) -->
-          <td class="px-4 py-3">
-            <div class="flex flex-col" *ngIf="getTransactionParty(txn).name !== 'N/A'; else noParty">
-              <span class="text-sm font-medium">{{ getTransactionParty(txn).name }}</span>
-              <span class="text-xs text-muted-foreground">({{ getTransactionParty(txn).type }})</span>
+          <td class="px-2 py-1.5 border-r border-gray-100">
+            <div class="leading-tight" *ngIf="getTransactionParty(txn).name !== 'N/A'; else noParty">
+              <div class="font-medium">{{ getTransactionParty(txn).name }}</div>
+              <div class="text-muted-foreground">({{ getTransactionParty(txn).type }})</div>
             </div>
             <ng-template #noParty>
-              <span class="text-sm text-muted-foreground">N/A</span>
+              <span class="text-muted-foreground">N/A</span>
             </ng-template>
           </td>
 
           <!-- Description -->
-          <td class="px-4 py-3">
-              <span class="text-sm" [title]="txn.description">
-                {{ txn.description || 'No description' }}
-              </span>
+          <td class="px-2 py-1.5 border-r border-gray-100">
+            <span class="text-xs" [title]="txn.description">
+              {{ txn.description || 'No description' }}
+            </span>
           </td>
-          <td >
-              <span class="px-1 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full border"
-                 >
-                  {{ txn.entryBy || 'N/A' }}
-              </span>
+
+          <td class="px-2 py-1.5 border-r border-gray-100">
+            <span class="text-xs" [title]="txn.reference">
+              {{ txn.reference || 'No reference' }}
+            </span>
           </td>
-          <td>
-              <span class="px-1 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full border"
-                 >
-                  {{txn.transactionNumber | uppercase}}
-              </span>
+
+          <!-- Entry By -->
+          <td class="px-2 py-1.5 border-r border-gray-100">
+            <span class="px-1.5 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded border">
+              {{ txn.entryBy || 'N/A' }}
+            </span>
+          </td>
+
+          <!-- Transaction Number -->
+          <td class="px-2 py-1.5">
+            <span class="px-1.5 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded border font-mono">
+              {{ txn.transactionNumber | uppercase }}
+            </span>
           </td>
         </tr>
 
         <!-- Empty State -->
         <tr *ngIf="!hasData">
-          <td class="py-8 text-center text-sm" colspan="6">
+          <td class="py-6 text-center text-sm" colspan="9">
             <div class="flex flex-col items-center gap-2">
-              <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
-              </svg-icon>
+              <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg" [svgClass]="'h-10 w-10 text-muted-foreground/50'"></svg-icon>
               <span>No transactions found</span>
               <span *ngIf="hasActiveFilters()" class="text-xs text-muted-foreground">
                 Try adjusting your search criteria or date range
@@ -199,43 +204,41 @@
     </table>
   </div>
 
-  <!-- Pagination Section -->
+  <!-- Compact Pagination Section -->
   <div *ngIf="showPagination && !loading" 
-       class="flex flex-wrap items-center justify-between gap-2 py-3 px-5 text-xs text-muted-foreground">
+       class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 border-t border-muted/20 bg-muted/5 text-xs text-muted-foreground">
     <!-- Page Info -->
     <div class="flex items-center gap-2">
       <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
       <span *ngIf="hasActiveFilters()" class="text-blue-600">(filtered)</span>
     </div>
     
-    <!-- Pagination Controls -->
-    <div class="flex items-center gap-4">
+    <!-- Compact Pagination Controls -->
+    <div class="flex items-center gap-2">
       <div class="inline-flex items-center gap-1">
         <!-- First Page Button -->
         <button
           *ngIf="!first"
-          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs hover:bg-muted-foreground/10 transition-colors"
           (click)="goToFirstPage()"
           title="First Page">
-          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-4 w-4'">
-          </svg-icon>
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         </button>
 
         <!-- Previous Page Button -->
         <button
-          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
           [disabled]="first" 
           (click)="goToPreviousPage()"
           title="Previous Page">
-          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'">
-          </svg-icon>
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         </button>
 
         <!-- Page Numbers -->
         <ng-container *ngFor="let page of getVisiblePages()">
           <button 
             *ngIf="isClickablePage(page)"
-            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm transition-colors" 
+            class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs transition-colors" 
             [ngClass]="{
               'bg-primary text-primary-foreground': isCurrentPage(page),
               'hover:bg-muted-foreground/10': !isCurrentPage(page)
@@ -246,29 +249,27 @@
           
           <span 
             *ngIf="!isClickablePage(page)" 
-            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center text-sm">
+            class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center text-xs">
             ...
           </span>
         </ng-container>
 
         <!-- Next Page Button -->
         <button
-          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
           [disabled]="last" 
           (click)="goToNextPage()"
           title="Next Page">
-          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'">
-          </svg-icon>
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         </button>
 
         <!-- Last Page Button -->
         <button
           *ngIf="!last"
-          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs hover:bg-muted-foreground/10 transition-colors"
           (click)="goToLastPage()"
           title="Last Page">
-          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-4 w-4'">
-          </svg-icon>
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         </button>
       </div>
     </div>
