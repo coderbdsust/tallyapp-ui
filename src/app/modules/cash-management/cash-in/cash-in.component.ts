@@ -9,7 +9,7 @@ import { FormError } from 'src/app/common/components/form-error/form-error.compo
 import { AccountingService } from '../../../core/services/accounting.service';
 import { CashFlowBalanceSummary, OrganizationBalance } from 'src/app/core/models/organization-balance.model';
 import { CashBalanceViewerComponent } from '../cash-balance-viewer/cash-balance-viewer.component';
-import { CashType } from 'src/app/core/services/cashtype.model';
+import { CashType } from 'src/app/core/models/cashtype.model';
 import { TransactionViewComponent } from "../transaction-view/transaction-view.component";
 
 @Component({

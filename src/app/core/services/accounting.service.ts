@@ -7,7 +7,7 @@ import { CashFlowBalanceSummary, OrganizationBalance, PageCashFlowReport, Recent
 import { ApiResponse } from '../models/auth.model';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { FinancialData } from '../models/journal.model';
-import { CashType } from './cashtype.model';
+import { CashOutTypeRequest, CashOutTypeResponse, CashType } from '../models/cashtype.model';
 
 
 @Injectable({
@@ -131,4 +131,11 @@ export class AccountingService extends CommonService {
       .get<CashType[]>(`${environment.tallyURL}/cash/v1/types/cash-out`)
       .pipe(catchError(this.mapErrorResponse));
   }
+
+  public addCashOutType(cashOutTypeData: CashOutTypeRequest) {
+    const url = `${environment.tallyURL}/cash/v1/types/cash-out/add`;
+    return this.http.post<CashOutTypeResponse>(url, cashOutTypeData);
+  }
+
+  
 }

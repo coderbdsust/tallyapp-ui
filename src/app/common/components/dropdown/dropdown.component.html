@@ -1,0 +1,135 @@
+<!-- dropdown.component.html -->
+<div class="dropdown-container relative">
+  <!-- Label -->
+  <label *ngIf="label" class="block text-sm font-medium mb-1 text-muted-foreground">
+    {{ label }}
+    <span *ngIf="required" class="text-red-500 ml-1">*</span>
+  </label>
+
+  <!-- Dropdown Button -->
+  <div class="relative">
+    <button
+      type="button"
+      [disabled]="disabled"
+      (click)="toggleDropdown()"
+      class="dropdown-button w-full px-4 py-2 text-left bg-white border rounded shadow-sm transition-all duration-200 flex items-center justify-between"
+      [ngClass]="{
+        'border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500': !error && !disabled,
+        'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500': error && !disabled,
+        'bg-gray-50 border-gray-200 cursor-not-allowed opacity-60': disabled,
+        'font-medium text-gray-900': selectedOption,
+        'text-gray-500': !selectedOption
+      }">
+      
+      <!-- Selected Value or Placeholder -->
+      <span class="flex-1 truncate text-sm text-muted-foreground">
+        {{ selectedOption ? selectedOption.label : placeholder }}
+      </span>
+
+      <!-- Icons -->
+      <div class="flex items-center space-x-2 ml-2">
+        <!-- Clear Button -->
+        <button
+          *ngIf="selectedOption && !disabled"
+          type="button"
+          (click)="clearSelection(); $event.stopPropagation()"
+          class="p-0.5 hover:bg-gray-100 rounded transition-colors">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+
+        <!-- Dropdown Arrow -->
+        <svg 
+          class="w-5 h-5 text-gray-400 transition-transform duration-200"
+          [ngClass]="{'rotate-180': isOpen}"
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </div>
+    </button>
+
+    <!-- Dropdown Menu -->
+    <div
+      *ngIf="isOpen"
+      class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden animate-dropdown-slide">
+      
+      <!-- Add New Button -->
+      <button
+        type="button"
+        (click)="openAddNewDrawer()"
+        class="w-full px-4 py-3 justify-center text-center items-center bg-primary/10 hover:bg-primary/20 border-b border-gray-200 flex  space-x-3 text-gray-600 font-medium transition-colors duration-150 group">
+        <div class="w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-gray-100 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+        </div>
+        <span>{{ addButtonText }} {{ label || 'Option' }}</span>
+      </button>
+
+      <!-- Search Input (if many options) -->
+      <div *ngIf="options.length > 5" class="px-3 py-2 border-b border-gray-200">
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="filterOptions()"
+          placeholder="Search..."
+          class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          (click)="$event.stopPropagation()">
+      </div>
+
+      <!-- Options List -->
+      <div class="max-h-60 overflow-y-auto">
+        <button
+          *ngFor="let option of filteredOptions"
+          type="button"
+          (click)="selectOption(option)"
+          class="w-full px-4 py-2.5 text-left hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100 last:border-b-0"
+          [ngClass]="{'bg-muted/20 hover:bg-muted/30': selectedOption?.value === option.value}">
+          
+          <div class="flex items-start space-x-3">
+            <!-- Option Icon (if provided) -->
+            <div *ngIf="option.icon" class="mt-0.5">
+              <span class="text-gray-500">{{ option.icon }}</span>
+            </div>
+            
+            <!-- Option Content -->
+            <div class="flex-1">
+              <div class="font-medium text-muted-foreground">{{ option.label }}</div>
+              <div *ngIf="option.description" class="text-sm text-gray-500 mt-0.5">
+                {{ option.description }}
+              </div>
+            </div>
+
+            <!-- Selected Checkmark -->
+            <svg 
+              *ngIf="selectedOption?.value === option.value"
+              class="w-5 h-5 text-muted-foreground mt-0.5" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+        </button>
+
+        <!-- No Options Message -->
+        <div *ngIf="filteredOptions.length === 0" class="px-4 py-6 text-center text-gray-500">
+          <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+          </svg>
+          <p class="text-sm">No options found</p>
+          <button
+            type="button"
+            (click)="openAddNewDrawer()"
+            class="mt-2 text-sm text-blue-600 hover:text-blue-700 font-medium">
+            Add option
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
