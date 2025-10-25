@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
-import { OrganizationComponent } from './organization.component';
-import { OrganizationListComponent } from './pages/organization-list/organization-list.component';
+import { ProductListComponent } from './pages/product-list/product-list.component';
+import { ProductComponent } from './product.component';
 
 
 const routes: Routes = [
   {
     path: '',
-    component: OrganizationComponent,
+    component: ProductComponent,
     canActivate:[AuthGuard],
     children: [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
-      { path: 'list', component: OrganizationListComponent },
+      { path: 'list', component: ProductListComponent },
       { path: '**', redirectTo: 'errors/404' },
     ],
   },
@@ -22,4 +22,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class OrganizationRoutingModule {}
+export class ProductRoutingModule {}

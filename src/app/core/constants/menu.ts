@@ -39,13 +39,13 @@ export class Menu {
         {
           icon: 'assets/icons/heroicons/outline/office.svg',
           label: 'Employee',
-          route: '/organization/employee',
+          route: '/employee',
           requiredModules: ['EMPLOYEE_MANAGEMENT']
         },
         {
           icon: 'assets/icons/heroicons/outline/office.svg',
           label: 'Product',
-          route: '/organization/product',
+          route: '/product',
           requiredModules: ['PRODUCT_MANAGEMENT']
         },
         {
@@ -78,11 +78,6 @@ export class Menu {
           route: '/admin',
           requiredModules: ['USER_MANAGEMENT', 'APP_CONFIGURATION'],
           children: [
-            {
-              label: 'App Properties',
-              route: '/admin/app-property',
-              requiredModules: ['APP_CONFIGURATION']
-            },
             {
               label: 'User Management',
               route: '/admin/user-management',

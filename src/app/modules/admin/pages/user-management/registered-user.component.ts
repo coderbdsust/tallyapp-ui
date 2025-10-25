@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { RegisteredUser } from './registered-user.model';
-import { EditAppPropertiesComponent } from '../app-properties/modal/edit-app-properties.component';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
 import { Subject, takeUntil } from 'rxjs';
 import { RegisterUserService } from 'src/app/core/services/register-user.service';
@@ -21,8 +20,6 @@ export class RegisteredUserComponent extends PaginatedComponent<RegisteredUser> 
   loading: boolean = false;
   registeredUser!: RegisteredUser;
   roles: string[] = [];
-
-  @ViewChild('modal', { static: false }) modal!: EditAppPropertiesComponent;
 
   private destroy$ = new Subject<void>();
 

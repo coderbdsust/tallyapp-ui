@@ -29,6 +29,16 @@ const routes: Routes = [
     loadChildren: () => import('../cash-management/transaction.module').then((m) => m.TransactionModule),
   },
   {
+    path: 'product',
+    component: LayoutComponent,
+    loadChildren: () => import('../product/product.module').then((m) => m.ProductModule),
+  },
+    {
+    path: 'employee',
+    component: LayoutComponent,
+    loadChildren: () => import('../employee/employee.module').then((m) => m.EmployeeModule),
+  },
+  {
     path: 'user',
     component: LayoutComponent,
     loadChildren: () => import('../user/user.module').then((m) => m.UserModule),

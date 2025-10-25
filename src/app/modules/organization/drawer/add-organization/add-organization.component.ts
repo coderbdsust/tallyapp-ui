@@ -234,7 +234,6 @@ export class AddOrganizationComponent {
             }
           });
 
-          console.log('Final organization data:', organizationData);
           return this.orgService.addOrganization(organizationData);
         })
       )

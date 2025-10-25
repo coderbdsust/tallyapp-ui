@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { InvoiceComponent } from './invoice.component';
-import { InvoiceListComponent } from './invoice-list/invoice-list.component';
-import { InvoiceDetailComponent } from './invoice-detail/invoice-detail.component';
-import { AddInvoiceComponent } from './add-invoice/add-invoice.component';
+import { InvoiceListComponent } from './pages/invoice-list/invoice-list.component';
+import { AddInvoiceComponent } from './pages/add-invoice/add-invoice.component';
+import { InvoiceDetailComponent } from './pages/invoice-detail/invoice-detail.component';
 
 const routes: Routes = [
   {

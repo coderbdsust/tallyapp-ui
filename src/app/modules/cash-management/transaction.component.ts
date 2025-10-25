@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CashInComponent } from './cash-in/cash-in.component';
-import { CashOutComponent } from './cash-out/cash-out.component';
-import { ExpenseComponent } from './expense/expense.component';
 import { NgFor, NgIf } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { CashFlowComponent } from "./cash-flow/cash-flow.component";
-import { JournalViewerComponent } from './journal-viewer/journal-viewer.component';
-import { ReportComponent } from './report/report.component';
+import { CashInComponent } from './pages/cash-in/cash-in.component';
+import { CashOutComponent } from './pages/cash-out/cash-out.component';
+import { CashFlowComponent } from './pages/cash-flow/cash-flow.component';
+import { JournalViewerComponent } from './pages/journal-viewer/journal-viewer.component';
+import { ReportComponent } from './pages/report/report.component';
+
 
 @Component({
   selector: 'app-transaction',

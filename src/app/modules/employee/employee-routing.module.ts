@@ -1,18 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
-import { OrganizationComponent } from './organization.component';
-import { OrganizationListComponent } from './pages/organization-list/organization-list.component';
+import { EmployeeComponent } from './employee.component';
+import { EmployeeListComponent } from './pages/employee-list/employee-list.component';
+
 
 
 const routes: Routes = [
   {
     path: '',
-    component: OrganizationComponent,
+    component: EmployeeComponent,
     canActivate:[AuthGuard],
     children: [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
-      { path: 'list', component: OrganizationListComponent },
+      { path: 'list', component: EmployeeListComponent },
       { path: '**', redirectTo: 'errors/404' },
     ],
   },
@@ -22,4 +23,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class OrganizationRoutingModule {}
+export class EmployeeRoutingModule {}
