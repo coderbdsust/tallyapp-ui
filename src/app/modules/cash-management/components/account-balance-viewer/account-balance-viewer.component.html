@@ -3,7 +3,7 @@
   <!-- Cash Balance - Blue theme -->
   <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
     <app-card-stats statSubtitle="Cash Balance" [statTitle]="organizationBalance?.cashBalance"
-      statDescription="Amount of cash currently available"
+      statDescription="Available cash and cash equivalents"
       statPercentColor="text-emerald-500" statIconName="fas fa-wallet"
       borderColor="border-blue-500"
       statIconColor="bg-gradient-to-r from-blue-200 to-blue-400">
@@ -13,7 +13,7 @@
   <!-- Total Expenses - Red theme -->
   <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
     <app-card-stats statSubtitle="Total Expenses" [statTitle]="organizationBalance?.totalExpenses"
-      statDescription="Total costs incurred in running the business"
+      statDescription="All costs incurred in business operations"
       borderColor="border-red-500"
       statPercentColor="text-red-500" statIconName="fas fa-credit-card" 
       statIconColor="bg-gradient-to-r from-red-200 to-red-400">
@@ -23,7 +23,7 @@
   <!-- Net Income - Green theme -->
   <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2">
     <app-card-stats statSubtitle="Net Income" [statTitle]="organizationBalance?.netIncome"
-      statDescription="Profit or loss (Revenue - Expenses = Net Income)"
+      statDescription="Total Revenue - Total Expenses = Net Income"
       borderColor="border-green-500"
       statPercentColor="text-emerald-500" statIconName="fas fa-chart-line" 
       statIconColor="bg-gradient-to-r from-green-200 to-green-400">
@@ -44,7 +44,7 @@
   <!-- Accounts Payable - Orange theme -->
   <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2" *ngIf="showFullBalance">
     <app-card-stats statSubtitle="Accounts Payable" [statTitle]="organizationBalance?.accountsPayable"
-      statDescription="Money the business owes to suppliers/vendors"
+      statDescription="Money the business owes to suppliers and vendors"
       borderColor="border-orange-500"
       statPercentColor="text-orange-500" statIconName="fas fa-file-invoice-dollar" 
       statIconColor="bg-gradient-to-r from-orange-200 to-orange-400">
@@ -54,7 +54,7 @@
   <!-- Total Revenue - Emerald theme -->
   <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2" *ngIf="showFullBalance">
     <app-card-stats statSubtitle="Total Revenue" [statTitle]="organizationBalance?.totalRevenue"
-    statDescription="Total income generated from business operations"
+    statDescription="Total income generated from all business activities"
     borderColor="border-emerald-500"
       statPercentColor="text-emerald-500" statIconName="fas fa-dollar-sign" 
       statIconColor="bg-gradient-to-r from-emerald-200 to-emerald-400">
@@ -64,7 +64,7 @@
   <!-- Total Assets - Purple theme -->
   <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2" *ngIf="showFullBalance">
     <app-card-stats statSubtitle="Total Assets" [statTitle]="organizationBalance?.totalAssets"
-      statDescription="Sum of everything the business owns"
+      statDescription="Everything the business owns and controls"
       borderColor="border-purple-500"
       statPercentColor="text-purple-500" statIconName="fas fa-building" 
       statIconColor="bg-gradient-to-r from-purple-200 to-purple-400">
@@ -74,7 +74,7 @@
   <!-- Total Liabilities - Rose theme -->
   <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2" *ngIf="showFullBalance">
     <app-card-stats statSubtitle="Total Liabilities" [statTitle]="organizationBalance?.totalLiabilities"
-      statDescription="Sum of everything the business owes"
+      statDescription="All debts and obligations the business owes"
       borderColor="border-rose-500"
       statPercentColor="text-rose-500" statIconName="fas fa-exclamation-triangle" 
       statIconColor="bg-gradient-to-r from-rose-200 to-rose-400">
@@ -84,7 +84,7 @@
   <!-- Total Equity - Indigo theme -->
   <div class="w-full px-4 lg:w-6/12 xl:w-4/12 mt-2" *ngIf="showFullBalance">
     <app-card-stats statSubtitle="Total Equity" [statTitle]="organizationBalance?.totalEquity"
-      statDescription="Owner's stake in the business (Assets - Liabilities = Equity)"
+      statDescription="Total Assets - Total Liabilities = Total Equity"
       borderColor="border-indigo-500"
       statPercentColor="text-indigo-500" statIconName="fas fa-chart-pie" 
       statIconColor="bg-gradient-to-r from-indigo-200 to-indigo-400">
