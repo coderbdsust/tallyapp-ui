@@ -13,6 +13,7 @@ import { TransactionViewComponent } from '../../components/transaction-view/tran
 import { Organization } from 'src/app/core/models/organization.model';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { AccountingService } from 'src/app/core/services/accounting.service';
+import { ToWords } from 'to-words';
 
 
 @Component({
@@ -30,7 +31,13 @@ export class CashOutComponent extends FormError implements OnInit {
   cashOutTypes: CashType[] = [];
   cashOutCategories: DropdownOption[] = [];
   selectedCashOutType: DropdownOption | null = null;
-
+  readonly toWords = new ToWords({
+    localeCode: 'en-BD',
+    converterOptions: {
+      currency: true,
+      ignoreDecimal: true
+    },
+  });
 
   public readonly allPaymentMethods = [
     'Cash',
@@ -40,6 +47,8 @@ export class CashOutComponent extends FormError implements OnInit {
     'Cheque',
     'Other'
   ];
+
+  public amountLabel : string | null = null;
 
   constructor(
     private readonly router: Router,
@@ -90,7 +99,19 @@ export class CashOutComponent extends FormError implements OnInit {
       reference: ['', Validators.required],
       description: ['', Validators.required],
     });
+    
     this.selectedCashOutType = null;
+    this.amountLabel=null;
+    
+    this.form.get('amount')?.valueChanges.subscribe(value => {
+      const amountNumber = Number(value);
+      if (!isNaN(amountNumber) && amountNumber > 0) {
+        this.amountLabel = this.toWords.convert(amountNumber);
+      } else {
+        this.amountLabel = null;
+      }
+    });
+
   }
 
   submit() {

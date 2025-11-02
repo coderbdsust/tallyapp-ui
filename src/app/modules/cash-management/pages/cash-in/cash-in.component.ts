@@ -11,6 +11,7 @@ import { FormError } from 'src/app/common/components/form-error/form-error.compo
 import { Organization } from 'src/app/core/models/organization.model';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { AccountingService } from 'src/app/core/services/accounting.service';
+import { ToWords } from 'to-words';
 
 
 @Component({
@@ -26,6 +27,14 @@ export class CashInComponent extends FormError implements OnInit {
   balanceSummary: CashFlowBalanceSummary | null = null;
   refreshTime: Date = new Date();
   cashTypes: CashType[] = [];
+  public amountLabel : string | null = null;
+  readonly toWords = new ToWords({
+      localeCode: 'en-BD',
+      converterOptions: {
+        currency: true,
+        ignoreDecimal: true
+      },
+  });
 
   public readonly allPaymentMethods = [
     'Cash',
@@ -78,6 +87,18 @@ export class CashInComponent extends FormError implements OnInit {
       reference: ['', Validators.required],
       description: ['', Validators.required],
     });
+    
+    this.amountLabel=null;
+
+    this.form.get('amount')?.valueChanges.subscribe(value => {
+      const amountNumber = Number(value);
+      if (!isNaN(amountNumber) && amountNumber > 0) {
+        this.amountLabel = this.toWords.convert(amountNumber);
+      } else {
+        this.amountLabel = null;
+      }
+    });
+
   }
 
   submit() {
