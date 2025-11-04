@@ -5,8 +5,10 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { Subscription } from 'rxjs';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { DrawerConfig, DrawerService } from 'src/app/core/services/drawer.service';
-import { AccountingService } from 'src/app/core/services/accounting.service';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
+import { CashtypeService } from 'src/app/core/services/cashtype.service';
+import { Organization } from 'src/app/core/models/organization.model';
+import { OrganizationService } from 'src/app/core/services/organization.service';
 
 @Component({
   selector: 'app-cashout-type-drawer',
@@ -17,19 +19,19 @@ import { FormError } from 'src/app/common/components/form-error/form-error.compo
     trigger('slideIn', [
       transition(':enter', [
         style({ transform: 'translateX(100%)' }),
-        animate('300ms ease-out', style({ transform: 'translateX(0)' }))
+        animate('100ms ease-out', style({ transform: 'translateX(0)' }))
       ]),
       transition(':leave', [
-        animate('300ms ease-in', style({ transform: 'translateX(100%)' }))
+        animate('100ms ease-in', style({ transform: 'translateX(100%)' }))
       ])
     ]),
     trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: 0 }),
-        animate('300ms ease-out', style({ opacity: 1 }))
+        animate('100ms ease-out', style({ opacity: 1 }))
       ]),
       transition(':leave', [
-        animate('300ms ease-in', style({ opacity: 0 }))
+        animate('100ms ease-in', style({ opacity: 0 }))
       ])
     ])
   ]
@@ -39,6 +41,7 @@ export class CashoutTypeDrawerComponent extends FormError implements OnInit, OnD
   config: DrawerConfig | null = null;
   form: FormGroup;
   private subscription?: Subscription;
+  private organization!: Organization;
 
   // Form state
   isSubmitting = false;
@@ -47,7 +50,8 @@ export class CashoutTypeDrawerComponent extends FormError implements OnInit, OnD
   constructor(
     private drawerService: DrawerService,
     private fb: FormBuilder,
-    private accService: AccountingService
+    private cashTypeService: CashtypeService,
+    private orgService: OrganizationService
   ) {
     super();
     this.form = this.createForm();
@@ -55,6 +59,12 @@ export class CashoutTypeDrawerComponent extends FormError implements OnInit, OnD
   }
 
   ngOnInit(): void {
+    this.orgService.organization$.subscribe((org) => {
+      if (org) {
+        this.organization = org;
+      }
+    });
+    
     this.subscription = this.drawerService.drawerState$.subscribe(state => {
       this.isOpen = state.isOpen;
       this.config = state.config;
@@ -76,7 +86,7 @@ export class CashoutTypeDrawerComponent extends FormError implements OnInit, OnD
   createForm(): FormGroup {
     return this.fb.group({
       id: [''],
-      name: ['', [Validators.required, Validators.minLength(2)]],
+      displayName: ['', [Validators.required, Validators.minLength(2)]],
       description: ['', [Validators.required, Validators.maxLength(500)]],
       active: [true],
     });
@@ -94,12 +104,15 @@ export class CashoutTypeDrawerComponent extends FormError implements OnInit, OnD
     if (this.form.valid && !this.isSubmitting) {
       this.isSubmitting = true;
 
-      this.accService.addCashOutType(this.form.value).subscribe({
+      this.cashTypeService.createCashOutType(this.organization.id, this.form.value).subscribe({
         next: (response) => {
           this.isSubmitting = false;
+          this.close();
         },
         error: (error) => {
           this.isSubmitting = false;
+          this.close();
+          this.cashTypeService.showToastErrorResponse(error);
         }
       });
     }

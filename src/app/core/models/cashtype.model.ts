@@ -1,7 +1,9 @@
 export interface CashType{
-    name: string;
+    id:string,
     displayName:string;
     description:string;
+    isSystemDefault:boolean;
+    accountType:string;
 }
 
 export interface CashOutTypeRequest {

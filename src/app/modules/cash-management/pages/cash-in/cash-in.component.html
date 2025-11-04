@@ -67,14 +67,11 @@
                 </div>
                 <div class="w-1/2">
                     <div>
-                        <label class="text-sm text-muted-foreground">Cash In Type</label>
-                        <select formControlName="cashInType"
-                            class="border-1 peer block w-full appearance-none border-b-2 border-gray-200 bg-transparent py-2 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400">
-                            <option value="" disabled selected>Select Cash In Type</option>
-                            <ng-container *ngFor="let type of cashTypes; let i = index">
-                                <option [value]="type.name">{{ type.displayName }} - {{ type.description }}</option>
-                            </ng-container>
-                        </select>
+                        <app-dropdown [options]="cashInCategories" [(selectedOption)]="selectedCashInType"
+                            placeholder="Select Cash In Type" label="Cash In Type" [required]="true"
+                            addButtonText="Add" (onSelect)="onCategorySelect($event)" (onAddNew)="onAddCategory()">
+                        </app-dropdown>
+
                         <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'cashInType')">
                             {{ getErrorMessage(form, 'cashInType') }}
                         </div>
@@ -112,4 +109,5 @@
     </form>
 </div>
 
+<app-cashin-type-drawer></app-cashin-type-drawer>
 <app-transaction-view [refreshTime]="refreshTime"></app-transaction-view>

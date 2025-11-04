@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { DrawerService } from 'src/app/core/services/drawer.service';
 
 export interface DropdownOption {
+  default?:boolean;
+  type?:string;
   label: string;
   value: string | number;
   description?: string;

@@ -14,11 +14,21 @@ import { Organization } from 'src/app/core/models/organization.model';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { AccountingService } from 'src/app/core/services/accounting.service';
 import { ToWords } from 'to-words';
+import { CashtypeService } from 'src/app/core/services/cashtype.service';
 
 
 @Component({
   selector: 'app-cash-out',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, CashBalanceViewerComponent, TransactionViewComponent, DropdownComponent, CashoutTypeDrawerComponent],
+  imports: [
+    AngularSvgIconModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    CashBalanceViewerComponent,
+    TransactionViewComponent,
+    DropdownComponent,
+    CashoutTypeDrawerComponent
+  ],
   templateUrl: './cash-out.component.html',
   styleUrl: './cash-out.component.scss'
 })
@@ -54,7 +64,8 @@ export class CashOutComponent extends FormError implements OnInit {
     private readonly router: Router,
     private readonly fb: FormBuilder,
     private readonly orgService: OrganizationService,
-    private readonly accService: AccountingService
+    private readonly accService: AccountingService,
+    private readonly cashTypeService: CashtypeService
   ) {
     super();
     this.initiatlizeForm(null);
@@ -64,27 +75,29 @@ export class CashOutComponent extends FormError implements OnInit {
     this.orgService.organization$.subscribe((org) => {
       if (org) {
         this.org = org;
-        this.loadCashOutTypes();
+        this.loadCashOutTypes(this.org);
         this.initiatlizeForm(this.org);
         this.loadBalanceSummary(this.org);
       }
     });
   }
 
-  loadCashOutTypes(): void {
-    this.accService.getCashOutTypes().subscribe({
+  loadCashOutTypes(org:Organization): void {
+    this.cashTypeService.getAllCashOutTypes(org.id).subscribe({
       next: (response) => {
         this.cashOutTypes = response;
         response.forEach((type) => {
           this.cashOutCategories.push({
             label: type.displayName,
-            value: type.name,
-            description: type.description
+            value: type.id,
+            description: type.description,
+            default: type.isSystemDefault,
+            type: type.accountType
           });
         });
       },
       error: (error) => {
-        this.accService.showToastErrorResponse(error);
+        this.cashTypeService.showToastErrorResponse(error);
       },
     });
   }
@@ -115,7 +128,6 @@ export class CashOutComponent extends FormError implements OnInit {
   }
 
   submit() {
-
     if (this.form.invalid) {
       this.orgService.showToastError('Please fill in all required fields correctly.');
       return;
