@@ -1,3 +1,4 @@
+import { CashType } from "./cashtype.model"
 import { Employee } from "./employee.model"
 import { Organization } from "./organization.model"
 
@@ -8,7 +9,7 @@ export interface EmployeeExpense {
   description: string
   category: string
   status: string
-  expenseType: string
+  expenseType: CashType
   receiptNumber: any
   notes: any
   isReimbursable: boolean

@@ -24,3 +24,9 @@ export interface CashOutTypeResponse {
   isActive: boolean;
   organizationId: string;
 }
+
+export enum CashTypeName {
+  CASH_IN_TYPE = "CASH_IN_TYPE",
+  CASH_OUT_TYPE = "CASH_OUT_TYPE",
+  EMPLOYEE_EXPENSE_TYPE = "EMPLOYEE_EXPENSE_TYPE"
+}

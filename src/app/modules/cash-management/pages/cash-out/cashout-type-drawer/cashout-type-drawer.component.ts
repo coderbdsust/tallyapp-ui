@@ -9,6 +9,7 @@ import { FormError } from 'src/app/common/components/form-error/form-error.compo
 import { CashtypeService } from 'src/app/core/services/cashtype.service';
 import { Organization } from 'src/app/core/models/organization.model';
 import { OrganizationService } from 'src/app/core/services/organization.service';
+import { CashTypeName } from 'src/app/core/models/cashtype.model';
 
 @Component({
   selector: 'app-cashout-type-drawer',
@@ -88,12 +89,14 @@ export class CashoutTypeDrawerComponent extends FormError implements OnInit, OnD
       id: [''],
       displayName: ['', [Validators.required, Validators.minLength(2)]],
       description: ['', [Validators.required, Validators.maxLength(500)]],
+      cashType: [CashTypeName.CASH_OUT_TYPE],
       active: [true],
     });
   }
 
   resetForm(): void {
     this.form.reset({
+      cashType: CashTypeName.CASH_OUT_TYPE,
       active: true
     });
     this.isSubmitting = false;
@@ -104,7 +107,7 @@ export class CashoutTypeDrawerComponent extends FormError implements OnInit, OnD
     if (this.form.valid && !this.isSubmitting) {
       this.isSubmitting = true;
 
-      this.cashTypeService.createCashOutType(this.organization.id, this.form.value).subscribe({
+      this.cashTypeService.createCashType(this.organization.id, this.form.value).subscribe({
         next: (response) => {
           this.isSubmitting = false;
           this.close();

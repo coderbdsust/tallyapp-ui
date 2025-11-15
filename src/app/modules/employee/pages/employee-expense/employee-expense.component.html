@@ -28,14 +28,11 @@
                 </div>
 
                 <div>
-                    <label class="text-sm text-muted-foreground">Expense Type</label>
-                    <select formControlName="expenseType"
-                        class="block py-2  w-full  text-sm text-gray-500 bg-transparent border-1 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                        <option value="" selected>Select Expense Type</option>
-                        <ng-container *ngFor="let exp of allExpenseTypes; let i = index;">
-                            <option [value]="exp">{{exp | word}}</option>
-                        </ng-container>
-                    </select>
+                    <app-dropdown [options]="allExpenseTypes" [(selectedOption)]="expenseType"
+                            placeholder="Select Expense Type" label="Expense Type" [required]="true"
+                            addButtonText="Add" (onSelect)="onCategorySelect($event)" (onAddNew)="onAddCategory()">
+                    </app-dropdown>
+
                     <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'expenseType')">
                         {{ getErrorMessage(form, 'expenseType') }}
                     </div>
@@ -128,7 +125,7 @@
                         <td>{{ emp.employee.mobileNo }}</td>
                         <td>{{ emp.employee.employeeType }}</td>
                         <td>{{ emp.amount }}</td>
-                        <td>{{ emp.expenseType}}</td>
+                        <td>{{ emp.expenseType.displayName}}</td>
                         <td>{{ emp.status }}</td>
                         <td>
                             <button class="text-green-500 hover:text-green-700" (click)="approveExpense(emp.id)">
@@ -145,5 +142,5 @@
         </div>
 
     </div>
-
 </div>
+<app-expense-type-drawer></app-expense-type-drawer>

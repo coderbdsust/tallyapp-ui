@@ -1,4 +1,3 @@
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -12,10 +11,10 @@ import { OrganizationService } from 'src/app/core/services/organization.service'
 import { CashTypeName } from 'src/app/core/models/cashtype.model';
 
 @Component({
-  selector: 'app-cashin-type-drawer',
+  selector: 'app-expense-type-drawer',
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  templateUrl: './cashin-type-drawer.component.html',
-  styleUrl: './cashin-type-drawer.component.scss',
+  templateUrl: './expense-type-drawer.component.html',
+  styleUrl: './expense-type-drawer.component.scss',
   animations: [
     trigger('slideIn', [
       transition(':enter', [
@@ -37,7 +36,7 @@ import { CashTypeName } from 'src/app/core/models/cashtype.model';
     ])
   ]
 })
-export class CashinTypeDrawerComponent  extends FormError implements OnInit, OnDestroy {
+export class ExpenseTypeDrawerComponent   extends FormError implements OnInit, OnDestroy {
     isOpen = false;
     config: DrawerConfig | null = null;
     form: FormGroup;
@@ -89,14 +88,14 @@ export class CashinTypeDrawerComponent  extends FormError implements OnInit, OnD
         id: [''],
         displayName: ['', [Validators.required, Validators.minLength(2)]],
         description: ['', [Validators.required, Validators.maxLength(500)]],
-        cashType: [CashTypeName.CASH_IN_TYPE],
+        cashType: [CashTypeName.EMPLOYEE_EXPENSE_TYPE],
         active: [true],
       });
     }
   
     resetForm(): void {
       this.form.reset({
-        cashType:CashTypeName.CASH_IN_TYPE,
+        cashType:CashTypeName.EMPLOYEE_EXPENSE_TYPE,
         active: true
       });
       this.isSubmitting = false;

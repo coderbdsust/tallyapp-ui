@@ -5,7 +5,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { CashFlowBalanceSummary, OrganizationBalance } from 'src/app/core/models/organization-balance.model';
-import { CashType } from 'src/app/core/models/cashtype.model';
+import { CashType, CashTypeName } from 'src/app/core/models/cashtype.model';
 import { DropdownComponent, DropdownOption } from 'src/app/common/components/dropdown/dropdown.component';
 import { CashoutTypeDrawerComponent } from './cashout-type-drawer/cashout-type-drawer.component';
 import { CashBalanceViewerComponent } from '../../components/cash-balance-viewer/cash-balance-viewer.component';
@@ -83,7 +83,7 @@ export class CashOutComponent extends FormError implements OnInit {
   }
 
   loadCashOutTypes(org:Organization): void {
-    this.cashTypeService.getAllCashOutTypes(org.id).subscribe({
+    this.cashTypeService.getAllCashTypeByType(org.id, CashTypeName.CASH_OUT_TYPE).subscribe({
       next: (response) => {
         this.cashOutTypes = response;
         response.forEach((type) => {
@@ -110,7 +110,7 @@ export class CashOutComponent extends FormError implements OnInit {
       cashOutType: ['', Validators.required],
       paymentMethod: ['', Validators.required],
       reference: ['', Validators.required],
-      description: ['', Validators.required],
+      description: ['', Validators.required]
     });
     
     this.selectedCashOutType = null;

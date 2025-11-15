@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CommonService } from './common.service';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs';
-import { CashType } from '../models/cashtype.model';
+import { CashType, CashTypeName } from '../models/cashtype.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -13,43 +13,21 @@ export class CashtypeService extends CommonService {
     super();
   }
 
-  // ==================== CASH-IN ====================
-
-  public getAllCashInTypes(orgId: string) {
+  public getAllCashTypeByType(orgId: string, cashType: CashTypeName) {
     return this.http
-      .get<CashType[]>(`${environment.tallyURL}/cash/type/v1/${orgId}/cash-in`)
+      .get<CashType[]>(`${environment.tallyURL}/cash/type/v1/${orgId}/${cashType}`)
       .pipe(catchError(this.mapErrorResponse));
   }
 
-  public createCashInType(orgId: string, payload: any) {
+  public createCashType(orgId: string, payload: any) {
     return this.http
-      .post<CashType>(`${environment.tallyURL}/cash/type/v1/${orgId}/cash-in`, payload)
+      .post<CashType>(`${environment.tallyURL}/cash/type/v1/${orgId}`, payload)
       .pipe(catchError(this.mapErrorResponse));
   }
 
-  public updateCashInType(id: string, payload: any) {
+  public updateCashType(id: string, payload: any) {
     return this.http
-      .put<CashType>(`${environment.tallyURL}/cash/type/v1/cash-in/${id}`, payload)
-      .pipe(catchError(this.mapErrorResponse));
-  }
-
-  // ==================== CASH-OUT ====================
-
-  public getAllCashOutTypes(orgId: string) {
-    return this.http
-      .get<CashType[]>(`${environment.tallyURL}/cash/type/v1/${orgId}/cash-out`)
-      .pipe(catchError(this.mapErrorResponse));
-  }
-
-  public createCashOutType(orgId: string, payload: any) {
-    return this.http
-      .post<CashType>(`${environment.tallyURL}/cash/type/v1/${orgId}/cash-out`, payload)
-      .pipe(catchError(this.mapErrorResponse));
-  }
-
-  public updateCashOutType(id: string, payload: any) {
-    return this.http
-      .put<CashType>(`${environment.tallyURL}/cash/type/v1/cash-out/${id}`, payload)
+      .put<CashType>(`${environment.tallyURL}/cash/type/v1/${id}`, payload)
       .pipe(catchError(this.mapErrorResponse));
   }
 

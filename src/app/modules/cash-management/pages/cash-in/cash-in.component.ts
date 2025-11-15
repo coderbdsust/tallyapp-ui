@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CashFlowBalanceSummary, OrganizationBalance } from 'src/app/core/models/organization-balance.model';
-import { CashType } from 'src/app/core/models/cashtype.model';
+import { CashType, CashTypeName } from 'src/app/core/models/cashtype.model';
 import { CashBalanceViewerComponent } from '../../components/cash-balance-viewer/cash-balance-viewer.component';
 import { TransactionViewComponent } from '../../components/transaction-view/transaction-view.component';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
@@ -82,7 +82,7 @@ export class CashInComponent extends FormError implements OnInit {
   }
 
   loadCashInTypes(org: Organization) {
-    this.cashTypeService.getAllCashInTypes(org.id).subscribe({
+    this.cashTypeService.getAllCashTypeByType(org.id, CashTypeName.CASH_IN_TYPE).subscribe({
       next: (response) => {
         this.cashTypes = response;
         response.forEach((type) => {

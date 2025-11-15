@@ -4,7 +4,6 @@ import { CashBalanceViewerComponent } from 'src/app/modules/cash-management/comp
 import { CashFlowBalanceSummary } from 'src/app/core/models/organization-balance.model';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
-import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { Organization } from 'src/app/core/models/organization.model';
 import { Employee } from 'src/app/core/models/employee.model';
@@ -14,10 +13,22 @@ import { EmployeeService } from 'src/app/core/services/employee.service';
 import { EmployeeExpenseService } from 'src/app/core/services/employee-expense.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { AccountingService } from 'src/app/core/services/accounting.service';
+import { ExpenseTypeDrawerComponent } from "../../drawer/expense-type-drawer/expense-type-drawer.component";
+import { DropdownComponent, DropdownOption } from 'src/app/common/components/dropdown/dropdown.component';
+import { CashType, CashTypeName } from 'src/app/core/models/cashtype.model';
+import { CashtypeService } from 'src/app/core/services/cashtype.service';
 
 @Component({
   selector: 'app-employee-expense',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, WordPipe, CashBalanceViewerComponent],
+  imports: [
+    AngularSvgIconModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    CashBalanceViewerComponent,
+    ExpenseTypeDrawerComponent,
+    DropdownComponent
+  ],
   templateUrl: './employee-expense.component.html',
   styleUrl: './employee-expense.component.scss'
 })
@@ -35,7 +46,8 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
       'Other'
     ];
 
-    public allExpenseTypes:string[] = [];
+    public allExpenseTypes:DropdownOption[] = [];
+    public expenseType: DropdownOption|null=null;
     public allEmployees:Employee[]=[];
     public employeeExpenses:EmployeeExpense[]=[];
   
@@ -45,7 +57,8 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
       private readonly empService: EmployeeService,
       private readonly empExpenseService: EmployeeExpenseService,
       private readonly orgService: OrganizationService,
-      private readonly accService: AccountingService
+      private readonly accService: AccountingService,
+      private readonly cashTypeService: CashtypeService
     ) {
       super();  
       console.log('Expense Component Initialized');
@@ -57,7 +70,7 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
         if (org) {
           this.org = org;
           this.initiatlizeForm(this.org);
-          this.loadAllExpenseTypes();
+          this.loadAllExpenseTypes(org);
           this.loadAllEmployees(org);
           this.loadOrganizationExpenses(org);
           this.loadBalanceSummary(org);
@@ -65,15 +78,23 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
       });
     }
 
-    loadAllExpenseTypes(){
-      this.empExpenseService.getExpenseTypes().subscribe({
-        next: (response) => {
-          this.allExpenseTypes = response;
-        },
-        error: (error) => {
-          this.orgService.showToastErrorResponse(error);
-        }
-      });
+    loadAllExpenseTypes(org:Organization){
+      this.cashTypeService.getAllCashTypeByType(org.id, CashTypeName.EMPLOYEE_EXPENSE_TYPE).subscribe({
+            next: (response) => {
+              response.forEach((type) => {
+                this.allExpenseTypes.push({
+                  label: type.displayName,
+                  value: type.id,
+                  description: type.description,
+                  default: type.isSystemDefault,
+                  type: type.accountType
+                });
+              });
+            },
+            error: (error) => {
+              this.cashTypeService.showToastErrorResponse(error);
+            },
+          });
     }
 
     loadAllEmployees(org:Organization){
@@ -129,6 +150,14 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
         }
   
       });
+    }
+
+    onCategorySelect(category: DropdownOption): void {
+        this.form.patchValue({ expenseType: category.value });
+    }
+    
+    onAddCategory(): void {
+        console.log('Opening category drawer...');
     }
   
     cancel() {
