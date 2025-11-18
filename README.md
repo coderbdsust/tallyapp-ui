@@ -3,9 +3,8 @@
 </p>
 
 <p>
-  <img alt="Preview" src="img/dashboard-v6.png">
-  <img alt="Preview" src="img/report-v7.png">
-  <img alt="Preview" src="img/employee-v2.png">
+  <img alt="Preview" src="img/dashboard-v7.png">
+  <img alt="Preview" src="img/employee-v3.png">
   <img alt="Preview" src="img/employee-expense-v7.png">
   <img alt="Preview" src="img/daily-reporting-v7.png">
   <img alt="Preview" src="img/reporting-calendar-v7-p1.png">
@@ -19,9 +18,7 @@
   <img alt="Preview" src="img/invoice-pdf.png">
   <img alt="Preview" src="img/profile-view-v7.png">
   <img alt="Preview" src="img/2FA-By-Authenticator-App.png">
-  <img alt="Preview" src="img/permission-matrix-v5.png">
-  <img alt="Preview" src="img/app-property-v1.png">
-
+  <img alt="Preview" src="img/permission-matrix-v6.png">
 
 </p>
 
