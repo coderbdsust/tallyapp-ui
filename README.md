@@ -20,6 +20,9 @@
   <img alt="Preview" src="img/2FA-By-Authenticator-App.png">
   <img alt="Preview" src="img/permission-matrix-v6.png">
 
+  Tally App Monitoring
+  <img alt="Preview" src="img/prometheus-grafana.png">
+
 </p>
 
 #### Versions
