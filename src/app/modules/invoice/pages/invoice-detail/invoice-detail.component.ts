@@ -184,6 +184,25 @@ export class InvoiceDetailComponent implements OnInit, OnDestroy {
     this.invoiceService.showToastSuccess('PDF downloaded successfully');
   }
 
+  downloadExtInvoice(): void {
+    if (this.downloadingBackend) return;
+
+    this.downloadingBackend = true;
+    this.invoiceService
+      .downloadExtInvoice(this.orgId, this.invoiceId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (pdfRes: Blob) => {
+          this.handleBlobDownload(pdfRes);
+          this.downloadingBackend = false;
+        },
+        error: (err) => {
+          this.downloadingBackend = false;
+          this.invoiceService.showToastErrorResponse(err);
+        }
+      });
+  }
+
   downloadInvoice(): void {
     if (this.downloadingBackend) return;
 
