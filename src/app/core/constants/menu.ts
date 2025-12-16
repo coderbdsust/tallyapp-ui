@@ -37,13 +37,13 @@ export class Menu {
       separator: false,
       items: [
         {
-          icon: 'assets/icons/heroicons/outline/office.svg',
+          icon: 'assets/icons/heroicons/outline/user.svg',
           label: 'Employee',
           route: '/employee',
           requiredModules: ['EMPLOYEE_MANAGEMENT']
         },
         {
-          icon: 'assets/icons/heroicons/outline/office.svg',
+          icon: 'assets/icons/heroicons/outline/cart.svg',
           label: 'Product',
           route: '/product',
           requiredModules: ['PRODUCT_MANAGEMENT']
