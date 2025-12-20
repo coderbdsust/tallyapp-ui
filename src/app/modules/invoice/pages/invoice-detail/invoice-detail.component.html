@@ -286,19 +286,19 @@
     <!-- Action Buttons -->
     <div class="flex flex-row justify-end pt-6 gap-3" id="buttonSection">
       <button 
-        class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        class="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        (click)="downloadInvoice()"
+        [disabled]="downloadingBackend">
+        <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        <span>{{ downloadingBackend ? 'Downloading...' : 'Download' }}</span>
+      </button>
+
+      <button 
+        class="flex items-center gap-2 px-4 py-2 bg-green-800 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         (click)="downloadExtInvoice()"
         [disabled]="downloadingBackend">
         <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"></svg-icon>
         <span>{{ downloadingBackend ? 'Downloading...' : 'Download Ext' }}</span>
-      </button>
-
-      <button 
-        class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        (click)="downloadInvoice()"
-        [disabled]="downloadingBackend">
-        <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-        <span>{{ downloadingBackend ? 'Downloading...' : 'Download Official' }}</span>
       </button>
       
       <button 
@@ -311,8 +311,8 @@
       <button
         class="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
         (click)="backToInvoiceList()">
-        <svg-icon src="./assets/icons/heroicons/outline/arrow-left.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-        <span>Back to List</span>
+        <svg-icon src="./assets/icons/heroicons/outline/uturn-back.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        <span>Back</span>
       </button>
     </div>
   </div>
