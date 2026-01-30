@@ -24,6 +24,11 @@ const routes: Routes = [
     loadChildren: () => import('../invoice/invoice.module').then((m) => m.InvoiceModule),
   },
   {
+    path: 'invoice-standalone',
+    component: LayoutComponent,
+    loadChildren: () => import('../invoice-standalone/invoice-standalone.module').then((m) => m.InvoiceStandaloneModule),
+  },
+  {
     path: 'cash-management',
     component: LayoutComponent,
     loadChildren: () => import('../cash-management/transaction.module').then((m) => m.TransactionModule),

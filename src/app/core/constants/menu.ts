@@ -55,6 +55,12 @@ export class Menu {
           requiredModules: ['INVOICE_MANAGEMENT']
         },
         {
+          icon: 'assets/icons/heroicons/outline/newpaper.svg',
+          label: 'Invoice-Standalone',
+          route: '/invoice-standalone/list',
+          requiredModules: ['INVOICE_STANDALONE_MANAGEMENT']
+        },
+        {
           icon: 'assets/icons/heroicons/outline/banknotes.svg',
           label: 'Cash Management',
           route: '/cash-management',

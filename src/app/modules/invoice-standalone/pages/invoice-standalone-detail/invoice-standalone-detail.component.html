@@ -1,0 +1,377 @@
+<!-- src/app/modules/invoice-standalone/invoice-standalone-detail/invoice-standalone-detail.component.html -->
+
+<!-- Loading State -->
+<div *ngIf="loading" class="flex justify-center items-center min-h-screen">
+  <div class="flex flex-col items-center gap-4">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    <p class="text-muted-foreground">Loading invoice details...</p>
+  </div>
+</div>
+
+<!-- Invoice Content -->
+<div *ngIf="!loading && invoice" class="flex min-w-full flex-col rounded-xl border-none border-muted/20 bg-background" id="invoiceDetailContainer">
+  <div class="flex flex-col m-6 p-2 gap-4 divide-y-2 divide-dashed">
+
+    <!-- Invoice Info + Company Info -->
+    <div class="flex flex-row justify-between gap-6">
+      <!-- Left Side - Invoice Details -->
+      <div class="w-5/12 pr-4">
+        <img 
+          [src]="invoice.organization.logoB64 || 'https://placehold.co/400'" 
+          alt="Invoice Logo"
+          class="w-auto h-20 rounded-lg shadow-md mb-6 object-contain">
+
+        <div class="space-y-3">
+          <!-- Invoice Type Badge -->
+          <div class="mb-2">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+                  [ngClass]="{
+                    'bg-purple-100 text-purple-800': invoice.invoiceType === InvoiceType.QUOTATION,
+                    'bg-blue-100 text-blue-800': invoice.invoiceType === InvoiceType.BILL
+                  }">
+              {{ invoice.invoiceType | word }}
+            </span>
+          </div>
+
+          <div class="flex justify-between items-center text-lg font-bold text-muted-foreground">
+            <span>Invoice No:</span>
+            <span class="font-mono bg-gray-100 px-2 py-1 rounded text-sm">{{ invoice.invoiceNumber }}</span>
+          </div>
+
+          <div class="flex justify-between items-center text-sm text-muted-foreground">
+            <span>Invoice Date:</span>
+            <span class="font-medium">{{ invoice.invoiceDate | date:'dd MMM yyyy' }}</span>
+          </div>
+
+          <div class="flex justify-between items-center text-sm text-muted-foreground">
+            <span>Payment Status:</span>
+            <span class="font-medium px-2 py-1 rounded text-xs" [ngClass]="getStatusColor(invoice.invoiceStatus)">
+              {{ invoice.invoiceStatus | word }}
+            </span>
+          </div>
+
+          <div class="flex justify-between items-center text-sm text-muted-foreground">
+            <span>Delivery Date:</span>
+            <span class="font-medium">{{ invoice.deliveryDate | date:'dd MMM yyyy' }}</span>
+          </div>
+
+          <div class="flex justify-between items-center text-lg font-bold text-muted-foreground pt-2 border-t border-gray-200">
+            <span>Total Amount:</span>
+            <span class="font-bold text-blue-600">{{ formatCurrency(invoice.totalAmount) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side - Company Details -->
+      <div class="w-6/12 flex flex-col gap-4">
+        <img 
+          [src]="invoice.barcode || './assets/img/barcode-v2.png'" 
+          alt="Invoice QR Code" 
+          class="w-full h-12 rounded object-contain">
+
+        <div class="grid grid-cols-1 gap-3">
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Company Name:</span>
+            <span>{{ invoice.organization.orgName }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Address:</span>
+            <span class="text-right max-w-xs">{{ invoice.organization.orgAddressLine }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Postcode:</span>
+            <span>{{ invoice.organization.orgAddressPostcode }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">TIN No:</span>
+            <span class="font-mono text-xs bg-gray-100 px-1 rounded">{{ invoice.organization.orgTinNumber }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">VAT Registration No:</span>
+            <span class="font-mono text-xs bg-gray-100 px-1 rounded">{{ invoice.organization.orgVatNumber }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Email Address:</span>
+            <span>{{ invoice.organization.orgEmail }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Contact No:</span>
+            <span class="font-mono">{{ invoice.organization.orgMobileNo }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Billing Address -->
+    <div class="flex flex-row pt-4">
+      <div class="w-1/2 pr-4">
+        <h2 class="text-lg font-semibold text-muted-foreground mb-4">Billing Address</h2>
+
+        <div class="grid grid-cols-1 gap-3">
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Customer Name:</span>
+            <span>{{ invoice.customer.name }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Address:</span>
+            <span class="text-right max-w-xs">{{ invoice.customer.address }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground" *ngIf="invoice.customer.postcode">
+            <span class="font-medium">Postcode:</span>
+            <span>{{ invoice.customer.postcode }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">Phone:</span>
+            <span class="font-mono">{{ invoice.customer.mobile }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground" *ngIf="invoice.customer.email">
+            <span class="font-medium">Email:</span>
+            <span>{{ invoice.customer.email }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Table -->
+    <div class="flex flex-col pt-4">
+      <h2 class="text-lg font-semibold text-muted-foreground mb-4">
+        {{ invoice.invoiceType === InvoiceType.QUOTATION ? 'Quoted Items' : 'Purchase History' }}
+      </h2>
+      
+      <div *ngIf="!hasProducts()" class="text-center py-8 text-muted-foreground">
+        <svg-icon src="./assets/icons/heroicons/outline/shopping-cart.svg" [svgClass]="'h-12 w-12 mx-auto mb-2 text-muted-foreground/50'"></svg-icon>
+        <p>No products found in this {{ invoice.invoiceType === InvoiceType.QUOTATION ? 'quotation' : 'invoice' }}.</p>
+      </div>
+
+      <div *ngIf="hasProducts()" class="overflow-x-auto">
+        <table class="table w-full table-auto border-collapse border border-gray-200 text-left align-middle leading-5 text-muted-foreground">
+          <thead class="bg-gray-100 border-b border-gray-200">
+            <tr>
+              <th class="px-4 py-3 text-sm font-medium">SL</th>
+              <th class="px-4 py-3 text-sm font-medium">Product Details</th>
+              <th class="px-4 py-3 text-sm font-medium text-right">Unit Rate</th>
+              <th class="px-4 py-3 text-sm font-medium text-center">Quantity</th>
+              <th class="px-4 py-3 text-sm font-medium text-right">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of invoice.products.items; let i=index" class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-3 text-sm text-center">{{ i + 1 }}</td>
+              <td class="px-4 py-3">
+                <div class="flex flex-col">
+                  <span class="font-medium">{{ item.name }}</span>
+                  <span class="text-xs text-muted-foreground font-mono" *ngIf="item.code">({{ item.code }})</span>
+                  <span *ngIf="item.description" class="text-xs text-muted-foreground mt-1">{{ item.description }}</span>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm text-right font-mono">{{ formatCurrency(item.pricePerUnit) }}</td>
+              <td class="px-6 py-4 text-center border-b border-gray-100">
+                <span class="inline-flex items-center px-3 py-2 rounded-lg bg-gray-50 text-gray-800 text-sm font-medium">
+                  <span class="font-bold">{{ item.quantity }}</span>
+                  <span class="ml-1 text-gray-600">{{ item.unitType }}</span>
+                </span>
+              </td>
+              <td class="px-4 py-3 text-sm text-right font-mono font-semibold">{{ formatCurrency(getTotalProductAmount(item.quantity, item.pricePerUnit)) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Payment History & Summary -->
+    <div class="flex flex-row justify-between gap-6 pt-4">
+      <!-- Left Side - Payment History (Only for Bills) -->
+      <div class="w-7/12 pr-4" *ngIf="canShowPayments()">
+        <h2 class="text-lg font-semibold text-muted-foreground mb-4">Customer Payment History</h2>
+        
+        <div *ngIf="!hasPayments()" class="text-center py-8 text-muted-foreground">
+          <svg-icon src="./assets/icons/heroicons/outline/credit-card.svg" [svgClass]="'h-12 w-12 mx-auto mb-2 text-muted-foreground/50'"></svg-icon>
+          <p>No payments recorded for this invoice.</p>
+        </div>
+
+        <div *ngIf="hasPayments()" class="overflow-x-auto">
+          <table class="table w-full table-auto border-collapse border border-gray-200 text-left align-middle leading-5 text-muted-foreground">
+            <thead class="bg-gray-100 border-b border-gray-200">
+              <tr>
+                <th class="px-4 py-3 text-sm font-medium">Date</th>
+                <th class="px-4 py-3 text-sm font-medium">Method</th>
+                <th class="px-4 py-3 text-sm font-medium">Reference</th>
+                <th class="px-4 py-3 text-sm font-medium text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let payment of invoice.payments.payments; let i=index" class="border-b border-gray-100 hover:bg-gray-50">
+                <td class="px-4 py-2 text-sm">{{ payment.paymentDate | date:'dd MMM yyyy' }}</td>
+                <td class="px-4 py-2 text-sm">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
+                    {{ payment.paymentMethod | word }}
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-sm font-mono">{{ payment.reference || 'N/A' }}</td>
+                <td class="px-4 py-2 text-sm text-right font-mono font-semibold">{{ formatCurrency(payment.amount) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Quotation Note (Only for Quotations) -->
+      <div class="w-7/12 pr-4" *ngIf="!canShowPayments()">
+        <div class="bg-purple-50 border border-purple-200 rounded-lg p-6">
+          <div class="flex items-start gap-3">
+            <svg-icon src="./assets/icons/heroicons/outline/information-circle.svg" [svgClass]="'h-8 w-8 text-purple-600'"></svg-icon>
+            <div>
+              <h3 class="text-base font-semibold text-purple-900 mb-2">Quotation Information</h3>
+              <p class="text-sm text-purple-700 mb-3">
+                This is a quotation for pricing reference. No payments have been recorded as this is not yet converted to a bill.
+              </p>
+              <div class="space-y-2 text-sm text-purple-600">
+                <div class="flex justify-between">
+                  <span>Valid Until:</span>
+                  <span class="font-medium">{{ invoice.deliveryDate | date:'dd MMM yyyy' }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Quotation Date:</span>
+                  <span class="font-medium">{{ invoice.invoiceDate | date:'dd MMM yyyy' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side - Summary -->
+      <div [ngClass]="canShowPayments() ? 'w-5/12' : 'w-5/12'">
+        <div class="bg-gray-50 p-6 rounded-lg">
+          <h3 class="text-lg font-semibold text-muted-foreground mb-4">
+            {{ invoice.invoiceType === InvoiceType.QUOTATION ? 'Quotation' : 'Invoice' }} Summary
+          </h3>
+          
+          <div class="space-y-3">
+            <div class="flex justify-between text-sm">
+              <span>Sub Total:</span>
+              <span class="font-mono">{{ formatCurrency(invoice.pricing.subTotal) }}</span>
+            </div>
+            
+            <div class="flex justify-between text-sm">
+              <span>Tax ({{ invoice.pricing.taxRate }}%):</span>
+              <span class="font-mono">{{ formatCurrency(invoice.pricing.taxAmount) }}</span>
+            </div>
+            
+            <div class="flex justify-between text-sm">
+              <span>VAT ({{ invoice.pricing.vatRate }}%):</span>
+              <span class="font-mono">{{ formatCurrency(invoice.pricing.vatAmount) }}</span>
+            </div>
+            
+            <div class="flex justify-between text-sm" *ngIf="invoice.pricing.discount > 0">
+              <span>Discount:</span>
+              <span class="font-mono text-green-600">-{{ formatCurrency(invoice.pricing.discount) }}</span>
+            </div>
+            
+            <div class="flex justify-between text-sm" *ngIf="invoice.pricing.deliveryCharge > 0">
+              <span>Delivery Charge:</span>
+              <span class="font-mono">{{ formatCurrency(invoice.pricing.deliveryCharge) }}</span>
+            </div>
+            
+            <div class="border-t border-gray-300 pt-3">
+              <div class="flex justify-between text-base font-semibold">
+                <span>Total Amount:</span>
+                <span class="font-bold text-blue-600">{{ formatCurrency(invoice.totalAmount) }}</span>
+              </div>
+            </div>
+            
+            <!-- Payment summary (Only for Bills) -->
+            <ng-container *ngIf="canShowPayments()">
+              <div class="flex justify-between text-sm">
+                <span>Total Paid:</span>
+                <span class="font-semibold text-green-600">{{ formatCurrency(invoice.totalPaid) }}</span>
+              </div>
+              
+              <div class="flex justify-between text-base font-semibold border-t border-gray-300 pt-3">
+                <span>Amount Due:</span>
+                <span class="font-mono" [ngClass]="getAmountDueColor()">{{ formatCurrency(invoice.remainingAmount) }}</span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Amount in Words -->
+    <div class="pt-4">
+      <div class="rounded-lg">
+        <p class="text-sm text-muted-foreground">
+          <strong>In words:</strong> 
+          <span class="font-medium">{{ toWords.convert(invoice.totalAmount) }}</span>
+        </p>
+      </div>
+    </div>
+    
+    <!-- Notes -->
+    <div class="pt-4">
+      <h3 class="text-lg font-semibold text-muted-foreground mb-3">Notes</h3>
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <p class="text-sm text-muted-foreground" *ngIf="invoice.invoiceType === InvoiceType.QUOTATION">
+          This quotation is valid for 30 days from the date of issue. Prices and availability are subject to change. 
+          Please contact us for any clarifications or to proceed with the order.
+        </p>
+        <p class="text-sm text-muted-foreground" *ngIf="invoice.invoiceType === InvoiceType.BILL">
+          Thank you for your business! If you have any questions about this invoice, please contact us at
+          <a [href]="'mailto:' + invoice.organization.orgEmail" class="font-semibold text-primary hover:underline">
+            {{ invoice.organization.orgEmail }}
+          </a>.
+        </p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-row justify-end pt-6 gap-3" id="buttonSection">      
+      <button 
+        class="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+        (click)="editInvoice()">
+        <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        <span>Edit {{ invoice.invoiceType === InvoiceType.QUOTATION ? 'Quotation' : 'Invoice' }}</span>
+      </button>
+
+      <button 
+        class="flex items-center gap-2 px-4 py-2 bg-green-600  text-white rounded-md hover:bg-indigo-700 transition-colors"
+        (click)="downloadInvoice()">
+        <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        <span>Download</span>
+      </button>
+
+      <button
+        class="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+        (click)="backToList()">
+        <svg-icon src="./assets/icons/heroicons/outline/uturn-back.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        <span>Back to List</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Error State -->
+<div *ngIf="!loading && !invoice" class="flex justify-center items-center min-h-screen">
+  <div class="text-center">
+    <svg-icon src="./assets/icons/heroicons/outline/exclamation-triangle.svg" [svgClass]="'h-16 w-16 text-red-500 mx-auto mb-4'"></svg-icon>
+    <h2 class="text-xl font-semibold text-muted-foreground mb-2">
+      {{ InvoiceType.QUOTATION }} Not Found
+    </h2>
+    <p class="text-muted-foreground mb-4">The requested {{ InvoiceType.QUOTATION.toLowerCase() }} could not be loaded.</p>
+    <button 
+      class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
+      (click)="backToList()">
+      Back to List
+    </button>
+  </div>
+</div>
