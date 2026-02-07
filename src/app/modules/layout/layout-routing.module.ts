@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './layout.component';
 import { authGuard } from 'src/app/core/guards/auth.guard';
+import { homeRedirectGuard } from 'src/app/core/guards/home-redirect.guard';
 
 const routes: Routes = [
   {
@@ -67,7 +68,12 @@ const routes: Routes = [
     data: { modules: ['PROFILE'] },
     loadChildren: () => import('../user/user.module').then((m) => m.UserModule),
   },
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  {
+    path: '',
+    pathMatch: 'full',
+    canActivate: [homeRedirectGuard],
+    component: LayoutComponent,
+  },
   { path: '**', redirectTo: 'error/404' },
 ];
 
