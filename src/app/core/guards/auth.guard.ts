@@ -11,14 +11,10 @@ export const authGuard: CanActivateFn = (route, state) => {
   if (!keycloak.authenticated) {
     return router.createUrlTree(['/auth/sign-in']);
   }
+  
+  const requiredRoles: string[] = route.data['modules'] ?? [];
 
-  const requiredRoles: string[] = route.data['roles'] ?? [];
-
-  if (requiredRoles.length === 0) {
-    return true;
-  }
-
-  const hasAccess = requiredRoles.some((role) => authService.hasRole(role));
+  const hasAccess = requiredRoles.some((role) => authService.hasModule(role));
 
   if (hasAccess) {
     return true;
