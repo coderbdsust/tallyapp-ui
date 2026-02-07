@@ -56,7 +56,6 @@ export class ProfileViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUserProfile();
-    this.loadTfaStatus();
     
     // Hide skeleton after animation
     setTimeout(() => {
@@ -73,17 +72,6 @@ export class ProfileViewComponent implements OnInit {
       error: (error) => {
         this.commonService.showToastErrorResponse(error);
         this.isLoading = false;
-      }
-    });
-  }
-
-  loadTfaStatus(): void {
-    this.userProfileService.getTfaStatus().subscribe({
-      next: (tfaStatus) => {
-        this.tfaStatus = tfaStatus;
-      },
-      error: (error) => {
-        this.commonService.showToastErrorResponse(error);
       }
     });
   }

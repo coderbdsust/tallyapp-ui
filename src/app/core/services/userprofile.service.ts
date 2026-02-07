@@ -4,7 +4,7 @@ import { CommonService } from './common.service';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
 import { ApiResponse } from '../models/auth.model';
-import { Address, ShortProfile, TFAResponse, UserProfile } from '../models/profile.model';
+import { Address, ShortProfile, UserProfile } from '../models/profile.model';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +12,12 @@ import { Address, ShortProfile, TFAResponse, UserProfile } from '../models/profi
 export class UserprofileService extends CommonService {
   constructor(private http: HttpClient) {
     super();
+  }
+
+  getGenderList() {
+    return this.http
+      .get<String[]>(`${environment.tallyURL}/users/v1/gender-list`)
+      .pipe(catchError(this.mapErrorResponse));
   }
 
   getUserProfile() {
@@ -50,26 +56,4 @@ export class UserprofileService extends CommonService {
     .pipe(catchError(this.mapErrorResponse));
   }
 
-  changeUserPassword(changePassword: any) {
-    return this.http
-      .post<ApiResponse>(`${environment.tallyURL}/users/v1/change-password`, changePassword)
-      .pipe(catchError(this.mapErrorResponse));
-  }
-  
-  changeTFAStatusEmail(tfaStatus: any) {
-    return this.http
-      .post<ApiResponse>(`${environment.tallyURL}/users/v1/change-tfa-status-by-email`, tfaStatus)
-      .pipe(catchError(this.mapErrorResponse));
-  }
-
-  changeTFAStatusMobile(tfaStatus: any) {
-    return this.http
-      .post<ApiResponse>(`${environment.tallyURL}/users/v1/change-tfa-status-by-mobile`, tfaStatus)
-      .pipe(catchError(this.mapErrorResponse));
-  }
-
-  getTfaStatus(){
-    return this.http.get<TFAResponse>(`${environment.tallyURL}/users/v1/tfa-status`)
-    .pipe(catchError(this.mapErrorResponse));
-  }
 }

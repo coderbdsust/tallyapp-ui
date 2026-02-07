@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from 'src/app/core/guards/auth.guard';
+import { authGuard } from 'src/app/core/guards/auth.guard';
 import { ProductListComponent } from './pages/product-list/product-list.component';
 import { ProductComponent } from './product.component';
 
@@ -9,7 +9,7 @@ const routes: Routes = [
   {
     path: '',
     component: ProductComponent,
-    canActivate:[AuthGuard],
+    canActivate:[authGuard],
     children: [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
       { path: 'list', component: ProductListComponent },

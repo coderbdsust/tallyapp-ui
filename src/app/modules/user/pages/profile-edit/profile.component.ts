@@ -2,24 +2,20 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/core/services/common.service';
 import { UserprofileService } from 'src/app/core/services/userprofile.service';
 import { initFlowbite } from 'flowbite';
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { forkJoin } from 'rxjs';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
-import { MatDialog } from '@angular/material/dialog';
 import { FileUploaderComponent } from 'src/app/common/components/file-uploader/file-uploader.component';
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/core/services/auth.service';
-import { AuthenticatorAppService } from 'src/app/core/services/authenticator-app.service';
-import { AuthenticatorQrModalComponent } from '../../modal/authenticator-qr-modal/authenticator-qr-modal.component';
 import { Address, ShortProfile, UserProfile } from 'src/app/core/models/profile.model';
 
 @Component({
   selector: 'app-profile',
-  imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, ButtonComponent, WordPipe, FileUploaderComponent],
+  imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, NgClass, ButtonComponent, WordPipe, FileUploaderComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -28,17 +24,13 @@ export class ProfileComponent implements OnInit {
   userProfile: UserProfile | undefined;
   genderList: String[] = [];
   userProfileForm!: FormGroup;
-  tfaForm!: FormGroup;
   selectedFile: File | null = null;
   submitted = false;
 
   constructor(
     private userProfileService: UserprofileService,
     private commonService: CommonService,
-    private authService: AuthService,
     private readonly _formBuilder: FormBuilder,
-    private dialog: MatDialog,
-    private authenticatorAppService: AuthenticatorAppService,
     private fileUploaderService: FileUploaderService,
     private router:Router
   ) { }
@@ -47,24 +39,15 @@ export class ProfileComponent implements OnInit {
     initFlowbite();
     this.loadUserProfile();
     this.loadGenderList();
-    this.loadTfaStatus();
     this.userProfileForm = this.createUserProfileForm();
-    this.tfaForm = this.createTfaForm();
-  }
-
-  createTfaForm(): FormGroup {
-    return this._formBuilder.group({
-      byEmail: [false],
-      byMobile: [false],
-      byAuthenticator: [false]
-    });
   }
 
   createUserProfileForm(): FormGroup {
     return this._formBuilder.group({
       id: ['', Validators.required],
       mobileNo: ['', [Validators.required, Validators.pattern(/^01[3-9]\d{8}$/)]],
-      fullName: ['', Validators.required],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
       gender: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
       profileImage:[''],
@@ -230,21 +213,6 @@ export class ProfileComponent implements OnInit {
     } else this.shortProfileList.removeAt(index);
   }
 
-  loadTfaStatus() {
-    this.userProfileService.getTfaStatus().subscribe({
-      next: (tfaStatus) => {
-        this.tfaForm.patchValue({
-          byEmail: tfaStatus.byEmail,
-          byMobile: tfaStatus.byMobile,
-          byAuthenticator: tfaStatus.byAuthenticator,
-        });
-      },
-      error: (error) => {
-        this.commonService.showToastErrorResponse(error);
-      }
-    });
-  }
-
   loadUserProfile() {
     this.userProfileService.getUserProfile().subscribe({
       next:(userProfile)=>{
@@ -256,7 +224,8 @@ export class ProfileComponent implements OnInit {
         this.userProfileForm.patchValue({
           id: userProfile.id,
           mobileNo: userProfile.mobileNo,
-          fullName: userProfile.fullName,
+          firstName: userProfile.firstName,
+          lastName: userProfile.lastName,
           gender: userProfile.gender,
           dateOfBirth: userProfile.dateOfBirth,
           profileImage: userProfile.profileImage
@@ -270,7 +239,7 @@ export class ProfileComponent implements OnInit {
   }
 
   loadGenderList() {
-    this.authService.getGenderList().subscribe({
+    this.userProfileService.getGenderList().subscribe({
       next: (genderList) => {
         this.genderList = genderList;
       },
@@ -357,72 +326,6 @@ export class ProfileComponent implements OnInit {
       error: (error) => {
         this.userProfileService.showToastErrorResponse(error);
       },
-    });
-  }
-
-  onChangeTfaStatusByEmail() {
-    let tfaStatus = this.tfaForm.value;
-    tfaStatus.tfaEnable = tfaStatus.byEmail;
-    this.userProfileService.changeTFAStatusEmail(tfaStatus).subscribe({
-      next: (response) => {
-        this.userProfileService.showToastSuccess(response.message);
-      }
-      , error: (error) => {
-        this.userProfileService.showToastErrorResponse(error);
-      }
-    });
-  }
-
-  onChangeTfaStatusByMobile() {
-    let tfaStatus = this.tfaForm.value;
-    tfaStatus.tfaEnable = tfaStatus.byMobile;
-    this.userProfileService.changeTFAStatusMobile(tfaStatus).subscribe({
-      next: (response) => {
-        this.userProfileService.showToastSuccess(response.message);
-      },
-      error: (error) => {
-        this.userProfileService.showToastErrorResponse(error);
-      }
-    });
-  }
-
-  onChangeTfaStatusByAuthenticator() {
-    let byAuthenticator = this.tfaForm.get('byAuthenticator')?.value;
-
-    const dialogRef = this.dialog.open(AuthenticatorQrModalComponent, {
-      width: '500px',
-      data: byAuthenticator
-    });
-
-    dialogRef.afterClosed().subscribe(otp => {
-      if (otp) {
-        const control = this.tfaForm.get('byAuthenticator');
-
-        if (byAuthenticator) {
-          this.authenticatorAppService.authenticatorAppTfaEnable(otp).subscribe({
-            next: (response) => {
-              this.authenticatorAppService.showToastSuccess(response.message);
-            },
-            error: (error) => {
-              this.authService.showToastErrorResponse(error);
-              control?.setValue(false, { emitEvent: false }); // revert
-            }
-          });
-        } else {
-          this.authenticatorAppService.authenticatorAppTfaDisable(otp).subscribe({
-            next: (response) => {
-              this.authenticatorAppService.showToastSuccess(response.message);
-            },
-            error: (error) => {
-              this.authService.showToastErrorResponse(error);
-              control?.setValue(true, { emitEvent: false }); // revert
-            }
-          });
-        }
-      } else {
-        // If modal closed without submitting OTP, revert checkbox
-        this.tfaForm.get('byAuthenticator')?.setValue(!byAuthenticator, { emitEvent: false });
-      }
     });
   }
 

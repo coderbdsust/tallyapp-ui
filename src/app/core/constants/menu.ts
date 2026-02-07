@@ -88,11 +88,6 @@ export class Menu {
               label: 'User Management',
               route: '/admin/user-management',
               requiredModules: ['USER_MANAGEMENT']
-            },
-            {
-              label: 'Permission Matrix',
-              route: '/admin/permission-matrix',
-              requiredModules: ['USER_MANAGEMENT']
             }
           ]
         }

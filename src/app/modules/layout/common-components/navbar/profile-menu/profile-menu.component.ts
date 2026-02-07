@@ -1,20 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { CommonModule, NgClass, NgIf } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { ClickOutsideDirective } from '../../../../../common/directives/click-outside.directive';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ThemeService } from '../../../../../core/services/theme.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { map, take } from 'rxjs';
-import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { RolePipe } from 'src/app/common/pipes/role.pipe';
 
 @Component({
     selector: 'app-profile-menu',
     templateUrl: './profile-menu.component.html',
     styleUrls: ['./profile-menu.component.scss'],
-    imports: [ClickOutsideDirective, NgClass, RouterLink, AngularSvgIconModule, CommonModule, NgIf, RolePipe],
+    imports: [ClickOutsideDirective, NgClass, RouterLink, AngularSvgIconModule, CommonModule, RolePipe],
     animations: [
         trigger('openClose', [
             state('open', style({
@@ -92,7 +90,7 @@ export class ProfileMenuComponent implements OnInit {
   constructor(public themeService: ThemeService, public authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    this.getMenu();
+    this.menuItem = this.profileMenuUser;
   }
 
   public toggleMenu(): void {
@@ -116,16 +114,6 @@ export class ProfileMenuComponent implements OnInit {
     this.authService.logout();
   }
 
-
-  public getMenu(): void {
-    this.authService.user.pipe(
-      take(1),
-      map(user => (this.profileMenuUser))
-    ).subscribe(menu => {
-      this.menuItem = menu; // Assign the resolved menu array
-    });
-  }
-
   onLanguageChange(event: Event): void {
     const lang = (event.target as HTMLSelectElement).value;
     if (lang && lang !== '-1') {
@@ -133,6 +121,4 @@ export class ProfileMenuComponent implements OnInit {
       localStorage.setItem('app-language', lang);
     }
   }
-
-
 }

@@ -72,10 +72,8 @@
         <tr>
           <th class="min-w-[200px]">User</th>
           <th class="min-w-[120px]">Username</th>
-          <th class="min-w-[140px]">Account Created</th>
-          <th class="min-w-[120px]">Role</th>
-          <th class="min-w-[100px]">Verified</th>
-          <th class="min-w-[120px]">Account Status</th>
+          <th class="min-w-[140px]">Keycloak ID</th>
+          <th class="min-w-[140px]">Created</th>
           <th class="min-w-[100px]">Actions</th>
         </tr>
       </thead>
@@ -91,7 +89,7 @@
                 loading="lazy" />
               <div class="flex flex-col">
                 <a class="text-sm font-semibold text-foreground hover:text-primary" href="#"> 
-                  {{ user.fullName }} 
+                  {{ user.fullName }}
                 </a>
                 <a class="text-xs font-medium text-muted-foreground/70 hover:text-primary" href="#">
                   {{ user.email }}
@@ -106,72 +104,25 @@
               {{ user.username }}
             </span>
           </td>
+          
+          <!-- Account Created -->
+          <td>
+            <span class="text-sm">{{ user.keycloakUserId }}</span>
+          </td>
 
           <!-- Account Created -->
           <td>
             <span class="text-sm">{{ user.createdDate | date: 'dd-MM-yyyy HH:mm' }}</span>
           </td>
 
-          <!-- Role Selection -->
-          <td>
-            <select 
-              [id]="'roles-' + i" 
-              (change)="onRoleChange($event, user)"
-              class="block py-2.5 px-2 w-full text-sm text-gray-500 bg-transparent border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-              <option value="-1">Change Role</option>
-              <option *ngFor="let role of roles" 
-                      [value]="role" 
-                      [selected]="isCurrentUserRole(user, role)">
-                {{ getRoleDisplayName(role) }}
-              </option>
-            </select>
-          </td>
-
-          <!-- Verification Status -->
-          <td>
-            <div class="flex items-center">
-              <label class="inline-flex items-center cursor-not-allowed" title="View only - cannot be changed">
-                <input 
-                  type="checkbox" 
-                  disabled
-                  [checked]="user.enabled" 
-                  (click)="onVerificationChange($event, user)"
-                  class="sr-only peer">
-                <div class="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600 opacity-75">
-                </div>
-              </label>
-              <span class="ml-2 text-xs" [ngClass]="user.enabled ? 'text-green-600' : 'text-red-600'">
-                {{ user.enabled ? 'Verified' : 'Unverified' }}
-              </span>
-            </div>
-          </td>
-
-          <!-- Account Lock Status -->
-          <td>
-            <div class="flex items-center">
-              <label class="inline-flex items-center cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  [checked]="user.accountLocked" 
-                  (change)="onAccountLocked($event, user)"
-                  class="sr-only peer">
-                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600">
-                </div>
-              </label>
-              <span class="ml-2 text-xs" [ngClass]="user.accountLocked ? 'text-red-600' : 'text-green-600'">
-                {{ user.accountLocked ? 'Locked' : 'Active' }}
-              </span>
-            </div>
-          </td>
-
           <!-- Actions -->
           <td>
             <div class="flex items-center gap-2">
               <button 
-                (click)="forceLogout(user)" 
                 class="p-1 hover:text-red-600 transition-colors"
-                title="Force Logout">
-                <svg-icon src="./assets/icons/heroicons/outline/power.svg" [svgClass]="'h-5 w-5'">
+                (click)="editUser(user)"
+                title="Edit">
+                <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-5 w-5'">
                 </svg-icon>
               </button>
             </div>
@@ -271,3 +222,5 @@
     </div>
   </div>
 </div>
+
+<app-add-user #addUserModal></app-add-user>

@@ -25,15 +25,14 @@ export class MenuService implements OnDestroy {
   }
 
   private initialize(): void {
-    this.authService.user.subscribe((authUser) => {
-      this.updateMenuBasedOnUser(authUser);
-      this.setupRouterSubscription();
-    });
+    this.updateMenuBasedOnModules();
+    this.setupRouterSubscription();
   }
 
-  private updateMenuBasedOnUser(authUser: any): void {
-    if (authUser?.modules) {
-      const filteredMenu = Menu.getFilteredPages(authUser.modules);
+  private updateMenuBasedOnModules(): void {
+    const modules = this.authService.getModules();
+    if (modules.length > 0) {
+      const filteredMenu = Menu.getFilteredPages(modules);
       this._pagesMenu.set(filteredMenu);
     } else {
       this._pagesMenu.set([]);

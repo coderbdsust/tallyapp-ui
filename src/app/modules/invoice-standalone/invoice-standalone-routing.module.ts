@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from 'src/app/core/guards/auth.guard';
+import { authGuard } from 'src/app/core/guards/auth.guard';
 import { InvoiceStandaloneComponent } from './invoice-standalone.component';
 import { InvoiceStandaloneListComponent } from './pages/invoice-standalone-list/invoice-standalone-list.component';
 import { InvoiceStandaloneAddComponent } from './pages/invoice-standalone-add/invoice-standalone-add.component';
@@ -11,7 +11,7 @@ const routes: Routes = [
   {
     path: '',
     component: InvoiceStandaloneComponent,
-    canActivate:[AuthGuard],
+    canActivate:[authGuard],
     children: [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
       { path: 'list', component:  InvoiceStandaloneListComponent},

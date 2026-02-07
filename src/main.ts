@@ -5,12 +5,12 @@ import { AppComponent } from './app/app.component';
 import { AppRoutingModule } from './app/app-routing.module';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { AuthInterceptorService } from './app/core/interceptor/auth-interceptor.service';
-import { AuthService } from './app/core/services/auth.service';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 import { LoaderService } from './app/core/services/loader.service';
 import { provideAngularSvgIcon } from 'angular-svg-icon';
 import { LanguageInterceptor } from './app/core/interceptor/language-interceptor.service';
+import { provideKeycloak, includeBearerTokenInterceptor, INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG } from 'keycloak-angular';
+import { keycloakConfig } from './app/init/keycloak.config';
 
 if (environment.production) {
   enableProdMode();
@@ -24,10 +24,20 @@ bootstrapApplication(AppComponent, {
   providers: [
       importProvidersFrom(BrowserModule, AppRoutingModule),
       provideAnimations(),
-      provideHttpClient(withInterceptorsFromDi()),
-      { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
+      provideKeycloak(keycloakConfig),
+      provideHttpClient(
+        withInterceptors([includeBearerTokenInterceptor]),
+        withInterceptorsFromDi()
+      ),
+      {
+        provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+        useValue: [
+          {
+            urlPattern: new RegExp(`^${environment.tallyURL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}.*$`),
+          },
+        ],
+      },
       { provide: HTTP_INTERCEPTORS, useClass: LanguageInterceptor, multi: true },
-      AuthService,
       LoaderService,
       provideAngularSvgIcon()
     ],

@@ -19,21 +19,12 @@ export interface UserProfile {
   email: string;
   mobileNo: string;
   fullName: string;
+  firstName: string;
+  lastName: string;
   gender:string;
   dateOfBirth: string;
-  enabled: boolean;
-  accountLocked: boolean;
-  tfaEnabled: boolean;
   createdDate: Date;
-  roles: string[];
   addressList: Address[];
   shortProfileList: ShortProfile[];
-  mobileNoVerified: boolean;
   profileImage:string;
-}
-
-export interface TFAResponse {
-  byEmail: boolean;
-  byMobile: boolean;
-  byAuthenticator: boolean;
 }

@@ -4,11 +4,10 @@ export interface RegisteredUser {
     email:string;
     mobileNo:string;
     fullName:string;
+    firstName:string,
+    lastName:string,
+    gender:string,
     dateOfBirth:string;
-    enabled:boolean;
-    accountLocked:boolean;
-    tfaEnabled:boolean;
-    roles:string[];
     createdDate:string;
-    mobileNoVerified:boolean;
+    keycloakUserId:string;
 }
