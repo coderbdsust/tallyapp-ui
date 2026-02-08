@@ -36,6 +36,7 @@ export interface ProductSale {
     id: string;
     quantitySold: number;
     pricePerUnit: number;
+    discountPercent: number;
     soldDate: string;
     totalAmount: number;
     code:string;

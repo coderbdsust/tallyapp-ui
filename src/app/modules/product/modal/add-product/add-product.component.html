@@ -246,6 +246,23 @@
                     </div>
                   </div>
 
+                  <!-- Discount % -->
+                  <div class="form__group w-2/12">
+                    <div class="relative">
+                      <label for="discountPercent-{{ i }}"
+                        class="absolute left-0 top-1 -translate-y-10  text-sm text-muted-foreground bg-background px-1 z-10">
+                        Discount (%)
+                      </label>
+                      <input type="text" id="discountPercent-{{ i }}" class="peer block" placeholder=" "
+                        [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('discountPercent')?.errors }"
+                        formControlName="discountPercent" />
+
+                    </div>
+                    <div *ngIf="submitted && stockGroup.get('discountPercent')?.errors" class="is__invalid-error">
+                      <div *ngIf="stockGroup.get('discountPercent')?.errors?.['required']">Required field</div>
+                    </div>
+                  </div>
+
                   <!-- Initial Quantity -->
                   <div class="form__group w-2/12">
                     <div class="relative">

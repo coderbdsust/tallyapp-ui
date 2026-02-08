@@ -144,6 +144,7 @@
               <th class="px-4 py-3 text-sm font-medium">SL</th>
               <th class="px-4 py-3 text-sm font-medium">Product Details</th>
               <th class="px-4 py-3 text-sm font-medium text-right">Unit Rate</th>
+               <th class="px-4 py-3 text-sm font-medium text-right">Discount %</th>
               <th class="px-4 py-3 text-sm font-medium text-center">Units</th>
               <th class="px-4 py-3 text-sm font-medium text-right">Amount</th>
             </tr>
@@ -159,6 +160,7 @@
                 </div>
               </td>
               <td class="px-4 py-3 text-sm text-right font-mono">{{ formatCurrency(item.pricePerUnit) }}</td>
+               <td class="px-4 py-3 text-sm text-right font-mono">{{ item.discountPercent }} %</td>
               <td class="px-6 py-4 text-center border-b border-gray-100">
                 <span class="inline-flex items-center px-3 py-2 rounded-lg bg-gray-50 text-gray-800 text-sm font-medium">
                   <span class="font-bold">{{ item.quantitySold }}</span>

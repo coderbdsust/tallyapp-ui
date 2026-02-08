@@ -185,6 +185,7 @@ export class AddProductComponent {
       availableQuantity: [0],
       quantityToAdd: [1, Validators.required],
       unitPrice: ['', Validators.required],
+      discountPercent: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
       perUnitProductionCost: ['', Validators.required],
       perUnitEmployeeCost: ['', Validators.required],
     });
@@ -208,6 +209,7 @@ export class AddProductComponent {
           availableQuantity: [stock.availableQuantity],
           quantityToAdd: [0, Validators.required],
           unitPrice: [stock.unitPrice, Validators.required],
+          discountPercent: [stock.discountPercent, [Validators.required, Validators.min(0), Validators.max(100)]],
           perUnitProductionCost: [stock.perUnitProductionCost, Validators.required],
           perUnitEmployeeCost: [stock.perUnitEmployeeCost, Validators.required],
         }),
@@ -240,7 +242,6 @@ export class AddProductComponent {
   }
 
   onProductImageSelect(file: File | null) {
-    console.log('Selected file:', file);
     this.selectedFile = file;
     if (!file) {
       this.form.patchValue({ imageUrl: null });
@@ -255,7 +256,6 @@ export class AddProductComponent {
   }
 
   onFileRemoved() {
-    console.log('File removed');
     this.fileDeletedNeedToSubmit = true;
   }
 

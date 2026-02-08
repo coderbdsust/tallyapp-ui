@@ -152,6 +152,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       productName: [product?.name, Validators.required],
       productDescription: [product?.description, Validators.required],
       productUnitRate: [product?.unitPrice, Validators.required],
+      productDiscountPercent: [product?.discountPercent, [Validators.required, Validators.min(0), Validators.max(100)]],
       productQuantity: [product?.availableQuantity, [Validators.required, Validators.min(1)]],
       productAmount: [0]
     });
@@ -220,6 +221,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       productName: product.name,
       productDescription: product.description,
       productUnitRate: product.unitPrice,
+      productDiscountPercent: product.discountPercent,
       productQuantity: 1,
       productAmount: product.unitPrice
     });

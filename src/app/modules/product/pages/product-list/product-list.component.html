@@ -91,10 +91,11 @@
           <th class="min-w-[150px]">Product Name</th>
           <th class="min-w-[120px]">Product Code</th>
           <th class="min-w-[100px]">Unit Price</th>
+          <th class="min-w-[100px]">Discount %</th>
           <th class="min-w-[130px]">Employee Cost / Unit</th>
           <th class="min-w-[140px]">Production Cost / Unit</th>
           <th class="min-w-[120px]">Available Quantity</th>
-          <th class="min-w-[120px]">Service By</th>
+          <th class="min-w-[120px]">Product By</th>
           <th class="min-w-[100px]">Created</th>
           <th class="min-w-[80px]">Action</th>
         </tr>
@@ -141,6 +142,11 @@
           <td>
             <span class="font-semibold text-green-600">
               {{ formatCurrency(p.unitPrice) }}
+            </span>
+          </td>
+          <td>
+          <span class="font-semibold text-yellow-500">
+              {{ p.discountPercent }} %
             </span>
           </td>
           <td>{{ formatCurrency(p.perUnitEmployeeCost) }}</td>

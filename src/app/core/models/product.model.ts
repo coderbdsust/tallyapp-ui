@@ -9,6 +9,7 @@ export interface Product {
   perUnitEmployeeCost: number,
   perUnitProductionCost: number,
   unitPrice: number,
+  discountPercent: number,
   availableQuantity: number,
   initialQuantity: number,
   imageUrl: string,
@@ -26,6 +27,7 @@ export interface ProductStock {
   manufactureDate: string;
   expiryDate: string;
   unitPrice: number;
+  discountPercent:number;
   perUnitProductionCost: number;
   perUnitEmployeeCost: number;
 }
