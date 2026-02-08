@@ -128,11 +128,11 @@ export class InvoiceListComponent extends PaginatedComponent<Invoice> implements
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: (response) => {
-              console.log(response);
               this.invoiceService.showToastSuccess('Invoice deleted successfully');
               this.loadData();
             },
             error: (errRes) => {
+               console.log(errRes);
               this.invoiceService.showToastErrorResponse(errRes);
             },
           });

@@ -55,7 +55,7 @@ export class InvoiceStandaloneDetailComponent implements OnInit, OnDestroy {
       this.invoiceId = params['invoiceId'];
 
       if (!this.orgId || !this.invoiceId) {
-        this.router.navigate(['/invoice-standalone/list']);
+        this.router.navigate(['/quotation-bill/list']);
         return;
       }
 
@@ -75,19 +75,19 @@ export class InvoiceStandaloneDetailComponent implements OnInit, OnDestroy {
         error: err => {
           this.loading = false;
           this.invoiceStandaloneService.showToastErrorResponse(err);
-          this.router.navigate(['/invoice-standalone/list']);
+          this.router.navigate(['/quotation-bill/list']);
         }
       });
   }
 
   editInvoice(): void {
-    this.router.navigate(['/invoice-standalone/add'], {
+    this.router.navigate(['/quotation-bill/add'], {
       queryParams: { orgId: this.orgId, invoiceId: this.invoiceId }
     });
   }
 
   backToList(): void {
-    this.router.navigate(['/invoice-standalone/list']);
+    this.router.navigate(['/quotation-bill/list']);
   }
 
   downloadInvoice(): void {

@@ -34,7 +34,7 @@ const routes: Routes = [
     loadChildren: () => import('../invoice/invoice.module').then((m) => m.InvoiceModule),
   },
   {
-    path: 'invoice-standalone',
+    path: 'quotation-bill',
     component: LayoutComponent,
     canActivate: [authGuard],
     data: { modules: ['INVOICE_STANDALONE_MANAGEMENT'] },

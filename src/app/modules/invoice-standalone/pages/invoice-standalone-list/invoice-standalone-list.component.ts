@@ -116,7 +116,7 @@ export class InvoiceStandaloneListComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (invoice) => {
-          this.router.navigate(['/invoice-standalone/add'], {
+          this.router.navigate(['/quotation-bill/add'], {
             queryParams: { orgId: this.organization.id, invoiceId: invoice.id }
           });
         },
@@ -127,13 +127,13 @@ export class InvoiceStandaloneListComponent
   }
 
   viewInvoice(invoice: InvoiceStandaloneTableResponse): void {
-    this.router.navigate(['/invoice-standalone/detail'], {
+    this.router.navigate(['/quotation-bill/detail'], {
       queryParams: { orgId: this.organization.id, invoiceId: invoice.id }
     });
   }
 
   editInvoice(invoice: InvoiceStandaloneTableResponse): void {
-    this.router.navigate(['/invoice-standalone/add'], {
+    this.router.navigate(['/quotation-bill/add'], {
       queryParams: { orgId: this.organization.id, invoiceId: invoice.id }
     });
   }
@@ -185,7 +185,7 @@ export class InvoiceStandaloneListComponent
           .subscribe({
             next: (newBill) => {
               this.invoiceStandaloneService.showToastSuccess('Quotation converted to bill successfully');
-              this.router.navigate(['/invoice-standalone/add'], {
+              this.router.navigate(['/quotation-bill/add'], {
                 queryParams: { orgId: this.organization.id, invoiceId: newBill.id }
               });
             },

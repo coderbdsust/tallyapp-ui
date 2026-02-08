@@ -56,8 +56,8 @@ export class Menu {
         },
         {
           icon: 'assets/icons/heroicons/outline/newpaper.svg',
-          label: 'Invoice-Standalone',
-          route: '/invoice-standalone/list',
+          label: 'Quotation & Bill',
+          route: '/quotation-bill/list',
           requiredModules: ['INVOICE_STANDALONE_MANAGEMENT']
         },
         {

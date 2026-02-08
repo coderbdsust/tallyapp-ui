@@ -26,7 +26,6 @@ import { ProductService } from 'src/app/core/services/product.service';
 import { Customer } from 'src/app/modules/invoice/invoice.model';
 import { CustomerService } from 'src/app/core/services/customer.service';
 import { Product, UnitType } from 'src/app/core/models/product.model';
-import { q } from '@angular/core/weak_ref.d-Bp6cSy-X';
 
 @Component({
   selector: 'app-invoice-standalone-add',
@@ -114,7 +113,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       this.invoiceId = params['invoiceId'];
 
       if (!this.orgId || !this.invoiceId) {
-        this.router.navigate(['/invoice-standalone/list']);
+        this.router.navigate(['/quotation-bill/list']);
         return;
       }
       
@@ -143,7 +142,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
           this.initiateInvoiceForm(invoice);
         },
         error: err => {
-          this.router.navigate(['/invoice-standalone/list']);
+          this.router.navigate(['/quotation-bill/list']);
           this.invoiceStandaloneService.showToastErrorResponse(err);
         }
       });
@@ -495,13 +494,13 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
 
   // Navigation Methods
   previewInvoice(): void {
-    this.router.navigate(['/invoice-standalone/detail'], { 
+    this.router.navigate(['/quotation-bill/detail'], { 
       queryParams: { orgId: this.orgId, invoiceId: this.invoiceId } 
     });
   }
 
   backToInvoiceList(): void {
-    this.router.navigate(['/invoice-standalone/list']);
+    this.router.navigate(['/quotation-bill/list']);
   }
 
   downloadInvoice(): void {
@@ -533,7 +532,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       .subscribe({
         next: (newBill) => {
           this.invoiceStandaloneService.showToastSuccess('Quotation converted to bill');
-          this.router.navigate(['/invoice-standalone/add'], {
+          this.router.navigate(['/quotation-bill/add'], {
             queryParams: { orgId: this.orgId, invoiceId: newBill.id }
           });
         },

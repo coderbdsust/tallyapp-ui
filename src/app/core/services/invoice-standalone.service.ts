@@ -2,7 +2,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import {  
   InvoiceStandalone,
@@ -37,7 +37,8 @@ export class InvoiceStandaloneService  extends CommonService {
 
   // Create Invoice
   createInvoice(request: CreateInvoiceRequest): Observable<InvoiceStandalone> {
-    return this.http.post<InvoiceStandalone>(`${this.apiUrl}/create`, request);
+    return this.http.post<InvoiceStandalone>(`${this.apiUrl}/create`, request)
+    .pipe(catchError(this.mapErrorResponse));
   }
 
   // Get Invoices with pagination
@@ -62,7 +63,7 @@ export class InvoiceStandaloneService  extends CommonService {
     return this.http.get<PageResponse<InvoiceStandalone>>(
       `${this.apiUrl}/${organizationId}`,
       { params }
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
   // Get Invoices for Table View
@@ -87,21 +88,21 @@ export class InvoiceStandaloneService  extends CommonService {
     return this.http.get<PageResponse<InvoiceStandaloneTableResponse>>(
       `${this.apiUrl}/${organizationId}/list`,
       { params }
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
   // Get single invoice
   getInvoiceById(organizationId: string, invoiceId: string): Observable<InvoiceStandalone> {
     return this.http.get<InvoiceStandalone>(
       `${this.apiUrl}/${organizationId}/${invoiceId}`
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
   //Unit Types
   getUnitTypes(): Observable<UnitType[]> {
     return this.http.get<UnitType[]>(
       `${this.apiUrl}/unit-types`
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
   // Update Customer
@@ -109,7 +110,7 @@ export class InvoiceStandaloneService  extends CommonService {
     return this.http.put<InvoiceStandalone>(
       `${this.apiUrl}/${invoiceId}/customer`,
       request
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
   // Add Product
@@ -117,7 +118,7 @@ export class InvoiceStandaloneService  extends CommonService {
     return this.http.post<InvoiceStandalone>(
       `${this.apiUrl}/${invoiceId}/product`,
       request
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
   // Update Product
@@ -125,7 +126,7 @@ export class InvoiceStandaloneService  extends CommonService {
     return this.http.put<InvoiceStandalone>(
       `${this.apiUrl}/${invoiceId}/product`,
       request
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
   // Remove Product
@@ -134,7 +135,7 @@ export class InvoiceStandaloneService  extends CommonService {
       'delete',
       `${this.apiUrl}/${invoiceId}/product`,
       { body: request }
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
   // Add Payment
@@ -142,14 +143,14 @@ export class InvoiceStandaloneService  extends CommonService {
     return this.http.post<InvoiceStandalone>(
       `${this.apiUrl}/${invoiceId}/payment`,
       request
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
   // Remove Payment
   removePayment(invoiceId: string, paymentId: string): Observable<InvoiceStandalone> {
     return this.http.delete<InvoiceStandalone>(
       `${this.apiUrl}/${invoiceId}/payment/${paymentId}`
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
   // Update Pricing
@@ -157,7 +158,7 @@ export class InvoiceStandaloneService  extends CommonService {
     return this.http.put<InvoiceStandalone>(
       `${this.apiUrl}/${invoiceId}/pricing`,
       request
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
   // Convert Quotation to Bill
@@ -165,12 +166,13 @@ export class InvoiceStandaloneService  extends CommonService {
     return this.http.post<InvoiceStandalone>(
       `${this.apiUrl}/${quotationId}/convert-to-bill`,
       {}
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
   // Delete Invoice
   deleteInvoice(invoiceId: string): Observable<ApiResponse> {
-    return this.http.delete<ApiResponse>(`${this.apiUrl}/${invoiceId}`);
+    return this.http.delete<ApiResponse>(`${this.apiUrl}/${invoiceId}`)
+    .pipe(catchError(this.mapErrorResponse));;
   }
 
   // Advanced Search
@@ -201,7 +203,7 @@ export class InvoiceStandaloneService  extends CommonService {
     return this.http.get<PageResponse<InvoiceStandalone>>(
       `${this.apiUrl}/${organizationId}/search`,
       { params }
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
   // Download Invoice PDF
@@ -209,7 +211,7 @@ export class InvoiceStandaloneService  extends CommonService {
     return this.http.get(
       `${this.apiUrl}/${organizationId}/${invoiceId}/pdf/download`,
       { responseType: 'blob' }
-    );
+    ).pipe(catchError(this.mapErrorResponse));
   }
 
 }
