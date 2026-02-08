@@ -26,6 +26,7 @@ import { ProductService } from 'src/app/core/services/product.service';
 import { Customer } from 'src/app/modules/invoice/invoice.model';
 import { CustomerService } from 'src/app/core/services/customer.service';
 import { Product, UnitType } from 'src/app/core/models/product.model';
+import { q } from '@angular/core/weak_ref.d-Bp6cSy-X';
 
 @Component({
   selector: 'app-invoice-standalone-add',
@@ -158,6 +159,10 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.calculateProductAmount());
 
+    this.productForm.get('productDiscountPercent')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.calculateProductAmount());
+
     // Pricing form listeners with debounce
     this.invForm.get('totalDiscount')?.valueChanges
       .pipe(
@@ -213,6 +218,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       productDescription: [''],
       productUnitType: ['', Validators.required],
       productUnitRate: ['', [Validators.required, Validators.min(0)]],
+      productDiscountPercent: [0, [Validators.required, Validators.min(0),Validators.max(100)]],
       productQuantity: ['', [Validators.required, Validators.min(0.01)]],
       productAmount: [0],
       productNotes: ['']
@@ -277,8 +283,8 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       return;
     }
 
-    console.log(product);
-
+    const discount = (product.unitPrice*1*product.discountPercent)/100;
+    const productPrice = product.unitPrice*1 - discount;
     this.productForm.patchValue({
       productId: product.id,
       productName: product.name,
@@ -286,15 +292,19 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       productDescription: product.description,
       productUnitType: product.unitType,
       productUnitRate: product.unitPrice,
+      productDiscountPercent: product.discountPercent,
       productQuantity: 1,
-      productAmount: product.unitPrice
+      productAmount: productPrice
     });
   }
 
   calculateProductAmount(): void {
-    const rate = +this.productForm.get('productUnitRate')?.value || 0;
+    const unitRate = +this.productForm.get('productUnitRate')?.value || 0;
     const quantity = +this.productForm.get('productQuantity')?.value || 0;
-    this.productForm.patchValue({ productAmount: rate * quantity }, { emitEvent: false });
+    const discountRate =  +this.productForm.get('productDiscountPercent')?.value || 0;
+    const discount = (unitRate*quantity*discountRate)/100.0;
+    const price = unitRate*quantity;
+    this.productForm.patchValue({ productAmount: price-discount }, { emitEvent: false });
   }
 
   onSearchKeyType(event: Event): void {
@@ -335,6 +345,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       unitType: this.productForm.get('productUnitType')?.value,
       quantity: +this.productForm.get('productQuantity')?.value,
       pricePerUnit: +this.productForm.get('productUnitRate')?.value,
+      discountPercent: +this.productForm.get('productDiscountPercent')?.value,
       notes: this.productForm.get('productNotes')?.value || undefined
     };
 
@@ -546,9 +557,5 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       return [InvoiceStatus.DRAFT, InvoiceStatus.QUOTATION];
     }
     return this.invoiceStatuses;
-  }
-
-  getTotalProductAmount(product: ProductItem): number {
-    return product.quantity * product.pricePerUnit;
   }
 }

@@ -56,6 +56,8 @@ export interface ProductItem {
   unitType: string;
   quantity: number;
   pricePerUnit: number;
+  discountPercent:number;
+  totalAmount:number;
   notes?: string;
 }
 
@@ -146,6 +148,7 @@ export interface AddProductRequest {
   unitType: string;
   quantity: number;
   pricePerUnit: number;
+  discountPercent: number;
   notes?: string;
 }
 

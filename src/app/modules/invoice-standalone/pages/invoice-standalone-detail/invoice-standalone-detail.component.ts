@@ -132,7 +132,7 @@ export class InvoiceStandaloneDetailComponent implements OnInit, OnDestroy {
       : 'bg-blue-100 text-blue-800';
   }
 
-  getTotalProductAmount(quantity: number, price: number): number {
+  getTotalProductAmount(quantity: number, price: number, discountPercent: number): number {
     return quantity * price;
   }
 
