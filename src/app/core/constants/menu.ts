@@ -8,6 +8,7 @@ export class Menu {
     'PRODUCT_MANAGEMENT': ['Product'],
     'INVOICE_MANAGEMENT': ['Invoice'],
     'ORGANIZATION_MANAGEMENT': ['Organization'],
+    'SUPPLIER_MANAGEMENT': ['Supplier'],
     'CASH_MANAGEMENT': ['Transaction'],
     'USER_MANAGEMENT': ['Settings'],
     'APP_CONFIGURATION': ['Settings'],
@@ -59,6 +60,16 @@ export class Menu {
           label: 'Quotation & Bill',
           route: '/quotation-bill/list',
           requiredModules: ['INVOICE_STANDALONE_MANAGEMENT']
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/cube.svg',
+          label: 'Supplier',
+          route: '/supplier',
+          requiredModules: ['SUPPLIER_MANAGEMENT'],
+          children: [
+            { label: 'Suppliers', route: '/supplier/list' },
+            { label: 'Purchase Orders', route: '/supplier/purchase-order' }
+          ]
         },
         {
           icon: 'assets/icons/heroicons/outline/banknotes.svg',

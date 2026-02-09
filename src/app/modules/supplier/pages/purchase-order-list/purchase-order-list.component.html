@@ -1,0 +1,248 @@
+<div class="mb-4 flex justify-between">
+  <div class="inline-block">
+    <h2 class="font-semibold text-foreground">Purchase Orders</h2>
+    <div class="space-x-1 text-xs font-medium text-muted-foreground">
+      <span *ngIf="organization">Organization: {{ organization.orgName }}</span>
+    </div>
+  </div>
+  <div class="inline-block space-x-4">
+    <div class="flex items-center justify-center gap-4">
+      <button
+        class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+        (click)="createPurchaseOrder()">
+        <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
+        <p>Create Purchase Order</p>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
+  <!-- Filters and Search Section -->
+  <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
+    <h3 class="text-sm font-medium text-muted-foreground">
+      Showing <span>{{ startIndex }}-{{ endIndex }} of {{ totalRows }}</span> rows
+    </h3>
+    <div class="flex flex-wrap gap-2">
+      <!-- Status Filter -->
+      <div class="flex items-center gap-2 text-xs text-muted-foreground">
+        <span>Status:</span>
+        <select class="p-2" name="statusFilter" (change)="onStatusFilterChange($event)">
+          <option *ngFor="let status of statusOptions"
+                  [value]="status"
+                  [selected]="status === statusFilter">
+            {{ status === 'ALL' ? 'All' : (status | word) }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Page Size Selector -->
+      <div class="flex flex-wrap items-center justify-between gap-2 px-4 text-xs text-muted-foreground">
+        <div class="flex items-center gap-2">
+          Show
+          <select class="w-16 p-2" name="rowSize" (change)="onSelectChange($event)">
+            <option *ngFor="let option of getPageSizeOptions()"
+                    [value]="option.value"
+                    [selected]="option.value === selectedRows">
+              {{ option.label }}
+            </option>
+          </select>
+          per page
+        </div>
+      </div>
+
+      <!-- Search Input -->
+      <div class="flex">
+        <label class="relative text-muted-foreground">
+          <div class="absolute left-2.5 top-2.5">
+            <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+          </div>
+          <input
+            name="search"
+            class="py-2 pl-8 pr-2"
+            placeholder="Search PO..."
+            type="text"
+            [value]="search"
+            (keydown.enter)="onSearchChange($event)"
+            (input)="onSearchChange($event)" />
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-8">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+
+  <!-- Table Section -->
+  <div *ngIf="!loading"
+    class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+    <table
+      class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+      <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
+        <tr>
+          <th class="min-w-[130px]">PO Number</th>
+          <th class="min-w-[150px]">Supplier</th>
+          <th class="min-w-[110px]">Order Date</th>
+          <th class="min-w-[110px]">Due Date</th>
+          <th class="min-w-[120px]">Total Amount</th>
+          <th class="min-w-[110px]">Paid</th>
+          <th class="min-w-[110px]">Due</th>
+          <th class="min-w-[120px]">Status</th>
+          <th class="min-w-[100px]">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let po of pageResponse?.content; let i = index"
+            class="gap-4 hover:bg-card/50"
+            [ngClass]="{'bg-red-50': isOverdue(po)}">
+
+          <td>
+            <div class="flex flex-col">
+              <span class="font-mono text-sm font-semibold">{{ po.poNumber }}</span>
+              <span *ngIf="isOverdue(po)" class="text-xs text-red-600 font-medium">OVERDUE</span>
+            </div>
+          </td>
+
+          <td>
+            <span class="text-sm font-medium">{{ po.supplierName }}</span>
+          </td>
+
+          <td>
+            <span class="text-sm">{{ po.orderDate | date: 'dd-MM-yyyy' }}</span>
+          </td>
+
+          <td>
+            <span class="text-sm">{{ po.dueDate | date: 'dd-MM-yyyy' }}</span>
+          </td>
+
+          <td>
+            <span [ngClass]="getAmountColor(po.totalAmount, 'total')">
+              {{ formatCurrency(po.totalAmount) }}
+            </span>
+          </td>
+
+          <td>
+            <span [ngClass]="getAmountColor(po.totalPaid, 'paid')">
+              {{ formatCurrency(po.totalPaid) }}
+            </span>
+          </td>
+
+          <td>
+            <span [ngClass]="getAmountColor(po.dueAmount, 'due')">
+              {{ formatCurrency(po.dueAmount) }}
+            </span>
+          </td>
+
+          <td>
+            <span
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+              [ngClass]="[
+                getStatusColor(po.status).bg,
+                getStatusColor(po.status).text
+              ]">
+              {{ po.status | word }}
+            </span>
+          </td>
+
+          <td>
+            <div class="flex items-center gap-2">
+              <button
+                (click)="viewPurchaseOrder(po)"
+                class="p-1 hover:text-blue-600 transition-colors"
+                title="View PO">
+                <svg-icon src="./assets/icons/heroicons/outline/eye.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+              </button>
+
+              <button
+                *ngIf="isDraft(po)"
+                (click)="editPurchaseOrder(po)"
+                class="p-1 hover:text-primary transition-colors"
+                title="Edit PO">
+                <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Empty State -->
+        <tr *ngIf="!hasData">
+          <td class="py-8 text-center text-sm" colspan="9">
+            <div class="flex flex-col items-center gap-2">
+              <svg-icon src="./assets/icons/heroicons/outline/newpaper.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'"></svg-icon>
+              <span>No purchase orders found</span>
+              <button
+                class="mt-2 text-primary hover:text-primary/80 text-xs underline"
+                (click)="createPurchaseOrder()">
+                Create your first purchase order
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Section -->
+  <div *ngIf="showPagination && !loading"
+       class="flex flex-wrap items-center justify-between gap-2 py-3 px-5 text-xs text-muted-foreground">
+    <div class="flex items-center gap-2">
+      <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div class="inline-flex items-center gap-1">
+        <button
+          *ngIf="!first"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToFirstPage()"
+          title="First Page">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        </button>
+
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="first"
+          (click)="goToPreviousPage()"
+          title="Previous Page">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        </button>
+
+        <ng-container *ngFor="let page of getVisiblePages()">
+          <button
+            *ngIf="isClickablePage(page)"
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm transition-colors"
+            [ngClass]="{
+              'bg-primary text-primary-foreground': isCurrentPage(page),
+              'hover:bg-muted-foreground/10': !isCurrentPage(page)
+            }"
+            (click)="goToPage(page)">
+            {{ getPageNumber(page) }}
+          </button>
+          <span
+            *ngIf="!isClickablePage(page)"
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center text-sm">
+            ...
+          </span>
+        </ng-container>
+
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="last"
+          (click)="goToNextPage()"
+          title="Next Page">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        </button>
+
+        <button
+          *ngIf="!last"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToLastPage()"
+          title="Last Page">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

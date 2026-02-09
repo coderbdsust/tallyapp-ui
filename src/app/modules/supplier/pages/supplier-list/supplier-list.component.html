@@ -1,0 +1,223 @@
+<div class="mb-4 flex justify-between">
+  <div class="inline-block">
+    <h2 class="font-semibold text-foreground">All Suppliers</h2>
+    <div class="space-x-1 text-xs font-medium text-muted-foreground">
+      <span *ngIf="organization">Organization: {{ organization.orgName }}</span>
+    </div>
+  </div>
+  <div class="inline-block space-x-4">
+    <div class="flex items-center justify-center gap-4">
+      <button
+        class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+        (click)="openAddDrawer()">
+        <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
+        <p>Add Supplier</p>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
+  <!-- Filters and Search Section -->
+  <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
+    <h3 class="text-sm font-medium text-muted-foreground">
+      Showing <span>{{ startIndex }}-{{ endIndex }} of {{ totalRows }}</span> rows
+    </h3>
+    <div class="flex flex-wrap gap-2">
+      <!-- Page Size Selector -->
+      <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
+        <div class="order-2 flex items-center gap-2 md:order-1">
+          Show
+          <select class="w-16 p-2" name="rowSize" (change)="onSelectChange($event)">
+            <option *ngFor="let option of getPageSizeOptions()"
+                    [value]="option.value"
+                    [selected]="option.value === selectedRows">
+              {{ option.label }}
+            </option>
+          </select>
+          per page
+        </div>
+      </div>
+
+      <!-- Search Input -->
+      <div class="flex">
+        <label class="relative text-muted-foreground">
+          <div class="absolute left-2.5 top-2.5">
+            <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+          </div>
+          <input
+            name="search"
+            class="py-2 pl-8 pr-2"
+            placeholder="Search suppliers..."
+            type="text"
+            [value]="search"
+            (keydown.enter)="onSearchChange($event)"
+            (input)="onSearchChange($event)" />
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-8">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+
+  <!-- Table Section -->
+  <div *ngIf="!loading"
+    class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+    <table
+      class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+      <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
+        <tr>
+          <th class="min-w-[180px]">Name</th>
+          <th class="min-w-[130px]">Phone</th>
+          <th class="min-w-[180px]">Email</th>
+          <th class="min-w-[200px]">Address</th>
+           <th class="min-w-[140px]">Total Purchase Amount</th>
+            <th class="min-w-[140px]">Total Paid</th>
+             <th class="min-w-[140px]">Total Due</th>
+          <th class="min-w-[100px]">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let supplier of pageResponse?.content; let i = index"
+            class="gap-4 hover:bg-card/50">
+
+          <td>
+            <span class="text-sm font-medium">{{ supplier.name }}</span>
+          </td>
+
+          <td>
+            <span class="text-sm">{{ supplier.phone }}</span>
+          </td>
+
+          <td>
+            <span class="text-sm">{{ supplier.email || '-' }}</span>
+          </td>
+
+          <td>
+            <span class="text-sm">{{ supplier.addressLine || '-' }}</span>
+          </td>
+
+          <td>
+            <span [ngClass]="getBalanceColor(supplier.totalPurchaseAmount)">
+              {{ formatCurrency(supplier.totalPurchaseAmount) }}
+            </span>
+          </td>
+           <td>
+            <span [ngClass]="getBalanceColor(supplier.totalPaid)">
+              {{ formatCurrency(supplier.totalPaid) }}
+            </span>
+          </td>
+           <td>
+            <span [ngClass]="getBalanceColor(supplier.totalDue)">
+              {{ formatCurrency(supplier.totalDue) }}
+            </span>
+          </td>
+
+          <td>
+            <div class="flex items-center gap-2">
+              <button
+                (click)="editSupplier(supplier)"
+                class="p-1 hover:text-primary transition-colors"
+                title="Edit Supplier">
+                <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+              </button>
+              
+              <button
+                (click)="downloadReport(supplier)"
+                class="p-1 hover:text-primary transition-colors"
+                title="Download Report">
+                <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Empty State -->
+        <tr *ngIf="!hasData">
+          <td class="py-8 text-center text-sm" colspan="6">
+            <div class="flex flex-col items-center gap-2">
+              <svg-icon src="./assets/icons/heroicons/outline/cube.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'"></svg-icon>
+              <span>No suppliers found</span>
+              <button
+                class="mt-2 text-primary hover:text-primary/80 text-xs underline"
+                (click)="openAddDrawer()">
+                Add your first supplier
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Section -->
+  <div *ngIf="showPagination && !loading"
+       class="flex flex-wrap items-center justify-between gap-2 py-3 px-5 text-xs text-muted-foreground">
+    <div class="flex items-center gap-2">
+      <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div class="inline-flex items-center gap-1">
+        <button
+          *ngIf="!first"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToFirstPage()"
+          title="First Page">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        </button>
+
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="first"
+          (click)="goToPreviousPage()"
+          title="Previous Page">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        </button>
+
+        <ng-container *ngFor="let page of getVisiblePages()">
+          <button
+            *ngIf="isClickablePage(page)"
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm transition-colors"
+            [ngClass]="{
+              'bg-primary text-primary-foreground': isCurrentPage(page),
+              'hover:bg-muted-foreground/10': !isCurrentPage(page)
+            }"
+            (click)="goToPage(page)">
+            {{ getPageNumber(page) }}
+          </button>
+          <span
+            *ngIf="!isClickablePage(page)"
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center text-sm">
+            ...
+          </span>
+        </ng-container>
+
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="last"
+          (click)="goToNextPage()"
+          title="Next Page">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        </button>
+
+        <button
+          *ngIf="!last"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToLastPage()"
+          title="Last Page">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Supplier Drawer -->
+<app-add-supplier
+  [organization]="organization"
+  (supplierEmitter)="onSupplierSaved($event)">
+</app-add-supplier>

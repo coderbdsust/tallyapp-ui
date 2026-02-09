@@ -62,6 +62,13 @@ const routes: Routes = [
     loadChildren: () => import('../employee/employee.module').then((m) => m.EmployeeModule),
   },
   {
+    path: 'supplier',
+    component: LayoutComponent,
+    canActivate: [authGuard],
+    data: { modules: ['SUPPLIER_MANAGEMENT'] },
+    loadChildren: () => import('../supplier/supplier.module').then((m) => m.SupplierModule),
+  },
+  {
     path: 'user',
     component: LayoutComponent,
     canActivate: [authGuard],
