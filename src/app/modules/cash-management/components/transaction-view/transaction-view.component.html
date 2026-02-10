@@ -2,47 +2,42 @@
   <!-- Compact Filters Section -->
   <div class="flex flex-wrap items-center justify-between gap-2 p-2 border-b border-muted/20 bg-muted/5">
     <div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-      
+
       <!-- Compact Date Filters -->
       <div class="flex items-center gap-2">
-        <select 
-        name="transactionType" 
-        [value]="transactionType"
-        (change)="onSelectTxnTypeChange($event)"
-        class="px-2 py-1 text-xs text-gray-700 bg-white border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
-        <option value="">All Types</option>
-        <option *ngFor="let txn of allTransactionTypes" [value]="txn">
-          {{ txn | word }}
-        </option>
-      </select>
+        <select name="transactionType" [value]="transactionType" (change)="onSelectTxnTypeChange($event)"
+          class="px-2 py-1 text-xs text-gray-700 bg-white border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
+          <option value="">All Types</option>
+          <option *ngFor="let txn of allTransactionTypes" [value]="txn">
+            {{ txn | word }}
+          </option>
+        </select>
 
         <label class="text-xs font-medium">From:</label>
-        <input 
-          name="startDate" 
-          class="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary" 
-          type="date" 
-          [value]="startDate || ''"
-          (change)="onStartDateChange($event)" />
+        <input name="startDate"
+          class="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary"
+          type="date" [value]="startDate || ''" (change)="onStartDateChange($event)" />
       </div>
-      
+
       <div class="flex items-center gap-1">
         <label class="text-xs font-medium">To:</label>
-        <input 
-          name="endDate" 
-          class="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary" 
-          type="date" 
-          [value]="endDate || ''"
-          (change)="onEndDateChange($event)" />
+        <input name="endDate"
+          class="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary"
+          type="date" [value]="endDate || ''" (change)="onEndDateChange($event)" />
       </div>
 
       <!-- Clear Filters Button -->
-      <button 
-        *ngIf="hasActiveFilters()"
-        (click)="clearFilters()"
-        class="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
+      <button *ngIf="hasActiveFilters()" (click)="clearFilters()"
+        class="px-2 py-1 text-xs bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
         title="Clear all filters">
         <svg-icon src="./assets/icons/heroicons/outline/x-mark.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         Clear
+      </button>
+
+      <button class="flex flex-row rounded bg-gray-300 px-2 py-1 text-gray-700 hover:bg-gray-400"
+        (click)="downloadReport()">
+        <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-3 w-3'"> </svg-icon>
+        <span class="ml-2">Download</span>
       </button>
     </div>
 
@@ -50,10 +45,10 @@
     <div class="flex items-center gap-2">
       <div class="flex items-center gap-1 text-xs text-muted-foreground">
         <span>Show</span>
-        <select class="px-2 py-1 border border-gray-300 rounded text-xs" name="rowSize" (change)="onSelectChange($event)">
-          <option *ngFor="let option of getPageSizeOptions()" 
-                  [value]="option.value" 
-                  [selected]="option.value === selectedRows">
+        <select class="px-2 py-1 border border-gray-300 rounded text-xs" name="rowSize"
+          (change)="onSelectChange($event)">
+          <option *ngFor="let option of getPageSizeOptions()" [value]="option.value"
+            [selected]="option.value === selectedRows">
             {{ option.label }}
           </option>
         </select>
@@ -62,13 +57,9 @@
         <div class="absolute left-2 top-1.5">
           <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         </div>
-        <input 
-          name="search" 
-          class="pl-6 pr-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary" 
-          placeholder="Search..." 
-          type="text" 
-          [value]="search"
-          (keydown.enter)="onSearchChange($event)" 
+        <input name="search"
+          class="pl-6 pr-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary"
+          placeholder="Search..." type="text" [value]="search" (keydown.enter)="onSearchChange($event)"
           (input)="onSearchChange($event)" />
       </div>
     </div>
@@ -88,8 +79,10 @@
   </div>
 
   <!-- Compact Table Section -->
-  <div *ngIf="!loading" class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
-    <table class="table w-full table-auto border-collapse border-0 text-left align-middle text-xs text-muted-foreground">
+  <div *ngIf="!loading"
+    class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+    <table
+      class="table w-full table-auto border-collapse border-0 text-left align-middle text-xs text-muted-foreground">
       <thead class="border border-muted/20 text-xs text-muted-foreground bg-gray-200 text-white">
         <tr>
           <th class="min-w-[100px] px-2 py-2 border-r border-gray-100">Type</th>
@@ -108,9 +101,7 @@
         <tr *ngFor="let txn of pageResponse?.content; let i = index" class="hover:bg-card/50 border-b border-gray-100">
           <!-- Transaction Type -->
           <td class="px-2 py-1.5 border-r border-gray-100">
-            <span 
-              class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium" 
-              [ngClass]="[
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium" [ngClass]="[
                 getTransactionTypeColor(txn.transactionType).bg,
                 getTransactionTypeColor(txn.transactionType).text
               ]">
@@ -192,7 +183,8 @@
         <tr *ngIf="!hasData">
           <td class="py-6 text-center text-sm" colspan="9">
             <div class="flex flex-col items-center gap-2">
-              <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg" [svgClass]="'h-10 w-10 text-muted-foreground/50'"></svg-icon>
+              <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg"
+                [svgClass]="'h-10 w-10 text-muted-foreground/50'"></svg-icon>
               <span>No transactions found</span>
               <span *ngIf="hasActiveFilters()" class="text-xs text-muted-foreground">
                 Try adjusting your search criteria or date range
@@ -205,50 +197,43 @@
   </div>
 
   <!-- Compact Pagination Section -->
-  <div *ngIf="showPagination && !loading" 
-       class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 border-t border-muted/20 bg-muted/5 text-xs text-muted-foreground">
+  <div *ngIf="showPagination && !loading"
+    class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 border-t border-muted/20 bg-muted/5 text-xs text-muted-foreground">
     <!-- Page Info -->
     <div class="flex items-center gap-2">
       <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
       <span *ngIf="hasActiveFilters()" class="text-blue-600">(filtered)</span>
     </div>
-    
+
     <!-- Compact Pagination Controls -->
     <div class="flex items-center gap-2">
       <div class="inline-flex items-center gap-1">
         <!-- First Page Button -->
-        <button
-          *ngIf="!first"
+        <button *ngIf="!first"
           class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs hover:bg-muted-foreground/10 transition-colors"
-          (click)="goToFirstPage()"
-          title="First Page">
+          (click)="goToFirstPage()" title="First Page">
           <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         </button>
 
         <!-- Previous Page Button -->
         <button
           class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
-          [disabled]="first" 
-          (click)="goToPreviousPage()"
-          title="Previous Page">
+          [disabled]="first" (click)="goToPreviousPage()" title="Previous Page">
           <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         </button>
 
         <!-- Page Numbers -->
         <ng-container *ngFor="let page of getVisiblePages()">
-          <button 
-            *ngIf="isClickablePage(page)"
-            class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs transition-colors" 
+          <button *ngIf="isClickablePage(page)"
+            class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs transition-colors"
             [ngClass]="{
               'bg-primary text-primary-foreground': isCurrentPage(page),
               'hover:bg-muted-foreground/10': !isCurrentPage(page)
-            }" 
-            (click)="goToPage(page)">
+            }" (click)="goToPage(page)">
             {{ getPageNumber(page) }}
           </button>
-          
-          <span 
-            *ngIf="!isClickablePage(page)" 
+
+          <span *ngIf="!isClickablePage(page)"
             class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center text-xs">
             ...
           </span>
@@ -257,18 +242,14 @@
         <!-- Next Page Button -->
         <button
           class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
-          [disabled]="last" 
-          (click)="goToNextPage()"
-          title="Next Page">
+          [disabled]="last" (click)="goToNextPage()" title="Next Page">
           <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         </button>
 
         <!-- Last Page Button -->
-        <button
-          *ngIf="!last"
+        <button *ngIf="!last"
           class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs hover:bg-muted-foreground/10 transition-colors"
-          (click)="goToLastPage()"
-          title="Last Page">
+          (click)="goToLastPage()" title="Last Page">
           <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         </button>
       </div>

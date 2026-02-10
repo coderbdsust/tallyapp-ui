@@ -1,12 +1,14 @@
 import { inject, Injectable } from '@angular/core';
 import Keycloak from 'keycloak-js';
 import { CommonService } from './common.service';
+import { OrganizationService } from './organization.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService extends CommonService {
   private keycloak = inject(Keycloak);
+  private orgService = inject(OrganizationService);
 
   getUsername(): string {
     return this.keycloak.tokenParsed?.['preferred_username'] ?? '';
@@ -39,6 +41,7 @@ export class AuthService extends CommonService {
   }
 
   logout(): void {
+    this.orgService.clearOrganization();
     this.keycloak.logout();
   }
 }

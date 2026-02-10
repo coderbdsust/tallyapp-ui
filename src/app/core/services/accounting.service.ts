@@ -137,5 +137,27 @@ export class AccountingService extends CommonService {
     return this.http.post<CashOutTypeResponse>(url, cashOutTypeData);
   }
 
+  public getTransactionStatementReport(
+    orgId: string,
+    transactionType: string,
+    startDate: string | null,
+    endDate: string | null,
+    page: number,
+    size: number,
+  ) {
+    return this.http
+      .get(`${environment.tallyURL}/pdf/v1/statement/${orgId}/download`, {
+        params: {
+          transactionType,
+          startDate: startDate ? startDate : '',
+          endDate: endDate ? endDate : '',
+          page: page.toString(),
+          size: size.toString(),
+        },
+        responseType: 'blob',
+      })
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
   
 }

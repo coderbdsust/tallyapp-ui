@@ -12,14 +12,14 @@
             </svg>
             Financial Journal
           </h1>
-          <p class="text-sm text-gray-600 mt-1">Organization ID: {{ financialData.organizationId }}</p>
+          <p *ngIf="financialData" class="text-sm text-gray-600 mt-1">Organization ID: {{ financialData.organizationId }}</p>
         </div>
 
         <div class="flex flex-col sm:flex-row items-center gap-4">
           <!-- Date Section -->
           <div class="text-right">
             <p class="text-sm text-gray-500">As of Date</p>
-            <p class="text-lg font-semibold text-gray-900">{{ formatDate(financialData.asOfDate || '') }}</p>
+            <p class="text-lg font-semibold text-gray-900" *ngIf="financialData">{{ formatDate(financialData.asOfDate || '') }}</p>
           </div>
 
           <!-- Segmented Control Toggle -->
