@@ -399,6 +399,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
         next: (updated) => {
           this.invoice = updated;
           this.initiatePaymentForm();
+          this.initiateInvoiceForm(this.invoice);
           this.invoiceStandaloneService.showToastSuccess('Payment added successfully');
         },
         error: (err) => {
@@ -540,6 +541,10 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
           this.invoiceStandaloneService.showToastErrorResponse(err);
         }
       });
+  }
+
+  canModify(): boolean {
+    return this.invoice?.invoiceStatus !== InvoiceStatus.PAID;
   }
 
   // Utility Methods

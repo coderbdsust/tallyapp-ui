@@ -250,6 +250,10 @@ export class InvoiceStandaloneListComponent
     }
   }
 
+  canModify (invoice:InvoiceStandaloneTableResponse):boolean {
+    return invoice.invoiceStatus !== InvoiceStatus.PAID;
+  }
+
   canShowPayments(invoice: InvoiceStandaloneTableResponse): boolean {
     return invoice.invoiceType === InvoiceType.BILL;
   }

@@ -5,7 +5,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { Subject, takeUntil } from 'rxjs';
 import { formatCurrency } from 'src/app/common/utils/common';
-import { InvoiceStandalone, InvoiceType } from '../../invoice-standalone.model';
+import { InvoiceStandalone, InvoiceStandaloneTableResponse, InvoiceStatus, InvoiceType } from '../../invoice-standalone.model';
 import { InvoiceStandaloneService } from 'src/app/core/services/invoice-standalone.service';
 import { ToWords } from 'to-words';
 
@@ -151,6 +151,10 @@ export class InvoiceStandaloneDetailComponent implements OnInit, OnDestroy {
 
   hasPayments(): boolean {
     return !!(this.invoice?.payments?.payments && this.invoice.payments.payments.length > 0);
+  }
+
+  canModify (invoice: InvoiceStandaloneTableResponse):boolean {
+      return invoice.invoiceStatus !== InvoiceStatus.PAID;
   }
   
 
