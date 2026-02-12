@@ -83,8 +83,8 @@ export class AddProductComponent {
 
   onSearchEmployeeKeyType(event: Event) {
     const searchKey = (event.target as HTMLSelectElement).value;
-    if (!searchKey || searchKey.length < 5) {
-      this.productService.showToastInfo('Please type atleast five (5) characters');
+    if (!searchKey || searchKey.length < 3) {
+      this.productService.showToastInfo('Please type atleast five (3) characters');
       return;
     }
 
@@ -184,10 +184,10 @@ export class AddProductComponent {
       initialQuantity: [0],
       availableQuantity: [0],
       quantityToAdd: [1, Validators.required],
-      unitPrice: ['', Validators.required],
+      unitPrice: [1, [Validators.required,Validators.min(1)]],
       discountPercent: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
-      perUnitProductionCost: ['', Validators.required],
-      perUnitEmployeeCost: ['', Validators.required],
+      perUnitProductionCost: [0, Validators.required],
+      perUnitEmployeeCost: [0, Validators.required],
     });
   }
 
@@ -208,7 +208,7 @@ export class AddProductComponent {
           initialQuantity: [stock.initialQuantity],
           availableQuantity: [stock.availableQuantity],
           quantityToAdd: [0, Validators.required],
-          unitPrice: [stock.unitPrice, Validators.required],
+          unitPrice: [stock.unitPrice || 1, [Validators.required,Validators.min(1)]],
           discountPercent: [stock.discountPercent, [Validators.required, Validators.min(0), Validators.max(100)]],
           perUnitProductionCost: [stock.perUnitProductionCost, Validators.required],
           perUnitEmployeeCost: [stock.perUnitEmployeeCost, Validators.required],

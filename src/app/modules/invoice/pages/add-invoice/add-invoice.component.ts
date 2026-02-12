@@ -115,6 +115,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   private listenProductFormChanges(): void {
     this.productForm.get('productUnitRate')?.valueChanges.subscribe(() => this.calculateProductAmount());
     this.productForm.get('productQuantity')?.valueChanges.subscribe(() => this.calculateProductAmount());
+    this.productForm.get('productDiscountPercent')?.valueChanges.subscribe(() => this.calculateProductAmount());
   }
 
   initiateInvoiceForm(invoice: Invoice | null = null): void {
@@ -127,7 +128,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       customerName: [invoice?.customer?.name, Validators.required],
       customerMobile: [invoice?.customer?.mobile, Validators.required],
       customerEmail: [invoice?.customer?.email],
-      customerAddressLine: [invoice?.customer?.address, Validators.required],
+      customerAddressLine: [invoice?.customer?.address],
       customerPostcode: [invoice?.customer?.postcode],
 
       totalDiscount: [invoice?.totalDiscount],
@@ -150,7 +151,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     this.productForm = this.fb.group({
       productId: [product?.id],
       productName: [product?.name, Validators.required],
-      productDescription: [product?.description, Validators.required],
+      productDescription: [product?.description],
       productUnitRate: [product?.unitPrice, Validators.required],
       productDiscountPercent: [product?.discountPercent, [Validators.required, Validators.min(0), Validators.max(100)]],
       productQuantity: [product?.availableQuantity, [Validators.required, Validators.min(1)]],
@@ -238,7 +239,10 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   calculateProductAmount(): void {
     const rate = +this.productForm.get('productUnitRate')?.value || 0;
     const quantity = +this.productForm.get('productQuantity')?.value || 0;
-    this.productForm.patchValue({ productAmount: rate * quantity }, { emitEvent: false });
+    const discountPercent  = +this.productForm.get("productDiscountPercent")?.value || 0;
+    const discount = (rate*quantity*discountPercent)/100.0;
+    const price = rate*quantity;
+    this.productForm.patchValue({ productAmount: price-discount }, { emitEvent: false });
   }
 
   onSearchKeyType(event: Event): void {
@@ -313,6 +317,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       next: () => {
         this.initiatePaymentForm();
         this.refreshInvoice();
+        this.paymentService.showToastSuccess("Payment added successfully");
       },
       error: (errorRes) => {
         this.refreshInvoice();
@@ -339,6 +344,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       next: updated => {
         this.invoice = updated;
         this.initiateInvoiceForm(updated);
+        this.invoiceService.showToastSuccess("Invoice info updated");
       },
       error: (err) =>{
          this.refreshInvoice();
@@ -363,7 +369,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
 
         const a = document.createElement('a');
         a.href = url;
-        a.download = `invoice-${this.invoice?.invoiceNumber || this.invoice?.id}.pdf`;
+        a.download = `${this.invoice?.invoiceNumber || this.invoice?.id}.pdf`;
         a.click();
 
         window.URL.revokeObjectURL(url); // clean up the blob URL

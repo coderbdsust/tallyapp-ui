@@ -73,6 +73,7 @@
           <th class="min-w-[200px]">User</th>
           <th class="min-w-[120px]">Username</th>
           <th class="min-w-[140px]">Keycloak ID</th>
+          <th class="min-w-[140px]">Max Org Limit</th>
           <th class="min-w-[140px]">Created</th>
           <th class="min-w-[100px]">Actions</th>
         </tr>
@@ -108,6 +109,9 @@
           <!-- Account Created -->
           <td>
             <span class="text-sm">{{ user.keycloakUserId }}</span>
+          </td>
+          <td>
+            <span class="text-sm">{{ user.maximumOrganizationLimit }}</span>
           </td>
 
           <!-- Account Created -->
@@ -223,4 +227,4 @@
   </div>
 </div>
 
-<app-add-user #addUserModal></app-add-user>
+<app-add-user #addUserModal (modifiedEmitter)="addUserEvent($event)"></app-add-user>

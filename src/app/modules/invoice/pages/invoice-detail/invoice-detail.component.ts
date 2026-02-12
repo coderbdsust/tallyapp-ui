@@ -127,7 +127,7 @@ export class InvoiceDetailComponent implements OnInit, OnDestroy {
     const a = document.createElement('a');
     
     a.href = url;
-    a.download = `INV-${this.invoice.invoiceNumber || this.invoice.id}.pdf`;
+    a.download = `${this.invoice.invoiceNumber || this.invoice.id}.pdf`;
     a.style.display = 'none';
     
     document.body.appendChild(a);

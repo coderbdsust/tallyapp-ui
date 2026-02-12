@@ -334,7 +334,6 @@ export class EmployeeIncomeComponent extends FormError implements OnInit {
   private handleBlobDownload(blob: Blob, empId:string): void {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
-    
     a.href = url;
     a.download = `income-report-${empId}.pdf`;
     a.style.display = 'none';
@@ -343,8 +342,7 @@ export class EmployeeIncomeComponent extends FormError implements OnInit {
     a.click();
     document.body.removeChild(a);
     
-    // Clean up the blob URL
     setTimeout(() => window.URL.revokeObjectURL(url), 100);
-    
   }
+
 }

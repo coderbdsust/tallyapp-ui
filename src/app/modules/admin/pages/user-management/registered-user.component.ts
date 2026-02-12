@@ -97,4 +97,11 @@ export class RegisteredUserComponent extends PaginatedComponent<RegisteredUser> 
   getAvatarUrl(user: RegisteredUser): string {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&background=random&color=fff`;
   }
+  
+  addUserEvent(status: Boolean){
+    if(status){
+      this.loadData();
+    }
+  }
+
 }

@@ -132,7 +132,7 @@
 
                             <!-- Address -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Address *</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
                                 <textarea placeholder="Enter full address" 
                                           [value]="invoice?.customer?.address"
                                           formControlName="customerAddressLine"
@@ -566,7 +566,7 @@
                 <button type="button"
                         class="flex items-center px-4 py-2 rounded-lg  bg-red-600 text-white  hover:bg-red-700 transition-colors"
                         (click)="backToInvoiceList()">
-                    <svg-icon src="./assets/icons/heroicons/outline/arrow-left.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+                    <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-5 w-5'"></svg-icon>
                     <span class="ml-2">Back</span>
                 </button>
             </div>

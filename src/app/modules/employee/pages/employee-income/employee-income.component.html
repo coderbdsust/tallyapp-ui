@@ -1,14 +1,13 @@
 <div class="flex min-w-full flex-col rounded-xl bg-background p-2">
-    <!-- Search Form -->
     <form [formGroup]="form" (ngSubmit)="submit()">
         <div class="flex justify-between gap-4">
             <div class="w-4/12">
                 <label class="text-sm text-muted-foreground">Employee Name</label>
                 <select formControlName="employeeId" (change)="onEmployeeSelect($event)"
                     class="block py-2 text-sm text-gray-500 bg-transparent border-1 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                    <option value="" selected>Select Monthly Employee</option>
+                    <option value="" selected>Select Employee</option>
                     <ng-container *ngFor="let emp of allEmployees; let i = index;">
-                        <option [value]="emp.id">{{emp.fullName}}</option>
+                        <option [value]="emp.id">{{emp.fullName}} - [{{emp.employeeType}}]</option>
                     </ng-container>
                 </select>
                 <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'employeeId')">
@@ -68,7 +67,7 @@
                                 <span class="ml-2">Report</span>
                             </button>
                             <button type="button" (click)="generateReport()"
-                                *ngIf="selectedEmployee && selectedEmployee.employeeBillingType!=='MONTHLY'"
+                                *ngIf="selectedEmployee && selectedEmployee.employeeBillingType!=='MONTHLY' && selectedEmployee.employeeBillingType!=='NOT_APPLICABLE'"
                                 class="flex flex-row px-4 py-2 rounded-md bg-green-500 text-white hover:bg-green-600">
                                 <svg-icon src="./assets/icons/heroicons/outline/download.svg"
                                     [svgClass]="'h-5 w-5'"></svg-icon>

@@ -10,4 +10,5 @@ export interface RegisteredUser {
     dateOfBirth:string;
     createdDate:string;
     keycloakUserId:string;
+    maximumOrganizationLimit:number;
 }
