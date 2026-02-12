@@ -22,6 +22,8 @@ export class CashFlowComponent extends PaginatedComponent<CashFlow>{
   loading: boolean = false;
   org: Organization | null = null;
   reportData: PageCashFlowReport | null = null;
+  startDate: string | null = null;
+  endDate: string | null = null;
   formatCurrency = formatCurrency;
   isInflowType = isInflowType;
   getFlowTypeStyle = getFlowTypeStyle;
@@ -69,10 +71,33 @@ export class CashFlowComponent extends PaginatedComponent<CashFlow>{
       if (!this.org) return;
   
       this.loading = true;
-      this.loadCashFlowReport(this.org, null, null, this.search, this.currentPage, this.selectedRows);
+      this.loadCashFlowReport(this.org, this.startDate, this.endDate, this.search, this.currentPage, this.selectedRows);
   }
 
   getCurrentDate(): string {
     return new Date().toLocaleDateString();
+  }
+
+    onStartDateChange(event: Event): void {
+    const input = (event.target as HTMLInputElement).value;
+    this.startDate = input || null;
+    this.onFilterChange();
+  }
+
+  onEndDateChange(event: Event): void {
+    const input = (event.target as HTMLInputElement).value;
+    this.endDate = input || null;
+    this.onFilterChange();
+  }
+
+  hasActiveFilters(): boolean {
+    return !!(this.search || this.startDate || this.endDate);
+  }
+
+  clearFilters(): void {
+    this.search = '';
+    this.startDate = null;
+    this.endDate = null;
+    this.onFilterChange();
   }
 }
