@@ -7,6 +7,7 @@ import { Organization } from 'src/app/core/models/organization.model';
 import { Drawer, DrawerInterface, DrawerOptions, InstanceOptions } from 'flowbite';
 import { SupplierService } from 'src/app/core/services/supplier.service';
 import { Supplier } from '../../supplier.model';
+import { FormError } from 'src/app/common/components/form-error/form-error.component';
 
 @Component({
   selector: 'app-add-supplier',
@@ -14,7 +15,7 @@ import { Supplier } from '../../supplier.model';
   templateUrl: './add-supplier.component.html',
   styleUrl: './add-supplier.component.scss'
 })
-export class AddSupplierComponent implements OnInit {
+export class AddSupplierComponent  extends FormError implements OnInit {
   @Output() public supplierEmitter = new EventEmitter<Supplier>();
   @Input() organization!: Organization;
 
@@ -41,7 +42,7 @@ export class AddSupplierComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private supplierService: SupplierService
-  ) {}
+  ) {super();}
 
   ngOnInit(): void {
     this.$drawerTargetEl = document.getElementById('drawer-supplier') as HTMLElement;

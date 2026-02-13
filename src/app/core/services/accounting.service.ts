@@ -51,9 +51,6 @@ export class AccountingService extends CommonService {
     if (startDate) params.startDate = startDate;
     if (endDate) params.endDate = endDate;
     if (search) params.search = search;
-
-    console.log(params);
-
     return this.http
       .get<PageCashFlowReport>(`${environment.tallyURL}/cash/v1/cash-flow/pageable/${organizationId}`, { params })
       .pipe(catchError(this.mapErrorResponse));

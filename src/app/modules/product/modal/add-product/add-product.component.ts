@@ -13,6 +13,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { generateRandomLuhnCode } from 'src/app/common/utils/LuhnCode';
 import { Employee } from '../../../../core/models/employee.model';
 import { ProductCategoryService } from '../../../../core/services/product-category.service';
+import { FormError } from 'src/app/common/components/form-error/form-error.component';
 
 @Component({
   selector: 'app-add-product',
@@ -30,7 +31,7 @@ import { ProductCategoryService } from '../../../../core/services/product-catego
   templateUrl: './add-product.component.html',
   styleUrl: './add-product.component.scss',
 })
-export class AddProductComponent {
+export class AddProductComponent extends FormError{
   form!: FormGroup;
   submitted = false;
   isModalOpen = false;
@@ -50,7 +51,9 @@ export class AddProductComponent {
     private employeeService: EmployeeService,
     private fileUploaderService: FileUploaderService,
     private productCategoryService:ProductCategoryService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.loadProductUnitTypes();
@@ -135,7 +138,7 @@ export class AddProductComponent {
 
     this.form = this._formBuilder.group({
       id: [product?.id],
-      name: [product?.name, [Validators.required]],
+      name: [product?.name, [Validators.required, Validators.maxLength(70)]],
       code: [product?.code, [Validators.required]],
       unitType:[product?.unitType,[Validators.required]],
       description: [product?.description],

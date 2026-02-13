@@ -13,6 +13,7 @@ import { InvoiceService } from 'src/app/core/services/invoice.service';
 import { ProductService } from 'src/app/core/services/product.service';
 import { PaymentService } from 'src/app/core/services/payment.service';
 import { CustomerService } from 'src/app/core/services/customer.service';
+import { combineLatest, startWith, Subscription } from 'rxjs';
 
 
 @Component({
@@ -25,7 +26,7 @@ import { CustomerService } from 'src/app/core/services/customer.service';
     CommonModule,
     WordPipe,
     NgSelectComponent
-],
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-invoice.component.html',
   styleUrl: './add-invoice.component.scss'
@@ -46,7 +47,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   orgId = '';
   invoiceId = '';
   allProducts: Product[] = [];
-  allCustomers:Customer[] = [];
+  allCustomers: Customer[] = [];
   readonly allPaymentMethods = [
     'Cash',
     'Bank Transfer',
@@ -63,6 +64,12 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     'PAID'
   ];
 
+  private productFormSubscription?: Subscription;
+
+  ngOnDestroy(): void {
+    this.productFormSubscription?.unsubscribe();
+  }
+
   constructor(
     private readonly invoiceService: InvoiceService,
     private readonly productService: ProductService,
@@ -71,7 +78,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly fb: FormBuilder
-  ) { super();}
+  ) { super(); }
 
   ngOnInit(): void {
     this.initForms();
@@ -94,7 +101,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
         this.router.navigate(['/invoice/list']);
         return;
       }
-      
+
       this.fetchInvoice();
     });
   }
@@ -112,11 +119,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     });
   }
 
-  private listenProductFormChanges(): void {
-    this.productForm.get('productUnitRate')?.valueChanges.subscribe(() => this.calculateProductAmount());
-    this.productForm.get('productQuantity')?.valueChanges.subscribe(() => this.calculateProductAmount());
-    this.productForm.get('productDiscountPercent')?.valueChanges.subscribe(() => this.calculateProductAmount());
-  }
+
 
   initiateInvoiceForm(invoice: Invoice | null = null): void {
     this.invForm = this.fb.group({
@@ -157,9 +160,22 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       productQuantity: [product?.availableQuantity, [Validators.required, Validators.min(1)]],
       productAmount: [0]
     });
+
+    this.listenProductFormChanges();
   }
 
-  createNewCustomer(){
+  private listenProductFormChanges(): void {
+    // Unsubscribe from previous listeners if they exist
+    this.productFormSubscription?.unsubscribe();
+    // Combine all three fields into one subscription
+    this.productFormSubscription = combineLatest([
+      this.productForm.get('productUnitRate')!.valueChanges.pipe(startWith(0)),
+      this.productForm.get('productQuantity')!.valueChanges.pipe(startWith(0)),
+      this.productForm.get('productDiscountPercent')!.valueChanges.pipe(startWith(0))
+    ]).subscribe(() => this.calculateProductAmount());
+  }
+
+  createNewCustomer() {
     this.invForm.patchValue({
       customerId: '',
       customerName: '',
@@ -194,8 +210,8 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     this.fetchCustomer(searchKey);
   }
 
-  fetchCustomer(searchKey:string){
-     const orgId = this.invoice?.ownerOrganization.id;
+  fetchCustomer(searchKey: string) {
+    const orgId = this.invoice?.ownerOrganization.id;
     if (!orgId) return;
 
     this.customerService.getCustomerByOrganization(orgId, 0, 20, searchKey).subscribe({
@@ -239,10 +255,10 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   calculateProductAmount(): void {
     const rate = +this.productForm.get('productUnitRate')?.value || 0;
     const quantity = +this.productForm.get('productQuantity')?.value || 0;
-    const discountPercent  = +this.productForm.get("productDiscountPercent")?.value || 0;
-    const discount = (rate*quantity*discountPercent)/100.0;
-    const price = rate*quantity;
-    this.productForm.patchValue({ productAmount: price-discount }, { emitEvent: false });
+    const discountPercent = +this.productForm.get("productDiscountPercent")?.value || 0;
+    const discount = (rate * quantity * discountPercent) / 100.0;
+    const price = rate * quantity;
+    this.productForm.patchValue({ productAmount: price - discount }, { emitEvent: false });
   }
 
   onSearchKeyType(event: Event): void {
@@ -287,10 +303,10 @@ export class AddInvoiceComponent extends FormError implements OnInit {
 
   deleteProduct(prod: ProductSale) {
     this.invoiceService.removeProductFromInvoice(this.invoiceId, prod.id).subscribe({
-      next:(apiRes)=>{
+      next: (apiRes) => {
         this.refreshInvoice();
       },
-      error:(err)=>{
+      error: (err) => {
         this.refreshInvoice();
         this.productService.showToastErrorResponse(err);
       }
@@ -302,7 +318,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     this.paymentService.deletePayment(this.invoiceId, payment.id).subscribe({
       next: (apiRes) => {
         this.refreshInvoice();
-      },error:(errorRes)=>{
+      }, error: (errorRes) => {
         this.refreshInvoice();
         this.paymentService.showToastErrorResponse(errorRes);
       }
@@ -346,23 +362,23 @@ export class AddInvoiceComponent extends FormError implements OnInit {
         this.initiateInvoiceForm(updated);
         this.invoiceService.showToastSuccess("Invoice info updated");
       },
-      error: (err) =>{
-         this.refreshInvoice();
-         this.invoiceService.showToastErrorResponse(err)
-       }
+      error: (err) => {
+        this.refreshInvoice();
+        this.invoiceService.showToastErrorResponse(err)
+      }
     });
   }
 
-  previewInvoice(){
-    this.router.navigate(['/invoice/detail'], { queryParams: { orgId: this.orgId, invoiceId: this.invoiceId } }); 
+  previewInvoice() {
+    this.router.navigate(['/invoice/detail'], { queryParams: { orgId: this.orgId, invoiceId: this.invoiceId } });
   }
 
-   backToInvoiceList(){
+  backToInvoiceList() {
     this.router.navigate(['/invoice/list']);
   }
 
-  downloadInvoice(){
-      this.invoiceService.downloadInvoice(this.orgId, this.invoiceId).subscribe({
+  downloadInvoice() {
+    this.invoiceService.downloadInvoice(this.orgId, this.invoiceId).subscribe({
       next: (pdfRes: Blob) => {
         const blob = new Blob([pdfRes], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);
@@ -379,5 +395,5 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       }
     });
   }
-  
+
 }

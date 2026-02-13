@@ -32,8 +32,8 @@
                       Product Image
                     </label>
                   </div>
-                  <div *ngIf="submitted && f['imageUrl'].errors" class="is__invalid-error">
-                    <div *ngIf="f['imageUrl'].errors['required']">Required field</div>
+                  <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'imageUrl')">
+                    {{ getErrorMessage(form, 'imageUrl') }}
                   </div>
                 </div>
               </div>
@@ -49,8 +49,8 @@
                         Product or Service Name
                       </label>
                     </div>
-                    <div *ngIf="submitted && f['name'].errors" class="is__invalid-error">
-                      <div *ngIf="f['name'].errors['required']">Required field</div>
+                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'name')">
+                      {{ getErrorMessage(form, 'name') }}
                     </div>
                   </div>
                   <div class="form__group w-2/6">
@@ -64,13 +64,14 @@
                           Code
                         </label>
                       </div>
-                      <div *ngIf="submitted && f['code'].errors" class="is__invalid-error">
-                        <div *ngIf="f['code'].errors['required']">Required field</div>
-                      </div>
+
                       <div class="pl-4 mt-2">
                         <svg-icon (click)="generateProductCode()" src="./assets/icons/heroicons/outline/arrow-path.svg"
                           [svgClass]="'h-5 w-5 text-primary hover:h-6 w-6'" />
                       </div>
+                    </div>
+                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'code')">
+                      {{ getErrorMessage(form, 'code') }}
                     </div>
                   </div>
                 </div>
@@ -80,14 +81,15 @@
                     <textarea type="text" id="description" class="peer block" placeholder=" "
                       [ngClass]="{ 'is__invalid-input': submitted && f['description'].errors }"
                       formControlName="description">
-                </textarea>
+                    </textarea>
                     <label for="name"
                       class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
                       Description
                     </label>
                   </div>
-                  <div *ngIf="submitted && f['description'].errors" class="is__invalid-error">
-                    <div *ngIf="f['description'].errors['required']">Required field</div>
+
+                  <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'description')">
+                    {{ getErrorMessage(form, 'description') }}
                   </div>
                 </div>
 
@@ -104,8 +106,8 @@
                           Unit Type
                         </label>
                       </div>
-                      <div *ngIf="submitted && f['unitType'].errors" class="is__invalid-error">
-                        <div *ngIf="f['unitType'].errors['required']">Required field</div>
+                      <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'unitType')">
+                        {{ getErrorMessage(form, 'unitType') }}
                       </div>
                     </div>
                   </div>
@@ -122,8 +124,8 @@
                           Product Category
                         </label>
                       </div>
-                      <div *ngIf="submitted && f['categoryId'].errors" class="is__invalid-error">
-                        <div *ngIf="f['categoryId'].errors['required']">Required field</div>
+                      <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'categoryId')">
+                        {{ getErrorMessage(form, 'categoryId') }}
                       </div>
                     </div>
                   </div>
@@ -143,8 +145,8 @@
                       Service Provider
                     </label>
                   </div>
-                  <div *ngIf="submitted && f['madeBy'].errors" class="is__invalid-error">
-                    <div *ngIf="f['madeBy'].errors['required']">Required field</div>
+                  <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'madeBy')">
+                    {{ getErrorMessage(form, 'madeBy') }}
                   </div>
                 </div>
 
@@ -186,8 +188,9 @@
                         formControlName="perUnitEmployeeCost" />
 
                     </div>
-                    <div *ngIf="submitted && stockGroup.get('perUnitEmployeeCost')?.errors" class="is__invalid-error">
-                      <div *ngIf="stockGroup.get('perUnitEmployeeCost')?.errors?.['required']">Required field</div>
+                    <div class="text-red-500 text-xs mt-1"
+                      *ngIf="isFieldInvalidControl(stockGroup, 'perUnitEmployeeCost')">
+                      {{ getErrorMessageFromControl(stockGroup, 'perUnitEmployeeCost')}}
                     </div>
                   </div>
 
@@ -202,8 +205,9 @@
                         [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('perUnitProductionCost')?.errors }"
                         formControlName="perUnitProductionCost" />
                     </div>
-                    <div *ngIf="submitted && stockGroup.get('perUnitProductionCost')?.errors" class="is__invalid-error">
-                      <div *ngIf="stockGroup.get('perUnitProductionCost')?.errors?.['required']">Required field</div>
+                    <div class="text-red-500 text-xs mt-1"
+                      *ngIf="isFieldInvalidControl(stockGroup, 'perUnitProductionCost')">
+                      {{ getErrorMessageFromControl(stockGroup, 'perUnitProductionCost')}}
                     </div>
                   </div>
 
@@ -219,8 +223,9 @@
                         formControlName="unitPrice" />
 
                     </div>
-                    <div *ngIf="submitted && stockGroup.get('unitPrice')?.errors" class="is__invalid-error">
-                      <div *ngIf="stockGroup.get('unitPrice')?.errors?.['required']">Required field</div>
+                    <div class="text-red-500 text-xs mt-1"
+                      *ngIf="isFieldInvalidControl(stockGroup, 'unitPrice')">
+                      {{ getErrorMessageFromControl(stockGroup, 'unitPrice')}}
                     </div>
                   </div>
 
@@ -236,8 +241,9 @@
                         formControlName="discountPercent" />
 
                     </div>
-                    <div *ngIf="submitted && stockGroup.get('discountPercent')?.errors" class="is__invalid-error">
-                      <div *ngIf="stockGroup.get('discountPercent')?.errors?.['required']">Required field</div>
+                    <div class="text-red-500 text-xs mt-1"
+                      *ngIf="isFieldInvalidControl(stockGroup, 'discountPercent')">
+                      {{ getErrorMessageFromControl(stockGroup, 'discountPercent')}}
                     </div>
                   </div>
 
@@ -254,8 +260,10 @@
                         formControlName="initialQuantity" />
 
                     </div>
-                    <div *ngIf="submitted && stockGroup.get('initialQuantity')?.errors" class="is__invalid-error">
-                      <div *ngIf="stockGroup.get('initialQuantity')?.errors?.['required']">Required field</div>
+
+                    <div class="text-red-500 text-xs mt-1"
+                      *ngIf="isFieldInvalidControl(stockGroup, 'initialQuantity')">
+                      {{ getErrorMessageFromControl(stockGroup, 'initialQuantity')}}
                     </div>
                   </div>
 
@@ -272,8 +280,9 @@
                         formControlName="availableQuantity" />
 
                     </div>
-                    <div *ngIf="submitted && stockGroup.get('availableQuantity')?.errors" class="is__invalid-error">
-                      <div *ngIf="stockGroup.get('availableQuantity')?.errors?.['required']">Required field</div>
+                    <div class="text-red-500 text-xs mt-1"
+                      *ngIf="isFieldInvalidControl(stockGroup, 'availableQuantity')">
+                      {{ getErrorMessageFromControl(stockGroup, 'availableQuantity')}}
                     </div>
                   </div>
 
@@ -288,8 +297,9 @@
                         [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('quantityToAdd')?.errors }"
                         formControlName="quantityToAdd" />
                     </div>
-                    <div *ngIf="submitted && stockGroup.get('quantityToAdd')?.errors" class="is__invalid-error">
-                      <div *ngIf="stockGroup.get('quantityToAdd')?.errors?.['required']">Required field</div>
+                    <div class="text-red-500 text-xs mt-1"
+                      *ngIf="isFieldInvalidControl(stockGroup, 'quantityToAdd')">
+                      {{ getErrorMessageFromControl(stockGroup, 'quantityToAdd')}}
                     </div>
                   </div>
                   <!-- Remove Icon -->

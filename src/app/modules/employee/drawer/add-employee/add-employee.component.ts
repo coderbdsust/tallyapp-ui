@@ -12,6 +12,7 @@ import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { FileUploaderComponent } from "../../../../common/components/file-uploader/file-uploader.component";
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 import { catchError, of, switchMap, tap, throwError } from 'rxjs';
+import { FormError } from 'src/app/common/components/form-error/form-error.component';
 
 @Component({
     selector: 'app-add-employee',
@@ -20,7 +21,7 @@ import { catchError, of, switchMap, tap, throwError } from 'rxjs';
     templateUrl: './add-employee.component.html',
     styleUrl: './add-employee.component.scss'
 })
-export class AddEmployeeComponent {
+export class AddEmployeeComponent extends FormError{
   @ViewChild(FileUploaderComponent) fileUploader!: FileUploaderComponent;
   @Output() public employeeEmitter = new EventEmitter<Employee>();
   @Input() organization!: Organization;
@@ -65,7 +66,7 @@ export class AddEmployeeComponent {
     private orgService: OrganizationService,
     private empService: EmployeeService,
     private fileUploaderService: FileUploaderService
-  ) {}
+  ) {super();}
 
   ngOnInit(): void {
     this.$empDrawerTargetEl = document.getElementById('drawer-employee') as HTMLElement;

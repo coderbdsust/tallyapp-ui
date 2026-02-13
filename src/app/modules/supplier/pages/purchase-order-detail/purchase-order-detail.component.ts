@@ -11,6 +11,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { formatCurrency } from 'src/app/common/utils/common';
 import { PurchaseOrder, PurchaseOrderPayment } from '../../supplier.model';
 import { PurchaseOrderService } from 'src/app/core/services/purchase-order.service';
+import { FormError } from 'src/app/common/components/form-error/form-error.component';
 
 @Component({
   selector: 'app-purchase-order-detail',
@@ -18,7 +19,7 @@ import { PurchaseOrderService } from 'src/app/core/services/purchase-order.servi
   templateUrl: './purchase-order-detail.component.html',
   styleUrl: './purchase-order-detail.component.scss'
 })
-export class PurchaseOrderDetailComponent implements OnInit, OnDestroy {
+export class PurchaseOrderDetailComponent extends FormError implements OnInit, OnDestroy {
   po: PurchaseOrder | null = null;
   loading = true;
   showPaymentForm = false;
@@ -36,7 +37,7 @@ export class PurchaseOrderDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private poService: PurchaseOrderService,
     public dialog: MatDialog
-  ) {}
+  ) {super();}
 
   ngOnInit(): void {
     this.initPaymentForm();

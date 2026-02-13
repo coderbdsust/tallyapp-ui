@@ -10,6 +10,7 @@ import { PurchaseOrderService } from 'src/app/core/services/purchase-order.servi
 import { SupplierService } from 'src/app/core/services/supplier.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { Organization } from 'src/app/core/models/organization.model';
+import { FormError } from 'src/app/common/components/form-error/form-error.component';
 
 @Component({
   selector: 'app-purchase-order-create',
@@ -17,7 +18,7 @@ import { Organization } from 'src/app/core/models/organization.model';
   templateUrl: './purchase-order-create.component.html',
   styleUrl: './purchase-order-create.component.scss'
 })
-export class PurchaseOrderCreateComponent implements OnInit, OnDestroy {
+export class PurchaseOrderCreateComponent extends FormError implements OnInit, OnDestroy {
   poForm!: FormGroup;
   submitted = false;
   isEditMode = false;
@@ -39,7 +40,7 @@ export class PurchaseOrderCreateComponent implements OnInit, OnDestroy {
     private poService: PurchaseOrderService,
     private supplierService: SupplierService,
     private orgService: OrganizationService
-  ) {}
+  ) {super();}
 
   ngOnInit(): void {
     this.initForm();

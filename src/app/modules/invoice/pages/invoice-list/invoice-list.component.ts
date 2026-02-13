@@ -169,7 +169,7 @@ export class InvoiceListComponent extends PaginatedComponent<Invoice> implements
 
           const a = document.createElement('a');
           a.href = url;
-          a.download = `invoice-${invoice.invoiceNumber || invoice.id}.pdf`;
+          a.download = `${invoice.invoiceNumber || invoice.id}.pdf`;
           a.click();
 
           window.URL.revokeObjectURL(url); // clean up the blob URL

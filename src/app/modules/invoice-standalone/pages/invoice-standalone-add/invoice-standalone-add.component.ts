@@ -222,6 +222,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       productAmount: [0],
       productNotes: ['']
     });
+    this.setupFormListeners();
   }
 
   // Customer Methods
