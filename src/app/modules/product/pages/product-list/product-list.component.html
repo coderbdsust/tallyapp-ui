@@ -5,8 +5,7 @@
   </div>
   <div class="inline-block space-x-4">
     <div class="flex items-center justify-center gap-4">
-      <button
-        *ngIf="organization"
+      <button *ngIf="organization"
         class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
         (click)="addProduct()">
         <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4'"></svg-icon>
@@ -28,9 +27,8 @@
         <div class="order-2 flex items-center gap-2 md:order-1">
           Show
           <select class="w-16 p-2" name="rowSize" (change)="onSelectChange($event)">
-            <option *ngFor="let option of getPageSizeOptions()" 
-                    [value]="option.value" 
-                    [selected]="option.value === selectedRows">
+            <option *ngFor="let option of getPageSizeOptions()" [value]="option.value"
+              [selected]="option.value === selectedRows">
               {{ option.label }}
             </option>
           </select>
@@ -41,13 +39,9 @@
       <!-- Search Criteria Selector -->
       <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
         <div class="order-2 flex items-center gap-2 md:order-1">
-          <select 
-            class="w-48 p-2" 
-            name="searchCriteria" 
-            [value]="searchCriteria"
+          <select class="w-48 p-2" name="searchCriteria" [value]="searchCriteria"
             (change)="onSearchCriteriaChange($event)">
-            <option *ngFor="let option of getSearchCriteriaOptions()" 
-                    [value]="option.value">
+            <option *ngFor="let option of getSearchCriteriaOptions()" [value]="option.value">
               {{ option.label }}
             </option>
           </select>
@@ -61,15 +55,9 @@
             <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'">
             </svg-icon>
           </div>
-          <input
-            name="search"
-            class="py-2 pl-8 pr-2"
-            [placeholder]="getSearchPlaceholder()"
-            [disabled]="isSearchDisabled()"
-            type="text"
-            [value]="search"
-            [ngClass]="{'opacity-50 cursor-not-allowed': isSearchDisabled()}"
-            (keydown.enter)="onSearchChange($event)"
+          <input name="search" class="py-2 pl-8 pr-2" [placeholder]="getSearchPlaceholder()"
+            [disabled]="isSearchDisabled()" type="text" [value]="search"
+            [ngClass]="{'opacity-50 cursor-not-allowed': isSearchDisabled()}" (keydown.enter)="onSearchChange($event)"
             (input)="onSearchChange($event)" />
         </label>
       </div>
@@ -88,8 +76,9 @@
       class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
       <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
         <tr>
-          <th class="min-w-[150px]">Product Name</th>
-          <th class="min-w-[120px]">Product Code</th>
+          <th class="min-w-[350px]">Product Name</th>
+          <th class="min-w-[120px]">Code</th>
+          <th class="min-w-[120px]">Category</th>
           <th class="min-w-[100px]">Unit Price</th>
           <th class="min-w-[100px]">Discount %</th>
           <th class="min-w-[130px]">Employee Cost / Unit</th>
@@ -105,32 +94,24 @@
           <td class="relative">
             <div class="flex items-center gap-2.5 group">
               <!-- Product Image -->
-              <img 
-                [src]="p.imageUrl || 'https://placehold.co/400'" 
-                alt="product image" 
-                class="h-9 w-9 shrink-0 rounded-full object-cover"
-                loading="lazy"
-              />
-          
+              <img [src]="p.imageUrl || 'https://placehold.co/400'" alt="product image"
+                class="h-9 w-9 shrink-0 rounded-full object-cover" loading="lazy" />
+
               <!-- Product Name -->
               <div class="flex flex-col">
                 <a class="text-sm font-semibold text-foreground hover:text-primary" href="#">
                   {{ p.name }}
                 </a>
               </div>
-          
+
+
+
               <!-- Hover Image Preview -->
-              <div 
-                class="absolute left-12 top-0 w-32 h-32 bg-white shadow-lg rounded-lg border border-gray-300 p-1
+              <div class="absolute left-12 top-0 w-32 h-32 bg-white shadow-lg rounded-lg border border-gray-300 p-1
                        opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
-                       z-50"
-              >
-                <img 
-                  [src]="p.imageUrl || 'https://placehold.co/400'" 
-                  alt="Preview" 
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                >
+                       z-50">
+                <img [src]="p.imageUrl || 'https://placehold.co/400'" alt="Preview"
+                  class="w-full h-full object-cover rounded-lg" loading="lazy">
               </div>
             </div>
           </td>
@@ -138,23 +119,28 @@
             <span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
               {{ p.code }}
             </span>
-          </td> 
+          </td>
+          <td>
+            <div class="flex flex-col">
+              <a class="text-sm font-semibold text-foreground hover:text-primary" href="#">
+                {{ p.productCategory.name }}
+              </a>
+            </div>
+          </td>
           <td>
             <span class="font-semibold text-green-600">
               {{ formatCurrency(p.unitPrice) }}
             </span>
           </td>
           <td>
-          <span class="font-semibold text-yellow-500">
+            <span class="font-semibold text-yellow-500">
               {{ p.discountPercent }} %
             </span>
           </td>
           <td>{{ formatCurrency(p.perUnitEmployeeCost) }}</td>
           <td>{{ formatCurrency(p.perUnitProductionCost) }}</td>
           <td>
-            <span 
-              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
-              [ngClass]="{
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" [ngClass]="{
                 'bg-green-100 text-green-800': p.availableQuantity > 10,
                 'bg-yellow-100 text-yellow-800': p.availableQuantity > 0 && p.availableQuantity <= 10,
                 'bg-red-100 text-red-800': p.availableQuantity === 0
@@ -175,17 +161,12 @@
           <td>{{ p.createdDate | date: 'dd-MM-yyyy' }}</td>
           <td class="text-center">
             <div class="flex items-center justify-center gap-4">
-              <button 
-                (click)="editProduct(p)" 
-                class="p-1 hover:text-primary transition-colors"
-                title="Edit Product">
+              <button (click)="editProduct(p)" class="p-1 hover:text-primary transition-colors" title="Edit Product">
                 <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'">
                 </svg-icon>
               </button>
 
-              <button 
-                (click)="deleteProduct(p)" 
-                class="p-1 hover:text-red-600 transition-colors"
+              <button (click)="deleteProduct(p)" class="p-1 hover:text-red-600 transition-colors"
                 title="Delete Product">
                 <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'">
                 </svg-icon>
@@ -196,7 +177,8 @@
         <tr *ngIf="!hasData">
           <td class="py-8 text-center text-sm" colspan="9">
             <div class="flex flex-col items-center gap-2">
-              <svg-icon src="./assets/icons/heroicons/outline/cube.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
+              <svg-icon src="./assets/icons/heroicons/outline/cube.svg"
+                [svgClass]="'h-12 w-12 text-muted-foreground/50'">
               </svg-icon>
               <span>No products found</span>
               <span *ngIf="search && searchCriteria" class="text-xs text-muted-foreground">
@@ -210,8 +192,8 @@
   </div>
 
   <!-- Pagination Section -->
-  <div *ngIf="showPagination && !loading" 
-       class="flex flex-wrap items-center justify-between gap-2 py-3 px-5 text-xs text-muted-foreground">
+  <div *ngIf="showPagination && !loading"
+    class="flex flex-wrap items-center justify-between gap-2 py-3 px-5 text-xs text-muted-foreground">
     <!-- Page Info -->
     <div class="flex items-center gap-2">
       <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
@@ -219,16 +201,14 @@
         (filtered by {{ searchCriteria }}: "{{ search }}")
       </span>
     </div>
-    
+
     <!-- Pagination Controls -->
     <div class="flex items-center gap-4">
       <div class="inline-flex items-center gap-1">
         <!-- First Page Button -->
-        <button
-          *ngIf="!first"
+        <button *ngIf="!first"
           class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
-          (click)="goToFirstPage()"
-          title="First Page">
+          (click)="goToFirstPage()" title="First Page">
           <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-4 w-4'">
           </svg-icon>
         </button>
@@ -236,28 +216,23 @@
         <!-- Previous Page Button -->
         <button
           class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
-          [disabled]="first" 
-          (click)="goToPreviousPage()"
-          title="Previous Page">
+          [disabled]="first" (click)="goToPreviousPage()" title="Previous Page">
           <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'">
           </svg-icon>
         </button>
 
         <!-- Page Numbers -->
         <ng-container *ngFor="let page of getVisiblePages()">
-          <button 
-            *ngIf="isClickablePage(page)"
-            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm transition-colors" 
+          <button *ngIf="isClickablePage(page)"
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm transition-colors"
             [ngClass]="{
               'bg-primary text-primary-foreground': isCurrentPage(page),
               'hover:bg-muted-foreground/10': !isCurrentPage(page)
-            }" 
-            (click)="goToPage(page)">
+            }" (click)="goToPage(page)">
             {{ getPageNumber(page) }}
           </button>
-          
-          <span 
-            *ngIf="!isClickablePage(page)" 
+
+          <span *ngIf="!isClickablePage(page)"
             class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center text-sm">
             ...
           </span>
@@ -266,19 +241,15 @@
         <!-- Next Page Button -->
         <button
           class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
-          [disabled]="last" 
-          (click)="goToNextPage()"
-          title="Next Page">
+          [disabled]="last" (click)="goToNextPage()" title="Next Page">
           <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'">
           </svg-icon>
         </button>
 
         <!-- Last Page Button -->
-        <button
-          *ngIf="!last"
+        <button *ngIf="!last"
           class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
-          (click)="goToLastPage()"
-          title="Last Page">
+          (click)="goToLastPage()" title="Last Page">
           <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-4 w-4'">
           </svg-icon>
         </button>
@@ -287,7 +258,5 @@
   </div>
 </div>
 
-<app-add-product 
-  #addProductModal 
-  (modifiedEmitter)="productListRefresh($event)">
+<app-add-product #addProductModal (modifiedEmitter)="productListRefresh($event)">
 </app-add-product>
