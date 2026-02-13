@@ -46,6 +46,7 @@ export class OrganizationOwnerComponent {
     this.organizationService.removeOwnerFromOrganization(this.organization.id, owners).subscribe({
       next: (response) => {
         this.loadOwnersByOrganizationId(this.organization);
+        this.organizationService.showToastSuccess(response.message);
       },
       error: (error) => {
        this.organizationService.showToastErrorResponse(error);
