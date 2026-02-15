@@ -9,6 +9,7 @@ export interface RegisteredUser {
     gender:string,
     dateOfBirth:string;
     createdDate:string;
+    lastKeycloakSync:string;
     keycloakUserId:string;
     maximumOrganizationLimit:number;
 }

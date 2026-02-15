@@ -5,12 +5,19 @@
       <span>Manage application users and their permissions</span>
     </div>
   </div>
-  <div class="inline-block space-x-4">
+  <div class="flex space-x-4">
     <button 
       class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
       (click)="addUser()">
       <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
       <p>Add User</p>
+    </button>
+
+    <button 
+      class="flex rounded-md bg-green-500 px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+      (click)="syncUsers()">
+      <svg-icon src="./assets/icons/heroicons/outline/arrow-path.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
+      <p>Sync Users</p>
     </button>
   </div>
 </div>
@@ -73,6 +80,7 @@
           <th class="min-w-[200px]">User</th>
           <th class="min-w-[120px]">Username</th>
           <th class="min-w-[140px]">Keycloak ID</th>
+          <th class="min-w-[140px]">Keycloak Sync Time</th>
           <th class="min-w-[140px]">Max Org Limit</th>
           <th class="min-w-[140px]">Created</th>
           <th class="min-w-[100px]">Actions</th>
@@ -111,6 +119,9 @@
             <span class="text-sm">{{ user.keycloakUserId }}</span>
           </td>
           <td>
+            <span class="text-sm">{{ user.lastKeycloakSync | date: 'dd-MM-yyyy HH:mm' }}</span>
+          </td>
+          <td>
             <span class="text-sm">{{ user.maximumOrganizationLimit }}</span>
           </td>
 
@@ -127,6 +138,13 @@
                 (click)="editUser(user)"
                 title="Edit">
                 <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-5 w-5'">
+                </svg-icon>
+              </button>
+                            <button 
+                class="p-1 hover:text-red-600 transition-colors"
+                (click)="syncUser(user)"
+                title="Sync">
+                <svg-icon src="./assets/icons/heroicons/outline/arrow-path.svg" [svgClass]="'h-5 w-5'">
                 </svg-icon>
               </button>
             </div>

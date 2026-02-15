@@ -1,20 +1,18 @@
 <div class="relative ml-3">
   <button (click)="toggleMenu()" class="relative flex rounded-full bg-card text-sm" type="button">
     <span class="sr-only">Open user menu</span>
-      <a   
-        clickOutside
-        (clickOutside)="isOpen = false"
-        class="p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full">
-        <i class="fas fa-user"></i>
-      </a>
+    <a clickOutside (clickOutside)="isOpen = false"
+      class="p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full">
+      <i class="fas fa-user"></i>
+    </a>
   </button>
-  <div
-    [@openClose]="isOpen ? 'open' : 'closed'"
+  <div [@openClose]="isOpen ? 'open' : 'closed'"
     class="absolute right-0 z-20 mt-2 w-60 origin-top-right transform rounded-md bg-background py-4 shadow-custom ring-1 ring-transparent ring-opacity-5 transition focus:outline-none">
     <div class="flext-row flex items-center px-4 pb-4">
       <div class="overflow-hidden px-2 text-sm font-semibold text-foreground">
         {{ authService.getFullName() }}
-        <p class="truncate text-ellipsis text-xs font-semibold text-muted-foreground">{{ authService.getUsername() }} [{{ authService.getRoles() | role }}]</p>
+        <p class="truncate text-ellipsis text-xs font-semibold text-muted-foreground">{{ authService.getUsername() }}
+          [{{ authService.getRoles() | role }}]</p>
       </div>
     </div>
 
@@ -22,49 +20,41 @@
 
     <ul class="my-2 mx-4 flex flex-col">
 
-      <li
-        *ngFor="let menu of menuItem; let i = index"
-        [routerLink]="menu.link"
-        [attr.key]="i"
+      <li *ngFor="let menu of menuItem; let i = index" [routerLink]="menu.link" [attr.key]="i"
         class="inline-flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-card hover:text-primary">
         <svg-icon [src]="menu.icon" [svgClass]="'h-5 w-5 text-muted-foreground/50'"> </svg-icon>
         {{ menu.title }}
-    </li>
-      <li
-        (click)="onLogout()"
-        :key="2"
+      </li>
+      <li (click)="onLogout()" :key="2"
         class="inline-flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-card hover:text-primary">
         <svg-icon src="{{ logoutItem.icon }}" [svgClass]="'h-5 w-5 text-muted-foreground/50'"> </svg-icon>
         {{ logoutItem.title }}
-    </li>
-      
+      </li>
+
     </ul>
     <hr class="border-dashed border-border" />
     <div class="mx-4 my-2">
       <span class="text-xs font-semibold text-foreground">Color</span>
       <div class="mt-2 grid grid-cols-2 gap-2">
         @for (item of themeColors; track $index) {
-        <div
-          :key="$index"
-          (click)="toggleThemeColor(item.name)"
+        <div :key="$index" (click)="toggleThemeColor(item.name)"
           [ngClass]="{ 'border-muted-foreground bg-card': item.name == themeService.theme().color }"
           class="focus-visible:ring-ring inline-flex h-8 cursor-pointer items-center justify-start whitespace-nowrap rounded-md border border-border bg-background px-3 text-xs font-medium text-muted-foreground shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 hover:bg-card hover:text-foreground">
-          <span
-            [style.backgroundColor]="item.code"
+          <span [style.backgroundColor]="item.code"
             class="mr-1 flex h-5 w-5 shrink-0 -translate-x-1 items-center justify-center rounded-full bg-rose-500"></span>
           <p class="capitalize">{{ item.name }}</p>
         </div>
         }
       </div>
     </div>
-     <hr class="border-dashed border-border" />
-      <div class="mx-4 my-2" (click)="$event.stopPropagation()">
-         <span class="text-xs font-semibold text-foreground">Language</span>
-        <select (change)="onLanguageChange($event)">
-          <option value="-1">Select Language</option>
-          <option value="en" [selected]="selectedLanguage === 'en'">English</option>
-          <option value="bn" [selected]="selectedLanguage === 'bn'">বাংলা</option>
-        </select>
-      </div>
+    <hr class="border-dashed border-border" />
+    <div class="mx-4 my-2" (click)="$event.stopPropagation()">
+      <span class="text-xs font-semibold text-foreground">Language</span>
+      <select (change)="onLanguageChange($event)">
+        <option value="-1">Select Language</option>
+        <option value="en" [selected]="selectedLanguage === 'en'">English</option>
+        <option value="bn" [selected]="selectedLanguage === 'bn'">বাংলা</option>
+      </select>
+    </div>
   </div>
 </div>

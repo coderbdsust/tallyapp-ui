@@ -25,7 +25,7 @@ export class UserprofileService extends CommonService {
       .get<UserProfile>(`${environment.tallyURL}/users/v1/profile`)
       .pipe(catchError(this.mapErrorResponse));
   }
-  
+
   updateUserProfile(userProfile: UserProfile) {
     return this.http
       .put<UserProfile>(`${environment.tallyURL}/users/v1/profile`, userProfile)
@@ -44,16 +44,22 @@ export class UserprofileService extends CommonService {
       .pipe(catchError(this.mapErrorResponse));
   }
 
-  deleteAddress(id:string){
+  deleteAddress(id: string) {
     return this.http
-    .delete<ApiResponse>(`${environment.tallyURL}/users/v1/address/${id}`)
-    .pipe(catchError(this.mapErrorResponse));
+      .delete<ApiResponse>(`${environment.tallyURL}/users/v1/address/${id}`)
+      .pipe(catchError(this.mapErrorResponse));
   }
 
-  deleteShortProfile(id:string){
+  deleteShortProfile(id: string) {
     return this.http
-    .delete<ApiResponse>(`${environment.tallyURL}/users/v1/short-profile/${id}`)
-    .pipe(catchError(this.mapErrorResponse));
+      .delete<ApiResponse>(`${environment.tallyURL}/users/v1/short-profile/${id}`)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  changePassword(changePassword: any) {
+    return this.http
+      .post<ApiResponse>(`${environment.tallyURL}/users/v1/change-password`, changePassword)
+      .pipe(catchError(this.mapErrorResponse));
   }
 
 }

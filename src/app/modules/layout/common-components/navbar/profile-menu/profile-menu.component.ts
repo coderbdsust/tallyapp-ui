@@ -47,6 +47,11 @@ export class ProfileMenuComponent implements OnInit {
       icon: './assets/icons/heroicons/outline/user-circle.svg',
       link: '/user/profile-view',
     },
+    {
+      title: 'Change Password',
+      icon: './assets/icons/heroicons/outline/wrench.svg',
+      link: '/user/change-password',
+    }
   ];
 
   public themeColors = [

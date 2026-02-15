@@ -24,12 +24,28 @@ export class RegisterUserService extends CommonService {
       .pipe(catchError(this.mapErrorResponse));
   }
 
- 
 
-  public addUser(user:RegisteredUser) {
+
+  public addUser(user: RegisteredUser) {
     return this.http
       .post<any>(`${environment.tallyURL}/admin/user-management/v1/add-user`, user)
       .pipe(catchError(this.mapErrorResponse));
   }
- 
+
+  public syncUser(id: string) {
+    return this.http
+      .get<RegisteredUser>(
+        `${environment.tallyURL}/admin/user-management/v1/sync/${id}`,
+      )
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+    public syncUsers() {
+    return this.http
+      .get<ApiResponse>(
+        `${environment.tallyURL}/admin/user-management/v1/sync`,
+      )
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
 }

@@ -104,4 +104,39 @@ export class RegisteredUserComponent extends PaginatedComponent<RegisteredUser> 
     }
   }
 
+  syncUser(user:RegisteredUser): void {
+    this.registerUserService
+      .syncUser(user.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.registerUserService.showToastSuccess("User sync successfully");
+          this.loading = false;
+          this.loadData();
+        },
+        error: (error) => {
+          this.loading = false;
+          this.registerUserService.showToastErrorResponse(error);
+        },
+      });
+  }
+
+  syncUsers(): void {
+    this.registerUserService
+      .syncUsers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.registerUserService.showToastSuccess(response.message);
+          this.loading = false;
+          this.loadData();
+        },
+        error: (error) => {
+          this.loading = false;
+          this.registerUserService.showToastErrorResponse(error);
+        },
+      });
+  }
+  
+
 }
