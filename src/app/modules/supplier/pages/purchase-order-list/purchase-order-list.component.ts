@@ -142,4 +142,26 @@ export class PurchaseOrderListComponent extends PaginatedComponent<PurchaseOrder
     const today = new Date();
     return dueDate < today && po.dueAmount > 0;
   }
+
+  downloadPurchaseOrderReport(po: PurchaseOrderListItem): void {
+     this.poService
+        .downloadPurchaseOrderReport(this.organization.id, po.id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (pdfRes: Blob) => {
+            const blob = new Blob([pdfRes], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+  
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `PO-${po.id}.pdf`;
+            a.click();
+  
+            window.URL.revokeObjectURL(url);
+          },
+          error: (errRes) => {
+            this.poService.showToastErrorResponse(errRes);
+          }
+        });
+    }
 }

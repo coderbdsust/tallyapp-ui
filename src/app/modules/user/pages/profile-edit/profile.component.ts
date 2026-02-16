@@ -12,6 +12,7 @@ import { FileUploaderComponent } from 'src/app/common/components/file-uploader/f
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 import { Router } from '@angular/router';
 import { Address, ShortProfile, UserProfile } from 'src/app/core/models/profile.model';
+import { FormError } from 'src/app/common/components/form-error/form-error.component';
 
 @Component({
   selector: 'app-profile',
@@ -19,7 +20,7 @@ import { Address, ShortProfile, UserProfile } from 'src/app/core/models/profile.
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent extends FormError implements OnInit {
   @ViewChild(FileUploaderComponent) fileUploader!: FileUploaderComponent;
   userProfile: UserProfile | undefined;
   genderList: String[] = [];
@@ -32,8 +33,8 @@ export class ProfileComponent implements OnInit {
     private commonService: CommonService,
     private readonly _formBuilder: FormBuilder,
     private fileUploaderService: FileUploaderService,
-    private router:Router
-  ) { }
+    private router: Router
+  ) { super(); }
 
   ngOnInit(): void {
     initFlowbite();
@@ -50,7 +51,7 @@ export class ProfileComponent implements OnInit {
       lastName: ['', Validators.required],
       gender: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
-      profileImage:[''],
+      profileImage: [''],
       addressList: this._formBuilder.array([]),
       shortProfileList: this._formBuilder.array([]),
     });
@@ -91,7 +92,6 @@ export class ProfileComponent implements OnInit {
   onDateChange(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const selectedDate = inputElement.value;
-    console.log(selectedDate);
     this.userProfileForm.get('dateOfBirth')?.setValue(selectedDate);
   }
 
@@ -126,48 +126,6 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  // Utility function to get error messages dynamically
-  getErrorMessage(controlName: string): string | null {
-    const control = this.userProfileForm.get(controlName);
-    if (control && control.errors) {
-      const errorKeys = Object.keys(control.errors);
-      if (errorKeys.length > 0) {
-        const errorKey = errorKeys[0]; // Get the first error key
-        return this.getErrorText(errorKey, control.errors[errorKey]);
-      }
-    }
-    return null;
-  }
-
-  // Map error keys to error messages
-  private getErrorText(errorKey: string, errorValue: any): string {
-    const errorMessages: { [key: string]: string } = {
-      required: 'This field is required.',
-      minlength: `Minimum length is ${errorValue.requiredLength}.`,
-      email: 'Please enter a valid email address.',
-      pattern: 'Invalid format.',
-    };
-    return errorMessages[errorKey] || 'Invalid value.';
-  }
-
-  // Check if a field is invalid
-  isFieldInvalid(controlName: string): boolean {
-    const control = this.userProfileForm.get(controlName);
-    return !!(control && control.invalid && (control.dirty || control.touched));
-  }
-
-  getFormArrayErrors(formArray: FormArray, fieldErrors: { [key: string]: string }): string[] {
-    const errors: string[] = [];
-    formArray.controls.forEach((control, index) => {
-      Object.keys(fieldErrors).forEach((field) => {
-        if (control.get(field)?.hasError(fieldErrors[field])) {
-          errors.push(`${fieldErrors[field]} error at index ${index}.`);
-        }
-      });
-    });
-    return errors;
-  }
-
   // Add address
   addAddress(): void {
     this.submitted = false;
@@ -178,7 +136,6 @@ export class ProfileComponent implements OnInit {
   removeAddress(index: number): void {
     const removedItem = this.addressList.at(index).value;
     if (removedItem?.id) {
-      console.log(removedItem);
       this.userProfileService.deleteAddress(removedItem.id).subscribe({
         next: (response) => {
           this.userProfileService.showToastSuccess(response.message);
@@ -215,10 +172,10 @@ export class ProfileComponent implements OnInit {
 
   loadUserProfile() {
     this.userProfileService.getUserProfile().subscribe({
-      next:(userProfile)=>{
+      next: (userProfile) => {
         this.userProfile = userProfile;
-        
-        if(userProfile.profileImage)
+
+        if (userProfile.profileImage)
           this.fileUploader.setFile(userProfile.profileImage);
 
         this.userProfileForm.patchValue({
@@ -232,7 +189,7 @@ export class ProfileComponent implements OnInit {
         });
         this.setAddresses(userProfile.addressList);
         this.setShortProfiles(userProfile.shortProfileList);
-      },error:(error)=>{
+      }, error: (error) => {
         this.commonService.showToastErrorResponse(error);
       }
     });
@@ -272,53 +229,69 @@ export class ProfileComponent implements OnInit {
 
     if (this.selectedFile) {
       this.fileUploaderService.uploadFile(this.selectedFile).subscribe({
-        next:(response)=>{
+        next: (response) => {
           userProfile.profileImage = response.fileURL;
           this.saveFormData(userProfile);
-        },error:(error)=>{
+        }, error: (error) => {
           this.fileUploaderService.showToastErrorResponse(error);
         }
       })
-    }else{
+    } else {
       this.saveFormData(userProfile);
     }
   }
 
-  saveFormData(userProfile:any){
+  saveFormData(userProfile: any) {
     const shortProfiles: ShortProfile[] = (this.userProfileForm.get('shortProfileList') as FormArray).getRawValue();
-
     const addressList: Address[] = (this.userProfileForm.get('addressList') as FormArray).getRawValue();
 
     const apiCalls = [];
 
-    // Add `addShortProfiles` call if shortProfiles is not empty
+    // Add `addShortProfiles` call only if shortProfiles is not empty
+    if (shortProfiles && shortProfiles.length > 0) {
+      apiCalls.push(this.userProfileService.addShortProfiles(shortProfiles));
+    }
 
-    apiCalls.push(this.userProfileService.addShortProfiles(shortProfiles));
+    // Add `addAddresses` call only if addressList is not empty
+    if (addressList && addressList.length > 0) {
+      apiCalls.push(this.userProfileService.addAddresses(addressList));
+    }
 
-    // Add `addAddresses` call if addressList is not empty
-    apiCalls.push(this.userProfileService.addAddresses(addressList));
+    // Add `updateUserProfile` only if userProfile has data
+    if (userProfile && Object.keys(userProfile).length > 0) {
+      apiCalls.push(this.userProfileService.updateUserProfile(userProfile));
+    }
 
-    // Always include `updateUserProfile`
-    apiCalls.push(this.userProfileService.updateUserProfile(userProfile));
+    // Only proceed if there are API calls to make
+    if (apiCalls.length === 0) {
+      this.userProfileService.showToastSuccess('No changes to save');
+      return;
+    }
 
     forkJoin(apiCalls).subscribe({
-      next: ([shortProfileResponse, addressResponse, userProfileResponse]) => {
+      next: (responses) => {
         if (this.userProfile) {
-          // Update `shortProfileList` if a response is received
-          if (shortProfileResponse) {
-            this.userProfile.shortProfileList = shortProfileResponse as ShortProfile[];
+          let responseIndex = 0;
+
+          // Update `shortProfileList` if it was included in the API calls
+          if (shortProfiles && shortProfiles.length > 0) {
+            this.userProfile.shortProfileList = responses[responseIndex] as ShortProfile[];
+            responseIndex++;
           }
 
-          // Update `addressList` if a response is received
-          if (addressResponse) {
-            this.userProfile.addressList = addressResponse as Address[];
+          // Update `addressList` if it was included in the API calls
+          if (addressList && addressList.length > 0) {
+            this.userProfile.addressList = responses[responseIndex] as Address[];
+            responseIndex++;
           }
 
-          // Update the entire userProfile object with the final response
-          this.userProfile = {
-            ...this.userProfile,
-            ...(userProfileResponse as UserProfile),
-          };
+          // Update the entire userProfile object if it was included
+          if (userProfile && Object.keys(userProfile).length > 0) {
+            this.userProfile = {
+              ...this.userProfile,
+              ...(responses[responseIndex] as UserProfile),
+            };
+          }
         }
         this.userProfileService.showToastSuccess(`${this.userProfile?.fullName}, Profile Updated`);
         this.router.navigate(['/user/profile-view']);

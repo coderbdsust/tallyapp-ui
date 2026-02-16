@@ -103,7 +103,7 @@ export class SupplierListComponent extends PaginatedComponent<Supplier> implemen
 
           const a = document.createElement('a');
           a.href = url;
-          a.download = `${supplier.id}.pdf`;
+          a.download = `SP-${supplier.id}.pdf`;
           a.click();
 
           window.URL.revokeObjectURL(url);

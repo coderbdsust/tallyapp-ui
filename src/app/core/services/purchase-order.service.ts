@@ -67,4 +67,11 @@ export class PurchaseOrderService extends CommonService {
       .put<ApiResponse>(`${environment.tallyURL}/purchase-order/v1/${organizationId}/${poId}/cancel`, {})
       .pipe(catchError(this.mapErrorResponse));
   }
+
+  public downloadPurchaseOrderReport(organizationId: string, purchaseOrderId:string){
+    return this.http.get(
+      `${environment.tallyURL}/pdf/v1/purchase-order/${organizationId}/${purchaseOrderId}/download`,
+      { responseType: 'blob' }
+    ).pipe(catchError(this.mapErrorResponse));
+  }
 }

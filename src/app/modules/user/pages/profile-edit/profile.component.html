@@ -96,28 +96,30 @@
               <div class="form__group flex-1 min-w-[200px]">
                 <div class="relative">
                   <input type="text" id="firstName" class="peer block" placeholder=" "
-                    [ngClass]="{ 'is__invalid-input': isFieldInvalid('firstName') }" formControlName="firstName" />
+                    [ngClass]="{ 'is__invalid-input': isFieldInvalid(userProfileForm, 'firstName') }"
+                    formControlName="firstName" />
                   <label for="firstName"
                     class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
                     First Name
                   </label>
                 </div>
-                <div class="is__invalid-error" *ngIf="isFieldInvalid('firstName')">
-                  {{ getErrorMessage('firstName') }}
+                <div class="is__invalid-error" *ngIf="isFieldInvalid(userProfileForm, 'firstName')">
+                  {{ getErrorMessage(userProfileForm, 'firstName') }}
                 </div>
               </div>
 
               <div class="form__group flex-1 min-w-[200px]">
                 <div class="relative">
                   <input type="text" id="lastName" class="peer block" placeholder=" "
-                    [ngClass]="{ 'is__invalid-input': isFieldInvalid('lastName') }" formControlName="lastName" />
+                    [ngClass]="{ 'is__invalid-input': isFieldInvalid(userProfileForm, 'lastName') }"
+                    formControlName="lastName" />
                   <label for="lastName"
                     class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
                     Last Name
                   </label>
                 </div>
-                <div class="is__invalid-error" *ngIf="isFieldInvalid('lastName')">
-                  {{ getErrorMessage('lastName') }}
+                <div class="is__invalid-error" *ngIf="isFieldInvalid(userProfileForm, 'lastName')">
+                  {{ getErrorMessage(userProfileForm, 'lastName') }}
                 </div>
               </div>
             </div>
@@ -133,15 +135,15 @@
                     Date of Birth
                   </label>
                 </div>
-                <div class="is__invalid-error" *ngIf="isFieldInvalid('dateOfBirth')">
-                  {{ getErrorMessage('dateOfBirth') }}
+                <div class="is__invalid-error" *ngIf="isFieldInvalid(userProfileForm, 'dateOfBirth')">
+                  {{ getErrorMessage(userProfileForm, 'dateOfBirth') }}
                 </div>
               </div>
 
               <div class="form__group flex-1 min-w-[200px]">
                 <div class="relative">
                   <select id="gender" formControlName="gender" class="peer block w-full appearance-none"
-                    [ngClass]="{ 'is__invalid-input': isFieldInvalid('gender') }">
+                    [ngClass]="{ 'is__invalid-input': isFieldInvalid(userProfileForm, 'gender') }">
                     <option value="" disabled>Select Gender</option>
                     <ng-container *ngFor="let gender of genderList">
                       <option [value]="gender">{{ gender | word }}</option>
@@ -152,8 +154,8 @@
                     Gender
                   </label>
                 </div>
-                <div class="is__invalid-error" *ngIf="isFieldInvalid('gender')">
-                  {{ getErrorMessage('gender') }}
+                <div class="is__invalid-error" *ngIf="isFieldInvalid(userProfileForm, 'gender')">
+                  {{ getErrorMessage(userProfileForm, 'gender') }}
                 </div>
               </div>
             </div>
@@ -169,8 +171,8 @@
                     Mobile No
                   </label>
                 </div>
-                <div class="is__invalid-error" *ngIf="isFieldInvalid('mobileNo')">
-                  {{ getErrorMessage('mobileNo') }}
+                <div class="is__invalid-error" *ngIf="isFieldInvalid(userProfileForm, 'mobileNo')">
+                  {{ getErrorMessage(userProfileForm, 'mobileNo') }}
                 </div>
               </div>
             </div>
@@ -206,11 +208,8 @@
                     <input type="text" name="addressLine{{i+1}}"
                       class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       formControlName="addressLine" />
-
-                    <div
-                      *ngIf="(submitted || address.get('addressLine')?.touched) && address.get('addressLine')?.invalid"
-                      class="is__invalid-error">
-                      <p *ngIf="address.get('addressLine')?.hasError('required')">Address Line is required.</p>
+                    <div *ngIf="isFieldInvalidControl(address,'addressLine')" class="is__invalid-error">
+                      <p>{{getErrorMessageFromControl(address,'addressLine')}}</p>
                     </div>
                   </div>
                 </div>
@@ -222,9 +221,8 @@
                     <input type="text" name="city{{i+1}}"
                       class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       formControlName="city" />
-                    <div *ngIf="(submitted || address.get('city')?.touched) && address.get('city')?.invalid"
-                      class="is__invalid-error">
-                      <p *ngIf="address.get('city')?.hasError('required')">City is required.</p>
+                    <div *ngIf="isFieldInvalidControl(address,'city')" class="is__invalid-error">
+                      <p>{{getErrorMessageFromControl(address,'city')}}</p>
                     </div>
                   </div>
                 </div>
@@ -236,9 +234,8 @@
                     <input type="text" name="state{{i+1}}"
                       class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       formControlName="state" />
-                    <div *ngIf="(submitted || address.get('state')?.touched) && address.get('state')?.invalid"
-                      class="is__invalid-error">
-                      <p *ngIf="address.get('state')?.hasError('required')">State is required.</p>
+                    <div *ngIf="isFieldInvalidControl(address,'state')" class="is__invalid-error">
+                      <p>{{getErrorMessageFromControl(address,'state')}}</p>
                     </div>
                   </div>
                 </div>
@@ -250,10 +247,8 @@
                     <input type="text" name="postCode{{i+1}}"
                       class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       formControlName="postCode" />
-                    <div *ngIf="(submitted || address.get('postCode')?.touched) && address.get('postCode')?.invalid"
-                      class="is__invalid-error">
-                      <p *ngIf="address.get('postCode')?.hasError('required')">Postcode is required.</p>
-                      <p *ngIf="address.get('postCode')?.hasError('pattern')">Postcode must be a 4-digit number.</p>
+                    <div *ngIf="isFieldInvalidControl(address,'postCode')" class="is__invalid-error">
+                      <p>{{getErrorMessageFromControl(address,'postCode')}}</p>
                     </div>
                   </div>
                 </div>
@@ -265,9 +260,8 @@
                     <input type="text" name="country{{i+1}}"
                       class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       formControlName="country" />
-                    <div *ngIf="(submitted || address.get('country')?.touched) && address.get('country')?.invalid"
-                      class="is__invalid-error">
-                      <p *ngIf="address.get('country')?.hasError('required')">Country is required.</p>
+                    <div *ngIf="isFieldInvalidControl(address,'country')" class="is__invalid-error">
+                      <p>{{getErrorMessageFromControl(address,'country')}}</p>
                     </div>
                   </div>
                 </div>
@@ -298,10 +292,8 @@
                     <input type="text" name="designation"
                       class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       formControlName="designation" />
-                    <div
-                      *ngIf="(submitted || profile.get('designation')?.touched) && profile.get('designation')?.invalid"
-                      class="is__invalid-error">
-                      <p *ngIf="profile.get('designation')?.hasError('required')">Designation is required.</p>
+                    <div *ngIf="isFieldInvalidControl(profile,'designation')" class="is__invalid-error">
+                      <p>{{getErrorMessageFromControl(profile,'designation')}}</p>
                     </div>
                   </div>
                 </div>
@@ -313,9 +305,8 @@
                     <input type="text" name="skills"
                       class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       formControlName="skills" />
-                    <div *ngIf="(submitted || profile.get('skills')?.touched) && profile.get('skills')?.invalid"
-                      class="is__invalid-error">
-                      <p *ngIf="profile.get('skills')?.hasError('required')">Skills is required.</p>
+                    <div *ngIf="isFieldInvalidControl(profile,'skills')" class="is__invalid-error">
+                      <p>{{getErrorMessageFromControl(profile,'skills')}}</p>
                     </div>
                   </div>
                 </div>
@@ -327,10 +318,8 @@
                     <input type="text" name="companyName"
                       class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       formControlName="companyName" />
-                    <div
-                      *ngIf="(submitted || profile.get('companyName')?.touched) && profile.get('companyName')?.invalid"
-                      class="is__invalid-error">
-                      <p *ngIf="profile.get('companyName')?.hasError('required')">Company Name is required.</p>
+                    <div *ngIf="isFieldInvalidControl(profile,'companyName')" class="is__invalid-error">
+                      <p>{{getErrorMessageFromControl(profile,'companyName')}}</p>
                     </div>
                   </div>
                 </div>
@@ -339,7 +328,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </form>
