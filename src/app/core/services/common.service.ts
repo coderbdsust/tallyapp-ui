@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { throwError } from 'rxjs';
 import { ErrorResponse } from 'src/app/common/models/error-response';
-import { jwtDecode } from 'jwt-decode';
 import { toast } from 'ngx-sonner';
 
 @Injectable({
@@ -35,14 +34,6 @@ export class CommonService {
       errorRes.error.errors || [],
     );
     return throwError(() => errorResponse);
-  }
-
-  decodeToken(token: string): any {
-    try {
-      return jwtDecode(token);
-    } catch (error) {
-      return null;
-    }
   }
 
   showToastError(message: any) {
