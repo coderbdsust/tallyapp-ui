@@ -1,6 +1,6 @@
 <div class="flex min-h-[420px] flex-col rounded-lg bg-background p-8 sm:flex-row">
   <div
-  [ngStyle]="{ 'background-image': 'url(' + (org?.banner || 'https://placehold.co/400') + ')' }"
+  [ngStyle]="{ 'background-image': 'url(' + (org?.bannerImage?.url || 'https://placehold.co/400') + ')' }"
     class="min-h-[200px] w-full flex-1 cursor-pointer rounded-md bg-cover transition duration-150 ease-in-out hover:opacity-75"></div>
   <!-- Details  -->
   <div class="mt-4 flex flex-1 flex-col justify-between space-y-2 sm:ml-6 md:mt-0">
@@ -12,7 +12,7 @@
     <div class="flex space-x-8">
       <!-- Avatar -->
       <div class="flex items-center space-x-2">
-        <img class="mx-auto block h-7 rounded-full sm:mx-0 sm:shrink-0" [src]="org?.avatar || 'https://placehold.co/400' " alt="creator face" />
+        <img class="mx-auto block h-7 rounded-full sm:mx-0 sm:shrink-0" [src]="org?.ownerImage?.url || 'https://placehold.co/400' " alt="creator face" />
         <div class="flex flex-col">
           <small class="text-xs text-muted-foreground">Creator</small>
           <a href="" class="text-xs font-semibold text-foreground hover:text-primary">
@@ -35,10 +35,6 @@
       class="lex-none w-full rounded-md bg-card px-4 py-2.5 text-xs font-semibold text-muted-foreground hover:bg-muted hover:text-foreground">
         View
       </button>
-      <!-- <button
-        class="lex-none w-full rounded-md bg-card px-4 py-2.5 text-xs font-semibold text-muted-foreground hover:bg-muted hover:text-foreground">
-        Delete
-      </button> -->
     </div>
   </div>
 </div>

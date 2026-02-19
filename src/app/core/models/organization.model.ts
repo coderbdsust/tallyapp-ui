@@ -1,3 +1,5 @@
+import { FileUploadResponse } from "./file-upload-response.model";
+
 export interface Organization {
     id: string;
     createdDate?: string | null;
@@ -18,15 +20,18 @@ export interface Organization {
     orgAddressCountry: string;
     status: string;
     owner: string;
-    banner: string | './assets/furniture/furniture-01.png';
-    avatar: string | './assets/avatars/avt-01.jpg';
-    logo: string | './assets/img/component-btn.png';
+    // banner: string | './assets/furniture/furniture-01.png';
+    // avatar: string | './assets/avatars/avt-01.jpg';
+    // logo: string | './assets/img/component-btn.png';
     logoB64:string|'';
     totalEmployees: number;
     totalProducts: number | 0;
     totalOwners: number | 0;
     tax:number|0;
     vat:number|0;
+    ownerImage: FileUploadResponse;
+    bannerImage: FileUploadResponse;
+    logoImage: FileUploadResponse;
   }
   
 

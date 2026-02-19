@@ -25,9 +25,9 @@ export class FileUploaderComponent {
 
   // New shape input parameter
   @Input() shape: FileUploaderShape = 'rectangle';
-  
   isUploading = false;
   @Input() fileURL!: string | null;
+  @Input() uploadedFileId: string | null = null;
   uploadFile!: File | null;
   containFile: boolean = false;
   @Output() fileSelected = new EventEmitter<File|null>();
@@ -61,11 +61,12 @@ export class FileUploaderComponent {
     if (this.fileInput && this.fileInput.nativeElement) {
       this.fileInput.nativeElement.value = null;
     }
-   
-    this.removeFileFromServer(this.fileURL);
+
+    this.removeFileFromServer(this.uploadedFileId);
     this.isUploading = false;
     this.uploadFile = null;
     this.fileURL = null;
+    this.uploadedFileId = null;
     this.containFile = false;
     this.fileSelected.emit(null);
     this.fileRemoved.emit();
@@ -80,34 +81,33 @@ export class FileUploaderComponent {
   }
 
   clearFile() {
-    console.log('clear file');
     this.uploadFile = null;
     this.fileURL = null;
+    this.uploadedFileId = null;
     this.containFile = false;
-  
+
     if (this.fileInput?.nativeElement) {
       this.fileInput.nativeElement.value = null;
     }
-  
+
     this.fileSelected.emit(null);
   }
 
-  setFile(fileURL: string) {   
+  setFile(fileURL: string, fileId?: string) {   
     this.fileURL = fileURL;
+    this.uploadedFileId = fileId ?? null;
     this.containFile = true;
     this.isUploading = false;
   }
   
-  removeFileFromServer(fileNameURL: string|null) {
-    const fileName = fileNameURL?.split('/').pop();
-    if (fileName) {
-      this.fileUploaderService.deleteFile(fileName).pipe(
+    removeFileFromServer(fileId: string | null) {
+    if (fileId) {
+      this.fileUploaderService.deleteFileById(fileId).pipe(
         tap(() => {
           this.fileUploaderService.showToastSuccess('File deleted successfully');
           this.fileSelected.emit(null);
         }),
         catchError((error) => {
-          //console.error('Error deleting file:', error);
           return of(null);
         })
       ).subscribe();

@@ -40,6 +40,13 @@ export class OrganizationService extends CommonService {
       );
   }
 
+  public syncOrganization(org: Organization) {
+      const current = this.selectedOrganization.getValue();
+      if (current && current.id === org.id) {
+        this.setOrganization(org);
+      }
+  }
+
   public setOrganization(org: Organization | null) {
     localStorage.setItem(environment.TALLY_ORGANIZATION, JSON.stringify(org));
     this.selectedOrganization.next(org);

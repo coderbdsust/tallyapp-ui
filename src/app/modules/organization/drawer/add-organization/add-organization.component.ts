@@ -11,6 +11,7 @@ import { FileUploaderComponent } from 'src/app/common/components/file-uploader/f
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 import { catchError, forkJoin, map, of, switchMap, throwError } from 'rxjs';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
+import { FileUploadResponse } from 'src/app/core/models/file-upload-response.model';
 
 @Component({
   selector: 'app-add-organization',
@@ -44,16 +45,16 @@ export class AddOrganizationComponent {
     edgeOffset: '',
     backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-30',
     onHide: () => {
-      if(this.fileDeletedNeedToSubmit){
+      if (this.fileDeletedNeedToSubmit) {
         this.onAddOrganization();
       }
-      if(this.logoUploader) {
+      if (this.logoUploader) {
         this.logoUploader.clearFile();
       }
-      if(this.avatarUploader) {
+      if (this.avatarUploader) {
         this.avatarUploader.clearFile();
       }
-      if(this.bannerUploader) {
+      if (this.bannerUploader) {
         this.bannerUploader.clearFile();
       }
     }
@@ -71,7 +72,7 @@ export class AddOrganizationComponent {
   selectedLogo: File | null = null;
   selectedImage: File | null = null;
   selectedAvatar: File | null = null;
-  fileDeletedNeedToSubmit:boolean=false;
+  fileDeletedNeedToSubmit: boolean = false;
   status: string[] = [
     'ACTIVE',
     'INACTIVE',
@@ -93,17 +94,18 @@ export class AddOrganizationComponent {
   }
 
   private initializeOrgForm(org: Organization | null = null) {
-    if (org && org.logo) {
-      this.logoUploader.setFile(org.logo);
+    if (org && org.logoImage) {
+      this.logoUploader.setFile(org.logoImage.fileURL, org.logoImage.id);
     }
 
-    if (org && org.avatar) {
-      this.avatarUploader.setFile(org.avatar);
+    if (org && org.ownerImage) {
+      this.avatarUploader.setFile(org.ownerImage.fileURL, org.ownerImage.id);
     }
 
-    if (org && org.banner) {
-      this.bannerUploader.setFile(org.banner);
+    if (org && org.bannerImage) {
+      this.bannerUploader.setFile(org.bannerImage.fileURL, org.bannerImage.id);
     }
+
 
     this.orgForm = this._formBuilder.group({
       id: [org?.id],
@@ -121,9 +123,9 @@ export class AddOrganizationComponent {
         [Validators.required, Validators.pattern(/^01[3-9]\d{8}$/), Validators.minLength(11), Validators.maxLength(11)],
       ],
       since: [org?.since, Validators.required],
-      banner: [org?.banner],
-      avatar: [org?.avatar],
-      logo: [org?.logo],
+      ownerImageId: [org?.ownerImage?.id],
+      bannerImageId: [org?.bannerImage?.id],
+      logoImageId: [org?.logoImage?.id],
       orgAddressLine: [org?.orgAddressLine, [Validators.required]],
       orgAddressCity: [org?.orgAddressCity, [Validators.required]],
       orgAddressPostcode: [org?.orgAddressPostcode, [Validators.required]],
@@ -137,21 +139,21 @@ export class AddOrganizationComponent {
   onLogoSelection(logo: File | null) {
     this.selectedLogo = logo;
     if (!logo) {
-      this.orgForm.patchValue({ logo: null });
+      this.orgForm.patchValue({ logoImageId: null });
     }
   }
 
   onAvatarImage(avatar: File | null) {
     this.selectedAvatar = avatar;
     if (!avatar) {
-      this.orgForm.patchValue({ avatar: null });
+      this.orgForm.patchValue({ ownerImageId: null });
     }
   }
 
   onBannerImage(banner: File | null) {
     this.selectedImage = banner;
     if (!banner) {
-      this.orgForm.patchValue({ banner: null });
+      this.orgForm.patchValue({ bannerImageId: null });
     }
   }
 
@@ -169,14 +171,13 @@ export class AddOrganizationComponent {
     return this.orgForm.controls;
   }
 
-  onFileRemoved(){
-    console.log('File removed');
-    this.fileDeletedNeedToSubmit=true;
+  onFileRemoved() {
+    this.fileDeletedNeedToSubmit = true;
   }
 
   onAddOrganization() {
     this.submitted = true;
-    this.fileDeletedNeedToSubmit=false;
+    this.fileDeletedNeedToSubmit = false;
 
     if (this.orgForm.invalid) {
       return;
@@ -185,11 +186,10 @@ export class AddOrganizationComponent {
     const organizationData = { ...this.orgForm.value };
     const uploads = [];
 
-    // Create upload observables that return the field name and URL
     if (this.selectedLogo) {
       uploads.push(
-        this.fileUploaderService.uploadFile(this.selectedLogo).pipe(
-          map((response: any) => ({ field: 'logo', url: response.fileURL })),
+        this.fileUploaderService.storeFile(this.selectedLogo).pipe(
+          map((response: FileUploadResponse) => ({ field: 'logoImageId', id: response.id })),
           catchError((error) => {
             this.orgService.showToastErrorResponse(error);
             return throwError(() => error);
@@ -200,8 +200,8 @@ export class AddOrganizationComponent {
 
     if (this.selectedAvatar) {
       uploads.push(
-        this.fileUploaderService.uploadFile(this.selectedAvatar).pipe(
-          map((response: any) => ({ field: 'avatar', url: response.fileURL })),
+        this.fileUploaderService.storeFile(this.selectedAvatar).pipe(
+          map((response: FileUploadResponse) => ({ field: 'ownerImageId', id: response.id })),
           catchError((error) => {
             this.orgService.showToastErrorResponse(error);
             return throwError(() => error);
@@ -212,8 +212,8 @@ export class AddOrganizationComponent {
 
     if (this.selectedImage) {
       uploads.push(
-        this.fileUploaderService.uploadFile(this.selectedImage).pipe(
-          map((response: any) => ({ field: 'banner', url: response.fileURL })),
+        this.fileUploaderService.storeFile(this.selectedImage).pipe(
+          map((response: FileUploadResponse) => ({ field: 'bannerImageId', id: response.id })),
           catchError((error) => {
             this.orgService.showToastErrorResponse(error);
             return throwError(() => error);
@@ -227,10 +227,9 @@ export class AddOrganizationComponent {
     uploadObservable
       .pipe(
         switchMap((uploadResults) => {
-          // Apply all upload results to organizationData
           uploadResults.forEach((result: any) => {
-            if (result && result.field && result.url) {
-              organizationData[result.field] = result.url;
+            if (result && result.field && result.id) {
+              organizationData[result.field] = result.id;
             }
           });
 
@@ -241,6 +240,7 @@ export class AddOrganizationComponent {
         next: (org) => {
           this.orgEmitter.emit(org);
           this.orgForm.patchValue({ id: org.id });
+          this.orgService.syncOrganization(org);
           this.orgService.showToastSuccess('Organization saved successfully');
           this.closeDrawer();
         },

@@ -101,7 +101,7 @@
               <img 
                 alt="organization banner" 
                 class="h-9 w-9 shrink-0 rounded-full object-cover" 
-                [src]="org.banner || 'https://placehold.co/400'"
+                [src]="org?.bannerImage?.url || 'https://placehold.co/400'"
                 loading="lazy" />
               <div class="flex flex-col">
                 <a class="text-sm font-semibold text-foreground hover:text-primary" href="#"> 
