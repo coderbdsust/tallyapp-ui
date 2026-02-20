@@ -8,7 +8,7 @@
           class="absolute inset-0 transition-transform duration-700 ease-in-out"
           [class.translate-x-0]="i === currentSlide" [class.translate-x-full]="i > currentSlide"
           [class.-translate-x-full]="i < currentSlide">
-          <img [src]="item.imageUrl || 'https://placehold.co/400x300'" class="w-full h-full object-contain p-2"
+          <img [src]="productService.renderFirstProductImage(item)" class="w-full h-full object-contain p-2"
             [alt]="item.name || 'Product image'" />
         </div>
       </div>

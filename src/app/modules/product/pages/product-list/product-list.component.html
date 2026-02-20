@@ -94,7 +94,7 @@
           <td class="relative">
             <div class="flex items-center gap-2.5 group">
               <!-- Product Image -->
-              <img [src]="p.imageUrl || 'https://placehold.co/400'" alt="product image"
+              <img [src]="productService.renderFirstProductImage(p)" alt="product image"
                 class="h-9 w-9 shrink-0 rounded-full object-cover" loading="lazy" />
 
               <!-- Product Name -->
@@ -110,7 +110,7 @@
               <div class="absolute left-12 top-0 w-32 h-32 bg-white shadow-lg rounded-lg border border-gray-300 p-1
                        opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
                        z-50">
-                <img [src]="p.imageUrl || 'https://placehold.co/400'" alt="Preview"
+                <img [src]="productService.renderFirstProductImage(p)" alt="Preview"
                   class="w-full h-full object-cover rounded-lg" loading="lazy">
               </div>
             </div>

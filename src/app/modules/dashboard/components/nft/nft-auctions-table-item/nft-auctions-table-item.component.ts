@@ -3,6 +3,7 @@ import { Nft } from '../../../../../core/models/nft';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Product } from 'src/app/core/models/product.model';
 import { CommonModule } from '@angular/common';
+import { ProductService } from 'src/app/core/services/product.service';
 
 @Component({
     selector: '[nft-auctions-table-item]',
@@ -12,7 +13,7 @@ import { CommonModule } from '@angular/common';
 export class NftAuctionsTableItemComponent implements OnInit {
   @Input() product = <Product>{};
 
-  constructor() {}
+  constructor(readonly productService:ProductService) {}
 
   ngOnInit(): void {}
 }

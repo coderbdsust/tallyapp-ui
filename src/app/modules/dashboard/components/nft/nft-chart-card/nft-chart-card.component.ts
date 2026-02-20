@@ -20,7 +20,7 @@ export class NftChartCardComponent implements OnInit, OnDestroy {
   private intervalId: any;
 
   constructor(
-    private productService: ProductService,
+    readonly productService: ProductService,
     private orgService: OrganizationService,
   ) {
 
@@ -80,7 +80,6 @@ export class NftChartCardComponent implements OnInit, OnDestroy {
         this.productResponse = response;
       },
       error: (error) => {
-        console.error('Error loading products:', error);
       },
     });
   }
@@ -88,4 +87,6 @@ export class NftChartCardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopAutoSlide();
   }
+
+
 }

@@ -1,6 +1,6 @@
 <td class="py-2 pr-2">
   <div class="flex items-center">
-    <img [src]="product.imageUrl || 'https://placehold.co/400'" class="mr-2 h-10 w-10 flex-none rounded-sm" alt="" />
+    <img [src]="productService.renderFirstProductImage(product)" class="mr-2 h-10 w-10 flex-none rounded-sm" alt="" />
     <div class="flex flex-col justify-items-start">
       <a href="#" class="mb-1 text-sm font-semibold text-foreground">{{ product.name }}</a>
     </div>

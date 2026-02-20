@@ -33,7 +33,7 @@ export class ProductListComponent extends PaginatedComponent<Product> implements
   private destroy$ = new Subject<void>();
 
   constructor(
-    private productService: ProductService,
+    readonly productService: ProductService,
     private orgService: OrganizationService,
     public dialog: MatDialog,
   ) {

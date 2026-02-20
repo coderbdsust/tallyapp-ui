@@ -59,5 +59,13 @@ export class ProductService extends CommonService {
       .get<UnitType[]>(`${environment.tallyURL}/product/v1/unit-types`)
       .pipe(catchError(this.mapErrorResponse));
   }
+
+  
+  renderFirstProductImage(product: Product): string {
+    if(product && product.photos && product.photos.length>0){
+      return product.photos[0].url;
+    }
+    return 'https://placehold.co/400x300';
+  }
   
 }

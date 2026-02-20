@@ -1,4 +1,5 @@
 import { Employee } from "./employee.model"
+import { FileUploadResponse } from "./file-upload-response.model";
 
 export interface Product {
   id: string,
@@ -12,11 +13,12 @@ export interface Product {
   discountPercent: number,
   availableQuantity: number,
   initialQuantity: number,
-  imageUrl: string,
   createdDate: string,
   madeBy: Employee
   productStockList: ProductStock[] | null;
   productCategory: ProductCategory;
+  photos: FileUploadResponse[];
+
 }
 
 export interface ProductStock {
