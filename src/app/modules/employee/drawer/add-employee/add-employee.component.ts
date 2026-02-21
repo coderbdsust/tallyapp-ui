@@ -1,15 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { Organization } from '../../../../core/models/organization.model';
 import { Drawer, DrawerInterface, DrawerOptions, InstanceOptions } from 'flowbite';
 import { OrganizationService } from '../../../../core/services/organization.service';
 import { Employee } from '../../../../core/models/employee.model';
 import { EmployeeService } from '../../../../core/services/employee.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
-import { FileUploaderComponent } from "../../../../common/components/file-uploader/file-uploader.component";
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 import { catchError, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
@@ -17,17 +15,21 @@ import { FileUploadResponse } from 'src/app/core/models/file-upload-response.mod
 
 @Component({
   selector: 'app-add-employee',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, ButtonComponent, WordPipe, FileUploaderComponent],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, WordPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-employee.component.html',
   styleUrl: './add-employee.component.scss'
 })
-export class AddEmployeeComponent extends FormError {
-  @ViewChild(FileUploaderComponent) fileUploader!: FileUploaderComponent;
+export class AddEmployeeComponent extends FormError implements OnInit {
+  @ViewChild('avatarInput') avatarInput!: ElementRef<HTMLInputElement>;
+
   @Output() public employeeEmitter = new EventEmitter<Employee>();
   @Input() organization!: Organization;
-  $empDrawerTargetEl: any;
-  empForm!: FormGroup;
+
+  // ── Drawer ────────────────────────────────────────────────────────────
+  private $drawerEl: HTMLElement | null = null;
+  drawer: DrawerInterface | undefined;
+
   empDrawerOptions: DrawerOptions = {
     placement: 'right',
     backdrop: true,
@@ -36,31 +38,29 @@ export class AddEmployeeComponent extends FormError {
     edgeOffset: '',
     backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-30',
     onHide: () => {
-      if (this.fileUploader) {
-        this.fileUploader.clearFile();
-      }
-
-      if (this.fileDeletedNeedToSubmit) {
-        this.onEmployeeSubmit();
-      }
+      // Nothing special needed — form resets on next openDrawer() call
     }
   };
 
-  // instance options object
   empDrawerInstanceOptions: InstanceOptions = {
     id: 'drawer-employee',
     override: true,
   };
 
-  drawer: DrawerInterface | undefined;
+  // ── Form ──────────────────────────────────────────────────────────────
+  empForm!: FormGroup;
   submitted = false;
   errorMessage = '';
+
+  // ── Dropdown lists ────────────────────────────────────────────────────
   empBillingTypeList: String[] = [];
   empStatusList: String[] = [];
   empTypeList: String[] = [];
-  selectedFile: File | null = null;
-  employee: Employee | null = null;
-  fileDeletedNeedToSubmit: boolean = false;
+
+  // ── Avatar state (inline — no child component) ────────────────────────
+  avatarPreviewUrl: string | null = null;   // shown in <img>
+  selectedFile: File | null = null;          // file to upload on submit
+  existingFileId: string | null = null;      // id of already-uploaded file (for deletion)
 
   constructor(
     private readonly _formBuilder: FormBuilder,
@@ -70,149 +70,154 @@ export class AddEmployeeComponent extends FormError {
   ) { super(); }
 
   ngOnInit(): void {
-    this.$empDrawerTargetEl = document.getElementById('drawer-employee') as HTMLElement;
-    this.$empDrawerTargetEl.classList.remove('hidden');
-    this.drawer = new Drawer(this.$empDrawerTargetEl, this.empDrawerOptions, this.empDrawerInstanceOptions);
+    this.$drawerEl = document.getElementById('drawer-employee') as HTMLElement;
+    this.$drawerEl.classList.remove('hidden');
+    this.drawer = new Drawer(this.$drawerEl, this.empDrawerOptions, this.empDrawerInstanceOptions);
     this.drawer.hide();
-    this.initializeEmpForm();
-    this.initializeConstantList();
+    this.buildForm();
+    this.loadDropdowns();
   }
 
-  private initializeConstantList() {
+  // ── Helpers ───────────────────────────────────────────────────────────
+
+  get f() { return this.empForm.controls; }
+
+  private buildForm(employee: Employee | null = null) {
+    this.empForm = this._formBuilder.group({
+      id:                   [employee?.id ?? null],
+      orgId:                [this.organization?.id],
+      orgName:              [this.organization?.orgName],
+      fullName:             [employee?.fullName ?? '', Validators.required],
+      profileImage:         [employee?.profileImage ?? null],
+      dateOfBirth:          [employee?.dateOfBirth ?? '', Validators.required],
+      joiningDate:          [employee?.joiningDate ?? '', Validators.required],
+      mobileNo:             [employee?.mobileNo ?? '', [
+                              Validators.required,
+                              Validators.pattern(/^01[3-9]\d{8}$/),
+                              Validators.minLength(11),
+                              Validators.maxLength(11),
+                            ]],
+      empAddressLine:       [employee?.empAddressLine ?? '', Validators.required],
+      empCity:              [employee?.empCity ?? '',        Validators.required],
+      empPostcode:          [employee?.empPostcode ?? '',    Validators.required],
+      empCountry:           [employee?.empCountry ?? '',     Validators.required],
+      status:               [employee?.status ?? '',         [Validators.required, Validators.minLength(3)]],
+      employeeBillingType:  [employee?.employeeBillingType ?? '', [Validators.required, Validators.minLength(3)]],
+      employeeType:         [employee?.employeeType ?? '',   [Validators.required, Validators.minLength(3)]],
+      billingRate:          [employee?.billingRate ?? '',    Validators.required],
+      dailyAllowance:       [employee?.dailyAllowance ?? '', Validators.required],
+    });
+  }
+
+  private resetAvatarState() {
+    this.avatarPreviewUrl = null;
+    this.selectedFile = null;
+    this.existingFileId = null;
+    if (this.avatarInput?.nativeElement) {
+      this.avatarInput.nativeElement.value = '';
+    }
+  }
+
+  private loadDropdowns() {
     this.empService.getEmployeeStatus().subscribe({
-      next: (response) => {
-        this.empStatusList = response;
-      },
-      error: (errorRes) => {
-        console.log(errorRes);
-      },
+      next: r => this.empStatusList = r,
+      error: e => console.error(e),
     });
     this.empService.getEmployeeTypes().subscribe({
-      next: (response) => {
-        this.empTypeList = response;
-      },
-      error: (errorRes) => {
-        console.log(errorRes);
-      },
+      next: r => this.empTypeList = r,
+      error: e => console.error(e),
     });
     this.empService.getEmployeeBillingTypes().subscribe({
-      next: (response) => {
-        this.empBillingTypeList = response;
-      },
-      error: (errorRes) => {
-        console.log(errorRes);
-      },
+      next: r => this.empBillingTypeList = r,
+      error: e => console.error(e),
     });
   }
 
-  private initializeEmpForm(employee: Employee | null = null) {
-
-    if (employee) {
-      this.employee = employee;
-      if (employee.profileImage)
-        this.fileUploader.setFile(employee.profileImage.url, employee.profileImage.id);
-    }
-
-    this.empForm = this._formBuilder.group({
-      id: [employee?.id],
-      orgId: [this.organization?.id],
-      orgName: [this.organization?.orgName],
-      fullName: [employee?.fullName, Validators.required],
-      profileImage: [employee?.profileImage],
-      dateOfBirth: [employee?.dateOfBirth, Validators.required],
-      joiningDate: [employee?.joiningDate, Validators.required],
-      mobileNo: [
-        employee?.mobileNo,
-        [
-          Validators.required,
-          Validators.pattern(/^01[3-9]\d{8}$/),
-          Validators.minLength(11),
-          Validators.maxLength(11),
-        ],
-      ],
-      empAddressLine: [employee?.empAddressLine, [Validators.required]],
-      empCity: [employee?.empCity, [Validators.required]],
-      empPostcode: [employee?.empPostcode, [Validators.required]],
-      empCountry: [employee?.empCountry, [Validators.required]],
-      status: [employee?.status, [Validators.required, Validators.minLength(3)]],
-      employeeBillingType: [employee?.employeeBillingType, [Validators.required, Validators.minLength(3)]],
-      employeeType: [employee?.employeeType, [Validators.required, Validators.minLength(3)]],
-      billingRate: [employee?.billingRate, [Validators.required]],
-      dailyAllowance: [employee?.dailyAllowance, [Validators.required]]
-    });
-  }
+  // ── Drawer open / close ───────────────────────────────────────────────
 
   openDrawer(employee: Employee | null = null) {
-    this.initializeEmpForm(employee);
+    this.submitted = false;
+    this.errorMessage = '';
+    this.resetAvatarState();
+    this.buildForm(employee);
+
+    // Restore existing avatar if editing
+    if (employee?.profileImage) {
+      this.avatarPreviewUrl = employee.profileImage.url;
+      this.existingFileId   = employee.profileImage.id ?? null;
+    }
+
     this.drawer?.show();
   }
 
   closeDrawer() {
     this.drawer?.hide();
     this.submitted = false;
+    this.errorMessage = '';
   }
 
-  get f() {
-    return this.empForm.controls;
+  // ── Avatar handlers (inline) ──────────────────────────────────────────
+
+  onAvatarFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file  = input.files?.[0];
+
+    if (!file) return;
+
+    const allowed = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!allowed.includes(file.type)) return;
+
+    this.selectedFile    = file;
+    this.avatarPreviewUrl = URL.createObjectURL(file);
+    this.empForm.patchValue({ profileImage: file });
   }
 
-  onAvatarSelect(file: File | null) {
-    this.selectedFile = file;
-    if (!file) {
-      this.empForm.patchValue({ profileImage: null });
+  onRemoveAvatar() {
+    // Delete from server if it was already uploaded
+    if (this.existingFileId) {
+      this.fileUploaderService.deleteFileById(this.existingFileId).pipe(
+        catchError(() => of(null))
+      ).subscribe();
     }
+
+    this.resetAvatarState();
+    this.empForm.patchValue({ profileImage: null });
   }
 
-  onFileDeleted() {
-    this.fileDeletedNeedToSubmit = true;
-  }
+  // ── Submit ────────────────────────────────────────────────────────────
 
   onEmployeeSubmit() {
     this.submitted = true;
-    this.fileDeletedNeedToSubmit = false;
+    if (this.empForm.invalid) return;
 
-    const employeeData = this.empForm.value;
+    const employeeData = { ...this.empForm.value };
+    const orgId        = this.organization.id;
 
-    if (this.empForm.invalid) {
-      return;
-    }
+    // Upload new avatar first (if selected), otherwise skip
+    const upload$: Observable<FileUploadResponse | null> = this.selectedFile
+      ? this.fileUploaderService.storeFile(this.selectedFile).pipe(
+          tap((res: FileUploadResponse) => { employeeData.profileImage = res; }),
+          catchError(err => {
+            this.orgService.showToastErrorResponse(err);
+            return throwError(() => err);
+          })
+        )
+      : of(null);
 
-    const orgId = this.organization.id;
-
-    let uploadObservable: Observable<FileUploadResponse | null> = of(null);
-
-    if (this.selectedFile) {
-      uploadObservable = this.fileUploaderService.storeFile(this.selectedFile).pipe(
-        tap((response: FileUploadResponse) => {
-          employeeData.profileImage = response;
-        }),
-        catchError((error) => {
-          this.orgService.showToastErrorResponse(error);
-          return throwError(() => error);
-        })
-      );
-    }
-
-    uploadObservable
-      .pipe(
-        switchMap(() => {
-          employeeData.orgId = orgId;
-          const employee: Employee = employeeData as Employee;
-          return this.empService.addEmployeeToOrganization(orgId, employee);
-        })
-      )
-      .subscribe({
-        next: (employee) => {
-          this.employeeEmitter.emit(employee);
-          this.empForm.patchValue({ id: employee.id });
-          this.empService.showToastSuccess('Employee saved to organization successfully');
-          this.closeDrawer();
-          this.initializeEmpForm(null);
-        },
-        error: (error) => {
-          this.orgService.showToastErrorResponse(error);
-        },
-      });
+    upload$.pipe(
+      switchMap(() => {
+        employeeData.orgId = orgId;
+        return this.empService.addEmployeeToOrganization(orgId, employeeData as Employee);
+      })
+    ).subscribe({
+      next: (employee) => {
+        this.employeeEmitter.emit(employee);
+        this.empService.showToastSuccess('Employee saved successfully');
+        this.closeDrawer();
+      },
+      error: (err) => {
+        this.orgService.showToastErrorResponse(err);
+      },
+    });
   }
-
 }

@@ -7,3 +7,55 @@
     @apply px-1 pt-1 text-xs;
   }
   
+// ── Profile Form Field Primitives ────────────────────────────────────────────
+
+.pf-field {
+  @apply flex flex-col gap-1;
+}
+
+.pf-label {
+  @apply text-xs font-medium text-gray-600 dark:text-gray-400;
+}
+
+.pf-input {
+  @apply block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5
+         text-sm text-gray-900 placeholder-gray-400
+         focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100
+         dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500
+         dark:focus:border-indigo-500 dark:focus:ring-indigo-900/30
+         transition-all duration-150;
+
+  &--readonly {
+    @apply bg-gray-100 dark:bg-gray-700/50 cursor-not-allowed text-gray-500 dark:text-gray-400
+           focus:border-gray-200 focus:ring-0 focus:bg-gray-100;
+  }
+
+  &--error,
+  &.pf-input--error {
+    @apply border-red-400 bg-red-50 focus:border-red-400 focus:ring-red-100
+           dark:border-red-600 dark:bg-red-900/10;
+  }
+}
+
+.pf-select {
+  @apply block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5
+         text-sm text-gray-900
+         focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100
+         dark:border-gray-700 dark:bg-gray-800 dark:text-white
+         dark:focus:border-indigo-500 dark:focus:ring-indigo-900/30
+         transition-all duration-150 appearance-none cursor-pointer;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 2rem;
+
+  &.pf-input--error {
+    @apply border-red-400 bg-red-50 dark:border-red-600 dark:bg-red-900/10;
+  }
+}
+
+.pf-error {
+  @apply text-xs text-red-500 dark:text-red-400;
+}

@@ -75,10 +75,11 @@
     class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
     <table
       class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
-      <thead class="border border-muted/20 text-xs text-muted-foreground bg-black-100 text-white">
+      <thead class="border border-muted/20 text-xs text-muted-foreground bg-black-100 text-gray-400">
         <tr>
           <th class="min-w-[200px]">User</th>
           <th class="min-w-[120px]">Username</th>
+          <th class="min-w-[120px]">Mobile No</th>
           <th class="min-w-[140px]">Keycloak ID</th>
           <th class="min-w-[140px]">Keycloak Sync Time</th>
           <th class="min-w-[140px]">Max Org Limit</th>
@@ -111,6 +112,11 @@
           <td>
             <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
               {{ user.username }}
+            </span>
+          </td>
+          <td>
+            <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
+              {{ user.mobileNo }}
             </span>
           </td>
           

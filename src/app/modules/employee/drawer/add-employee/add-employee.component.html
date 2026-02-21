@@ -1,287 +1,226 @@
-<div id="drawer-employee" class="hidden fixed z-40 h-screen w-1/3 overflow-y-auto bg-white p-4 dark:bg-gray-800"
-  tabindex="-1" aria-labelledby="drawer-js-label">
-  <h5 id="drawer-js-label"
-    class="mb-4 inline-flex items-center gap-2 text-base font-semibold text-gray-500 dark:text-gray-400">
-    <svg-icon src="./assets/icons/heroicons/outline/org.svg" [svgClass]="'h-6 w-6'"></svg-icon>
-    Employee Information
-  </h5>
-  <button id="drawer-hide-button" type="button" (click)="closeDrawer()"
-    class="absolute right-2.5 top-2.5 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
-    <svg-icon src="./assets/icons/heroicons/outline/close.svg" [svgClass]="'h-6 w-6'"></svg-icon>
-    <span class="sr-only">Close</span>
-  </button>
+<div id="drawer-employee"
+  class="hidden fixed right-0 top-0 z-40 h-screen w-[480px] overflow-y-auto bg-white shadow-2xl dark:bg-gray-900"
+  tabindex="-1">
 
-  <div class="grid gap-4">
-    <form class="my-10" [formGroup]="empForm" (ngSubmit)="onEmployeeSubmit()">
-      <div class="space-y-3 text-left">
-        <div class="form__group">
-          <div class="relative">
-            <input name="orgId" formControlName="orgId" type="hidden" />
-            <input type="text" id="orgName" class="peer block" placeholder=" "
-              [ngClass]="{ 'is__invalid-input': submitted && f['orgName'].errors }" readonly
-              formControlName="orgName" />
-            <label for="orgName"
-              class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-              Organization Name
-            </label>
-          </div>
-          <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'orgName')">
-            {{ getErrorMessage(empForm, 'orgName') }}
-          </div>
+  <!-- Header -->
+  <div class="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 px-6 py-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-900/30">
+          <svg-icon src="./assets/icons/heroicons/outline/org.svg" [svgClass]="'h-5 w-5 text-indigo-600 dark:text-indigo-400'"></svg-icon>
         </div>
-
-        <div class="form__group">
-          <div class="relative">
-            <app-file-uploader #profileImage (fileSelected)="onAvatarSelect($event)" (fileRemoved)="onFileDeleted()"
-              shape="avatar"></app-file-uploader>
-            <label for="profileImage"
-              class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-              Profile Picture
-            </label>
-          </div>
-        </div>
-
-        <div class="form__group">
-          <div class="relative">
-            <input type="hidden" id="profileImage" class="peer block" placeholder=" "
-              [ngClass]="{ 'is__invalid-input': submitted && f['profileImage'].errors }"
-              formControlName="profileImage" />
-          </div>
-        </div>
-
-        <div class="form__group">
-          <div class="relative">
-            <input name="id" formControlName="id" type="hidden" />
-            <input type="text" id="fullName" class="peer block" placeholder=" "
-              [ngClass]="{ 'is__invalid-input': submitted && f['fullName'].errors }" formControlName="fullName" />
-            <label for="fullName"
-              class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-              Full Name
-            </label>
-          </div>
-          <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'fullName')">
-            {{ getErrorMessage(empForm, 'fullName') }}
-          </div>
-        </div>
-
-        <div class="flex gap-2">
-          <div class="form__group w-full">
-            <div class="relative">
-              <input type="date" id="dateOfBirth" class="peer block" placeholder=" "
-                [ngClass]="{ 'is__invalid-input': submitted && f['dateOfBirth'].errors }"
-                formControlName="dateOfBirth" />
-              <label for="dateOfBirth"
-                class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                Date of Birth
-              </label>
-            </div>
-            <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'dateOfBirth')">
-              {{ getErrorMessage(empForm, 'dateOfBirth') }}
-            </div>
-          </div>
-
-          <div class="form__group w-full">
-            <div class="relative">
-              <input type="date" id="joiningDate" class="peer block" placeholder=" "
-                [ngClass]="{ 'is__invalid-input': submitted && f['joiningDate'].errors }"
-                formControlName="joiningDate" />
-              <label for="joiningDate"
-                class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                Joining Date
-              </label>
-            </div>
-            <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'joiningDate')">
-              {{ getErrorMessage(empForm, 'joiningDate') }}
-            </div>
-          </div>
-        </div>
-
-        <div class="form__group">
-          <div class="relative">
-            <input type="text" id="mobileNo" class="peer block" placeholder=" "
-              [ngClass]="{ 'is__invalid-input': submitted && f['mobileNo'].errors }" formControlName="mobileNo" />
-            <label for="mobileNo"
-              class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-              Mobile No
-            </label>
-          </div>
-          <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'mobileNo')">
-            {{ getErrorMessage(empForm, 'mobileNo') }}
-          </div>
-        </div>
-
-        <div class="form__group">
-          <div class="relative">
-            <input type="text" id="empAddressLine" class="peer block" placeholder=" "
-              [ngClass]="{ 'is__invalid-input': submitted && f['empAddressLine'].errors }"
-              formControlName="empAddressLine" />
-            <label for="empAddressLine"
-              class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-              Address Line
-            </label>
-          </div>
-          <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'empAddressLine')">
-            {{ getErrorMessage(empForm, 'empAddressLine') }}
-          </div>
-        </div>
-
-        <div class="flex gap-4">
-          <div class="form__group w-full">
-            <div class="relative">
-              <input type="text" id="empCity" class="peer block" placeholder=" "
-                [ngClass]="{ 'is__invalid-input': submitted && f['empCity'].errors }" formControlName="empCity" />
-              <label for="empCity"
-                class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                City
-              </label>
-            </div>
-
-            <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'empCity')">
-              {{ getErrorMessage(empForm, 'empCity') }}
-            </div>
-          </div>
-
-          <div class="form__group w-full">
-            <div class="relative">
-              <input type="text" id="empPostcode" class="peer block" placeholder=" "
-                [ngClass]="{ 'is__invalid-input': submitted && f['empPostcode'].errors }"
-                formControlName="empPostcode" />
-              <label for="empPostcode"
-                class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                Postcode
-              </label>
-            </div>
-            <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'empPostcode')">
-              {{ getErrorMessage(empForm, 'empPostcode') }}
-            </div>
-          </div>
-
-          <div class="form__group w-full">
-            <div class="relative">
-              <input type="text" id="empCountry" class="peer block" placeholder=" "
-                [ngClass]="{ 'is__invalid-input': submitted && f['empCountry'].errors }" formControlName="empCountry" />
-              <label for="empCountry"
-                class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                Country
-              </label>
-            </div>
-            <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'empCountry')">
-              {{ getErrorMessage(empForm, 'empCountry') }}
-            </div>
-          </div>
-        </div>
-
-        <div class="flex gap-4">
-          <div class="form__group w-full">
-            <div class="relative">
-              <select id="employeeBillingType" formControlName="employeeType"
-                class="peer block w-full appearance-none border border-b-2 border-gray-200 bg-transparent py-2.5 px-0 indent-4 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400">
-                <option value=-1>Select Employee Type</option>
-                <ng-container *ngFor="let status of empTypeList; let i = index">
-                  <option [value]="status">{{ status | word }}</option>
-                </ng-container>
-              </select>
-
-              <label for="employeeType"
-                class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                Employee Type
-              </label>
-            </div>
-
-            <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'employeeType')">
-              {{ getErrorMessage(empForm, 'employeeType') }}
-            </div>
-          </div>
-
-          <div class="form__group w-full">
-            <div class="relative">
-              <select id="status" formControlName="status"
-                class="peer block w-full appearance-none border border-b-2 border-gray-200 bg-transparent py-2.5 px-0 indent-4 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400">
-                <option value=-1>Select Employee Status</option>
-                <ng-container *ngFor="let status of empStatusList; let i = index">
-                  <option [value]="status">{{ status | word }}</option>
-                </ng-container>
-              </select>
-              <label for="status"
-                class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                Status
-              </label>
-            </div>
-
-            <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'status')">
-              {{ getErrorMessage(empForm, 'status') }}
-            </div>
-          </div>
-        </div>
-        <div class="flex gap-4">
-          <div class="form__group w-full">
-            <div class="relative">
-              <select id="employeeBillingType" formControlName="employeeBillingType"
-                class="peer block w-full appearance-none border border-b-2 border-gray-200 bg-transparent py-2.5 px-0 indent-4 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400">
-                <option value=-1>Select Billing Type</option>
-                <ng-container *ngFor="let status of empBillingTypeList; let i = index">
-                  <option [value]="status">{{ status | word}}</option>
-                </ng-container>
-              </select>
-
-              <label for="employeeBillingType"
-                class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                Billing Type
-              </label>
-            </div>
-            <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'employeeBillingType')">
-              {{ getErrorMessage(empForm, 'employeeBillingType') }}
-            </div>
-          </div>
-          <div class="form__group w-full">
-            <div class="relative">
-              <input type="text" id="billingRate" class="peer block" placeholder=" "
-                [ngClass]="{ 'is__invalid-input': submitted && f['billingRate'].errors }"
-                formControlName="billingRate" />
-              <label for="billingRate"
-                class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                Billing Rate
-              </label>
-            </div>
-            <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'billingRate')">
-              {{ getErrorMessage(empForm, 'billingRate') }}
-            </div>
-          </div>
-          <div class="form__group w-full">
-            <div class="relative">
-              <input type="text" id="dailyAllowance" class="peer block" placeholder=" "
-                [ngClass]="{ 'is__invalid-input': submitted && f['dailyAllowance'].errors }"
-                formControlName="dailyAllowance" />
-              <label for="dailyAllowance"
-                class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                Dailly Allowance
-              </label>
-            </div>
-            <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(empForm, 'dailyAllowance')">
-              {{ getErrorMessage(empForm, 'dailyAllowance') }}
-            </div>
-          </div>
+        <div>
+          <h5 class="text-sm font-semibold text-gray-900 dark:text-white">
+            {{ empForm.get('id')?.value ? 'Edit Employee' : 'Add Employee' }}
+          </h5>
+          <p class="text-xs text-gray-400 dark:text-gray-500">{{ empForm.get('orgName')?.value || 'Organization' }}</p>
         </div>
       </div>
-
-      <div *ngIf="submitted" class="is__invalid-error">
-        <div *ngIf="errorMessage != ''">{{ errorMessage }}</div>
-      </div>
-
-      <!-- Submit Button -->
-      <div class="my-4 flex justify-between space-x-2">
-        <div class="w-full">
-          <app-button full [disabled]="empForm.invalid" impact="bold" tone="primary" shape="rounded" size="medium">
-            Save
-          </app-button>
-        </div>
-        <div class="w-full">
-          <button type="button" (click)="closeDrawer()"
-            class="w-full rounded-lg border border-gray-200 bg-white px-5 py-2 text-sm font-medium text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 hover:bg-gray-100 hover:text-blue-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:focus:ring-gray-700 dark:hover:bg-gray-700 dark:hover:text-white">
-            Cancel
-          </button>
-        </div>
-      </div>
-    </form>
+      <button type="button" (click)="closeDrawer()"
+        class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
   </div>
+
+  <!-- Form Body -->
+  <form [formGroup]="empForm" (ngSubmit)="onEmployeeSubmit()" class="px-6 py-3 space-y-2">
+    <input name="id" formControlName="id" type="hidden" />
+    <input name="orgId" formControlName="orgId" type="hidden" />
+
+    <!-- Avatar Upload Section -->
+    <div class="flex flex-col items-center gap-1 py-2">
+      <!-- Avatar Preview -->
+      <div class="relative group">
+        <div
+          class="h-24 w-24 rounded-full overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/40 dark:to-purple-900/40 ring-4 ring-white dark:ring-gray-800 shadow-lg flex items-center justify-center">
+          <img *ngIf="avatarPreviewUrl" [src]="avatarPreviewUrl" class="h-full w-full object-cover" alt="Profile" />
+          <svg *ngIf="!avatarPreviewUrl" xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-300 dark:text-indigo-600" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </div>
+
+        <!-- Edit overlay -->
+        <label for="avatarInput"
+          class="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </label>
+        <input id="avatarInput" #avatarInput type="file" accept="image/jpeg,image/png,image/jpg"
+          class="hidden" (change)="onAvatarFileChange($event)" />
+
+        <!-- Remove button -->
+        <button *ngIf="avatarPreviewUrl" type="button" (click)="onRemoveAvatar()"
+          class="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white shadow-md hover:bg-red-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="text-center">
+        <label for="avatarInput"
+          class="cursor-pointer text-xs font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">
+          {{ avatarPreviewUrl ? 'Change photo' : 'Upload photo' }}
+        </label>
+        <p class="text-xs text-gray-400 mt-0.5">JPG, PNG up to 5MB</p>
+      </div>
+    </div>
+
+    <!-- Section: Personal Info -->
+    <div class="space-y-1">
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Personal Information</p>
+
+      <div class="emp-field">
+        <label class="emp-label">Full Name <span class="text-red-400">*</span></label>
+        <input type="text" formControlName="fullName" class="emp-input"
+          [class.emp-input--error]="submitted && f['fullName'].errors"
+          placeholder="e.g. Sarah Johnson" />
+        <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'fullName')">{{ getErrorMessage(empForm, 'fullName') }}</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 pt-1">
+        <div class="emp-field">
+          <label class="emp-label">Date of Birth <span class="text-red-400">*</span></label>
+          <input type="date" formControlName="dateOfBirth" class="emp-input"
+            [class.emp-input--error]="submitted && f['dateOfBirth'].errors" />
+          <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'dateOfBirth')">{{ getErrorMessage(empForm, 'dateOfBirth') }}</p>
+        </div>
+        <div class="emp-field">
+          <label class="emp-label">Joining Date <span class="text-red-400">*</span></label>
+          <input type="date" formControlName="joiningDate" class="emp-input"
+            [class.emp-input--error]="submitted && f['joiningDate'].errors" />
+          <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'joiningDate')">{{ getErrorMessage(empForm, 'joiningDate') }}</p>
+        </div>
+      </div>
+
+      <div class="emp-field pt-1">
+        <label class="emp-label">Mobile Number <span class="text-red-400">*</span></label>
+        <div class="relative">
+          <input type="text" formControlName="mobileNo" class="emp-input pl-10"
+            [class.emp-input--error]="submitted && f['mobileNo'].errors"
+            placeholder="01XXXXXXXXX" maxlength="11" />
+        </div>
+        <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'mobileNo')">{{ getErrorMessage(empForm, 'mobileNo') }}</p>
+      </div>
+    </div>
+
+    <!-- Section: Address -->
+    <div class="space-y-1">
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Address</p>
+
+      <div class="emp-field">
+        <label class="emp-label">Street Address <span class="text-red-400">*</span></label>
+        <input type="text" formControlName="empAddressLine" class="emp-input"
+          [class.emp-input--error]="submitted && f['empAddressLine'].errors"
+          placeholder="House no, road, area" />
+        <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'empAddressLine')">{{ getErrorMessage(empForm, 'empAddressLine') }}</p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 pt-1">
+        <div class="emp-field">
+          <label class="emp-label">City <span class="text-red-400">*</span></label>
+          <input type="text" formControlName="empCity" class="emp-input"
+            [class.emp-input--error]="submitted && f['empCity'].errors" placeholder="Dhaka" />
+          <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'empCity')">{{ getErrorMessage(empForm, 'empCity') }}</p>
+        </div>
+        <div class="emp-field">
+          <label class="emp-label">Postcode <span class="text-red-400">*</span></label>
+          <input type="text" formControlName="empPostcode" class="emp-input"
+            [class.emp-input--error]="submitted && f['empPostcode'].errors" placeholder="1200" />
+          <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'empPostcode')">{{ getErrorMessage(empForm, 'empPostcode') }}</p>
+        </div>
+        <div class="emp-field">
+          <label class="emp-label">Country <span class="text-red-400">*</span></label>
+          <input type="text" formControlName="empCountry" class="emp-input"
+            [class.emp-input--error]="submitted && f['empCountry'].errors" placeholder="BD" />
+          <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'empCountry')">{{ getErrorMessage(empForm, 'empCountry') }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: Employment -->
+    <div class="space-y-1">
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Employment Details</p>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="emp-field">
+          <label class="emp-label">Employee Type <span class="text-red-400">*</span></label>
+          <select formControlName="employeeType" class="emp-select"
+            [class.emp-input--error]="submitted && f['employeeType'].errors">
+            <option value="-1">Select type</option>
+            <option *ngFor="let t of empTypeList" [value]="t">{{ t | word }}</option>
+          </select>
+          <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'employeeType')">{{ getErrorMessage(empForm, 'employeeType') }}</p>
+        </div>
+        <div class="emp-field">
+          <label class="emp-label">Status <span class="text-red-400">*</span></label>
+          <select formControlName="status" class="emp-select"
+            [class.emp-input--error]="submitted && f['status'].errors">
+            <option value="-1">Select status</option>
+            <option *ngFor="let s of empStatusList" [value]="s">{{ s | word }}</option>
+          </select>
+          <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'status')">{{ getErrorMessage(empForm, 'status') }}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 pt-1">
+        <div class="emp-field">
+          <label class="emp-label">Billing Type <span class="text-red-400">*</span></label>
+          <select formControlName="employeeBillingType" class="emp-select"
+            [class.emp-input--error]="submitted && f['employeeBillingType'].errors">
+            <option value="-1">Select</option>
+            <option *ngFor="let b of empBillingTypeList" [value]="b">{{ b | word }}</option>
+          </select>
+          <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'employeeBillingType')">{{ getErrorMessage(empForm, 'employeeBillingType') }}</p>
+        </div>
+        <div class="emp-field">
+          <label class="emp-label">Billing Rate <span class="text-red-400">*</span></label>
+          <input type="text" formControlName="billingRate" class="emp-input"
+            [class.emp-input--error]="submitted && f['billingRate'].errors" placeholder="0.00" />
+          <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'billingRate')">{{ getErrorMessage(empForm, 'billingRate') }}</p>
+        </div>
+        <div class="emp-field">
+          <label class="emp-label">Daily Allowance <span class="text-red-400">*</span></label>
+          <input type="text" formControlName="dailyAllowance" class="emp-input"
+            [class.emp-input--error]="submitted && f['dailyAllowance'].errors" placeholder="0.00" />
+          <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'dailyAllowance')">{{ getErrorMessage(empForm, 'dailyAllowance') }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Banner -->
+    <div *ngIf="submitted && errorMessage" class="flex items-start gap-2 rounded-lg bg-red-50 dark:bg-red-900/20 p-3 text-sm text-red-600 dark:text-red-400">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      {{ errorMessage }}
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-3 pb-6 pt-2">
+      <button type="submit"
+        class="flex-1 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        [disabled]="empForm.invalid">
+        <span class="flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          Save Employee
+        </span>
+      </button>
+      <button type="button" (click)="closeDrawer()"
+        class="flex-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+        Cancel
+      </button>
+    </div>
+  </form>
 </div>

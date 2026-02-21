@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit, effect } from '@angular/core';
-import { NgApexchartsModule } from 'ng-apexcharts';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Organization } from 'src/app/core/models/organization.model';
 import { ProductService } from 'src/app/core/services/product.service';
@@ -11,7 +10,7 @@ import { NgFor } from '@angular/common';
 @Component({
   selector: '[nft-chart-card]',
   templateUrl: './nft-chart-card.component.html',
-  imports: [AngularSvgIconModule, NgApexchartsModule, NgFor],
+  imports: [AngularSvgIconModule, NgFor],
 })
 export class NftChartCardComponent implements OnInit, OnDestroy {
   public organization: Organization | null = null;

@@ -80,7 +80,7 @@ export class FileUploaderComponent {
     }
   }
 
-  clearFile() {
+  clearFile(silent: boolean = false) {
     this.uploadFile = null;
     this.fileURL = null;
     this.uploadedFileId = null;
@@ -90,7 +90,9 @@ export class FileUploaderComponent {
       this.fileInput.nativeElement.value = null;
     }
 
-    this.fileSelected.emit(null);
+    if (!silent) {
+      this.fileSelected.emit(null);
+    }
   }
 
   setFile(fileURL: string, fileId?: string) {   

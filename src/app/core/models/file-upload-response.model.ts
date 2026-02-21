@@ -3,5 +3,5 @@ export interface FileUploadResponse {
   originalName: string;
   storedName: string;
   filePath: string;
-  url: string | 'https://placehold.co/400';
+  url: string;
 }

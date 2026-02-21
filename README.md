@@ -72,8 +72,6 @@
 | Package            | What it does?                                                                               | Link                                                   |
 | ------------------ | :------------------------------------------------------------------------------------------ | :----------------------------------------------------- |
 | `angular-svg-icon` | Provides a means to inline SVG files to allow for them to be easily styled by CSS and code. | [Here](https://www.npmjs.com/package/angular-svg-icon) |
-| `apexcharts`       | Modern & Interactive Open-source Charts                                                     | [Here](https://www.npmjs.com/package/apexcharts)       |
-| `ng-apexcharts`    | Angular wrapper for ApexCharts to build interactive visualizations in Angular.              | [Here](https://www.npmjs.com/package/ng-apexcharts)    |
 
 #### Dev Dependencies
 

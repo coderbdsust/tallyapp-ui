@@ -1,14 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/core/services/common.service';
 import { UserprofileService } from 'src/app/core/services/userprofile.service';
 import { initFlowbite } from 'flowbite';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { forkJoin } from 'rxjs';
-import { ButtonComponent } from 'src/app/common/components/button/button.component';
+import { catchError, forkJoin, of } from 'rxjs';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
-import { FileUploaderComponent } from 'src/app/common/components/file-uploader/file-uploader.component';
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 import { Router } from '@angular/router';
 import { Address, ShortProfile, UserProfile } from 'src/app/core/models/profile.model';
@@ -16,17 +14,31 @@ import { FormError } from 'src/app/common/components/form-error/form-error.compo
 
 @Component({
   selector: 'app-profile',
-  imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, NgClass, ButtonComponent, WordPipe, FileUploaderComponent],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    AngularSvgIconModule,
+    NgIf,
+    NgFor,
+    WordPipe,
+    // FileUploaderComponent removed — avatar handled inline
+  ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent extends FormError implements OnInit {
-  @ViewChild(FileUploaderComponent) fileUploader!: FileUploaderComponent;
+  // ── Inline avatar ref ─────────────────────────────────────────────────
+  @ViewChild('avatarInput') avatarInput!: ElementRef<HTMLInputElement>;
+
   userProfile: UserProfile | undefined;
   genderList: String[] = [];
   userProfileForm!: FormGroup;
-  selectedFile: File | null = null;
   submitted = false;
+
+  // ── Avatar state ──────────────────────────────────────────────────────
+  avatarPreviewUrl: string | null = null;
+  selectedFile: File | null = null;
+  existingFileId: string | null = null;
 
   constructor(
     private userProfileService: UserprofileService,
@@ -38,231 +50,227 @@ export class ProfileComponent extends FormError implements OnInit {
 
   ngOnInit(): void {
     initFlowbite();
+    this.userProfileForm = this.createUserProfileForm();
     this.loadUserProfile();
     this.loadGenderList();
-    this.userProfileForm = this.createUserProfileForm();
   }
+
+  // ── Form builders ─────────────────────────────────────────────────────
 
   createUserProfileForm(): FormGroup {
     return this._formBuilder.group({
-      id: ['', Validators.required],
-      mobileNo: ['', [Validators.required, Validators.pattern(/^01[3-9]\d{8}$/)]],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      gender: ['', Validators.required],
-      dateOfBirth: ['', Validators.required],
-      profileImage: [''],
-      addressList: this._formBuilder.array([]),
+      id:              ['', Validators.required],
+      mobileNo:        ['', [Validators.required, Validators.pattern(/^01[3-9]\d{8}$/)]],
+      firstName:       ['', Validators.required],
+      lastName:        ['', Validators.required],
+      gender:          ['', Validators.required],
+      dateOfBirth:     ['', Validators.required],
+      profileImage:    [''],
+      addressList:     this._formBuilder.array([]),
       shortProfileList: this._formBuilder.array([]),
     });
   }
 
-  // Function to create the Address form group
   createAddressForm(): FormGroup {
     return this._formBuilder.group({
-      id: [''],
+      id:          [''],
       addressLine: ['', Validators.required],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      postCode: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]],
-      country: ['', Validators.required],
+      city:        ['', Validators.required],
+      state:       ['', Validators.required],
+      postCode:    ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]],
+      country:     ['', Validators.required],
     });
   }
 
-  // Function to create the ShortProfile form group
   createShortProfileForm(): FormGroup {
     return this._formBuilder.group({
-      id: [''],
+      id:          [''],
       designation: ['', Validators.required],
-      skills: ['', Validators.required],
+      skills:      ['', Validators.required],
       companyName: ['', Validators.required],
     });
   }
 
-  // Helper to get addressList FormArray
+  // ── FormArray getters ─────────────────────────────────────────────────
+
   get addressList(): FormArray {
     return this.userProfileForm.get('addressList') as FormArray;
   }
 
-  // Helper to get shortProfileList FormArray
   get shortProfileList(): FormArray {
     return this.userProfileForm.get('shortProfileList') as FormArray;
   }
 
-  onDateChange(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    const selectedDate = inputElement.value;
-    this.userProfileForm.get('dateOfBirth')?.setValue(selectedDate);
+  // ── Populate FormArrays ───────────────────────────────────────────────
+
+  setAddresses(addresses: Address[]): void {
+    const arr = this.userProfileForm.get('addressList') as FormArray;
+    addresses.forEach(a => arr.push(this._formBuilder.group({
+      id:          [a.id],
+      addressLine: [a.addressLine, Validators.required],
+      city:        [a.city,        Validators.required],
+      state:       [a.state,       Validators.required],
+      postCode:    [a.postCode,    [Validators.required, Validators.pattern('^[0-9]{4}$')]],
+      country:     [a.country,     Validators.required],
+    })));
   }
 
-  setAddresses(addressList: Address[]): void {
-    const addressArray = this.userProfileForm.get('addressList') as FormArray;
-    addressList.forEach((address) => {
-      addressArray.push(
-        this._formBuilder.group({
-          id: [address.id],
-          addressLine: [address.addressLine, Validators.required],
-          city: [address.city, Validators.required],
-          state: [address.state, Validators.required],
-          postCode: [address.postCode, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
-          country: [address.country, Validators.required],
-        }),
-      );
-    });
+  setShortProfiles(profiles: ShortProfile[]): void {
+    const arr = this.userProfileForm.get('shortProfileList') as FormArray;
+    profiles.forEach(p => arr.push(this._formBuilder.group({
+      id:          [p.id],
+      designation: [p.designation, Validators.required],
+      skills:      [p.skills,      Validators.required],
+      companyName: [p.companyName, Validators.required],
+    })));
   }
 
-  // Function to set short profiles in the form
-  setShortProfiles(shortProfiles: ShortProfile[]): void {
-    const shortProfileArray = this.userProfileForm.get('shortProfileList') as FormArray;
-    shortProfiles.forEach((profile) => {
-      shortProfileArray.push(
-        this._formBuilder.group({
-          id: [profile.id],
-          designation: [profile.designation, Validators.required],
-          skills: [profile.skills, Validators.required],
-          companyName: [profile.companyName, Validators.required],
-        }),
-      );
-    });
-  }
+  // ── Add / Remove ──────────────────────────────────────────────────────
 
-  // Add address
   addAddress(): void {
     this.submitted = false;
     this.addressList.push(this.createAddressForm());
   }
 
-  // Remove address
   removeAddress(index: number): void {
-    const removedItem = this.addressList.at(index).value;
-    if (removedItem?.id) {
-      this.userProfileService.deleteAddress(removedItem.id).subscribe({
-        next: (response) => {
-          this.userProfileService.showToastSuccess(response.message);
+    const item = this.addressList.at(index).value;
+    if (item?.id) {
+      this.userProfileService.deleteAddress(item.id).subscribe({
+        next: res => {
+          this.userProfileService.showToastSuccess(res.message);
           this.addressList.removeAt(index);
         },
-        error: (error) => {
-          this.userProfileService.showToastErrorResponse(error);
-        },
+        error: err => this.userProfileService.showToastErrorResponse(err),
       });
-    } else this.addressList.removeAt(index);
+    } else {
+      this.addressList.removeAt(index);
+    }
   }
 
-  // Add short profile
   addShortProfile(): void {
     this.submitted = false;
     this.shortProfileList.push(this.createShortProfileForm());
   }
 
-  // Remove short profile
   removeShortProfile(index: number): void {
-    const removedItem = this.shortProfileList.at(index).value;
-    if (removedItem?.id) {
-      this.userProfileService.deleteShortProfile(removedItem.id).subscribe({
-        next: (response) => {
-          this.userProfileService.showToastSuccess(response.message);
+    const item = this.shortProfileList.at(index).value;
+    if (item?.id) {
+      this.userProfileService.deleteShortProfile(item.id).subscribe({
+        next: res => {
+          this.userProfileService.showToastSuccess(res.message);
           this.shortProfileList.removeAt(index);
         },
-        error: (error) => {
-          this.userProfileService.showToastErrorResponse(error);
-        },
+        error: err => this.userProfileService.showToastErrorResponse(err),
       });
-    } else this.shortProfileList.removeAt(index);
-  }
-
-  loadUserProfile() {
-    this.userProfileService.getUserProfile().subscribe({
-      next: (userProfile) => {
-        this.userProfile = userProfile;
-
-        if (userProfile.profileImage)
-          this.fileUploader.setFile(userProfile.profileImage.url, userProfile.profileImage.id);
-
-        this.userProfileForm.patchValue({
-          id: userProfile.id,
-          mobileNo: userProfile.mobileNo,
-          firstName: userProfile.firstName,
-          lastName: userProfile.lastName,
-          gender: userProfile.gender,
-          dateOfBirth: userProfile.dateOfBirth,
-          profileImage: userProfile.profileImage
-        });
-        this.setAddresses(userProfile.addressList);
-        this.setShortProfiles(userProfile.shortProfileList);
-      }, error: (error) => {
-        this.commonService.showToastErrorResponse(error);
-      }
-    });
-  }
-
-  loadGenderList() {
-    this.userProfileService.getGenderList().subscribe({
-      next: (genderList) => {
-        this.genderList = genderList;
-      },
-      error: (error) => {
-        this.commonService.showToastErrorResponse(error);
-      },
-    });
-  }
-
-  onAvatarSelect(file: File | null) {
-    this.selectedFile = file;
-    if (!file) {
-      this.userProfileForm.patchValue({ profileImage: null });
+    } else {
+      this.shortProfileList.removeAt(index);
     }
   }
 
-  onFileDeleted() {
+  // ── Data loading ──────────────────────────────────────────────────────
+
+  loadUserProfile(): void {
+    this.userProfileService.getUserProfile().subscribe({
+      next: (profile) => {
+        this.userProfile = profile;
+
+        // Set avatar inline
+        if (profile.profileImage) {
+          this.avatarPreviewUrl = profile.profileImage.url;
+          this.existingFileId   = profile.profileImage.id ?? null;
+          this.userProfileForm.patchValue({ profileImage: profile.profileImage });
+        }
+
+        this.userProfileForm.patchValue({
+          id:           profile.id,
+          mobileNo:     profile.mobileNo,
+          firstName:    profile.firstName,
+          lastName:     profile.lastName,
+          gender:       profile.gender,
+          dateOfBirth:  profile.dateOfBirth,
+        });
+
+        this.setAddresses(profile.addressList);
+        this.setShortProfiles(profile.shortProfileList);
+      },
+      error: (err) => this.commonService.showToastErrorResponse(err),
+    });
+  }
+
+  loadGenderList(): void {
+    this.userProfileService.getGenderList().subscribe({
+      next: list => this.genderList = list,
+      error: err  => this.commonService.showToastErrorResponse(err),
+    });
+  }
+
+  // ── Avatar handlers ───────────────────────────────────────────────────
+
+  onAvatarFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file  = input.files?.[0];
+    if (!file) return;
+
+    const allowed = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!allowed.includes(file.type)) return;
+
+    this.selectedFile     = file;
+    this.avatarPreviewUrl = URL.createObjectURL(file);
+    this.userProfileForm.patchValue({ profileImage: file });
+  }
+
+  onRemoveAvatar(): void {
+    // Delete from server if previously uploaded
+    if (this.existingFileId) {
+      this.fileUploaderService.deleteFileById(this.existingFileId).pipe(
+        catchError(() => of(null))
+      ).subscribe();
+    }
+
+    this.selectedFile     = null;
+    this.avatarPreviewUrl = null;
+    this.existingFileId   = null;
+    if (this.avatarInput?.nativeElement) this.avatarInput.nativeElement.value = '';
     this.userProfileForm.patchValue({ profileImage: null });
+
+    // Persist the removal immediately
     this.onSubmit();
   }
 
-  onSubmit() {
+  // ── Submit ────────────────────────────────────────────────────────────
+
+  onSubmit(): void {
     this.submitted = true;
 
     if (this.userProfileForm.invalid) {
       this.commonService.showToastError('Please fill up the form');
       return;
     }
-    let userProfile = this.userProfileForm.value;
+
+    const userProfile = { ...this.userProfileForm.value };
 
     if (this.selectedFile) {
       this.fileUploaderService.storeFile(this.selectedFile).subscribe({
-        next: (response) => {
-          userProfile.profileImage = response;
+        next: (res) => {
+          userProfile.profileImage = res;
           this.saveFormData(userProfile);
-        }, error: (error) => {
-          this.fileUploaderService.showToastErrorResponse(error);
-        }
-      })
+        },
+        error: (err) => this.fileUploaderService.showToastErrorResponse(err),
+      });
     } else {
       this.saveFormData(userProfile);
     }
   }
 
-  saveFormData(userProfile: any) {
+  saveFormData(userProfile: any): void {
     const shortProfiles: ShortProfile[] = (this.userProfileForm.get('shortProfileList') as FormArray).getRawValue();
-    const addressList: Address[] = (this.userProfileForm.get('addressList') as FormArray).getRawValue();
+    const addressList:   Address[]       = (this.userProfileForm.get('addressList') as FormArray).getRawValue();
+    const apiCalls: any[] = [];
 
-    const apiCalls = [];
+    if (shortProfiles.length > 0) apiCalls.push(this.userProfileService.addShortProfiles(shortProfiles));
+    if (addressList.length > 0)   apiCalls.push(this.userProfileService.addAddresses(addressList));
+    if (Object.keys(userProfile).length > 0) apiCalls.push(this.userProfileService.updateUserProfile(userProfile));
 
-    // Add `addShortProfiles` call only if shortProfiles is not empty
-    if (shortProfiles && shortProfiles.length > 0) {
-      apiCalls.push(this.userProfileService.addShortProfiles(shortProfiles));
-    }
-
-    // Add `addAddresses` call only if addressList is not empty
-    if (addressList && addressList.length > 0) {
-      apiCalls.push(this.userProfileService.addAddresses(addressList));
-    }
-
-    // Add `updateUserProfile` only if userProfile has data
-    if (userProfile && Object.keys(userProfile).length > 0) {
-      apiCalls.push(this.userProfileService.updateUserProfile(userProfile));
-    }
-
-    // Only proceed if there are API calls to make
     if (apiCalls.length === 0) {
       this.userProfileService.showToastSuccess('No changes to save');
       return;
@@ -271,35 +279,17 @@ export class ProfileComponent extends FormError implements OnInit {
     forkJoin(apiCalls).subscribe({
       next: (responses) => {
         if (this.userProfile) {
-          let responseIndex = 0;
-
-          // Update `shortProfileList` if it was included in the API calls
-          if (shortProfiles && shortProfiles.length > 0) {
-            this.userProfile.shortProfileList = responses[responseIndex] as ShortProfile[];
-            responseIndex++;
-          }
-
-          // Update `addressList` if it was included in the API calls
-          if (addressList && addressList.length > 0) {
-            this.userProfile.addressList = responses[responseIndex] as Address[];
-            responseIndex++;
-          }
-
-          // Update the entire userProfile object if it was included
-          if (userProfile && Object.keys(userProfile).length > 0) {
-            this.userProfile = {
-              ...this.userProfile,
-              ...(responses[responseIndex] as UserProfile),
-            };
+          let idx = 0;
+          if (shortProfiles.length > 0) { this.userProfile.shortProfileList = responses[idx++] as ShortProfile[]; }
+          if (addressList.length > 0)   { this.userProfile.addressList       = responses[idx++] as Address[]; }
+          if (Object.keys(userProfile).length > 0) {
+            this.userProfile = { ...this.userProfile, ...(responses[idx] as UserProfile) };
           }
         }
         this.userProfileService.showToastSuccess(`${this.userProfile?.fullName}, Profile Updated`);
         this.router.navigate(['/user/profile-view']);
       },
-      error: (error) => {
-        this.userProfileService.showToastErrorResponse(error);
-      },
+      error: (err) => this.userProfileService.showToastErrorResponse(err),
     });
   }
-
 }

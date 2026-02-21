@@ -1,6 +1,5 @@
 import { CommonModule, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { N } from '@angular/core/navigation_types.d-DgDrF5rp';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { formatCurrency, formatDate } from 'src/app/common/utils/common';
 import { Account } from 'src/app/core/models/journal.model';

@@ -1,13 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { DrawerInterface, DrawerOptions, InstanceOptions } from 'flowbite';
-import { Drawer } from 'flowbite';
+import { DrawerInterface, DrawerOptions, InstanceOptions, Drawer } from 'flowbite';
 import { Organization } from '../../../../core/models/organization.model';
 import { OrganizationService } from '../../../../core/services/organization.service';
-import { FileUploaderComponent } from 'src/app/common/components/file-uploader/file-uploader.component';
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 import { catchError, forkJoin, map, of, switchMap, throwError } from 'rxjs';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
@@ -20,23 +17,24 @@ import { FileUploadResponse } from 'src/app/core/models/file-upload-response.mod
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    ButtonComponent,
-    FileUploaderComponent,
-    WordPipe
+    WordPipe,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-organization.component.html',
   styleUrl: './add-organization.component.scss',
 })
-export class AddOrganizationComponent {
-  @ViewChild("logoImage") logoUploader!: FileUploaderComponent;
-  @ViewChild("avatarImage") avatarUploader!: FileUploaderComponent;
-  @ViewChild("bannerImage") bannerUploader!: FileUploaderComponent;
+export class AddOrganizationComponent implements OnInit {
+  // ── Native file input refs (no child component needed) ────────────────
+  @ViewChild('bannerInput') bannerInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('avatarInput') avatarInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('logoInput')   logoInput!: ElementRef<HTMLInputElement>;
 
   @Output() public orgEmitter = new EventEmitter<Organization>();
-  organization!: Organization;
-  $orgDrawerTargetEl: any;
-  orgForm!: FormGroup;
+
+  // ── Drawer ────────────────────────────────────────────────────────────
+  private $drawerEl: HTMLElement | null = null;
+  drawer: DrawerInterface | undefined;
+
   orgDrawerOptions: DrawerOptions = {
     placement: 'right',
     backdrop: true,
@@ -44,40 +42,33 @@ export class AddOrganizationComponent {
     edge: false,
     edgeOffset: '',
     backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-30',
-    onHide: () => {
-      if (this.fileDeletedNeedToSubmit) {
-        this.onAddOrganization();
-      }
-      if (this.logoUploader) {
-        this.logoUploader.clearFile();
-      }
-      if (this.avatarUploader) {
-        this.avatarUploader.clearFile();
-      }
-      if (this.bannerUploader) {
-        this.bannerUploader.clearFile();
-      }
-    }
+    onHide: () => { /* state is reset on next openDrawer() */ }
   };
 
-  // instance options object
   orgDrawerInstanceOptions: InstanceOptions = {
     id: 'drawer-organization',
     override: true,
   };
 
-  drawer: DrawerInterface | undefined;
+  // ── Form ──────────────────────────────────────────────────────────────
+  orgForm!: FormGroup;
   submitted = false;
   errorMessage = '';
-  selectedLogo: File | null = null;
-  selectedImage: File | null = null;
+
+  status: string[] = ['ACTIVE', 'INACTIVE', 'CLOSED'];
+
+  // ── Image state ───────────────────────────────────────────────────────
+  bannerPreviewUrl: string | null = null;
+  avatarPreviewUrl: string | null = null;
+  logoPreviewUrl:   string | null = null;
+
+  selectedBanner: File | null = null;
   selectedAvatar: File | null = null;
-  fileDeletedNeedToSubmit: boolean = false;
-  status: string[] = [
-    'ACTIVE',
-    'INACTIVE',
-    'CLOSED'
-  ];
+  selectedLogo:   File | null = null;
+
+  existingBannerId: string | null = null;
+  existingAvatarId: string | null = null;
+  existingLogoId:   string | null = null;
 
   constructor(
     private readonly _formBuilder: FormBuilder,
@@ -86,98 +77,172 @@ export class AddOrganizationComponent {
   ) { }
 
   ngOnInit(): void {
-    this.$orgDrawerTargetEl = document.getElementById('drawer-organization') as HTMLElement;
-    this.$orgDrawerTargetEl.classList.remove('hidden');
-    this.drawer = new Drawer(this.$orgDrawerTargetEl, this.orgDrawerOptions, this.orgDrawerInstanceOptions);
+    this.$drawerEl = document.getElementById('drawer-organization') as HTMLElement;
+    this.$drawerEl.classList.remove('hidden');
+    this.drawer = new Drawer(this.$drawerEl, this.orgDrawerOptions, this.orgDrawerInstanceOptions);
     this.drawer.hide();
-    this.initializeOrgForm();
+    this.buildForm();
   }
 
-  private initializeOrgForm(org: Organization | null = null) {
-    if (org && org.logoImage) {
-      this.logoUploader.setFile(org.logoImage.url, org.logoImage.id);
-    }
+  // ── Helpers ───────────────────────────────────────────────────────────
 
-    if (org && org.ownerImage) {
-      this.avatarUploader.setFile(org.ownerImage.url, org.ownerImage.id);
-    }
+  get f() { return this.orgForm.controls; }
 
-    if (org && org.bannerImage) {
-      this.bannerUploader.setFile(org.bannerImage.url, org.bannerImage.id);
-    }
-
-
+  private buildForm(org: Organization | null = null) {
     this.orgForm = this._formBuilder.group({
-      id: [org?.id],
-      orgName: [org?.orgName, Validators.required],
-      orgRegNumber: [org?.orgRegNumber, Validators.required],
-      orgTinNumber: [org?.orgTinNumber, Validators.required],
-      orgVatNumber: [org?.orgVatNumber, Validators.required],
-      orgOpenAt: [org?.orgOpenAt],
-      orgOpenInWeek: [org?.orgOpenInWeek],
-      orgOpeningTitle: [org?.orgOpeningTitle],
-      owner: [org?.owner, Validators.required],
-      orgEmail: [org?.orgEmail, [Validators.required, Validators.email]],
-      orgMobileNo: [
-        org?.orgMobileNo,
-        [Validators.required, Validators.pattern(/^01[3-9]\d{8}$/), Validators.minLength(11), Validators.maxLength(11)],
-      ],
-      since: [org?.since, Validators.required],
-      ownerImage: [org?.ownerImage],
-      bannerImage: [org?.bannerImage],
-      logoImage: [org?.logoImage],
-      orgAddressLine: [org?.orgAddressLine, [Validators.required]],
-      orgAddressCity: [org?.orgAddressCity, [Validators.required]],
-      orgAddressPostcode: [org?.orgAddressPostcode, [Validators.required]],
-      orgAddressCountry: [org?.orgAddressCountry, [Validators.required]],
-      status: [org?.status, [Validators.required]],
-      vat: [org?.vat, [Validators.required]],
-      tax: [org?.tax, [Validators.required]],
+      id:                 [org?.id ?? null],
+      orgName:            [org?.orgName ?? '',         Validators.required],
+      orgRegNumber:       [org?.orgRegNumber ?? '',     Validators.required],
+      orgTinNumber:       [org?.orgTinNumber ?? '',     Validators.required],
+      orgVatNumber:       [org?.orgVatNumber ?? '',     Validators.required],
+      orgOpenAt:          [org?.orgOpenAt ?? ''],
+      orgOpenInWeek:      [org?.orgOpenInWeek ?? ''],
+      orgOpeningTitle:    [org?.orgOpeningTitle ?? ''],
+      owner:              [org?.owner ?? '',            Validators.required],
+      orgEmail:           [org?.orgEmail ?? '',         [Validators.required, Validators.email]],
+      orgMobileNo:        [org?.orgMobileNo ?? '',      [
+                            Validators.required,
+                            Validators.pattern(/^01[3-9]\d{8}$/),
+                            Validators.minLength(11),
+                            Validators.maxLength(11),
+                          ]],
+      since:              [org?.since ?? '',            Validators.required],
+      ownerImage:         [org?.ownerImage ?? null],
+      bannerImage:        [org?.bannerImage ?? null],
+      logoImage:          [org?.logoImage ?? null],
+      orgAddressLine:     [org?.orgAddressLine ?? '',   Validators.required],
+      orgAddressCity:     [org?.orgAddressCity ?? '',   Validators.required],
+      orgAddressPostcode: [org?.orgAddressPostcode ?? '', Validators.required],
+      orgAddressCountry:  [org?.orgAddressCountry ?? '', Validators.required],
+      status:             [org?.status ?? '',           Validators.required],
+      vat:                [org?.vat ?? '',              Validators.required],
+      tax:                [org?.tax ?? '',              Validators.required],
     });
   }
 
-  onLogoSelection(logo: File | null) {
-    this.selectedLogo = logo;
-    if (!logo) {
-      this.orgForm.patchValue({ logoImageId: null });
+  private resetImageState() {
+    this.bannerPreviewUrl = null;
+    this.avatarPreviewUrl = null;
+    this.logoPreviewUrl   = null;
+    this.selectedBanner   = null;
+    this.selectedAvatar   = null;
+    this.selectedLogo     = null;
+    this.existingBannerId = null;
+    this.existingAvatarId = null;
+    this.existingLogoId   = null;
+    [this.bannerInput, this.avatarInput, this.logoInput].forEach(ref => {
+      if (ref?.nativeElement) ref.nativeElement.value = '';
+    });
+  }
+
+  private deleteFromServer(fileId: string | null) {
+    if (fileId) {
+      this.fileUploaderService.deleteFileById(fileId).pipe(
+        catchError(() => of(null))
+      ).subscribe();
     }
   }
 
-  onAvatarImage(avatar: File | null) {
-    this.selectedAvatar = avatar;
-    if (!avatar) {
-      this.orgForm.patchValue({ ownerImageId: null });
-    }
+  private handleFileChange(event: Event): File | null {
+    const input = event.target as HTMLInputElement;
+    const file  = input.files?.[0];
+    if (!file) return null;
+    const allowed = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!allowed.includes(file.type)) return null;
+    return file;
   }
 
-  onBannerImage(banner: File | null) {
-    this.selectedImage = banner;
-    if (!banner) {
-      this.orgForm.patchValue({ bannerImageId: null });
-    }
-  }
+  // ── Drawer open / close ───────────────────────────────────────────────
 
-  openDrawer(organization: Organization | null = null) {
-    this.initializeOrgForm(organization);
+  openDrawer(org: Organization | null = null) {
+    this.submitted    = false;
+    this.errorMessage = '';
+    this.resetImageState();
+    this.buildForm(org);
+
+    if (org?.bannerImage) {
+      this.bannerPreviewUrl = org.bannerImage.url;
+      this.existingBannerId = org.bannerImage.id ?? null;
+    }
+    if (org?.ownerImage) {
+      this.avatarPreviewUrl = org.ownerImage.url;
+      this.existingAvatarId = org.ownerImage.id ?? null;
+    }
+    if (org?.logoImage) {
+      this.logoPreviewUrl = org.logoImage.url;
+      this.existingLogoId = org.logoImage.id ?? null;
+    }
+
     this.drawer?.show();
   }
 
   closeDrawer() {
     this.drawer?.hide();
-    this.submitted = false;
+    this.submitted    = false;
+    this.errorMessage = '';
   }
 
-  get f() {
-    return this.orgForm.controls;
+  // ── Banner handlers ───────────────────────────────────────────────────
+
+  onBannerFileChange(event: Event) {
+    const file = this.handleFileChange(event);
+    if (!file) return;
+    this.selectedBanner   = file;
+    this.bannerPreviewUrl = URL.createObjectURL(file);
+    this.orgForm.patchValue({ bannerImage: file });
   }
 
-  onFileRemoved() {
-    this.fileDeletedNeedToSubmit = true;
+  onRemoveBanner() {
+    this.deleteFromServer(this.existingBannerId);
+    this.bannerPreviewUrl = null;
+    this.selectedBanner   = null;
+    this.existingBannerId = null;
+    if (this.bannerInput?.nativeElement) this.bannerInput.nativeElement.value = '';
+    this.orgForm.patchValue({ bannerImage: null });
   }
+
+  // ── Avatar handlers ───────────────────────────────────────────────────
+
+  onAvatarFileChange(event: Event) {
+    const file = this.handleFileChange(event);
+    if (!file) return;
+    this.selectedAvatar   = file;
+    this.avatarPreviewUrl = URL.createObjectURL(file);
+    this.orgForm.patchValue({ ownerImage: file });
+  }
+
+  onRemoveAvatar() {
+    this.deleteFromServer(this.existingAvatarId);
+    this.avatarPreviewUrl = null;
+    this.selectedAvatar   = null;
+    this.existingAvatarId = null;
+    if (this.avatarInput?.nativeElement) this.avatarInput.nativeElement.value = '';
+    this.orgForm.patchValue({ ownerImage: null });
+  }
+
+  // ── Logo handlers ─────────────────────────────────────────────────────
+
+  onLogoFileChange(event: Event) {
+    const file = this.handleFileChange(event);
+    if (!file) return;
+    this.selectedLogo   = file;
+    this.logoPreviewUrl = URL.createObjectURL(file);
+    this.orgForm.patchValue({ logoImage: file });
+  }
+
+  onRemoveLogo() {
+    this.deleteFromServer(this.existingLogoId);
+    this.logoPreviewUrl = null;
+    this.selectedLogo   = null;
+    this.existingLogoId = null;
+    if (this.logoInput?.nativeElement) this.logoInput.nativeElement.value = '';
+    this.orgForm.patchValue({ logoImage: null });
+  }
+
+  // ── Submit ────────────────────────────────────────────────────────────
 
   onAddOrganization() {
     this.submitted = true;
-    this.fileDeletedNeedToSubmit = false;
 
     if (this.orgForm.invalid) {
       return;
@@ -210,9 +275,9 @@ export class AddOrganizationComponent {
       );
     }
 
-    if (this.selectedImage) {
+    if (this.selectedBanner) {
       uploads.push(
-        this.fileUploaderService.storeFile(this.selectedImage).pipe(
+        this.fileUploaderService.storeFile(this.selectedBanner).pipe(
           map((response: FileUploadResponse) => ({ field: 'bannerImage', value: response })),
           catchError((error) => {
             this.orgService.showToastErrorResponse(error);
@@ -249,5 +314,4 @@ export class AddOrganizationComponent {
         },
       });
   }
-
 }

@@ -38,12 +38,8 @@
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "src/angular-material.scss"
             ],
-            "scripts": [
-              "node_modules/apexcharts/dist/apexcharts.min.js"
-            ],
-            "allowedCommonJsDependencies": [
-              "apexcharts"
-            ],
+            "scripts": [],
+            "allowedCommonJsDependencies": [],
             "browser": "src/main.ts"
           },
           "configurations": {
@@ -110,9 +106,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [
-              "node_modules/apexcharts/dist/apexcharts.min.js"
-            ]
+            "scripts": []
           }
         }
       }
