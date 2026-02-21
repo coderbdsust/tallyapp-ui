@@ -1,3 +1,5 @@
+import { FileUploadResponse } from "./file-upload-response.model";
+
 export interface Address {
   id:string;
   addressLine:string;
@@ -26,5 +28,5 @@ export interface UserProfile {
   createdDate: Date;
   addressList: Address[];
   shortProfileList: ShortProfile[];
-  profileImage:string;
+  profileImage: FileUploadResponse;
 }

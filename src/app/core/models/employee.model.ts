@@ -1,9 +1,10 @@
+import { FileUploadResponse } from "./file-upload-response.model";
+
 export interface Employee {
     id:                  string;
     fullName:            string;
     dateOfBirth:         Date;
     joiningDate:         Date;
-    profileImage:       string;
     mobileNo:            string;
     empAddressLine:      string;
     empCity:             string;
@@ -14,4 +15,6 @@ export interface Employee {
     employeeBillingType: string;
     billingRate:         number;
     dailyAllowance:      number;
+    profileImage: FileUploadResponse;
+
 }

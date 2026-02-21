@@ -142,7 +142,7 @@ export class AddProductComponent extends FormError implements OnDestroy {
     // Seed image list from product.photos (the real model field)
     this.images = (product?.photos ?? []).map((photo) => ({
       id: crypto.randomUUID(),
-      previewUrl: photo.fileURL ?? photo.url,
+      previewUrl: photo.url,
       file: null,
       uploadedPhoto: photo,
     }));

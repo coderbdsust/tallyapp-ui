@@ -14,21 +14,6 @@ export class FileUploaderService extends CommonService {
     super();
   }
 
-  public uploadFile(file: File) {
-    const formData = new FormData();
-    formData.append('fileName', file, file.name);
-
-    return this.http
-      .post<FileUploadResponse>(`${environment.tallyURL}/file-upload/v1/`, formData)
-      .pipe(catchError(this.mapErrorResponse));
-  }
-
-  public deleteFile(fileName: string) {
-    return this.http
-      .delete(`${environment.tallyURL}/file-upload/v1/${fileName}`)
-      .pipe(catchError(this.mapErrorResponse));
-  }
-
   public storeFile(file: File) {
     const formData = new FormData();
     formData.append('fileName', file, file.name);

@@ -38,6 +38,18 @@ export class Menu {
       separator: false,
       items: [
         {
+          icon: 'assets/icons/heroicons/outline/building-library.svg',
+          label: 'Organization',
+          route: '/organization/list',
+          requiredModules: ['ORGANIZATION_MANAGEMENT']
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/banknotes.svg',
+          label: 'Cash Management',
+          route: '/cash-management',
+          requiredModules: ['CASH_MANAGEMENT']
+        },
+        {
           icon: 'assets/icons/heroicons/outline/user.svg',
           label: 'Employee',
           route: '/employee',
@@ -70,18 +82,6 @@ export class Menu {
             { label: 'Suppliers', route: '/supplier/list' },
             { label: 'Purchase Orders', route: '/supplier/purchase-order' }
           ]
-        },
-        {
-          icon: 'assets/icons/heroicons/outline/banknotes.svg',
-          label: 'Cash Management',
-          route: '/cash-management',
-          requiredModules: ['CASH_MANAGEMENT']
-        },
-        {
-          icon: 'assets/icons/heroicons/outline/building-library.svg',
-          label: 'Organization',
-          route: '/organization/list',
-          requiredModules: ['ORGANIZATION_MANAGEMENT']
         }
       ],
     },

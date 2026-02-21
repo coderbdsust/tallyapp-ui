@@ -1,3 +1,5 @@
+import { FileUploadResponse } from "src/app/core/models/file-upload-response.model";
+
 export interface RegisteredUser {
     id:string;
     username:string;
@@ -12,4 +14,5 @@ export interface RegisteredUser {
     lastKeycloakSync:string;
     keycloakUserId:string;
     maximumOrganizationLimit:number;
+    profileImage: FileUploadResponse;
 }

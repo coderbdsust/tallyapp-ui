@@ -95,6 +95,10 @@ export class RegisteredUserComponent extends PaginatedComponent<RegisteredUser> 
   }
 
   getAvatarUrl(user: RegisteredUser): string {
+    if(user.profileImage && user.profileImage.url){
+      return user.profileImage.url;
+    }
+    
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&background=random&color=fff`;
   }
   

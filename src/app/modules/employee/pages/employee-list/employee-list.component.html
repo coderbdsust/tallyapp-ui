@@ -86,7 +86,7 @@
             <div class="flex items-center gap-2.5 group">
               <!-- Avatar -->
               <img 
-                [src]="emp.profileImage || 'https://placehold.co/400'" 
+                [src]="emp?.profileImage?.url || 'https://placehold.co/400'" 
                 alt="user avatar" 
                 class="h-9 w-9 shrink-0 rounded-full object-cover"
                 loading="lazy"

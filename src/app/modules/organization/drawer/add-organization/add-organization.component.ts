@@ -95,15 +95,15 @@ export class AddOrganizationComponent {
 
   private initializeOrgForm(org: Organization | null = null) {
     if (org && org.logoImage) {
-      this.logoUploader.setFile(org.logoImage.fileURL, org.logoImage.id);
+      this.logoUploader.setFile(org.logoImage.url, org.logoImage.id);
     }
 
     if (org && org.ownerImage) {
-      this.avatarUploader.setFile(org.ownerImage.fileURL, org.ownerImage.id);
+      this.avatarUploader.setFile(org.ownerImage.url, org.ownerImage.id);
     }
 
     if (org && org.bannerImage) {
-      this.bannerUploader.setFile(org.bannerImage.fileURL, org.bannerImage.id);
+      this.bannerUploader.setFile(org.bannerImage.url, org.bannerImage.id);
     }
 
 
@@ -123,9 +123,9 @@ export class AddOrganizationComponent {
         [Validators.required, Validators.pattern(/^01[3-9]\d{8}$/), Validators.minLength(11), Validators.maxLength(11)],
       ],
       since: [org?.since, Validators.required],
-      ownerImageId: [org?.ownerImage?.id],
-      bannerImageId: [org?.bannerImage?.id],
-      logoImageId: [org?.logoImage?.id],
+      ownerImage: [org?.ownerImage],
+      bannerImage: [org?.bannerImage],
+      logoImage: [org?.logoImage],
       orgAddressLine: [org?.orgAddressLine, [Validators.required]],
       orgAddressCity: [org?.orgAddressCity, [Validators.required]],
       orgAddressPostcode: [org?.orgAddressPostcode, [Validators.required]],
@@ -189,7 +189,7 @@ export class AddOrganizationComponent {
     if (this.selectedLogo) {
       uploads.push(
         this.fileUploaderService.storeFile(this.selectedLogo).pipe(
-          map((response: FileUploadResponse) => ({ field: 'logoImageId', id: response.id })),
+          map((response: FileUploadResponse) => ({ field: 'logoImage', value: response })),
           catchError((error) => {
             this.orgService.showToastErrorResponse(error);
             return throwError(() => error);
@@ -201,7 +201,7 @@ export class AddOrganizationComponent {
     if (this.selectedAvatar) {
       uploads.push(
         this.fileUploaderService.storeFile(this.selectedAvatar).pipe(
-          map((response: FileUploadResponse) => ({ field: 'ownerImageId', id: response.id })),
+          map((response: FileUploadResponse) => ({ field: 'ownerImage', value: response })),
           catchError((error) => {
             this.orgService.showToastErrorResponse(error);
             return throwError(() => error);
@@ -213,7 +213,7 @@ export class AddOrganizationComponent {
     if (this.selectedImage) {
       uploads.push(
         this.fileUploaderService.storeFile(this.selectedImage).pipe(
-          map((response: FileUploadResponse) => ({ field: 'bannerImageId', id: response.id })),
+          map((response: FileUploadResponse) => ({ field: 'bannerImage', value: response })),
           catchError((error) => {
             this.orgService.showToastErrorResponse(error);
             return throwError(() => error);
@@ -228,8 +228,8 @@ export class AddOrganizationComponent {
       .pipe(
         switchMap((uploadResults) => {
           uploadResults.forEach((result: any) => {
-            if (result && result.field && result.id) {
-              organizationData[result.field] = result.id;
+            if (result && result.field && result.value) {
+              organizationData[result.field] = result.value;
             }
           });
 

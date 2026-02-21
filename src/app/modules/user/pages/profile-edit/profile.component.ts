@@ -176,7 +176,7 @@ export class ProfileComponent extends FormError implements OnInit {
         this.userProfile = userProfile;
 
         if (userProfile.profileImage)
-          this.fileUploader.setFile(userProfile.profileImage);
+          this.fileUploader.setFile(userProfile.profileImage.url, userProfile.profileImage.id);
 
         this.userProfileForm.patchValue({
           id: userProfile.id,
@@ -228,9 +228,9 @@ export class ProfileComponent extends FormError implements OnInit {
     let userProfile = this.userProfileForm.value;
 
     if (this.selectedFile) {
-      this.fileUploaderService.uploadFile(this.selectedFile).subscribe({
+      this.fileUploaderService.storeFile(this.selectedFile).subscribe({
         next: (response) => {
-          userProfile.profileImage = response.fileURL;
+          userProfile.profileImage = response;
           this.saveFormData(userProfile);
         }, error: (error) => {
           this.fileUploaderService.showToastErrorResponse(error);

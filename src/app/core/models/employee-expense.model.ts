@@ -1,5 +1,6 @@
 import { CashType } from "./cashtype.model"
 import { Employee } from "./employee.model"
+import { FileUploadResponse } from "./file-upload-response.model"
 import { Organization } from "./organization.model"
 
 export interface EmployeeExpense {
@@ -33,7 +34,7 @@ export interface EmployeeEarningSummary {
   employeeId: string;
   employeeName: string;
   employeeBillingType: string;
-  employeeProfileImage: string;
+  employeeProfileImage: FileUploadResponse;
   accountOpened: string;
   joiningDate: string;
   fromDate: string;

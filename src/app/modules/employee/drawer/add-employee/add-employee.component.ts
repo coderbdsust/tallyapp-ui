@@ -11,17 +11,18 @@ import { EmployeeService } from '../../../../core/services/employee.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { FileUploaderComponent } from "../../../../common/components/file-uploader/file-uploader.component";
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
-import { catchError, of, switchMap, tap, throwError } from 'rxjs';
+import { catchError, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
+import { FileUploadResponse } from 'src/app/core/models/file-upload-response.model';
 
 @Component({
-    selector: 'app-add-employee',
-    imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, ButtonComponent, WordPipe, FileUploaderComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    templateUrl: './add-employee.component.html',
-    styleUrl: './add-employee.component.scss'
+  selector: 'app-add-employee',
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, ButtonComponent, WordPipe, FileUploaderComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  templateUrl: './add-employee.component.html',
+  styleUrl: './add-employee.component.scss'
 })
-export class AddEmployeeComponent extends FormError{
+export class AddEmployeeComponent extends FormError {
   @ViewChild(FileUploaderComponent) fileUploader!: FileUploaderComponent;
   @Output() public employeeEmitter = new EventEmitter<Employee>();
   @Input() organization!: Organization;
@@ -35,11 +36,11 @@ export class AddEmployeeComponent extends FormError{
     edgeOffset: '',
     backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-30',
     onHide: () => {
-      if(this.fileUploader) {
+      if (this.fileUploader) {
         this.fileUploader.clearFile();
       }
 
-     if(this.fileDeletedNeedToSubmit){
+      if (this.fileDeletedNeedToSubmit) {
         this.onEmployeeSubmit();
       }
     }
@@ -59,14 +60,14 @@ export class AddEmployeeComponent extends FormError{
   empTypeList: String[] = [];
   selectedFile: File | null = null;
   employee: Employee | null = null;
-  fileDeletedNeedToSubmit:boolean=false;
+  fileDeletedNeedToSubmit: boolean = false;
 
   constructor(
     private readonly _formBuilder: FormBuilder,
     private orgService: OrganizationService,
     private empService: EmployeeService,
     private fileUploaderService: FileUploaderService
-  ) {super();}
+  ) { super(); }
 
   ngOnInit(): void {
     this.$empDrawerTargetEl = document.getElementById('drawer-employee') as HTMLElement;
@@ -104,44 +105,44 @@ export class AddEmployeeComponent extends FormError{
     });
   }
 
-  private initializeEmpForm(employee: Employee | null=null) {
+  private initializeEmpForm(employee: Employee | null = null) {
 
-      if(employee) {
-        this.employee = employee;
-        if(employee.profileImage)
-          this.fileUploader.setFile(employee.profileImage);
-      }
+    if (employee) {
+      this.employee = employee;
+      if (employee.profileImage)
+        this.fileUploader.setFile(employee.profileImage.url, employee.profileImage.id);
+    }
 
-      this.empForm = this._formBuilder.group({
-        id: [employee?.id],
-        orgId: [this.organization?.id],
-        orgName: [this.organization?.orgName],
-        fullName: [employee?.fullName, Validators.required],
-        profileImage: [employee?.profileImage],
-        dateOfBirth: [employee?.dateOfBirth, Validators.required],
-        joiningDate: [employee?.joiningDate, Validators.required],
-        mobileNo: [
-          employee?.mobileNo,
-          [
-            Validators.required,
-            Validators.pattern(/^01[3-9]\d{8}$/),
-            Validators.minLength(11),
-            Validators.maxLength(11),
-          ],
+    this.empForm = this._formBuilder.group({
+      id: [employee?.id],
+      orgId: [this.organization?.id],
+      orgName: [this.organization?.orgName],
+      fullName: [employee?.fullName, Validators.required],
+      profileImage: [employee?.profileImage],
+      dateOfBirth: [employee?.dateOfBirth, Validators.required],
+      joiningDate: [employee?.joiningDate, Validators.required],
+      mobileNo: [
+        employee?.mobileNo,
+        [
+          Validators.required,
+          Validators.pattern(/^01[3-9]\d{8}$/),
+          Validators.minLength(11),
+          Validators.maxLength(11),
         ],
-        empAddressLine: [employee?.empAddressLine, [Validators.required]],
-        empCity: [employee?.empCity, [Validators.required]],
-        empPostcode: [employee?.empPostcode, [Validators.required]],
-        empCountry: [employee?.empCountry, [Validators.required]],
-        status: [employee?.status, [Validators.required, Validators.minLength(3)]],
-        employeeBillingType: [employee?.employeeBillingType, [Validators.required, Validators.minLength(3)]],
-        employeeType: [employee?.employeeType, [Validators.required, Validators.minLength(3)]],
-        billingRate: [employee?.billingRate, [Validators.required]],
-        dailyAllowance: [employee?.dailyAllowance, [Validators.required]]
-      });
+      ],
+      empAddressLine: [employee?.empAddressLine, [Validators.required]],
+      empCity: [employee?.empCity, [Validators.required]],
+      empPostcode: [employee?.empPostcode, [Validators.required]],
+      empCountry: [employee?.empCountry, [Validators.required]],
+      status: [employee?.status, [Validators.required, Validators.minLength(3)]],
+      employeeBillingType: [employee?.employeeBillingType, [Validators.required, Validators.minLength(3)]],
+      employeeType: [employee?.employeeType, [Validators.required, Validators.minLength(3)]],
+      billingRate: [employee?.billingRate, [Validators.required]],
+      dailyAllowance: [employee?.dailyAllowance, [Validators.required]]
+    });
   }
 
-  openDrawer(employee:Employee|null=null) {
+  openDrawer(employee: Employee | null = null) {
     this.initializeEmpForm(employee);
     this.drawer?.show();
   }
@@ -155,45 +156,43 @@ export class AddEmployeeComponent extends FormError{
     return this.empForm.controls;
   }
 
-  onAvatarSelect(file: File|null) {
+  onAvatarSelect(file: File | null) {
     this.selectedFile = file;
-    if(!file){
-      this.empForm.patchValue({ profileImage: null });      
+    if (!file) {
+      this.empForm.patchValue({ profileImage: null });
     }
   }
 
-  onFileDeleted(){
-    this.fileDeletedNeedToSubmit=true;
+  onFileDeleted() {
+    this.fileDeletedNeedToSubmit = true;
   }
 
   onEmployeeSubmit() {
     this.submitted = true;
-    this.fileDeletedNeedToSubmit=false;
-  
+    this.fileDeletedNeedToSubmit = false;
+
     const employeeData = this.empForm.value;
-  
+
     if (this.empForm.invalid) {
       return;
     }
-  
+
     const orgId = this.organization.id;
-  
-    let uploadObservable = of(null); // fallback if no file
-  
+
+    let uploadObservable: Observable<FileUploadResponse | null> = of(null);
+
     if (this.selectedFile) {
-      uploadObservable = this.fileUploaderService.uploadFile(this.selectedFile).pipe(
-        tap((response: any) => {
-          console.log('File uploaded successfully:', response);
-          employeeData.profileImage = response.fileURL;
+      uploadObservable = this.fileUploaderService.storeFile(this.selectedFile).pipe(
+        tap((response: FileUploadResponse) => {
+          employeeData.profileImage = response;
         }),
         catchError((error) => {
-          console.error('Error uploading file:', error);
           this.orgService.showToastErrorResponse(error);
-          return throwError(() => error); // Stop the chain
+          return throwError(() => error);
         })
       );
     }
-  
+
     uploadObservable
       .pipe(
         switchMap(() => {
@@ -207,7 +206,6 @@ export class AddEmployeeComponent extends FormError{
           this.employeeEmitter.emit(employee);
           this.empForm.patchValue({ id: employee.id });
           this.empService.showToastSuccess('Employee saved to organization successfully');
-  
           this.closeDrawer();
           this.initializeEmpForm(null);
         },
@@ -216,5 +214,5 @@ export class AddEmployeeComponent extends FormError{
         },
       });
   }
-  
+
 }

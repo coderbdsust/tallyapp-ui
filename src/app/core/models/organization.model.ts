@@ -20,9 +20,6 @@ export interface Organization {
     orgAddressCountry: string;
     status: string;
     owner: string;
-    // banner: string | './assets/furniture/furniture-01.png';
-    // avatar: string | './assets/avatars/avt-01.jpg';
-    // logo: string | './assets/img/component-btn.png';
     logoB64:string|'';
     totalEmployees: number;
     totalProducts: number | 0;

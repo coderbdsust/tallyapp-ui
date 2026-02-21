@@ -7,7 +7,7 @@
                     class="block py-2 text-sm text-gray-500 bg-transparent border-1 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                     <option value="" selected>Select Employee</option>
                     <ng-container *ngFor="let emp of allEmployees; let i = index;">
-                        <option [value]="emp.id">{{emp.fullName}} - [{{emp.employeeType}}]</option>
+                        <option [value]="emp.id">{{emp.fullName}} - [{{emp.employeeType}}] - [{{emp.employeeBillingType}}]</option>
                     </ng-container>
                 </select>
                 <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'employeeId')">
@@ -468,7 +468,7 @@
             <div class="flex items-center justify-between flex-wrap gap-4">
                 <div class="flex items-center gap-4">
                     <div class="bg-blue-100  rounded-full">
-                        <img *ngIf="employeeData.employeeProfileImage" [src]="employeeData.employeeProfileImage"
+                        <img *ngIf="employeeData.employeeProfileImage" [src]="employeeData.employeeProfileImage.url"
                             alt="Employee Profile Image" class="w-20 h-20 rounded-full object-cover">
                     </div>
                     <div class="flex flex-col gap-1">
