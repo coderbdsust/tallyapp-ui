@@ -23,109 +23,11 @@
           <div class="space-y-3 text-left">
             <div class="flex flex-row">
 
-              <!-- ── Image panel ── -->
-              <div class="w-2/6 flex flex-col justify-start items-center px-4 gap-2">
+              <!-- ══════════════════════════════════════════
+                   LEFT: Product details + Inventory
+                   ══════════════════════════════════════════ -->
+              <div class="w-4/6 space-y-3 pr-6">
 
-                <!-- Header: label + add button -->
-                <div class="flex w-full items-center justify-between">
-                  <span class="text-sm text-muted-foreground font-medium">
-                    Photos ({{ images.length }}/{{ MAX_IMAGES }})
-                  </span>
-                  <button
-                    type="button"
-                    [disabled]="!canAddImage || isUploading"
-                    (click)="triggerFileInput(fileInput)"
-                    class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-lg leading-none
-                           hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
-                    title="Add photo">
-                    +
-                  </button>
-                </div>
-
-                <!-- Hidden file input — multiple, images only -->
-                <input
-                  #fileInput
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  class="hidden"
-                  (change)="onFileChange($event)" />
-
-                <!-- 2-column thumbnail grid -->
-                <div class="grid grid-cols-2 gap-2 w-full">
-
-                  <!-- Existing / pending thumbnails -->
-                  <div
-                    *ngFor="let img of images"
-                    class="group relative aspect-square overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
-
-                    <!-- "Main" badge on first image -->
-                    <span *ngIf="img === images[0]"
-                      class="absolute top-1 left-1 z-10 rounded bg-primary px-1.5 py-0.5
-                             text-[10px] font-bold uppercase tracking-wide text-white pointer-events-none">
-                      Main
-                    </span>
-
-                    <!-- "Pending" indicator for files not yet uploaded -->
-                    <span *ngIf="img.file !== null"
-                      class="absolute bottom-1 left-1 z-10 rounded bg-yellow-500 px-1.5 py-0.5
-                             text-[10px] font-bold uppercase tracking-wide text-white pointer-events-none">
-                      New
-                    </span>
-
-                    <img [src]="img.previewUrl" alt="product photo" class="h-full w-full object-cover" />
-
-                    <!-- Remove button — visible on hover -->
-                    <button
-                      type="button"
-                      (click)="removeImage(img.id)"
-                      [disabled]="isUploading"
-                      class="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full
-                             bg-black/50 text-white text-sm opacity-0 transition-opacity
-                             group-hover:opacity-100 hover:bg-red-500 disabled:cursor-not-allowed"
-                      title="Remove">
-                      &times;
-                    </button>
-                  </div>
-
-                  <!-- Empty "add" slot — shown while under the limit -->
-                  <div *ngIf="canAddImage && !isUploading"
-                    (click)="triggerFileInput(fileInput)"
-                    class="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 rounded-lg
-                           border-2 border-dashed border-gray-300 bg-gray-50 text-gray-400 text-xs font-medium
-                           uppercase tracking-wide transition hover:border-primary hover:bg-primary/5 hover:text-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                      stroke="currentColor" stroke-width="1.5">
-                      <rect x="3" y="3" width="18" height="18" rx="2"/>
-                      <circle cx="8.5" cy="8.5" r="1.5"/>
-                      <path d="m21 15-5-5L5 21"/>
-                    </svg>
-                    Add photo
-                  </div>
-
-                  <!-- Uploading spinner slot -->
-                  <div *ngIf="isUploading"
-                    class="flex aspect-square items-center justify-center rounded-lg border border-gray-200 bg-gray-50">
-                    <svg class="h-6 w-6 animate-spin text-primary" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
-                    </svg>
-                  </div>
-                </div>
-
-                <!-- Hint text -->
-                <p class="w-full text-center text-xs text-muted-foreground">
-                  <ng-container *ngIf="images.length === 0">Upload up to {{ MAX_IMAGES }} photos. First = main.</ng-container>
-                  <ng-container *ngIf="images.length > 0 && canAddImage">
-                    {{ MAX_IMAGES - images.length }} slot(s) left · First = main photo
-                  </ng-container>
-                  <ng-container *ngIf="!canAddImage">Maximum {{ MAX_IMAGES }} images reached.</ng-container>
-                </p>
-
-              </div>
-              <!-- ── end image panel ── -->
-
-              <div class="w-4/6 space-y-3">
                 <div class="flex justify-between gap-2">
                   <div class="form__group w-4/6">
                     <div class="relative">
@@ -234,148 +136,255 @@
                     {{ getErrorMessage(form, 'madeBy') }}
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <!-- ── Inventory (unchanged) ── -->
-            <div class="flex flex-col gap-2 mt-4">
-              <div class="flex flex-row border-dashed border-y-2 justify-between">
-                <h1 class="text-sm text-muted-foreground text-center font-bold mt-2">Inventory</h1>
-                <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5 mb-2'"
-                  (click)="addStock()" class="text-primary mt-3"> </svg-icon>
-              </div>
-              <div formArrayName="productStockList"
-                class="mt-8 mb-8 ml-4 mr-4 overflow-x-auto max-h-36 overflow-y-auto">
-                <div *ngFor="let stockGroup of getProductStockList.controls; let i = index" [formGroupName]="i"
-                  class="flex flex-row gap-4 mt-12">
+                <!-- ── Inventory (unchanged) ── -->
+                <div class="flex flex-col gap-2 mt-4">
+                  <div class="flex flex-row border-dashed border-y-2 justify-between">
+                    <h1 class="text-sm text-muted-foreground text-center font-bold mt-2">Inventory</h1>
+                    <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5 mb-2'"
+                      (click)="addStock()" class="text-primary mt-3"> </svg-icon>
+                  </div>
+                  <div formArrayName="productStockList"
+                    class="mt-8 mb-8 ml-4 mr-4 overflow-x-auto max-h-36 overflow-y-auto">
+                    <div *ngFor="let stockGroup of getProductStockList.controls; let i = index" [formGroupName]="i"
+                      class="flex flex-row gap-4 mt-12">
 
-                  <input formControlName="id" type="hidden" />
-                  <input formControlName="batchNumber" type="hidden" />
-                  <input formControlName="manufactureDate" type="hidden" />
-                  <input formControlName="expiryDate" type="hidden" />
+                      <input formControlName="id" type="hidden" />
+                      <input formControlName="batchNumber" type="hidden" />
+                      <input formControlName="manufactureDate" type="hidden" />
+                      <input formControlName="expiryDate" type="hidden" />
 
-                  <!-- Employee Cost -->
-                  <div class="form__group w-2/12">
-                    <div class="relative">
-                      <label for="perUnitEmployeeCost-{{ i }}"
-                        class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                        Employee Cost / Unit
-                      </label>
-                      <input type="text" id="perUnitEmployeeCost-{{ i }}" class="peer block" placeholder=" "
-                        [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('perUnitEmployeeCost')?.errors }"
-                        formControlName="perUnitEmployeeCost" />
-                    </div>
-                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'perUnitEmployeeCost')">
-                      {{ getErrorMessageFromControl(stockGroup, 'perUnitEmployeeCost') }}
+                      <!-- Employee Cost -->
+                      <div class="form__group w-2/12">
+                        <div class="relative">
+                          <label for="perUnitEmployeeCost-{{ i }}"
+                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
+                            Employee Cost / Unit
+                          </label>
+                          <input type="text" id="perUnitEmployeeCost-{{ i }}" class="peer block" placeholder=" "
+                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('perUnitEmployeeCost')?.errors }"
+                            formControlName="perUnitEmployeeCost" />
+                        </div>
+                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'perUnitEmployeeCost')">
+                          {{ getErrorMessageFromControl(stockGroup, 'perUnitEmployeeCost') }}
+                        </div>
+                      </div>
+
+                      <!-- Production Cost -->
+                      <div class="form__group w-2/12">
+                        <div class="relative">
+                          <label for="perUnitProductionCost-{{ i }}"
+                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
+                            Production Cost / Unit
+                          </label>
+                          <input type="text" id="perUnitProductionCost-{{ i }}" class="peer block" placeholder=" "
+                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('perUnitProductionCost')?.errors }"
+                            formControlName="perUnitProductionCost" />
+                        </div>
+                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'perUnitProductionCost')">
+                          {{ getErrorMessageFromControl(stockGroup, 'perUnitProductionCost') }}
+                        </div>
+                      </div>
+
+                      <!-- Unit Price -->
+                      <div class="form__group w-2/12">
+                        <div class="relative">
+                          <label for="unitPrice-{{ i }}"
+                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
+                            Unit Price
+                          </label>
+                          <input type="text" id="unitPrice-{{ i }}" class="peer block" placeholder=" "
+                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('unitPrice')?.errors }"
+                            formControlName="unitPrice" />
+                        </div>
+                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'unitPrice')">
+                          {{ getErrorMessageFromControl(stockGroup, 'unitPrice') }}
+                        </div>
+                      </div>
+
+                      <!-- Discount % -->
+                      <div class="form__group w-2/12">
+                        <div class="relative">
+                          <label for="discountPercent-{{ i }}"
+                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
+                            Discount (%)
+                          </label>
+                          <input type="text" id="discountPercent-{{ i }}" class="peer block" placeholder=" "
+                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('discountPercent')?.errors }"
+                            formControlName="discountPercent" />
+                        </div>
+                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'discountPercent')">
+                          {{ getErrorMessageFromControl(stockGroup, 'discountPercent') }}
+                        </div>
+                      </div>
+
+                      <!-- Initial Quantity -->
+                      <div class="form__group w-2/12">
+                        <div class="relative">
+                          <label for="initialQuantity-{{ i }}"
+                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
+                            Initial Stock
+                          </label>
+                          <input type="text" readonly id="initialQuantity-{{ i }}" class="peer block bg-gray-100"
+                            placeholder=" "
+                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('initialQuantity')?.errors }"
+                            formControlName="initialQuantity" />
+                        </div>
+                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'initialQuantity')">
+                          {{ getErrorMessageFromControl(stockGroup, 'initialQuantity') }}
+                        </div>
+                      </div>
+
+                      <!-- Available Quantity -->
+                      <div class="form__group w-2/12">
+                        <div class="relative">
+                          <label for="availableQuantity-{{ i }}"
+                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
+                            Available Stock
+                          </label>
+                          <input type="text" readonly id="availableQuantity-{{ i }}" class="peer block bg-gray-100"
+                            placeholder=" "
+                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('availableQuantity')?.errors }"
+                            formControlName="availableQuantity" />
+                        </div>
+                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'availableQuantity')">
+                          {{ getErrorMessageFromControl(stockGroup, 'availableQuantity') }}
+                        </div>
+                      </div>
+
+                      <!-- Add Quantity -->
+                      <div class="form__group w-2/12">
+                        <div class="relative">
+                          <label for="quantityToAdd-{{ i }}"
+                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
+                            Add Quantity
+                          </label>
+                          <input type="text" id="quantityToAdd-{{ i }}" class="peer block" placeholder=" "
+                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('quantityToAdd')?.errors }"
+                            formControlName="quantityToAdd" />
+                        </div>
+                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'quantityToAdd')">
+                          {{ getErrorMessageFromControl(stockGroup, 'quantityToAdd') }}
+                        </div>
+                      </div>
+
+                      <!-- Remove row -->
+                      <svg-icon *ngIf="getProductStockList.length > 1"
+                        src="./assets/icons/heroicons/outline/minus.svg"
+                        [svgClass]="'h-5 w-5 mb-2 cursor-pointer'" (click)="removeStock(i)" class="text-primary mt-3">
+                      </svg-icon>
+
                     </div>
                   </div>
-
-                  <!-- Production Cost -->
-                  <div class="form__group w-2/12">
-                    <div class="relative">
-                      <label for="perUnitProductionCost-{{ i }}"
-                        class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                        Production Cost / Unit
-                      </label>
-                      <input type="text" id="perUnitProductionCost-{{ i }}" class="peer block" placeholder=" "
-                        [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('perUnitProductionCost')?.errors }"
-                        formControlName="perUnitProductionCost" />
-                    </div>
-                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'perUnitProductionCost')">
-                      {{ getErrorMessageFromControl(stockGroup, 'perUnitProductionCost') }}
-                    </div>
-                  </div>
-
-                  <!-- Unit Price -->
-                  <div class="form__group w-2/12">
-                    <div class="relative">
-                      <label for="unitPrice-{{ i }}"
-                        class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                        Unit Price
-                      </label>
-                      <input type="text" id="unitPrice-{{ i }}" class="peer block" placeholder=" "
-                        [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('unitPrice')?.errors }"
-                        formControlName="unitPrice" />
-                    </div>
-                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'unitPrice')">
-                      {{ getErrorMessageFromControl(stockGroup, 'unitPrice') }}
-                    </div>
-                  </div>
-
-                  <!-- Discount % -->
-                  <div class="form__group w-2/12">
-                    <div class="relative">
-                      <label for="discountPercent-{{ i }}"
-                        class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                        Discount (%)
-                      </label>
-                      <input type="text" id="discountPercent-{{ i }}" class="peer block" placeholder=" "
-                        [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('discountPercent')?.errors }"
-                        formControlName="discountPercent" />
-                    </div>
-                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'discountPercent')">
-                      {{ getErrorMessageFromControl(stockGroup, 'discountPercent') }}
-                    </div>
-                  </div>
-
-                  <!-- Initial Quantity -->
-                  <div class="form__group w-2/12">
-                    <div class="relative">
-                      <label for="initialQuantity-{{ i }}"
-                        class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                        Initial Stock
-                      </label>
-                      <input type="text" readonly id="initialQuantity-{{ i }}" class="peer block bg-gray-100"
-                        placeholder=" "
-                        [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('initialQuantity')?.errors }"
-                        formControlName="initialQuantity" />
-                    </div>
-                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'initialQuantity')">
-                      {{ getErrorMessageFromControl(stockGroup, 'initialQuantity') }}
-                    </div>
-                  </div>
-
-                  <!-- Available Quantity -->
-                  <div class="form__group w-2/12">
-                    <div class="relative">
-                      <label for="availableQuantity-{{ i }}"
-                        class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                        Available Stock
-                      </label>
-                      <input type="text" readonly id="availableQuantity-{{ i }}" class="peer block bg-gray-100"
-                        placeholder=" "
-                        [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('availableQuantity')?.errors }"
-                        formControlName="availableQuantity" />
-                    </div>
-                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'availableQuantity')">
-                      {{ getErrorMessageFromControl(stockGroup, 'availableQuantity') }}
-                    </div>
-                  </div>
-
-                  <!-- Add Quantity -->
-                  <div class="form__group w-2/12">
-                    <div class="relative">
-                      <label for="quantityToAdd-{{ i }}"
-                        class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                        Add Quantity
-                      </label>
-                      <input type="text" id="quantityToAdd-{{ i }}" class="peer block" placeholder=" "
-                        [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('quantityToAdd')?.errors }"
-                        formControlName="quantityToAdd" />
-                    </div>
-                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'quantityToAdd')">
-                      {{ getErrorMessageFromControl(stockGroup, 'quantityToAdd') }}
-                    </div>
-                  </div>
-
-                  <!-- Remove row -->
-                  <svg-icon *ngIf="getProductStockList.length > 1"
-                    src="./assets/icons/heroicons/outline/minus.svg"
-                    [svgClass]="'h-5 w-5 mb-2 cursor-pointer'" (click)="removeStock(i)" class="text-primary mt-3">
-                  </svg-icon>
-
                 </div>
+
               </div>
+              <!-- ── end left column ── -->
+
+              <!-- ══════════════════════════════════════════
+                   RIGHT: Image upload panel
+                   ══════════════════════════════════════════ -->
+              <div class="w-2/6 flex flex-col justify-start items-center px-4 gap-2 border-l border-gray-100">
+
+                <!-- Header: label + add button -->
+                <div class="flex w-full items-center justify-between">
+                  <span class="text-sm text-muted-foreground font-medium">
+                    Photos ({{ images.length }}/{{ MAX_IMAGES }})
+                  </span>
+                  <button
+                    type="button"
+                    [disabled]="!canAddImage || isUploading"
+                    (click)="triggerFileInput(fileInput)"
+                    class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-lg leading-none
+                           hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+                    title="Add photo">
+                    +
+                  </button>
+                </div>
+
+                <!-- Hidden file input — multiple, images only -->
+                <input
+                  #fileInput
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  class="hidden"
+                  (change)="onFileChange($event)" />
+
+                <!-- 2-column thumbnail grid -->
+                <div class="grid grid-cols-2 gap-2 w-full">
+
+                  <!-- Existing / pending thumbnails -->
+                  <div
+                    *ngFor="let img of images"
+                    class="group relative aspect-square overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
+
+                    <!-- "Main" badge on first image -->
+                    <span *ngIf="img === images[0]"
+                      class="absolute top-1 left-1 z-10 rounded bg-primary px-1.5 py-0.5
+                             text-[10px] font-bold uppercase tracking-wide text-white pointer-events-none">
+                      Main
+                    </span>
+
+                    <!-- "Pending" indicator for files not yet uploaded -->
+                    <span *ngIf="img.file !== null"
+                      class="absolute bottom-1 left-1 z-10 rounded bg-yellow-500 px-1.5 py-0.5
+                             text-[10px] font-bold uppercase tracking-wide text-white pointer-events-none">
+                      New
+                    </span>
+
+                    <img [src]="img.previewUrl" alt="product photo" class="h-full w-full object-cover" />
+
+                    <!-- Remove button — visible on hover -->
+                    <button
+                      type="button"
+                      (click)="removeImage(img.id)"
+                      [disabled]="isUploading"
+                      class="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full
+                             bg-black/50 text-white text-sm opacity-0 transition-opacity
+                             group-hover:opacity-100 hover:bg-red-500 disabled:cursor-not-allowed"
+                      title="Remove">
+                      &times;
+                    </button>
+                  </div>
+
+                  <!-- Empty "add" slot — shown while under the limit -->
+                  <div *ngIf="canAddImage && !isUploading"
+                    (click)="triggerFileInput(fileInput)"
+                    class="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 rounded-lg
+                           border-2 border-dashed border-gray-300 bg-gray-50 text-gray-400 text-xs font-medium
+                           uppercase tracking-wide transition hover:border-primary hover:bg-primary/5 hover:text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor" stroke-width="1.5">
+                      <rect x="3" y="3" width="18" height="18" rx="2"/>
+                      <circle cx="8.5" cy="8.5" r="1.5"/>
+                      <path d="m21 15-5-5L5 21"/>
+                    </svg>
+                    Add photo
+                  </div>
+
+                  <!-- Uploading spinner slot -->
+                  <div *ngIf="isUploading"
+                    class="flex aspect-square items-center justify-center rounded-lg border border-gray-200 bg-gray-50">
+                    <svg class="h-6 w-6 animate-spin text-primary" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Hint text -->
+                <p class="w-full text-center text-xs text-muted-foreground">
+                  <ng-container *ngIf="images.length === 0">Upload up to {{ MAX_IMAGES }} photos. First = main.</ng-container>
+                  <ng-container *ngIf="images.length > 0 && canAddImage">
+                    {{ MAX_IMAGES - images.length }} slot(s) left · First = main photo
+                  </ng-container>
+                  <ng-container *ngIf="!canAddImage">Maximum {{ MAX_IMAGES }} images reached.</ng-container>
+                </p>
+
+              </div>
+              <!-- ── end image panel ── -->
+
             </div>
 
             <div class="flex justify-between space-x-2 pb-4">

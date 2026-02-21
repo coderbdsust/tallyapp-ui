@@ -1,19 +1,47 @@
 import { CommonModule, NgClass } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonComponent } from 'src/app/common/components/button/button.component';
-import { Product, ProductCategory, ProductStock, UnitType } from '../../../../core/models/product.model';
+import {
+  Component,
+  computed,
+  CUSTOM_ELEMENTS_SCHEMA,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  signal,
+} from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import {
+  Product,
+  ProductCategory,
+  ProductStock,
+  UnitType,
+} from '../../../../core/models/product.model';
 import { FileUploadResponse } from '../../../../core/models/file-upload-response.model';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ProductService } from '../../../../core/services/product.service';
 import { EmployeeService } from '../../../../core/services/employee.service';
-import { catchError, forkJoin, Observable, of, throwError } from 'rxjs';
+import {
+  catchError,
+  forkJoin,
+  Observable,
+  of,
+  throwError,
+} from 'rxjs';
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { generateRandomLuhnCode } from 'src/app/common/utils/LuhnCode';
 import { Employee } from '../../../../core/models/employee.model';
 import { ProductCategoryService } from '../../../../core/services/product-category.service';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
+import { ButtonComponent } from 'src/app/common/components/button/button.component';
 
 /** Local UI representation of one image slot */
 export interface ImageItem {
@@ -29,37 +57,70 @@ export interface ImageItem {
 
 @Component({
   selector: 'app-add-product',
+  standalone: true,
   imports: [
     NgClass,
-    ButtonComponent,
     FormsModule,
     CommonModule,
     ReactiveFormsModule,
     NgSelectComponent,
     AngularSvgIconModule,
+    ButtonComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-product.component.html',
   styleUrl: './add-product.component.scss',
 })
-export class AddProductComponent extends FormError implements OnDestroy {
-  form!: FormGroup;
-  submitted = false;
-  isModalOpen = false;
+export class AddProductComponent extends FormError implements OnInit, OnDestroy {
 
+  // ── Inputs / Outputs ─────────────────────────────────────
   @Input() orgId: string | null = null;
   @Output() modifiedEmitter = new EventEmitter<boolean>();
 
+  // ── Form state ────────────────────────────────────────────
+  form!: FormGroup;
+  submitted = false;
+  isModalOpen = false;
+  isEdit = false;
+
+  // ── Reference data ────────────────────────────────────────
   allEmployees: any[] = [];
   allProductCategories: ProductCategory[] = [];
-  isEdit = false;
   unitTypes: UnitType[] = [];
 
-  // ── Multi-image state ─────────────────────────────────────
+  // ── Multi-image state (signals for reactivity) ────────────
   readonly MAX_IMAGES = 4;
-  images: ImageItem[] = [];
+  private _images = signal<ImageItem[]>([]);
+
+  /** Public read-only view of images for template binding */
+  get images(): ImageItem[] {
+    return this._images();
+  }
+
   isUploading = false;
 
+  // ── Stock summary computeds ───────────────────────────────
+  get totalInitialStock(): number {
+    return this._sumStockField('initialQuantity');
+  }
+
+  get totalAvailableStock(): number {
+    return this._sumStockField('availableQuantity');
+  }
+
+  get totalQuantityToAdd(): number {
+    return this._sumStockField('quantityToAdd');
+  }
+
+  private _sumStockField(field: string): number {
+    if (!this.form) return 0;
+    return this.getProductStockList.controls.reduce(
+      (sum, ctrl) => sum + (Number(ctrl.get(field)?.value) || 0),
+      0,
+    );
+  }
+
+  // ── Constructor ───────────────────────────────────────────
   constructor(
     private readonly _formBuilder: FormBuilder,
     private productService: ProductService,
@@ -70,20 +131,17 @@ export class AddProductComponent extends FormError implements OnDestroy {
     super();
   }
 
+  // ── Lifecycle ─────────────────────────────────────────────
   ngOnInit(): void {
     this.loadProductUnitTypes();
     this.initializeForm();
   }
 
   ngOnDestroy(): void {
-    // Revoke blob URLs for pending (not-yet-uploaded) files
-    this.images
-      .filter((img) => img.file !== null)
-      .forEach((img) => URL.revokeObjectURL(img.previewUrl));
+    this._revokePendingUrls();
   }
 
   // ── Loaders ───────────────────────────────────────────────
-
   loadProductUnitTypes(): void {
     this.productService.getProductUnitTypes().subscribe({
       next: (unitTypes) => (this.unitTypes = unitTypes),
@@ -93,35 +151,40 @@ export class AddProductComponent extends FormError implements OnDestroy {
 
   loadProductCategories(orgId: string | null): void {
     if (!orgId) return;
-    this.productCategoryService.getProductCagegoriesByOrganization(orgId).subscribe({
-      next: (categories) => (this.allProductCategories = categories),
-      error: (err) => this.productCategoryService.showToastErrorResponse(err),
-    });
+    this.productCategoryService
+      .getProductCagegoriesByOrganization(orgId)
+      .subscribe({
+        next: (categories) => (this.allProductCategories = categories),
+        error: (err) =>
+          this.productCategoryService.showToastErrorResponse(err),
+      });
   }
 
   // ── Employee ──────────────────────────────────────────────
-
   onSearchEmployeeKeyType(event: Event): void {
     const searchKey = (event.target as HTMLSelectElement).value;
     if (!searchKey || searchKey.length < 3) {
-      this.productService.showToastInfo('Please type at least 3 characters');
+      this.productService.showToastInfo(
+        'Please type at least 3 characters',
+      );
       return;
     }
-    this.employeeService.getEmployeesByOrganization(this.orgId!, 0, 10, searchKey).subscribe({
-      next: (response) => {
-        this.allEmployees = response.content.map((employee: any) => ({
-          ...employee,
-          fullName: `${employee.fullName} - ${employee.employeeType} - ${employee.mobileNo}`,
-        }));
-      },
-    });
+    this.employeeService
+      .getEmployeesByOrganization(this.orgId!, 0, 10, searchKey)
+      .subscribe({
+        next: (response) => {
+          this.allEmployees = response.content.map((employee: any) => ({
+            ...employee,
+            fullName: `${employee.fullName} - ${employee.employeeType} - ${employee.mobileNo}`,
+          }));
+        },
+      });
   }
 
   onSelectEmployee(employee: Employee): void {
     if (!employee) return;
     if (employee.employeeBillingType.includes('DAILY')) {
-      const stockArray = this.form.get('productStockList') as FormArray;
-      stockArray.controls.forEach((ctrl) => {
+      this.getProductStockList.controls.forEach((ctrl) => {
         ctrl.get('perUnitEmployeeCost')?.setValue(employee.billingRate);
         ctrl.get('perUnitProductionCost')?.setValue(0);
         ctrl.get('unitPrice')?.setValue(employee.billingRate * 1.5);
@@ -133,19 +196,49 @@ export class AddProductComponent extends FormError implements OnDestroy {
     return emp1 && emp2 ? emp1.id === emp2.id : emp1 === emp2;
   }
 
+  // ── Category ──────────────────────────────────────────────
+  addNewCategory(categoryName: string): Promise<ProductCategory> {
+    const category: ProductCategory = {
+      id: null,
+      name: categoryName,
+      description: categoryName,
+      active: true,
+    };
+    return new Promise((resolve, reject) => {
+      if (!this.orgId) {
+        this.productCategoryService.showToastError(
+          'Organization ID is missing.',
+        );
+        return reject('Organization ID is missing.');
+      }
+      this.productCategoryService
+        .addProductCategoryByOrganization(this.orgId, category)
+        .subscribe({
+          next: (saved) => {
+            this.allProductCategories.push(saved);
+            resolve(saved);
+          },
+          error: (err) => {
+            this.productCategoryService.showToastErrorResponse(err);
+            reject(err);
+          },
+        });
+    });
+  }
+
   // ── Form init ─────────────────────────────────────────────
-
   private initializeForm(product: Product | null = null): void {
-    // Revoke any pending blob URLs from a previous open
-    this.images.filter((img) => img.file !== null).forEach((img) => URL.revokeObjectURL(img.previewUrl));
+    this._revokePendingUrls();
 
-    // Seed image list from product.photos (the real model field)
-    this.images = (product?.photos ?? []).map((photo) => ({
-      id: crypto.randomUUID(),
-      previewUrl: photo.url,
-      file: null,
-      uploadedPhoto: photo,
-    }));
+    // Seed images from existing product photos
+    this._images.set(
+      (product?.photos ?? []).map((photo) => ({
+        id: crypto.randomUUID(),
+        previewUrl: photo.url,
+        file: null,
+        uploadedPhoto: photo,
+      })),
+    );
 
     let stockArray = this._formBuilder.array([]) as FormArray;
     if (product?.productStockList?.length) {
@@ -155,46 +248,31 @@ export class AddProductComponent extends FormError implements OnDestroy {
     }
 
     this.form = this._formBuilder.group({
-      id: [product?.id ?? null],
-      name: [product?.name ?? '', [Validators.required, Validators.maxLength(70)]],
-      code: [product?.code ?? '', [Validators.required]],
-      unitType: [product?.unitType ?? null, [Validators.required]],
-      description: [product?.description ?? ''],
-      madeBy: [product?.madeBy ?? null, [Validators.required]],
-      categoryId: [product?.productCategory?.id ?? null, [Validators.required]],
+      id:               [product?.id ?? null],
+      name:             [product?.name ?? '',           [Validators.required, Validators.maxLength(70)]],
+      code:             [product?.code ?? '',           [Validators.required]],
+      unitType:         [product?.unitType ?? null,     [Validators.required]],
+      description:      [product?.description ?? ''],
+      madeBy:           [product?.madeBy ?? null,       [Validators.required]],
+      categoryId:       [product?.productCategory?.id ?? null, [Validators.required]],
       productStockList: stockArray,
     });
   }
 
-  addNewCategory(categoryName: string): Promise<ProductCategory> {
-    const category: ProductCategory = { id: null, name: categoryName, description: categoryName, active: true };
-    return new Promise((resolve, reject) => {
-      if (!this.orgId) {
-        this.productCategoryService.showToastError('Organization ID is missing.');
-        return reject('Organization ID is missing.');
-      }
-      this.productCategoryService.addProductCategoryByOrganization(this.orgId, category).subscribe({
-        next: (saved) => { this.allProductCategories.push(saved); resolve(saved); },
-        error: (err) => { this.productCategoryService.showToastErrorResponse(err); reject(err); },
-      });
-    });
-  }
-
-  // ── Stock ─────────────────────────────────────────────────
-
+  // ── Stock helpers ─────────────────────────────────────────
   createProductStockForm(): FormGroup {
     return this._formBuilder.group({
-      id: [''],
-      batchNumber: [''],
-      manufactureDate: [''],
-      expiryDate: [''],
-      initialQuantity: [0],
-      availableQuantity: [0],
-      quantityToAdd: [1, Validators.required],
-      unitPrice: [1, [Validators.required, Validators.min(1)]],
-      discountPercent: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
-      perUnitProductionCost: [0, Validators.required],
-      perUnitEmployeeCost: [0, Validators.required],
+      id:                   [''],
+      batchNumber:          [''],
+      manufactureDate:      [''],
+      expiryDate:           [''],
+      initialQuantity:      [0],
+      availableQuantity:    [0],
+      quantityToAdd:        [1,  [Validators.required]],
+      unitPrice:            [1,  [Validators.required, Validators.min(1)]],
+      discountPercent:      [0,  [Validators.required, Validators.min(0), Validators.max(100)]],
+      perUnitProductionCost:[0,  [Validators.required]],
+      perUnitEmployeeCost:  [0,  [Validators.required]],
     });
   }
 
@@ -205,19 +283,21 @@ export class AddProductComponent extends FormError implements OnDestroy {
   setProductStockList(stockList: ProductStock[]): FormArray {
     const arr = this._formBuilder.array([]) as FormArray;
     stockList.forEach((stock) => {
-      arr.push(this._formBuilder.group({
-        id: [stock.id],
-        batchNumber: [stock.batchNumber],
-        manufactureDate: [stock.manufactureDate],
-        expiryDate: [stock.expiryDate],
-        initialQuantity: [stock.initialQuantity],
-        availableQuantity: [stock.availableQuantity],
-        quantityToAdd: [0, Validators.required],
-        unitPrice: [stock.unitPrice || 1, [Validators.required, Validators.min(1)]],
-        discountPercent: [stock.discountPercent, [Validators.required, Validators.min(0), Validators.max(100)]],
-        perUnitProductionCost: [stock.perUnitProductionCost, Validators.required],
-        perUnitEmployeeCost: [stock.perUnitEmployeeCost, Validators.required],
-      }));
+      arr.push(
+        this._formBuilder.group({
+          id:                   [stock.id],
+          batchNumber:          [stock.batchNumber],
+          manufactureDate:      [stock.manufactureDate],
+          expiryDate:           [stock.expiryDate],
+          initialQuantity:      [stock.initialQuantity],
+          availableQuantity:    [stock.availableQuantity],
+          quantityToAdd:        [0,              [Validators.required]],
+          unitPrice:            [stock.unitPrice || 1, [Validators.required, Validators.min(1)]],
+          discountPercent:      [stock.discountPercent, [Validators.required, Validators.min(0), Validators.max(100)]],
+          perUnitProductionCost:[stock.perUnitProductionCost, [Validators.required]],
+          perUnitEmployeeCost:  [stock.perUnitEmployeeCost,   [Validators.required]],
+        }),
+      );
     });
     return arr;
   }
@@ -231,10 +311,10 @@ export class AddProductComponent extends FormError implements OnDestroy {
   }
 
   // ── Modal ─────────────────────────────────────────────────
-
   openModal(product: Product | null = null, orgId: string | null = null): void {
-    this.isEdit = !!product;
-    this.orgId = orgId;
+    this.isEdit  = !!product;
+    this.orgId   = orgId;
+    this.submitted = false;
     this.initializeForm(product);
     this.loadProductCategories(orgId);
     this.isModalOpen = true;
@@ -254,56 +334,60 @@ export class AddProductComponent extends FormError implements OnDestroy {
     }
   }
 
-  // ── Multi-image ───────────────────────────────────────────
-
+  // ── Image helpers ─────────────────────────────────────────
   get canAddImage(): boolean {
-    return this.images.length < this.MAX_IMAGES;
+    return this._images().length < this.MAX_IMAGES;
   }
 
   triggerFileInput(input: HTMLInputElement): void {
-    if (this.canAddImage) input.click();
+    if (this.canAddImage && !this.isUploading) input.click();
   }
 
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files) return;
 
-    const remaining = this.MAX_IMAGES - this.images.length;
+    const remaining = this.MAX_IMAGES - this._images().length;
     const newItems: ImageItem[] = Array.from(input.files)
       .slice(0, remaining)
       .map((file) => ({
-        id: crypto.randomUUID(),
-        previewUrl: URL.createObjectURL(file),
+        id:            crypto.randomUUID(),
+        previewUrl:    URL.createObjectURL(file),
         file,
         uploadedPhoto: null,
       }));
 
-    this.images = [...this.images, ...newItems];
+    this._images.update((prev) => [...prev, ...newItems]);
     input.value = '';
   }
 
   removeImage(id: string): void {
-    const img = this.images.find((i) => i.id === id);
-    // Revoke blob URL only for pending (not-yet-uploaded) files
+    const img = this._images().find((i) => i.id === id);
     if (img?.file) URL.revokeObjectURL(img.previewUrl);
-    this.images = this.images.filter((i) => i.id !== id);
+    this._images.update((prev) => prev.filter((i) => i.id !== id));
+  }
+
+  private _revokePendingUrls(): void {
+    this._images()
+      .filter((img) => img.file !== null)
+      .forEach((img) => URL.revokeObjectURL(img.previewUrl));
   }
 
   // ── Submit ────────────────────────────────────────────────
-
   onSubmit(): void {
     this.submitted = true;
     if (this.form.invalid) return;
 
-    this.submitted = false;
+    this.submitted   = false;
     this.isUploading = true;
 
-    const pendingImages = this.images.filter((img) => img.file !== null);
-    const alreadyUploadedPhotos: FileUploadResponse[] = this.images
+    const currentImages        = this._images();
+    const pendingImages        = currentImages.filter((img) => img.file !== null);
+    const alreadyUploadedPhotos: FileUploadResponse[] = currentImages
       .filter((img) => img.uploadedPhoto !== null)
       .map((img) => img.uploadedPhoto!);
 
-    // Upload all pending files in parallel using storeFile()
+    // Upload all pending files in parallel
     const uploadObservables: Observable<FileUploadResponse | null>[] = pendingImages.length
       ? pendingImages.map((img) =>
           this.fileUploaderService.storeFile(img.file!).pipe(
@@ -319,17 +403,14 @@ export class AddProductComponent extends FormError implements OnDestroy {
       next: (responses: (FileUploadResponse | null)[]) => {
         this.isUploading = false;
 
-        // Merge already-uploaded photos with newly uploaded ones
-        const newPhotos = responses.filter((r): r is FileUploadResponse => r !== null);
-        const allPhotos: FileUploadResponse[] = [...alreadyUploadedPhotos, ...newPhotos];
-
-        const product = {
-          ...this.form.value,
-          photos: allPhotos,
-        };
+        const newPhotos  = responses.filter((r): r is FileUploadResponse => r !== null);
+        const allPhotos  = [...alreadyUploadedPhotos, ...newPhotos];
+        const product    = { ...this.form.value, photos: allPhotos };
 
         if (this.isEdit) {
+          // Unwrap madeBy to ID if it's a full employee object
           if (product.madeBy?.id) product.madeBy = product.madeBy.id;
+
           this.productService.editProduct(product.id, product).subscribe({
             next: () => {
               this.productService.showToastSuccess('Product updated successfully');
