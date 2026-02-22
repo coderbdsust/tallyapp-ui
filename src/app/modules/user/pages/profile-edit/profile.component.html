@@ -1,14 +1,15 @@
 <form [formGroup]="userProfileForm" (ngSubmit)="onSubmit()">
+  
   <input formControlName="id" type="hidden" />
-
+  
   <div class="flex flex-wrap gap-6 p-6">
 
     <!-- LEFT COLUMN: Profile Card -->
     <div class="w-full lg:w-[280px] shrink-0">
-      <div class="sticky top-6 rounded-2xl bg-white dark:bg-gray-900 shadow-lg overflow-hidden">
+      <div class="sticky top-6 rounded-lg bg-white dark:bg-gray-900 shadow-lg overflow-hidden">
 
         <!-- Avatar Section -->
-        <div class="relative h-24 bg-gradient-to-r from-indigo-500 to-purple-600">
+        <div class="relative h-24 bg-gradient-to-r from-gray-400 via-white-200 to-gray-100">
           <!-- Avatar -->
           <div class="absolute -bottom-10 left-1/2 -translate-x-1/2">
             <div class="relative group">
@@ -82,7 +83,7 @@
     <div class="flex-1 min-w-0 space-y-5">
 
       <!-- Personal Info Card -->
-      <div class="rounded-2xl bg-white dark:bg-gray-900 shadow-lg overflow-hidden">
+      <div class="rounded-lg bg-white dark:bg-gray-900 shadow-lg overflow-hidden">
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
           <p class="text-sm font-semibold text-gray-900 dark:text-white">Personal Information</p>
           <button type="submit" [disabled]="userProfileForm.invalid"
@@ -157,7 +158,7 @@
       </div>
 
       <!-- Address Card -->
-      <div class="rounded-2xl bg-white dark:bg-gray-900 shadow-lg overflow-hidden">
+      <div class="rounded-lg bg-white dark:bg-gray-900 shadow-lg overflow-hidden">
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
           <p class="text-sm font-semibold text-gray-900 dark:text-white">Contact Addresses</p>
           <button type="button" (click)="addAddress()"
@@ -230,7 +231,7 @@
       </div>
 
       <!-- Work Info Card -->
-      <div class="rounded-2xl bg-white dark:bg-gray-900 shadow-lg overflow-hidden">
+      <div class="rounded-lg bg-white dark:bg-gray-900 shadow-lg overflow-hidden">
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
           <p class="text-sm font-semibold text-gray-900 dark:text-white">Work Information</p>
           <button type="button" (click)="addShortProfile()"
