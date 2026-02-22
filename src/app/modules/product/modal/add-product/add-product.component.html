@@ -26,7 +26,7 @@
               <!-- ══════════════════════════════════════════
                    LEFT: Product details + Inventory
                    ══════════════════════════════════════════ -->
-              <div class="w-4/6 space-y-3 pr-6">
+              <div class="w-5/6 space-y-3 pr-6">
 
                 <div class="flex justify-between gap-2">
                   <div class="form__group w-4/6">
@@ -284,7 +284,7 @@
               <!-- ══════════════════════════════════════════
                    RIGHT: Image upload panel
                    ══════════════════════════════════════════ -->
-              <div class="w-2/6 flex flex-col justify-start items-center px-4 gap-2 border-l border-gray-100">
+              <div class="w-1/6 flex flex-col justify-start items-center px-4 gap-2 border-l border-gray-100">
 
                 <!-- Header: label + add button -->
                 <div class="flex w-full items-center justify-between">
@@ -295,7 +295,7 @@
                     type="button"
                     [disabled]="!canAddImage || isUploading"
                     (click)="triggerFileInput(fileInput)"
-                    class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-lg leading-none
+                    class="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-white text-lg leading-none
                            hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
                     title="Add photo">
                     +
@@ -312,7 +312,7 @@
                   (change)="onFileChange($event)" />
 
                 <!-- 2-column thumbnail grid -->
-                <div class="grid grid-cols-2 gap-2 w-full">
+                <div class="grid grid-cols-1 gap-2 w-full">
 
                   <!-- Existing / pending thumbnails -->
                   <div
