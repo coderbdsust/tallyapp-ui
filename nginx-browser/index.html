@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Storage Cloud</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:#ffffff; --surface:#f8f9fc; --card:#ffffff;
+    --border:#e4e7ef; --accent:#16a36a; --accent2:#5b6af0;
+    --accent3:#e0579a; --muted:#b0b8d0; --text:#1a1d2e; --dim:#8890a8;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;}
+  h1,h2,h3,.syne{font-family:'Syne',sans-serif;}
+  ::-webkit-scrollbar{width:4px;height:4px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--muted);border-radius:4px;}
+  #sidebar{position:fixed;left:0;top:0;bottom:0;width:236px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;}
+  .nav-item{display:flex;align-items:center;gap:9px;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--dim);transition:all .15s;letter-spacing:.02em;}
+  .nav-item:hover{background:var(--border);color:var(--text);}
+  .nav-item.active{background:rgba(22,163,106,.1);color:var(--accent);}
+  /* ── Folder Tree — compact, no cards ── */
+  .tree-root{padding:2px 0 8px 4px;}
+  .tree-node{position:relative;}
+  .tree-row{display:flex;align-items:center;height:26px;padding:0 6px 0 0;border-radius:5px;cursor:pointer;color:var(--dim);transition:background .1s,color .1s;white-space:nowrap;min-width:0;user-select:none;gap:0;}
+  .tree-row:hover{background:rgba(0,0,0,.04);color:var(--text);}
+  .tree-row.active{background:rgba(22,163,106,.08);color:var(--accent);}
+  .tree-row.active .tree-icon{color:var(--accent);}
+  /* indent guide lines on children container */
+  .tree-children{position:relative;margin-left:20px;}
+  .tree-children::before{content:'';position:absolute;left:0;top:0;bottom:4px;width:1px;background:var(--border);}
+  /* toggle chevron */
+  .tree-toggle{width:20px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:transform .15s,color .1s;}
+  .tree-toggle svg{display:block;}
+  .tree-toggle:hover{color:var(--text);}
+  .tree-toggle.open{transform:rotate(90deg);}
+  .tree-toggle.empty{opacity:0;pointer-events:none;}
+  .tree-icon{font-size:12px;flex-shrink:0;width:18px;text-align:center;}
+  .tree-label{flex:1;overflow:hidden;text-overflow:ellipsis;font-size:11.5px;line-height:1;padding-left:3px;letter-spacing:.01em;}
+  .tree-badge{font-size:9px;color:var(--muted);flex-shrink:0;margin-left:4px;}
+  .tree-row-root{font-weight:600;}
+  @keyframes spin2{to{transform:rotate(360deg)}}
+  .tree-spinning{animation:spin2 .7s linear infinite;display:inline-block;font-style:normal;}
+  #main{margin-left:236px;min-height:100vh;transition:margin-right .3s ease;}
+  #main.hist-open{margin-right:280px;}
+  #topbar{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:11px 24px;display:flex;align-items:center;gap:10px;}
+  .crumb{font-size:12px;color:var(--dim);cursor:pointer;transition:color .15s;}
+  .crumb:hover{color:var(--accent);}
+  .crumb.leaf{color:var(--text);cursor:default;}
+  .crumb-sep{color:var(--border);margin:0 5px;font-size:12px;}
+  .inp{background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:7px 12px;border-radius:8px;outline:none;transition:border-color .15s;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .inp:focus{border-color:var(--accent);}
+  .inp::placeholder{color:var(--muted);}
+  .btn{display:inline-flex;align-items:center;gap:5px;cursor:pointer;border:none;transition:all .15s;font-family:'DM Mono',monospace;border-radius:8px;}
+  .btn-p{background:var(--accent);color:#fff;font-family:'Syne',sans-serif;font-weight:700;padding:7px 16px;font-size:12px;letter-spacing:.03em;}
+  .btn-p:hover{background:#13905d;box-shadow:0 4px 16px rgba(22,163,106,.25);}
+  .btn-g{background:transparent;color:var(--dim);border:1px solid var(--border);padding:6px 12px;font-size:11px;}
+  .btn-g:hover{border-color:var(--muted);color:var(--text);background:var(--surface);}
+  .btn-i{background:var(--card);border:1px solid var(--border);color:var(--dim);padding:6px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .btn-i:hover{color:var(--text);border-color:var(--muted);}
+  .btn-i.on{background:rgba(22,163,106,.08);color:var(--accent);border-color:rgba(22,163,106,.3);}
+  .tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:4px;}
+  .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+  .folder-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:10px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+  .folder-card:hover{border-color:var(--muted);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1);}
+  .img-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+  .img-card:hover{border-color:var(--muted);transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.12);}
+  .img-card:hover .img-ov{opacity:1;}
+  .img-thumb{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:var(--border);}
+  .img-ph{width:100%;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f0f4ff,#e8f0fe);font-size:28px;}
+  .img-ov{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;gap:8px;opacity:0;transition:opacity .2s;}
+  .img-meta{padding:9px 11px;}
+  .file-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+  .file-card:hover{border-color:var(--muted);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08);}
+  #list-view{display:none;padding:20px 24px;}
+  .ltable{width:100%;border-collapse:collapse;}
+  .ltable thead th{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;font-weight:400;}
+  .ltable tbody tr{cursor:pointer;transition:background .1s;}
+  .ltable tbody tr:hover td{background:var(--surface);}
+  .ltable tbody td{padding:10px 12px;font-size:12px;border-bottom:1px solid rgba(228,231,239,.6);}
+  #history-view{display:none;padding:20px 24px;}
+  .hist-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;}
+  .hist-row:hover{background:var(--surface);}
+  .hist-th{width:42px;height:42px;border-radius:8px;flex-shrink:0;overflow:hidden;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;}
+  #hist-panel{position:fixed;right:0;top:0;bottom:0;width:280px;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;z-index:50;transform:translateX(100%);transition:transform .3s ease;}
+  #hist-panel.open{transform:translateX(0);}
+  .hpanel-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;}
+  .hpanel-row:hover{background:var(--card);}
+  #lb{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
+  #lb.open{display:flex;}
+  #lb img{max-width:90vw;max-height:88vh;border-radius:8px;box-shadow:0 24px 80px rgba(0,0,0,.5);transition:opacity .15s;}
+  #lb-close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+  #lb-close:hover{background:rgba(255,255,255,.25);}
+  .lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+  .lb-nav:hover{background:rgba(255,255,255,.22);}
+  #lb-prev{left:18px;} #lb-next{right:18px;}
+  #lb-cap{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,255,255,.75);background:rgba(0,0,0,.45);padding:5px 16px;border-radius:20px;white-space:nowrap;max-width:80vw;overflow:hidden;text-overflow:ellipsis;}
+  .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:12px;color:var(--dim);}
+  .prog-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+  .prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width .4s ease;}
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--text);border:1px solid rgba(0,0,0,.1);color:#fff;padding:10px 20px;border-radius:10px;font-size:12px;z-index:300;transition:transform .3s ease;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.15);}
+  #toast.show{transform:translateX(-50%) translateY(0);}
+  @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .fu{animation:fu .35s cubic-bezier(.4,0,.2,1) both;}
+  #grid-view{display:none;padding:20px 24px;gap:12px;}
+  #drop-overlay{position:fixed;inset:0;background:rgba(22,163,106,0.3);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:9999;pointer-events:none;}
+  #drop-overlay.active{display:flex;}
+  #drop-overlay span{font-size:3.5rem;font-weight:800;color:white;text-shadow:0 4px 16px rgba(0,0,0,0.6);font-family:'Syne',sans-serif;}
+</style>
+</head>
+<body>
+
+<aside id="sidebar">
+  <div style="padding:16px;border-bottom:1px solid var(--border);">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+      <div style="width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+      </div>
+      <span class="syne" style="font-weight:800;font-size:14px;color:var(--text)">Storage Cloud</span>
+    </div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:inset 0 1px 3px rgba(0,0,0,.03);">
+      <p style="font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);">Nginx URL</p>
+      <input id="server-url" class="inp" style="width:100%;" placeholder="http://your-server/files/"/>
+      <button class="btn btn-p" style="width:100%;justify-content:center;" onclick="startScan()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        Scan Directory
+      </button>
+    </div>
+  </div>
+  <nav style="padding:10px 8px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:1px;">
+    <div class="nav-item active" id="nav-all" onclick="showSec('all')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/></svg>All Files
+    </div>
+    <div class="nav-item " id="nav-gallery" onclick="showSec('gallery')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Gallery
+    </div>
+    <div class="nav-item" id="nav-history" onclick="showSec('history')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>History
+    </div>
+    <div style="height:1px;background:var(--border);margin:8px 6px;"></div>
+    <p style="font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);padding:2px 14px;margin-bottom:2px;">Folders</p>
+    <div id="folder-nav"></div>
+  </nav>
+  <div style="padding:10px 14px;border-top:1px solid var(--border);background:var(--surface);">
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--dim);margin-bottom:4px;">
+      <span id="scan-status">Not scanned</span>
+      <span id="scan-pct">0%</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+</aside>
+
+<div id="main">
+  <div id="topbar">
+    <div id="bc" style="display:flex;align-items:center;flex-wrap:wrap;gap:2px;"></div>
+    <div style="flex:1;"></div>
+    <div style="position:relative;">
+      <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="inp" id="q" placeholder="Search files…" style="padding-left:32px;width:280px;" oninput="renderCurrent()"/>
+    </div>
+    <select id="type-filter" onchange="renderCurrent()" style="background:var(--card);border:1px solid var(--border);color:var(--dim);font-family:'DM Mono',monospace;font-size:11px;padding:6px 8px;border-radius:7px;outline:none;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.04);">
+      <option value="">All types</option>
+      <option value="image">Images</option>
+      <option value="video">Videos</option>
+      <option value="file">Other</option>
+    </select>
+    <select id="cols" onchange="renderCurrent()" style="background:var(--card);border:1px solid var(--border);color:var(--dim);font-family:'DM Mono',monospace;font-size:11px;padding:6px 8px;border-radius:7px;outline:none;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.04);">
+      <option value="3">3 col</option>
+      <option value="4">4 col</option>
+      <option value="5">5 col</option>
+      <option value="6" selected>6 col</option>
+    </select>
+    <button class="btn btn-i on" id="btn-grid" onclick="setView('grid')" title="Grid">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    </button>
+    <button class="btn btn-i" id="btn-list" onclick="setView('list')" title="List">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/></svg>
+    </button>
+    <button class="btn btn-g" onclick="toggleHistPanel()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      History
+    </button>
+  </div>
+
+  <div id="stats-bar" style="display:none;padding:16px 24px 0;">
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:4px;">
+      <div class="stat-card fu"><p style="font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);margin-bottom:4px;">Files</p><p class="syne" style="font-size:22px;font-weight:700;color:var(--accent);" id="s-total">0</p></div>
+      <div class="stat-card fu"><p style="font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);margin-bottom:4px;">Images</p><p class="syne" style="font-size:22px;font-weight:700;color:var(--accent2);" id="s-img">0</p></div>
+      <div class="stat-card fu"><p style="font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);margin-bottom:4px;">Videos</p><p class="syne" style="font-size:22px;font-weight:700;color:var(--accent3);" id="s-vid">0</p></div>
+      <div class="stat-card fu"><p style="font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);margin-bottom:4px;">Folders</p><p class="syne" style="font-size:22px;font-weight:700;color:#f59e0b;" id="s-fold">0</p></div>
+      <div class="stat-card fu"><p style="font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);margin-bottom:4px;">Size</p><p class="syne" style="font-size:22px;font-weight:700;color:var(--text);" id="s-size">—</p></div>
+    </div>
+  </div>
+
+  <div id="content">
+    <div id="welcome" class="empty">
+      <div style="font-size:52px;opacity:.5;">🌩️</div>
+      <p class="syne" style="font-size:18px;font-weight:700;color:var(--text);">Connect to your nginx server</p>
+      <p style="font-size:12px;color:var(--dim);text-align:center;max-width:340px;">Enter the URL of your nginx directory listing and hit <strong style="color:var(--accent)">Scan Directory</strong>.</p>
+    </div>
+    <div id="loading" class="empty" style="display:none;">
+      <div class="spinner"></div>
+      <p style="font-size:13px;color:var(--dim);" id="load-msg">Scanning…</p>
+    </div>
+    <div id="grid-view"></div>
+    <div id="list-view">
+      <table class="ltable">
+        <thead><tr><th>Name</th><th>Folder</th><th>Type</th><th>Size</th><th>Modified</th></tr></thead>
+        <tbody id="list-body"></tbody>
+      </table>
+    </div>
+    <div id="history-view">
+      <h2 class="syne" style="font-size:13px;font-weight:700;letter-spacing:.06em;margin-bottom:16px;color:var(--text);">BROWSE HISTORY</h2>
+      <div id="hv-list" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);"></div>
+    </div>
+  </div>
+</div>
+
+<div id="drop-overlay"><span>Drop files to upload</span></div>
+
+<div id="hist-panel">
+  <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+    <span class="syne" style="font-size:13px;font-weight:700;">Recent Activity</span>
+    <button class="btn btn-i" style="padding:4px;" onclick="toggleHistPanel()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div id="hp-list" style="flex:1;overflow-y:auto;"></div>
+</div>
+
+<div id="lb">
+  <button id="lb-close" onclick="lbClose()">✕</button>
+  <button class="lb-nav" id="lb-prev" onclick="lbNav(-1)">‹</button>
+  <img id="lb-img" src="" alt=""/>
+  <button class="lb-nav" id="lb-next" onclick="lbNav(1)">›</button>
+  <div id="lb-cap"></div>
+</div>
+<div id="toast"></div>
+
+<script>
+// ============================================================================
+// CONFIG & CONSTANTS
+// ============================================================================
+const IMG_EXTS = new Set(['jpg','jpeg','png','gif','webp','bmp','tiff','tif','svg','avif','heic','ico']);
+const VID_EXTS = new Set(['mp4','webm','mov','avi','mkv','ogv','m4v']);
+const MAX_HIST  = 300;
+
+// ============================================================================
+// STATE
+// ============================================================================
+let BASE_URL       = '';    // e.g. "http://10.10.20.13:6060/tallyapp/v2/"  (always trailing slash)
+let ROOT           = null;  // tree root node
+let LB_IMGS        = [];
+let LB_IDX         = 0;
+let VIEW           = 'grid';
+let SEC            = 'gallery';
+let CURRENT_NODE   = null;  // the node we're currently viewing (null = root)
+let HIST           = [];
+let SCANNING       = false;
+let dragCounter    = 0;
+
+// ============================================================================
+// TREE NODE  { name, url, children:[], loaded:bool, type:'folder'|'file', ...fileProps }
+// ============================================================================
+function makeFolder(name, url) {
+  return { type:'folder', name, url, children:[], loaded:false };
+}
+
+function makeFile(name, url, size, mtime) {
+  const ext  = (name.split('.').pop() || '').toLowerCase();
+  const kind = IMG_EXTS.has(ext) ? 'image' : VID_EXTS.has(ext) ? 'video' : 'file';
+  return { type:'file', name, url, ext, kind, size: size||null, mtime: mtime||null };
+}
+
+// ============================================================================
+// FETCH A SINGLE DIRECTORY  → returns raw entry array
+// ============================================================================
+async function fetchDir(folderUrl) {
+  // folderUrl must already be the full absolute URL with trailing slash
+  const res = await fetch(folderUrl, { headers:{ Accept:'application/json' } });
+  if (!res.ok) throw new Error(`HTTP ${res.status} for ${folderUrl}`);
+
+  const ct = res.headers.get('content-type') || '';
+  if (ct.includes('json')) {
+    return await res.json();  // nginx autoindex_format json → array
+  }
+
+  // HTML autoindex fallback
+  const html = await res.text();
+  const doc  = new DOMParser().parseFromString(html, 'text/html');
+  return [...doc.querySelectorAll('a[href]')].map(a => {
+    const h = a.getAttribute('href');
+    if (!h || h === '../' || h === '/' || h.startsWith('?')) return null;
+    const isDir = h.endsWith('/');
+    return { name: decodeURIComponent(h.replace(/\/$/, '')), type: isDir ? 'directory' : 'file' };
+  }).filter(Boolean);
+}
+
+// ============================================================================
+// LOAD A NODE'S CHILDREN  (non-recursive — one level only)
+// ============================================================================
+async function loadNode(node) {
+  if (node.loaded) return;   // already done, skip
+
+  prog(null, `Loading ${node.name || 'root'}…`);
+  const entries = await fetchDir(node.url);
+
+  node.children = [];  // clear before repopulating (handles re-scan)
+
+  for (const e of entries) {
+    const name  = e.name || (e.name = String(e.name || '').replace(/\/$/, ''));
+    const rawName = String(name).replace(/\/$/, '');
+    if (!rawName || rawName === '..') continue;
+
+    const isDir = e.type === 'directory' || String(e.name||'').endsWith('/');
+    if (isDir) {
+      // Full URL for this subfolder = parent URL + name + /
+      const childUrl = node.url + encodeURIComponent(rawName) + '/';
+      node.children.push(makeFolder(rawName, childUrl));
+    } else {
+      const fileUrl = node.url + encodeURIComponent(rawName);
+      node.children.push(makeFile(rawName, fileUrl, e.size, e.mtime));
+    }
+  }
+
+  node.loaded = true;
+}
+
+// ============================================================================
+// FIND NODE BY PATH SEGMENTS  e.g. ['test','sub'] starting from ROOT
+// ============================================================================
+function findNodeBySegments(segments) {
+  let cur = ROOT;
+  for (const seg of segments) {
+    if (!seg) continue;
+    const child = cur.children.find(c => c.type === 'folder' && c.name === seg);
+    if (!child) return null;
+    cur = child;
+  }
+  return cur;
+}
+
+// Expand all ancestors of a node so it's visible in the sidebar tree
+function expandAncestors(targetNode) {
+  const path = getNodePath(targetNode);
+  const segs = path.split('/').filter(Boolean);
+  let cur = ROOT;
+  // Expand ROOT's children level, then each nested level
+  EXPANDED.add(cur);
+  for (const seg of segs) {
+    const child = cur.children.find(c => c.type === 'folder' && c.name === seg);
+    if (!child) break;
+    EXPANDED.add(child);
+    cur = child;
+  }
+}
+
+// ============================================================================
+// START SCAN  — loads root level only
+// ============================================================================
+async function startScan() {
+  if (SCANNING) return;
+  const rawUrl = document.getElementById('server-url').value.trim();
+  if (!rawUrl) { toast('⚠ Enter a URL'); return; }
+
+  // Normalise: always ends with /
+  BASE_URL = rawUrl.replace(/\/?$/, '/');
+
+  SCANNING     = true;
+  CURRENT_NODE = null;
+  ROOT         = makeFolder('Root', BASE_URL);
+  LB_IMGS      = [];
+
+  showLoad('Connecting…');
+  prog(0, 'Loading root…');
+  document.getElementById('stats-bar').style.display = 'none';
+
+  try {
+    await loadNode(ROOT);
+    prog(100, `Root loaded — ${ROOT.children.length} items`);
+    addHist({ type:'scan', url:BASE_URL, ts:Date.now() });
+    saveHist(); renderHistPanel(); renderHistView();
+    updateStats(); renderFolderNav();
+    document.getElementById('stats-bar').style.display = 'block';
+    // Respect any URL hash from before
+    const hashPath = readHash();
+    if (hashPath) {
+      await drillByPath(hashPath);
+    } else {
+      renderCurrent();
+    }
+    toast(`✓ Root loaded — ${ROOT.children.length} items`);
+  } catch (err) {
+    console.error(err);
+    showWelcome();
+    toast('✗ Connection failed — check URL & CORS');
+    prog(0, 'Failed');
+  } finally {
+    SCANNING = false;
+  }
+}
+
+// ============================================================================
+// DRILL INTO A FOLDER NODE  (called from UI click)
+// ============================================================================
+async function drillFolder(node) {
+  if (!node) { goRoot(); return; }
+
+  CURRENT_NODE = node;
+  pushHash(getNodePath(node));
+  setBreadcrumbs(node);
+  addHist({ type:'folder', folder:getNodePath(node), name:node.name, ts:Date.now() });
+  saveHist(); renderHistPanel();
+
+  // Auto-expand this node and all ancestors in the sidebar
+  expandAncestors(node);
+
+  if (!node.loaded) {
+    showLoad(`Loading ${node.name}…`);
+    try {
+      await loadNode(node);
+    } catch(err) {
+      console.error(err);
+      toast(`✗ Could not load ${node.name}`);
+    }
+  }
+
+  updateStats();
+  renderFolderNav();
+  renderCurrent();
+}
+
+// ============================================================================
+// DRILL BY PATH STRING  (used by hash restore)
+// e.g.  "test/sub"  →  find & load each node along the path
+// ============================================================================
+async function drillByPath(pathStr) {
+  // pathStr: "test" or "test/sub/deep"
+  const segs = pathStr.split('/').filter(Boolean);
+  let cur = ROOT;
+
+  for (let i = 0; i < segs.length; i++) {
+    if (!cur.loaded) await loadNode(cur);
+    const next = cur.children.find(c => c.type === 'folder' && c.name === segs[i]);
+    if (!next) { toast(`Folder "${segs[i]}" not found`); break; }
+    cur = next;
+  }
+
+  CURRENT_NODE = cur === ROOT ? null : cur;
+  if (CURRENT_NODE) {
+    if (!CURRENT_NODE.loaded) {
+      showLoad(`Loading ${CURRENT_NODE.name}…`);
+      await loadNode(CURRENT_NODE);
+    }
+    setBreadcrumbs(CURRENT_NODE);
+  } else {
+    bc([{ l:'Gallery' }]);
+  }
+
+  updateStats(); renderFolderNav(); renderCurrent();
+}
+
+// ============================================================================
+// GO TO ROOT
+// ============================================================================
+function goRoot() {
+  CURRENT_NODE = null;
+  pushHash(null);
+  bc([{ l: SEC === 'gallery' ? 'Gallery' : 'All Files' }]);
+  renderCurrent();
+}
+
+// ============================================================================
+// GET PATH STRING FROM NODE  e.g. "test/sub"
+// ============================================================================
+function getNodePath(node) {
+  if (!node || node === ROOT) return '';
+  // Walk from BASE_URL: node.url = BASE_URL + "test/sub/"
+  return node.url.replace(BASE_URL, '').replace(/\/$/, '');  // → "test/sub"
+}
+
+// ============================================================================
+// SET BREADCRUMBS FOR A NODE
+// ============================================================================
+function setBreadcrumbs(node) {
+  if (!node) { bc([{ l: SEC === 'gallery' ? 'Gallery' : 'All Files' }]); return; }
+  const path = getNodePath(node);
+  const segs = path.split('/').filter(Boolean);
+  const crumbs = [{ l:'Root', action:'goRoot()' }];
+
+  let cur = ROOT;
+  for (let i = 0; i < segs.length; i++) {
+    const child = cur.children.find(c => c.type === 'folder' && c.name === segs[i]);
+    if (!child) break;
+    const snap = child;
+    if (i === segs.length - 1) {
+      crumbs.push({ l: segs[i] });
+    } else {
+      crumbs.push({ l: segs[i], action:`drillFolder(findNodeBySegments(${JSON.stringify(segs.slice(0,i+1))}))` });
+    }
+    cur = child;
+  }
+  bc(crumbs);
+}
+
+// ============================================================================
+// RENDER CURRENT VIEW
+// ============================================================================
+function renderCurrent() {
+  if (SEC === 'history') { renderHistView(); return; }
+
+  const node = CURRENT_NODE || ROOT;
+  if (!node) { showWelcome(); return; }
+
+  const q  = document.getElementById('q').value.toLowerCase().trim();
+  const tf = document.getElementById('type-filter').value;
+
+  let items = [...node.children];
+
+  // Apply search & filters
+  if (q)  items = items.filter(it => it.name.toLowerCase().includes(q));
+  if (tf === 'image') items = items.filter(it => it.kind === 'image');
+  if (tf === 'video') items = items.filter(it => it.kind === 'video');
+  if (tf === 'file')  items = items.filter(it => it.type === 'file' && it.kind === 'file');
+  if (SEC === 'gallery') items = items.filter(it => it.kind === 'image');
+
+  LB_IMGS = items.filter(it => it.kind === 'image');
+
+  hideAll();
+  if (VIEW === 'grid') renderGrid(items);
+  else renderList(items);
+}
+
+// ============================================================================
+// RENDER GRID
+// ============================================================================
+function renderGrid(items) {
+  const cols = document.getElementById('cols').value;
+  const gv   = document.getElementById('grid-view');
+  gv.style.cssText = `display:grid;grid-template-columns:repeat(${cols},1fr);gap:12px;padding:20px 24px;`;
+
+  if (!items.length) {
+    gv.innerHTML = `<div class="empty" style="grid-column:1/-1">
+      <div style="font-size:40px;opacity:.4;">${CURRENT_NODE ? '📂' : '🔍'}</div>
+      <p style="color:var(--dim)">${CURRENT_NODE ? 'Empty folder' : 'No files'}</p>
+    </div>`;
+    return;
+  }
+
+  gv.innerHTML = items.map((it, i) => {
+    const delay = Math.min(i * 0.03, 0.6) + 's';
+    if (it.type === 'folder') {
+      // Pass index so we can find the node reliably (no serialisation needed)
+      return `<div class="folder-card fu" style="animation-delay:${delay}" onclick="handleFolderClick(this)" data-folder-name="${esc(it.name)}">
+        <div style="width:40px;height:40px;background:rgba(251,191,36,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📁</div>
+        <div style="flex:1;min-width:0;">
+          <p class="syne" style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${esc(it.name)}">${esc(it.name)}</p>
+          <p style="font-size:11px;color:var(--dim);">${it.children.length} item${it.children.length !== 1 ? 's' : ''}${it.loaded ? '' : ' · click to load'}</p>
+        </div>
+      </div>`;
+    }
+    return renderFileCard(it, delay);
+  }).join('');
+}
+
+// Folder click handler — finds the node from the current node's children
+function handleFolderClick(el) {
+  const name = el.dataset.folderName;
+  const parent = CURRENT_NODE || ROOT;
+  const node = parent.children.find(c => c.type === 'folder' && c.name === name);
+  if (node) drillFolder(node);
+}
+
+function renderFileCard(f, delay) {
+  if (f.kind === 'image') {
+    const idx = LB_IMGS.indexOf(f);
+    return `<div class="img-card fu" style="animation-delay:${delay}" onclick="lbOpen(${idx})">
+      <img class="img-thumb" src="${esc(f.url)}" loading="lazy" alt="${esc(f.name)}"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+      <div class="img-ph" style="display:none">🖼️</div>
+      <div class="img-ov">
+        <span class="btn btn-g" style="color:#fff;border-color:rgba(255,255,255,.4);">👁 View</span>
+        <a href="${esc(f.url)}" download class="btn btn-g" style="color:#fff;border-color:rgba(255,255,255,.4);" onclick="event.stopPropagation()">⬇ Save</a>
+      </div>
+      <div class="img-meta">
+        <p style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${esc(f.name)}">${esc(f.name)}</p>
+        <p style="font-size:10px;color:var(--dim);">${f.ext.toUpperCase()}${f.size ? ' · '+fmtSz(f.size) : ''}</p>
+      </div>
+    </div>`;
+  }
+
+  if (f.kind === 'video') {
+    return `<div class="img-card fu" style="animation-delay:${delay}" onclick="window.open('${esc(f.url)}','_blank')">
+      <div class="img-ph" style="background:linear-gradient(135deg,#f0e8ff,#e8f0fe)">🎬</div>
+      <div class="img-meta">
+        <p style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(f.name)}</p>
+        <p style="font-size:10px;color:var(--dim);">${f.ext.toUpperCase()}${f.size ? ' · '+fmtSz(f.size) : ''}</p>
+      </div>
+    </div>`;
+  }
+
+  const [icon, color] = fileStyle(f.ext);
+  return `<div class="file-card fu" style="animation-delay:${delay}" onclick="window.open('${esc(f.url)}','_blank')">
+    <div style="font-size:32px;">${icon}</div>
+    <p style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${esc(f.name)}">${esc(f.name)}</p>
+    <div style="display:flex;justify-content:space-between;">
+      <span class="tag" style="background:${color}22;color:${color}">${f.ext.toUpperCase()}</span>
+      ${f.size ? `<span style="font-size:10px;color:var(--dim)">${fmtSz(f.size)}</span>` : ''}
+    </div>
+  </div>`;
+}
+
+// ============================================================================
+// RENDER LIST
+// ============================================================================
+function renderList(items) {
+  document.getElementById('list-view').style.display = 'block';
+  const folderPath = CURRENT_NODE ? getNodePath(CURRENT_NODE) : '/';
+  document.getElementById('list-body').innerHTML = items.map(it => {
+    if (it.type === 'folder') {
+      return `<tr onclick="handleFolderClickByName('${esc(it.name)}')">
+        <td style="display:flex;align-items:center;gap:8px;"><span style="font-size:18px;">📁</span> ${esc(it.name)}/</td>
+        <td style="color:var(--dim);font-size:11px;">${esc(folderPath)}</td>
+        <td><span class="tag" style="background:#fef3c7;color:#92400e;">FOLDER</span></td>
+        <td style="color:var(--dim)">${it.children.length} items${it.loaded?'':' (unloaded)'}</td>
+        <td style="color:var(--dim)">—</td>
+      </tr>`;
+    }
+    const [icon, color] = fileStyle(it.ext);
+    const typeIc = it.kind==='image'?'🖼️':it.kind==='video'?'🎬':icon;
+    return `<tr onclick="${it.kind==='image'?`lbOpen(${LB_IMGS.indexOf(it)})`:`window.open('${esc(it.url)}','_blank')`}">
+      <td style="display:flex;align-items:center;gap:8px;min-width:0;">
+        <span style="font-size:16px;flex-shrink:0;">${typeIc}</span>
+        <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;" title="${esc(it.name)}">${esc(it.name)}</span>
+      </td>
+      <td style="color:var(--dim);font-size:11px;">${esc(folderPath)}</td>
+      <td><span class="tag" style="background:${color}22;color:${color}">${it.ext.toUpperCase()}</span></td>
+      <td style="color:var(--dim)">${it.size ? fmtSz(it.size) : '—'}</td>
+      <td style="color:var(--dim)">${it.mtime ? new Date(it.mtime).toLocaleDateString() : '—'}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="5" style="text-align:center;padding:60px;color:var(--dim);">Empty folder</td></tr>';
+}
+
+function handleFolderClickByName(name) {
+  const parent = CURRENT_NODE || ROOT;
+  const node = parent.children.find(c => c.type === 'folder' && c.name === name);
+  if (node) drillFolder(node);
+}
+
+// ============================================================================
+// SIDEBAR FOLDER TREE
+// ============================================================================
+
+// Track which nodes are expanded in the sidebar (by node reference)
+const EXPANDED = new WeakSet();
+
+function renderFolderNav() {
+  const container = document.getElementById('folder-nav');
+  if (!ROOT) {
+    container.innerHTML = '<div style="padding:8px 14px;color:var(--dim);font-size:11px;">Not scanned</div>';
+    return;
+  }
+  // Always expand ROOT so its children are visible from the start
+  EXPANDED.add(ROOT);
+  container.innerHTML = `<div class="tree-root">${renderTreeNode(ROOT, 0)}</div>`;
+}
+
+const chevron = `<svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,1 6,4 2,7"/></svg>`;
+
+function renderTreeNode(node, depth) {
+  const isRoot     = node === ROOT;
+  const isActive   = !isRoot && CURRENT_NODE === node;
+  const isExpanded = EXPANDED.has(node);
+  const subFolders = node.children.filter(c => c.type === 'folder');
+  const hasKids    = subFolders.length > 0 || !node.loaded;
+  const fileCount  = node.children.filter(c => c.type === 'file').length;
+  // ROOT has no path — clicking it goes to root view
+  const path       = isRoot ? '' : getNodePath(node);
+
+  const icon = isRoot ? '🗄️' : (isActive || isExpanded) ? '📂' : '📁';
+  const toggleClass = !hasKids ? 'empty' : (isExpanded ? 'open' : '');
+
+  const badge = node.loaded && fileCount
+    ? `<span class="tree-badge">${fileCount}f</span>`
+    : (!node.loaded && !isRoot)
+    ? `<span class="tree-badge">…</span>`
+    : '';
+
+  let childrenHtml = '';
+  if (isExpanded) {
+    if (!node.loaded) {
+      childrenHtml = `<div class="tree-children"><div style="height:22px;display:flex;align-items:center;padding-left:6px;font-size:11px;color:var(--muted);"><i class="tree-spinning">↻</i>&nbsp;Loading…</div></div>`;
+    } else if (subFolders.length) {
+      childrenHtml = `<div class="tree-children">${subFolders.map(f => renderTreeNode(f, depth + 1)).join('')}</div>`;
+    }
+  }
+
+  // Root row uses goRoot(); other rows use treeRowClick
+  const rowClick = isRoot
+    ? `onclick="goRoot()"`
+    : `onclick="treeRowClick(event,'${esc(path)}')"`;
+
+  const toggleClick = isRoot
+    ? `onclick="treeToggleRoot(event)"`
+    : `onclick="treeToggle(event,'${esc(path)}')"`;
+
+  const labelStyle = isRoot
+    ? 'font-weight:600;font-size:12px;color:var(--text);letter-spacing:.02em;'
+    : '';
+
+  return `<div class="tree-node">
+    <div class="tree-row${isActive ? ' active' : ''}${isRoot ? ' tree-row-root' : ''}"
+         ${rowClick} title="${esc(node.name)}">
+      <span class="tree-toggle ${toggleClass}" ${toggleClick}>${chevron}</span>
+      <span class="tree-icon">${icon}</span>
+      <span class="tree-label" style="${labelStyle}">${esc(node.name)}</span>
+      ${badge}
+    </div>
+    ${childrenHtml}
+  </div>`;
+}
+
+// Toggle ROOT expand/collapse
+function treeToggleRoot(event) {
+  event.stopPropagation();
+  if (EXPANDED.has(ROOT)) EXPANDED.delete(ROOT);
+  else EXPANDED.add(ROOT);
+  renderFolderNav();
+}
+
+// Click the row label → drill into the folder
+function treeRowClick(event, path) {
+  // Don't fire if the toggle arrow was clicked (it has its own handler)
+  if (event.target.classList.contains('tree-toggle')) return;
+  drillByPath(path);
+}
+
+// Click the toggle arrow → expand/collapse without navigating
+async function treeToggle(event, path) {
+  event.stopPropagation();
+  const segs = path.split('/').filter(Boolean);
+  const node = findNodeBySegments(segs);
+  if (!node) return;
+
+  if (EXPANDED.has(node)) {
+    EXPANDED.delete(node);
+    renderFolderNav();
+    return;
+  }
+
+  EXPANDED.add(node);
+
+  if (!node.loaded) {
+    renderFolderNav(); // show spinner
+    try {
+      await loadNode(node);
+      updateStats();
+    } catch(e) {
+      console.error(e);
+      toast(`✗ Could not load ${node.name}`);
+      EXPANDED.delete(node);
+    }
+  }
+  renderFolderNav();
+}
+
+// ============================================================================
+// LIGHTBOX
+// ============================================================================
+function lbOpen(idx) {
+  if (idx < 0 || idx >= LB_IMGS.length) return;
+  LB_IDX = idx;
+  document.getElementById('lb-img').src = LB_IMGS[idx].url;
+  document.getElementById('lb-cap').textContent = `${LB_IMGS[idx].name} (${idx+1}/${LB_IMGS.length})`;
+  document.getElementById('lb').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  addHist({ type:'view', name:LB_IMGS[idx].name, url:LB_IMGS[idx].url, ts:Date.now() });
+  saveHist(); renderHistPanel();
+}
+
+function lbClose() {
+  document.getElementById('lb').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function lbNav(dir) {
+  LB_IDX = (LB_IDX + dir + LB_IMGS.length) % LB_IMGS.length;
+  const img = document.getElementById('lb-img');
+  img.style.opacity = '0';
+  setTimeout(() => {
+    img.src = LB_IMGS[LB_IDX].url;
+    img.style.opacity = '1';
+    document.getElementById('lb-cap').textContent = `${LB_IMGS[LB_IDX].name} (${LB_IDX+1}/${LB_IMGS.length})`;
+  }, 150);
+}
+
+// ============================================================================
+// HISTORY
+// ============================================================================
+function loadHist() { try { HIST = JSON.parse(localStorage.getItem('storage_hist')||'[]'); } catch { HIST=[]; } }
+function saveHist() { HIST=HIST.slice(0,MAX_HIST); localStorage.setItem('storage_hist',JSON.stringify(HIST)); }
+function addHist(e) { HIST.unshift(e); }
+function clearHistory() { HIST=[]; saveHist(); renderHistPanel(); renderHistView(); toast('History cleared'); }
+
+function renderHistPanel() {
+  const el = document.getElementById('hp-list');
+  if (!HIST.length) { el.innerHTML='<div style="padding:20px;text-align:center;color:var(--dim);">No history yet</div>'; return; }
+  el.innerHTML = HIST.slice(0,40).map(h => {
+    const label = h.type==='view' ? h.name : h.type==='scan' ? 'Scan root' : (h.name || h.folder);
+    const ic    = h.type==='view' ? `<img src="${esc(h.url)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.outerHTML='🖼️'">` : (h.type==='scan'?'🔄':'📁');
+    const click = h.type==='view' ? `lbOpen(LB_IMGS.findIndex(f=>f.url==="${esc(h.url)}"))`
+                : h.type==='folder' ? `drillByPath('${esc(h.folder)}')` : '';
+    return `<div class="hpanel-row" onclick="${click}">
+      <div class="hist-th">${ic}</div>
+      <div style="flex:1;min-width:0;">
+        <p style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(label)}</p>
+        <p style="font-size:10px;color:var(--dim);">${ago(h.ts)}</p>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderHistView() {
+  document.getElementById('history-view').style.display = 'block';
+  const el = document.getElementById('hv-list');
+  if (!HIST.length) { el.innerHTML='<div style="padding:60px;text-align:center;color:var(--dim);">No history yet.</div>'; return; }
+  el.innerHTML = HIST.map((h,i) => {
+    const color = h.type==='scan'?'#5b6af0':h.type==='folder'?'#f59e0b':'#16a36a';
+    const label = h.type==='view' ? h.name : h.type==='scan' ? 'Scanned root' : (h.name || h.folder);
+    const click = h.type==='view' ? `lbOpen(LB_IMGS.findIndex(f=>f.url==="${esc(h.url)}"))` :
+                  h.type==='folder' ? `drillByPath('${esc(h.folder)}')` : '';
+    return `<div class="hist-row fu" style="animation-delay:${Math.min(i*0.03,0.6)}s" onclick="${click}">
+      <div class="hist-th">${h.type==='view'?`<img src="${esc(h.url)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.outerHTML='🖼️'">`:(h.type==='scan'?'🔄':'📁')}</div>
+      <div style="flex:1;min-width:0;">
+        <p style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(label)}</p>
+        <p style="font-size:10px;color:var(--dim);">${ago(h.ts)}</p>
+      </div>
+      <span class="tag" style="background:${color}22;color:${color}">${h.type.toUpperCase()}</span>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================================
+// UI HELPERS
+// ============================================================================
+function showSec(sec) {
+  SEC = sec;
+  ['gallery','all','history'].forEach(s => document.getElementById('nav-'+s)?.classList.remove('active'));
+  document.getElementById('nav-'+sec)?.classList.add('active');
+  hideAll();
+
+  if (sec === 'history') {
+    renderHistView();
+    bc([{ l:'History' }]);
+    return;
+  }
+  if (!ROOT?.loaded) { showWelcome(); return; }
+  setBreadcrumbs(CURRENT_NODE);
+  renderCurrent();
+}
+
+function setView(v) {
+  VIEW = v;
+  document.getElementById('btn-grid').classList.toggle('on', v==='grid');
+  document.getElementById('btn-list').classList.toggle('on', v==='list');
+  renderCurrent();
+}
+
+function toggleHistPanel() {
+  document.getElementById('hist-panel').classList.toggle('open');
+  document.getElementById('main').classList.toggle('hist-open');
+}
+
+function bc(crumbs) {
+  document.getElementById('bc').innerHTML = crumbs.map((c,i) =>
+    `${i ? '<span class="crumb-sep">/</span>' : ''}
+     <span class="crumb ${i===crumbs.length-1?'leaf':''}" ${c.action?`onclick="${c.action}"`:''} style="${c.action?'cursor:pointer':''}">${esc(c.l)}</span>`
+  ).join('');
+}
+
+function hideAll() {
+  ['welcome','loading','grid-view','list-view','history-view'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
+
+function showWelcome() { hideAll(); document.getElementById('welcome').style.display='flex'; }
+function showLoad(msg) { hideAll(); document.getElementById('loading').style.display='flex'; document.getElementById('load-msg').textContent=msg; }
+
+function updateStats() {
+  let files=0, imgs=0, vids=0, folders=0, size=0;
+  function walk(node) {
+    for (const c of node.children) {
+      if (c.type==='folder') { folders++; walk(c); }
+      else { files++; if(c.kind==='image')imgs++; if(c.kind==='video')vids++; if(c.size)size+=c.size; }
+    }
+  }
+  if (ROOT) walk(ROOT);
+  document.getElementById('s-total').textContent = files.toLocaleString();
+  document.getElementById('s-img').textContent   = imgs.toLocaleString();
+  document.getElementById('s-vid').textContent   = vids.toLocaleString();
+  document.getElementById('s-fold').textContent  = folders.toLocaleString();
+  document.getElementById('s-size').textContent  = size ? fmtSz(size) : '—';
+}
+
+function prog(pct, msg) {
+  if (pct != null) { document.getElementById('prog-fill').style.width=pct+'%'; document.getElementById('scan-pct').textContent=Math.round(pct)+'%'; }
+  if (msg) document.getElementById('scan-status').textContent = msg;
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3400);
+}
+
+function fmtSz(b) {
+  if (!b) return '—';
+  const u=['B','KB','MB','GB','TB']; let i=0;
+  while (b>=1024&&i<u.length-1){b/=1024;i++;}
+  return b.toFixed(1)+' '+u[i];
+}
+
+function ago(ts) {
+  const d = Date.now()-ts;
+  if(d<60000)return'just now';
+  if(d<3600000)return Math.floor(d/60000)+'m ago';
+  if(d<86400000)return Math.floor(d/3600000)+'h ago';
+  return Math.floor(d/86400000)+'d ago';
+}
+
+function esc(s) {
+  return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);
+}
+
+function fileStyle(ext) {
+  const icons={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',zip:'📦',tar:'📦',rar:'📦',mp3:'🎵',wav:'🎵',txt:'📃',js:'💻',ts:'💻',py:'🐍',html:'🌐',css:'🎨',json:'📋',sql:'🗄️',sh:'⚙️'};
+  const colors={pdf:'#ef4444',doc:'#5b6af0',docx:'#5b6af0',xls:'#16a34a',xlsx:'#16a34a',zip:'#8b5cf6',mp3:'#e0579a',js:'#d97706',py:'#16a34a',html:'#ea580c',css:'#0284c7',json:'#d97706'};
+  const e = (ext||'').toLowerCase();
+  return [icons[e]||'📄', colors[e]||'#64748b'];
+}
+
+// ============================================================================
+// HASH ROUTING
+// ============================================================================
+function pushHash(pathStr) {
+  const h = pathStr ? '#p='+encodeURIComponent(pathStr) : '#';
+  history.pushState(null, '', h);
+}
+
+function readHash() {
+  const h = location.hash.slice(1);
+  if (!h) return null;
+  const params = new URLSearchParams(h);
+  return params.get('p') || null;
+}
+
+window.addEventListener('popstate', () => {
+  const path = readHash();
+  if (path) drillByPath(path);
+  else goRoot();
+});
+
+// ============================================================================
+// DRAG & DROP UPLOAD
+// ============================================================================
+window.addEventListener('dragenter', e => { e.preventDefault(); dragCounter++; if(dragCounter===1)document.getElementById('drop-overlay').classList.add('active'); });
+window.addEventListener('dragleave', e => { e.preventDefault(); dragCounter--; if(dragCounter===0)document.getElementById('drop-overlay').classList.remove('active'); });
+window.addEventListener('dragover',  e => e.preventDefault());
+window.addEventListener('drop', async e => {
+  e.preventDefault();
+  dragCounter=0;
+  document.getElementById('drop-overlay').classList.remove('active');
+  const files = e.dataTransfer?.files;
+  if (!files?.length || !BASE_URL) return;
+  const targetNode = CURRENT_NODE || ROOT;
+  const targetUrl  = targetNode.url;
+  toast(`Uploading ${files.length} file${files.length>1?'s':''}…`);
+  let ok=0;
+  for (const file of files) {
+    try {
+      const res = await fetch(targetUrl+encodeURIComponent(file.name), { method:'PUT', body:file, headers:{'Content-Type':file.type||'application/octet-stream'} });
+      if (res.ok) ok++;
+    } catch(err){ console.error(err); }
+  }
+  if (ok) {
+    toast(`✓ ${ok}/${files.length} uploaded`);
+    targetNode.loaded = false;   // force reload
+    await loadNode(targetNode);
+    renderCurrent(); updateStats();
+  } else {
+    toast('✗ Upload failed — check server write permissions');
+  }
+});
+
+// ============================================================================
+// INIT
+// ============================================================================
+window.addEventListener('DOMContentLoaded', () => {
+  loadHist(); renderHistPanel(); renderHistView();
+  document.getElementById('server-url').value = 'http://10.10.20.13:6060/tallyapp/v2/';
+
+  document.addEventListener('keydown', e => {
+    if (e.key==='Escape') lbClose();
+    if (e.key==='ArrowLeft') lbNav(-1);
+    if (e.key==='ArrowRight') lbNav(1);
+  });
+  document.getElementById('lb').addEventListener('click', e => { if(e.target===e.currentTarget)lbClose(); });
+
+  startScan();
+});
+</script>
+</body>
+</html>
