@@ -122,6 +122,25 @@ export class InvoiceDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+    downloadReceiptInvoice(): void {
+    if (this.downloadingBackend) return;
+
+    this.downloadingBackend = true;
+    this.invoiceService
+      .downloadInvoiceReceipt(this.orgId, this.invoiceId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (pdfRes: Blob) => {
+          this.handleBlobDownload(pdfRes);
+          this.downloadingBackend = false;
+        },
+        error: (err) => {
+          this.downloadingBackend = false;
+          this.invoiceService.showToastErrorResponse(err);
+        }
+      });
+  }
+
   private handleBlobDownload(blob: Blob): void {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');

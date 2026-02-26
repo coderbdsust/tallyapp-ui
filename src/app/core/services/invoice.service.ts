@@ -55,6 +55,13 @@ export class InvoiceService extends CommonService {
         .pipe(catchError(this.mapErrorResponse));
   }
 
+    public downloadInvoiceReceipt(organizationId: string, invoiceId:string):Observable<Blob> {
+    const url = `${environment.tallyURL}/pdf/v1/invoice/receipt/${organizationId}/${invoiceId}/download`;
+      return this.http
+        .get(url, {responseType: 'blob'})
+        .pipe(catchError(this.mapErrorResponse));
+  }
+
    public downloadExtInvoice(organizationId: string, invoiceId:string):Observable<Blob> {
     const url = `${environment.tallyURL}/pdf/v1/invoice/ext/${organizationId}/${invoiceId}/download`;
       return this.http
