@@ -15,6 +15,7 @@ import { OrganizationService } from 'src/app/core/services/organization.service'
 import { AccountingService } from 'src/app/core/services/accounting.service';
 import { ToWords } from 'to-words';
 import { CashtypeService } from 'src/app/core/services/cashtype.service';
+import { CashTxnViewComponent } from '../../components/cash-txn-view/cash-txn-view.component';
 
 
 @Component({
@@ -25,7 +26,7 @@ import { CashtypeService } from 'src/app/core/services/cashtype.service';
     ReactiveFormsModule,
     CommonModule,
     CashBalanceViewerComponent,
-    TransactionViewComponent,
+    CashTxnViewComponent,
     DropdownComponent,
     CashoutTypeDrawerComponent
   ],

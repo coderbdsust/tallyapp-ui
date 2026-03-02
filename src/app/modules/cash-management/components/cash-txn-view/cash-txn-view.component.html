@@ -1,0 +1,269 @@
+<div class="mt-2 flex min-w-full flex-col rounded-lg border border-muted/20 bg-background shadow-sm">
+
+  <!-- Filters Section -->
+  <div class="flex flex-wrap items-center justify-between gap-2 border-b border-muted/20 bg-muted/5 p-2">
+    <div class="flex flex-wrap items-center gap-2">
+
+      <!-- Status Filter -->
+      <div class="flex items-center gap-1">
+        <select name="cashTxnStatus" [value]="cashTxnStatus" (change)="onSelectTxnStatusChange($event)"
+          class="px-2 py-1 text-xs text-gray-700 bg-white border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
+          <option value="">All Status</option>
+          <option *ngFor="let txn of txnStatusList" [value]="txn">
+            {{ txn | word }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Active Filter Chips -->
+      <div class="flex flex-wrap items-center gap-1">
+        <ng-container *ngIf="cashTxnStatus">
+          <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium"
+            [ngClass]="{
+              'bg-amber-100 text-amber-700 border border-amber-200':  cashTxnStatus === 'PENDING',
+              'bg-emerald-100 text-emerald-700 border border-emerald-200': cashTxnStatus === 'APPROVED',
+              'bg-red-100 text-red-700 border border-red-200': cashTxnStatus === 'REJECTED'
+            }">
+            <span class="h-1.5 w-1.5 rounded-full"
+              [ngClass]="{
+                'bg-amber-500': cashTxnStatus === 'PENDING',
+                'bg-emerald-500': cashTxnStatus === 'APPROVED',
+                'bg-red-500': cashTxnStatus === 'REJECTED'
+              }"></span>
+            {{ cashTxnStatus | word }}
+            <button class="ml-0.5 opacity-60 hover:opacity-100" (click)="clearStatusFilter()">✕</button>
+          </span>
+        </ng-container>
+
+        <ng-container *ngIf="cashType">
+          <span class="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-100 px-2 py-0.5 text-[10px] font-medium text-blue-700">
+            <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+            {{ cashType | word }}
+          </span>
+        </ng-container>
+
+        <span *ngIf="!cashTxnStatus && !cashType"
+          class="text-[10px] text-muted-foreground/60 italic">No filters active</span>
+      </div>
+    </div>
+
+    <!-- Page Size -->
+    <div class="flex items-center gap-1 text-xs text-muted-foreground">
+      <span>Show</span>
+      <select class="rounded border border-gray-300 px-2 py-1 text-xs" name="rowSize" (change)="onSelectChange($event)">
+        <option *ngFor="let option of getPageSizeOptions()" [value]="option.value" [selected]="option.value === selectedRows">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center py-8">
+    <div class="h-6 w-6 animate-spin rounded-full border-b-2 border-primary"></div>
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="!loading"
+    class="grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted scrollbar-thumb-rounded scrollbar-track-rounded">
+    <table class="w-full table-auto border-collapse text-left text-xs text-muted-foreground">
+      <thead>
+        <tr class="border-b border-muted/20 bg-muted/10 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+          <th class="px-3 py-2.5 border-r border-muted/10">Cash Type</th>
+          <th class="px-3 py-2.5 border-r border-muted/10">Date</th>
+          <th class="px-3 py-2.5 border-r border-muted/10 text-right">Amount</th>
+          <th class="px-3 py-2.5 border-r border-muted/10">Status</th>
+          <th class="px-3 py-2.5 border-r border-muted/10">Reference</th>
+          <th class="px-3 py-2.5 border-r border-muted/10">Description</th>
+          <th class="px-3 py-2.5 border-r border-muted/10">Entry By</th>
+          <th class="px-3 py-2.5 text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-muted/10">
+
+        <tr *ngFor="let txn of pageResponse?.content; let i = index"
+          class="group transition-colors duration-100 hover:bg-muted/5">
+
+          <!-- Cash Type -->
+          <td class="border-r border-muted/10 px-3 py-2">
+            <span class="inline-flex items-center gap-1.5 rounded-md bg-muted/10 px-2 py-1 text-[11px] font-medium text-foreground">
+              {{ txn.cashTypeName | word }}
+            </span>
+          </td>
+
+          <!-- Date -->
+          <td class="border-r border-muted/10 px-3 py-2">
+            <div class="leading-snug">
+              <div class="font-medium text-foreground">{{ txn.transactionDate | date : 'dd MMM yyyy' }}</div>
+              <div class="text-[10px] text-muted-foreground/70">{{ txn.transactionDate | date : 'HH:mm' }}</div>
+            </div>
+          </td>
+
+          <!-- Amount -->
+          <td class="border-r border-muted/10 px-3 py-2 text-right">
+            <span class="font-semibold tabular-nums text-foreground">
+              {{ formatCurrency(txn.amount) }}
+            </span>
+          </td>
+
+          <!-- Status -->
+          <td class="border-r border-muted/10 px-3 py-2">
+            <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold"
+              [ngClass]="{
+                'bg-amber-100 text-amber-700':   txn.status === 'PENDING',
+                'bg-emerald-100 text-emerald-700': txn.status === 'APPROVED',
+                'bg-red-100 text-red-700':         txn.status === 'REJECTED'
+              }">
+              <span class="h-1.5 w-1.5 rounded-full"
+                [ngClass]="{
+                  'bg-amber-500':   txn.status === 'PENDING',
+                  'bg-emerald-500': txn.status === 'APPROVED',
+                  'bg-red-500':     txn.status === 'REJECTED'
+                }"></span>
+              {{ txn.status | word }}
+            </span>
+          </td>
+
+          <!-- Reference -->
+          <td class="border-r border-muted/10 px-3 py-2">
+            <span class="font-mono text-[11px] text-muted-foreground">{{ txn.reference }}</span>
+          </td>
+
+          <!-- Description -->
+          <td class="border-r border-muted/10 px-3 py-2 max-w-[160px]">
+            <span class="block truncate text-muted-foreground" [title]="txn.description">
+              {{ txn.description || '—' }}
+            </span>
+          </td>
+
+          <!-- Entry By -->
+          <td class="border-r border-muted/10 px-3 py-2">
+            <div class="flex items-center gap-1.5">
+              <span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-[9px] font-bold uppercase text-primary">
+                {{ txn.createdBy.charAt(0) }}
+              </span>
+              <span class="text-[11px] text-muted-foreground">{{ txn.createdBy }}</span>
+            </div>
+          </td>
+
+          <!-- Actions -->
+          <td class="px-3 py-2" >
+            <div class="flex items-center justify-center gap-1.5">
+              <ng-container *ngIf="txn.status === 'PENDING'">
+                <button
+                  class="inline-flex h-6 w-6 items-center justify-center rounded border border-emerald-200 bg-emerald-50 text-emerald-600 transition-colors hover:bg-emerald-100 hover:text-emerald-700"
+                  (click)="approveTxn(txn.id)"
+                  title="Approve">
+                  <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                </button>
+                <button
+                  class="inline-flex h-6 w-6 items-center justify-center rounded border border-red-200 bg-red-50 text-red-500 transition-colors hover:bg-red-100 hover:text-red-700"
+                  (click)="openRejectModal(txn.id)"
+                  title="Reject">
+                  <svg-icon src="./assets/icons/heroicons/outline/x.svg" [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                </button>
+            </ng-container>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Empty State -->
+        <tr *ngIf="!hasData">
+          <td class="py-10 text-center" colspan="8">
+            <div class="flex flex-col items-center gap-2 text-muted-foreground/50">
+              <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg" [svgClass]="'h-10 w-10'"></svg-icon>
+              <span class="text-xs">No transactions found</span>
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="showPagination && !loading"
+    class="flex flex-wrap items-center justify-between gap-2 border-t border-muted/20 bg-muted/5 px-3 py-2 text-xs text-muted-foreground">
+    <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
+
+    <div class="inline-flex items-center gap-1">
+      <button *ngIf="!first"
+        class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs transition-colors hover:bg-muted-foreground/10"
+        (click)="goToFirstPage()" title="First Page">
+        <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-3 w-3'"></svg-icon>
+      </button>
+      <button
+        class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs transition-colors disabled:opacity-50 hover:bg-muted-foreground/10"
+        [disabled]="first" (click)="goToPreviousPage()" title="Previous Page">
+        <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-3 w-3'"></svg-icon>
+      </button>
+
+      <ng-container *ngFor="let page of getVisiblePages()">
+        <button *ngIf="isClickablePage(page)"
+          class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs transition-colors"
+          [ngClass]="{
+            'bg-primary text-primary-foreground': isCurrentPage(page),
+            'hover:bg-muted-foreground/10': !isCurrentPage(page)
+          }"
+          (click)="goToPage(page)">
+          {{ getPageNumber(page) }}
+        </button>
+        <span *ngIf="!isClickablePage(page)"
+          class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center text-xs">...</span>
+      </ng-container>
+
+      <button
+        class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs transition-colors disabled:opacity-50 hover:bg-muted-foreground/10"
+        [disabled]="last" (click)="goToNextPage()" title="Next Page">
+        <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-3 w-3'"></svg-icon>
+      </button>
+      <button *ngIf="!last"
+        class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs transition-colors hover:bg-muted-foreground/10"
+        (click)="goToLastPage()" title="Last Page">
+        <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-3 w-3'"></svg-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Rejection Reason Modal -->
+  <div *ngIf="showRejectModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+    (click)="closeRejectModal()">
+    <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
+      <div class="mb-4 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-red-100 text-red-500">
+            <svg-icon src="./assets/icons/heroicons/outline/x.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+          </span>
+          <h3 class="text-sm font-semibold text-gray-800">Reject Transaction</h3>
+        </div>
+        <button class="text-gray-400 hover:text-gray-600" (click)="closeRejectModal()">
+          <svg-icon src="./assets/icons/heroicons/outline/x.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        </button>
+      </div>
+      <p class="mb-3 text-xs text-muted-foreground">
+        Please provide a reason for rejecting this transaction. This will be recorded against the transaction.
+      </p>
+      <textarea
+        class="w-full rounded border border-gray-300 p-2 text-xs text-gray-700 focus:border-red-400 focus:outline-none focus:ring-1 focus:ring-red-200"
+        rows="4"
+        placeholder="Enter rejection reason..."
+        [(ngModel)]="rejectReason">
+      </textarea>
+      <div class="mt-4 flex justify-end gap-2">
+        <button
+          class="rounded border border-gray-300 px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-50"
+          (click)="closeRejectModal()">
+          Cancel
+        </button>
+        <button
+          class="rounded bg-red-500 px-3 py-1.5 text-xs text-white disabled:opacity-50 hover:bg-red-600"
+          [disabled]="!rejectReason.trim()"
+          (click)="confirmReject()">
+          Confirm Reject
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

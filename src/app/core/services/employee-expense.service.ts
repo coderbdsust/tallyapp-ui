@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
 import { EmployeeEarningSummary, EmployeeExpense, MonthlyIncomeData } from '../models/employee-expense.model';
+import { PageResponse } from 'src/app/common/models/page-response';
 
 @Injectable({
   providedIn: 'root'
@@ -33,9 +34,25 @@ export class EmployeeExpenseService extends CommonService {
       .pipe(catchError(this.mapErrorResponse));
   }
 
-  public getOrganizationExpenses(organizationId: string) {
+  public getEmployeeExpenses(organizationId: string, page: number, size: number, startDate: string|null, endDate: string|null, status: string|null) {
+
+    let params: any = {
+      page,
+      size
+    };
+
+    if (startDate) {
+      params.startDate = startDate;
+    }
+    if (endDate) {
+      params.endDate = endDate;
+    }
+    if (status) {
+      params.status = status;
+    }
+
     return this.http
-      .get<EmployeeExpense[]>(`${environment.tallyURL}/employee-expenses/v1/organization/${organizationId}`)
+      .get<PageResponse<EmployeeExpense>>(`${environment.tallyURL}/employee-expenses/v1/organization/${organizationId}`, { params })
       .pipe(catchError(this.mapErrorResponse));
   }
 

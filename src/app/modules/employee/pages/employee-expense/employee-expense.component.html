@@ -1,146 +1,114 @@
 <app-cash-balance-viewer [balanceSummary]="balanceSummary"></app-cash-balance-viewer>
 
 <div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
-    <form [formGroup]="form" (ngSubmit)="submit()">
-        <div class="flex gap-4 ">
-            <div class="w-6/12 mr-4">
-                <div>
-                    <label class="text-sm text-muted-foreground">Organization Name</label>
-                    <input type="text" placeholder=" " readonly [value]="org?.orgName"
-                        class="bg-gray-100 mb-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+      <!-- Row 1: Organization Name | Expense Date -->
+      <div>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">Organization Name</label>
+        <input type="text" placeholder=" " readonly [value]="org?.orgName"
+          class="w-full cursor-not-allowed rounded-md border border-muted/20 bg-gray-100 px-3 py-2 text-sm text-muted-foreground" />
+        <input type="hidden" formControlName="organizationId" />
+      </div>
 
-                    <input type="hidden" placeholder=" " formControlName="organizationId"
-                        class="bg-gray-100 mb-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
-                </div>
-
-                <div>
-                    <label class="text-sm text-muted-foreground">Payment Method</label>
-                    <select formControlName="paymentMethod"
-                        class=" block py-2  w-full  text-sm text-gray-500 bg-transparent border-1 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                        <option value="" disabled selected>Select Payment Method</option>
-                        <ng-container *ngFor="let method of allPaymentMethods; let i = index;">
-                            <option [value]="method">{{method}}</option>
-                        </ng-container>
-                    </select>
-                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'paymentMethod')">
-                        {{ getErrorMessage(form, 'paymentMethod') }}
-                    </div>
-                </div>
-
-                <div>
-                    <app-dropdown [options]="allExpenseTypes" [(selectedOption)]="expenseType"
-                            placeholder="Select Expense Type" label="Expense Type" [required]="true"
-                            addButtonText="Add" (onSelect)="onCategorySelect($event)" (onAddNew)="onAddCategory()">
-                    </app-dropdown>
-
-                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'expenseType')">
-                        {{ getErrorMessage(form, 'expenseType') }}
-                    </div>
-                </div>
-
-                <div>
-                    <label class="text-sm text-muted-foreground">Amount</label>
-                    <input type="number" placeholder=" " formControlName="amount"
-                        class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
-                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'amount')">
-                        {{ getErrorMessage(form, 'amount') }}
-                    </div>
-                </div>
-            </div>
-            <div class="w-6/12  mr-4">
-                <div>
-                    <label class="text-sm text-muted-foreground">Expense Date</label>
-                    <input type="date" placeholder=" " formControlName="expenseDate"
-                        class="w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
-                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'expenseDate')">
-                        {{ getErrorMessage(form, 'expenseDate') }}
-                    </div>
-                </div>
-
-                <div>
-                    <label class="text-sm text-muted-foreground">Employee Name</label>
-                    <select formControlName="employeeId"
-                        class="mt-2 block py-2  w-full  text-sm text-gray-500 bg-transparent border-1 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                        <option value="" selected>Select Employee</option>
-                        <ng-container *ngFor="let emp of allEmployees; let i = index;">
-                            <option [value]="emp.id">{{emp.fullName}}</option>
-                        </ng-container>
-                    </select>
-                    <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'employeeId')">
-                        {{ getErrorMessage(form, 'employeeId') }}
-                    </div>
-                </div>
-                <div>
-                    <label class="text-sm text-muted-foreground">Description</label>
-                    <textarea placeholder="" formControlName="description"
-                        class=" mb-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" ></textarea>
-
-                </div>
-                <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'description')">
-                        {{ getErrorMessage(form, 'description') }}
-                    </div>
-            </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">Expense Date</label>
+        <input type="date" formControlName="expenseDate"
+          class="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'expenseDate')">
+          {{ getErrorMessage(form, 'expenseDate') }}
         </div>
-        <div class="flex flex-row justify-end mt-2 mr-4 gap-2">
-            <button class="flex flex-row px-4 py-2 rounded-md" [disabled]="form.invalid" [ngClass]="{
-                    'bg-primary text-white': !form.invalid,
-                    'bg-gray-400 text-gray-200 cursor-not-allowed': form.invalid
-                }">
-                <svg-icon src="./assets/icons/heroicons/outline/minus-v2.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                <span class="ml-2">Expense</span>
-            </button>
+      </div>
 
-            <button class="flex flex-row px-4 py-2 bg-destructive text-white rounded-md hover:bg-primary/80"
-                (click)="cancel()">
-                <svg-icon src="./assets/icons/heroicons/outline/back.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
-                <span class="ml-2">Cancel</span>
-            </button>
+      <!-- Row 2: Payment Method | Employee Name -->
+      <div>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">Payment Method</label>
+        <select formControlName="paymentMethod"
+          class="w-full appearance-none rounded-md border border-border bg-background px-3 py-2 text-sm text-gray-500 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+          <option value="" disabled selected>Select Payment Method</option>
+          <option *ngFor="let method of allPaymentMethods" [value]="method">{{ method }}</option>
+        </select>
+        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'paymentMethod')">
+          {{ getErrorMessage(form, 'paymentMethod') }}
         </div>
+      </div>
 
-    </form>
-
-    <div class="mt-4 flex min-w-full flex-col rounded-xl border border-muted/40 bg-background p-2" *ngIf="employeeExpenses && employeeExpenses.length > 0">
-        <div
-            class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
-            <table
-                class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
-                <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
-                    <tr>
-                        <th># No</th>
-                        <th>Full Name</th>
-                        <th>Expense Date</th>
-                        <th>Mobile No</th>
-                        <th>Employee Type</th>
-                        <th>Amount</th>
-                        <th>Expense Type</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let emp of employeeExpenses; let i = index;">
-                        <td>{{ i + 1 }}</td>
-                        <td>{{ emp.employee.fullName }}</td>
-                        <td>{{ emp.expenseDate | date }}</td>
-                        <td>{{ emp.employee.mobileNo }}</td>
-                        <td>{{ emp.employee.employeeType }}</td>
-                        <td>{{ emp.amount }}</td>
-                        <td>{{ emp.expenseType.displayName}}</td>
-                        <td>{{ emp.status }}</td>
-                        <td>
-                            <button class="text-green-500 hover:text-green-700" (click)="approveExpense(emp.id)">
-                                <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                            </button>
-                            <button class="text-red-500 hover:text-red-700" (click)="rejectExpense(emp.id)">
-                                <svg-icon src="./assets/icons/heroicons/outline/x.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                            </button>
-                        </td>
-                    </tr>
-
-                </tbody>
-            </table>
+      <div>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">Employee Name</label>
+        <select formControlName="employeeId"
+          class="w-full appearance-none rounded-md border border-border bg-background px-3 py-2 text-sm text-gray-500 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+          <option value="" selected>Select Employee</option>
+          <option *ngFor="let emp of allEmployees" [value]="emp.id">{{ emp.fullName }}</option>
+        </select>
+        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'employeeId')">
+          {{ getErrorMessage(form, 'employeeId') }}
         </div>
+      </div>
 
+      <!-- Row 3: Expense Type | Reference -->
+      <div>
+        <app-dropdown [options]="allExpenseTypes" [(selectedOption)]="expenseType" placeholder="Select Expense Type"
+          label="Expense Type" [required]="true" addButtonText="Add" (onSelect)="onCategorySelect($event)"
+          (onAddNew)="onAddCategory()">
+        </app-dropdown>
+        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'expenseType')">
+          {{ getErrorMessage(form, 'expenseType') }}
+        </div>
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">Reference</label>
+        <input formControlName="reference"
+          class="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'reference')">
+          {{ getErrorMessage(form, 'reference') }}
+        </div>
+      </div>
+
+      <!-- Row 4: Amount | Description -->
+      <div>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">Amount</label>
+        <input type="number" formControlName="amount"
+          class="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
+        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'amount')">
+          {{ getErrorMessage(form, 'amount') }}
+        </div>
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">Description</label>
+        <textarea formControlName="description" rows="3"
+          class="w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
+        <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'description')">
+          {{ getErrorMessage(form, 'description') }}
+        </div>
+      </div>
     </div>
+
+    <!-- Actions -->
+    <div class="mt-6 flex justify-end gap-2 border-t border-border pt-4">
+      <button type="submit" [disabled]="form.invalid" [ngClass]="{
+          'bg-primary text-white hover:bg-primary/90': !form.invalid,
+          'cursor-not-allowed bg-gray-300 text-gray-400': form.invalid
+        }" class="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors">
+        <svg-icon src="./assets/icons/heroicons/outline/minus-v2.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        <span>Expense</span>
+      </button>
+
+      <button type="button" (click)="cancel()"
+        class="flex items-center gap-2 rounded-md bg-destructive px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-destructive/90">
+        <svg-icon src="./assets/icons/heroicons/outline/back.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        <span>Cancel</span>
+      </button>
+    </div>
+  </form>
+
+  <app-employee-expense-list
+    [orgId]="org?.id!"
+  [reload]="reloadList"
+    (approve)="approveExpense($event)"
+    (reject)="rejectExpense($event)">
+  </app-employee-expense-list>
+
 </div>
 <app-expense-type-drawer></app-expense-type-drawer>

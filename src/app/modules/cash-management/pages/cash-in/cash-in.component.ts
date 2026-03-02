@@ -15,6 +15,7 @@ import { ToWords } from 'to-words';
 import { CashtypeService } from 'src/app/core/services/cashtype.service';
 import { DropdownComponent, DropdownOption } from 'src/app/common/components/dropdown/dropdown.component';
 import { CashinTypeDrawerComponent } from './cashin-type-drawer/cashin-type-drawer.component';
+import { CashTxnViewComponent } from '../../components/cash-txn-view/cash-txn-view.component';
 
 
 @Component({
@@ -25,7 +26,7 @@ import { CashinTypeDrawerComponent } from './cashin-type-drawer/cashin-type-draw
     ReactiveFormsModule,
     CommonModule,
     CashBalanceViewerComponent,
-    TransactionViewComponent,
+    CashTxnViewComponent,
     DropdownComponent,
     CashinTypeDrawerComponent
   ],

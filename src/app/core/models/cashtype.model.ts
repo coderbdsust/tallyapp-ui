@@ -30,3 +30,19 @@ export enum CashTypeName {
   CASH_OUT_TYPE = "CASH_OUT_TYPE",
   EMPLOYEE_EXPENSE_TYPE = "EMPLOYEE_EXPENSE_TYPE"
 }
+
+export interface CashTxnSummaryDTO {
+    id:string;
+    status:string;
+    cashType: CashTypeName;
+    cashTypeName:string;
+    amount:number;
+    reference:string;
+    description:string;
+    transactionDate:Date;
+    rejectionReason:string;
+    approvedAt:Date;
+    rejectedAt:Date;
+    createdDate:Date;
+    createdBy:string;
+}

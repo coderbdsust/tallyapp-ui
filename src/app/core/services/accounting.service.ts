@@ -7,7 +7,7 @@ import { CashFlowBalanceSummary, OrganizationBalance, PageCashFlowReport, Recent
 import { ApiResponse } from '../models/auth.model';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { FinancialData } from '../models/journal.model';
-import { CashOutTypeRequest, CashOutTypeResponse, CashType } from '../models/cashtype.model';
+import { CashOutTypeRequest, CashOutTypeResponse, CashTxnSummaryDTO, CashType } from '../models/cashtype.model';
 
 
 @Injectable({
@@ -131,9 +131,46 @@ export class AccountingService extends CommonService {
       .pipe(catchError(this.mapErrorResponse));
   }
 
+  public getCashTransactionSummary(orgId: string, page: number, size: number, cashType: string|null, status: string|null) {
+
+    let params: any = {
+      page: page.toString(),
+      size: size.toString(),
+    };
+
+    if (cashType) params.cashType = cashType;
+    if (status) params.status = status;
+
+    return this.http
+      .get<PageResponse<CashTxnSummaryDTO>>(`${environment.tallyURL}/cash/v1/transactions/${orgId}`, {
+        params,
+      })
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public approveCashTransaction(id: string) {
+    let body = {
+      transactionId: id
+    }
+    return this.http
+      .post<ApiResponse>(`${environment.tallyURL}/cash/v1/approve`,  body)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public rejectCashTransaction(id: string, reason:string) {
+    let body = {
+      transactionId: id,
+      rejectionReason: reason
+    }
+    return this.http
+      .post<ApiResponse>(`${environment.tallyURL}/cash/v1/reject`, body)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
   public addCashOutType(cashOutTypeData: CashOutTypeRequest) {
     const url = `${environment.tallyURL}/cash/v1/types/cash-out/add`;
-    return this.http.post<CashOutTypeResponse>(url, cashOutTypeData);
+    return this.http.post<CashOutTypeResponse>(url, cashOutTypeData)
+    .pipe(catchError(this.mapErrorResponse));
   }
 
   public getTransactionStatementReport(

@@ -1,0 +1,174 @@
+<!-- Filters -->
+<div class="flex flex-wrap items-end gap-3 px-2 pt-2">
+  <div class="flex flex-col gap-1">
+    <label class="text-xs font-medium text-muted-foreground">From Date</label>
+    <input type="date" [(ngModel)]="filterFromDate" (change)="onFilterChange()"
+      class="rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" />
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <label class="text-xs font-medium text-muted-foreground">To Date</label>
+    <input type="date" [(ngModel)]="filterToDate" (change)="onFilterChange()"
+      class="rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" />
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <label class="text-xs font-medium text-muted-foreground">Status</label>
+    <select [(ngModel)]="filterStatus" (change)="onFilterChange()"
+      class="appearance-none min-w-[140px] rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+      <option value="">All Status</option>
+      <option value="PENDING">Pending</option>
+      <option value="APPROVED">Approved</option>
+      <option value="REJECTED">Rejected</option>
+    </select>
+  </div>
+
+  <button *ngIf="filterFromDate || filterToDate || filterStatus" (click)="clearFilters()"
+    class="flex items-center gap-1.5 rounded-md border border-border px-3 py-2 text-sm text-muted-foreground hover:bg-muted/20 transition-colors">
+    <svg-icon src="./assets/icons/heroicons/outline/x.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+    Clear
+  </button>
+
+  <!-- Page size + result count pushed to the right -->
+  <div class="ml-auto flex items-center gap-3 self-end">
+    <span *ngIf="filterFromDate || filterToDate || filterStatus"
+      class="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+      {{ totalRows }} result{{ totalRows !== 1 ? 's' : '' }}
+    </span>
+
+    <div class="flex items-center gap-1.5 text-xs text-muted-foreground">
+      Show
+      <select class="w-16 rounded-md border border-border bg-background p-2 text-xs" (change)="onSelectChange($event)">
+        <option *ngFor="let option of getPageSizeOptions()"
+          [value]="option.value"
+          [selected]="option.value === selectedRows">
+          {{ option.label }}
+        </option>
+      </select>
+      per page
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="flex items-center justify-center py-10">
+  <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
+</div>
+
+<!-- Table -->
+<div *ngIf="!loading"
+  class="mt-3 flex min-w-full flex-col rounded-xl border border-muted/40 bg-background p-2">
+  <div class="grow overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-track-transparent scrollbar-thumb-muted">
+    <table class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+      <thead class="border border-muted/20 text-xs text-muted-foreground">
+        <tr>
+          <th class="px-3 py-2.5 font-medium"># No</th>
+          <th class="px-3 py-2.5 font-medium">Full Name</th>
+          <th class="px-3 py-2.5 font-medium">Expense Date</th>
+          <th class="px-3 py-2.5 font-medium">Mobile No</th>
+          <th class="px-3 py-2.5 font-medium">Employee Type</th>
+          <th class="px-3 py-2.5 font-medium">Amount</th>
+          <th class="px-3 py-2.5 font-medium">Expense Type</th>
+          <th class="px-3 py-2.5 font-medium">Status</th>
+          <th class="px-3 py-2.5 font-medium">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let emp of pageResponse?.content; let i = index"
+          class="border-t border-muted/10 hover:bg-muted/5 transition-colors">
+          <td class="px-3 py-2.5 text-sm">{{ startIndex + i }}</td>
+          <td class="px-3 py-2.5 text-sm">{{ emp.employee.fullName }}</td>
+          <td class="px-3 py-2.5 text-sm">{{ emp.expenseDate | date }}</td>
+          <td class="px-3 py-2.5 text-sm">{{ emp.employee.mobileNo }}</td>
+          <td class="px-3 py-2.5 text-sm">{{ emp.employee.employeeType }}</td>
+          <td class="px-3 py-2.5 text-sm font-medium">{{ emp.amount }}</td>
+          <td class="px-3 py-2.5 text-sm">{{ emp.expenseType.displayName }}</td>
+          <td class="px-3 py-2.5">
+            <span class="rounded-full px-2.5 py-0.5 text-xs font-medium" [ngClass]="{
+              'bg-yellow-100 text-yellow-700': emp.status === 'PENDING',
+              'bg-green-100 text-green-700':  emp.status === 'APPROVED',
+              'bg-red-100 text-red-700':      emp.status === 'REJECTED'
+            }">
+              {{ emp.status }}
+            </span>
+          </td>
+          <td class="px-3 py-2.5">
+            <div class="flex items-center gap-2" *ngIf="emp.status === 'PENDING'">
+              <button class="text-green-500 hover:text-green-700 transition-colors"
+                (click)="onApprove(emp.id)" title="Approve">
+                <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+              </button>
+              <button class="text-red-500 hover:text-red-700 transition-colors"
+                (click)="onReject(emp.id)" title="Reject">
+                <svg-icon src="./assets/icons/heroicons/outline/x.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Empty State Row -->
+        <tr *ngIf="!hasData">
+          <td colspan="9" class="py-12 text-center">
+            <div class="flex flex-col items-center gap-2 text-muted-foreground">
+              <svg-icon src="./assets/icons/heroicons/outline/inbox.svg" [svgClass]="'h-10 w-10 opacity-40'"></svg-icon>
+              <p class="text-sm">No expenses match the selected filters.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Pagination -->
+<div *ngIf="showPagination && !loading"
+  class="flex flex-wrap items-center justify-between gap-2 px-2 py-3 text-xs text-muted-foreground">
+  <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
+
+  <div class="inline-flex items-center gap-1">
+    <!-- First -->
+    <button *ngIf="!first"
+      class="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-muted-foreground/10 transition-colors"
+      (click)="goToFirstPage()" title="First Page">
+      <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+    </button>
+
+    <!-- Previous -->
+    <button [disabled]="first"
+      class="inline-flex h-7 w-7 items-center justify-center rounded-md disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+      (click)="goToPreviousPage()" title="Previous Page">
+      <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+    </button>
+
+    <!-- Page Numbers -->
+    <ng-container *ngFor="let page of getVisiblePages()">
+      <button *ngIf="isClickablePage(page)"
+        class="inline-flex h-7 w-7 items-center justify-center rounded-md text-sm transition-colors"
+        [ngClass]="{
+          'bg-primary text-primary-foreground': isCurrentPage(page),
+          'hover:bg-muted-foreground/10': !isCurrentPage(page)
+        }"
+        (click)="goToPage(page)">
+        {{ getPageNumber(page) }}
+      </button>
+      <span *ngIf="!isClickablePage(page)"
+        class="inline-flex h-7 w-7 items-center justify-center text-sm">
+        ...
+      </span>
+    </ng-container>
+
+    <!-- Next -->
+    <button [disabled]="last"
+      class="inline-flex h-7 w-7 items-center justify-center rounded-md disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+      (click)="goToNextPage()" title="Next Page">
+      <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+    </button>
+
+    <!-- Last -->
+    <button *ngIf="!last"
+      class="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-muted-foreground/10 transition-colors"
+      (click)="goToLastPage()" title="Last Page">
+      <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+    </button>
+  </div>
+</div>
