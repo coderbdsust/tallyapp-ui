@@ -1,325 +1,207 @@
-<div class="min-h-screen">
-  <div class="max-w-7xl mx-auto px-2 sm:px-2 lg:px-2">
-    
-    <!-- Header Section with Breadcrumb -->
-    <div class="mb-8">
-      <div class="flex justify-between items-center">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900">My Profile</h1>
-          <p class="text-gray-600 mt-1">Manage your personal information and settings</p>
+<div class="flex flex-wrap gap-6 p-6">
+
+  <!-- LEFT COLUMN: Profile Card -->
+  <div class="w-full lg:w-[280px] shrink-0">
+    <div class="sticky top-6 rounded-lg bg-white dark:bg-gray-900 shadow-lg overflow-hidden">
+
+      <!-- Avatar Section -->
+      <div class="relative h-24 bg-gradient-to-r from-gray-400 via-white-200 to-gray-100">
+        <div class="absolute -bottom-10 left-1/2 -translate-x-1/2">
+          <div class="relative">
+            <div class="h-20 w-20 rounded-full overflow-hidden ring-4 ring-white dark:ring-gray-900 shadow-lg bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900 dark:to-purple-900 flex items-center justify-center">
+              <img *ngIf="userProfile?.profileImage?.url" [src]="userProfile?.profileImage?.url" class="h-full w-full object-cover" alt="Profile" />
+              <svg *ngIf="!userProfile?.profileImage?.url" xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+          </div>
         </div>
-        <app-button 
-          impact="bold" 
-          tone="primary" 
-          shape="rounded" 
-          size="medium"
-          (click)="navigateToEdit()"
-          class="shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+      </div>
+
+      <!-- Profile Info -->
+      <div class="pt-12 pb-6 px-4 text-center">
+        <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+          {{ userProfile?.fullName || 'Full Name' }}
+        </h3>
+        <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+          {{ userProfile?.shortProfileList?.[0]?.designation || 'Designation' }}
+        </p>
+        <p class="text-xs text-indigo-500 dark:text-indigo-400 mt-0.5">
+          {{ userProfile?.shortProfileList?.[0]?.companyName || 'Company' }}
+        </p>
+
+        <div class="flex items-center justify-center gap-1 mt-2 text-xs text-gray-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          {{ userProfile?.addressList?.[0]?.city || 'City' }}, {{ userProfile?.addressList?.[0]?.country || 'Country' }}
+        </div>
+
+        <!-- Skills -->
+        <div class="mt-4 flex flex-wrap justify-center gap-1.5 px-2">
+          @for (skill of userProfile?.shortProfileList?.[0]?.skills?.split(','); track $index) {
+            <span class="rounded-full bg-indigo-50 dark:bg-indigo-900/30 px-2.5 py-0.5 text-[10px] font-medium text-indigo-700 dark:text-indigo-300">
+              {{ skill.trim() }}
+            </span>
+          }
+        </div>
+
+        <button type="button" (click)="navigateToEdit()"
+          class="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
           </svg>
           Edit Profile
-        </app-button>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN: View -->
+  <div class="flex-1 min-w-0 space-y-5">
+
+    <!-- Personal Info Card -->
+    <div class="rounded-lg bg-white dark:bg-gray-900 shadow-lg overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+        <p class="text-sm font-semibold text-gray-900 dark:text-white">Personal Information</p>
+      </div>
+
+      <div class="px-6 py-5 space-y-4">
+
+        <!-- Read-only row -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="pf-field">
+            <label class="pf-label">Username</label>
+            <div class="pf-display">{{ userProfile?.username || '—' }}</div>
+          </div>
+          <div class="pf-field">
+            <label class="pf-label">Email Address</label>
+            <div class="pf-display">{{ userProfile?.email || '—' }}</div>
+          </div>
+        </div>
+
+        <!-- Name row -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="pf-field">
+            <label class="pf-label">First Name</label>
+            <div class="pf-display">{{ userProfile?.firstName || '—' }}</div>
+          </div>
+          <div class="pf-field">
+            <label class="pf-label">Last Name</label>
+            <div class="pf-display">{{ userProfile?.lastName || '—' }}</div>
+          </div>
+        </div>
+
+        <!-- DOB, Gender, Mobile -->
+        <div class="grid grid-cols-3 gap-4">
+          <div class="pf-field">
+            <label class="pf-label">Date of Birth</label>
+            <div class="pf-display">{{ userProfile?.dateOfBirth || '—' }}</div>
+          </div>
+          <div class="pf-field">
+            <label class="pf-label">Gender</label>
+            <div class="pf-display">{{ userProfile?.gender || '—' }}</div>
+          </div>
+          <div class="pf-field">
+            <label class="pf-label">Mobile No</label>
+            <div class="pf-display">{{ userProfile?.mobileNo || '—' }}</div>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      
-      <!-- Left Sidebar - Profile Card -->
-      <div class="lg:col-span-4 space-y-4">
-        
-        <!-- Main Profile Card -->
-        <div class="bg-white rounded-lg shadow-xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-500">
-          <!-- Cover Image -->
-          <div class="h-32 bg-gradient-to-r from-gray-400 via-white-200 to-gray-100 relative">
-            <div class="absolute inset-0 bg-black bg-opacity-10"></div>
-          </div>
-          
-          <!-- Profile Content -->
-          <div class="relative px-8 pb-8">
-            <!-- Profile Image -->
-            <div class="flex justify-center -mt-16 mb-6">
-              <div class="relative">
-                <div class="w-36 h-36 rounded-full bg-white p-0.5 shadow-xl">
-                  <img 
-                    [src]="userProfile?.profileImage?.url || 'https://placehold.co/400'" 
-                    [alt]="userProfile?.fullName || 'Profile'"
-                    class="w-full h-full object-cover rounded-full">
-                </div>
-
-              </div>
-            </div>
-            
-            <!-- Profile Info -->
-            <div class="text-center space-y-4">
-              <div>
-                <h2 class="text-2xl font-bold text-gray-900 mb-1">
-                  {{userProfile?.fullName || 'Full Name'}}
-                </h2>
-                <p class="text-gray-600 font-medium">
-                  {{userProfile?.shortProfileList?.[0]?.designation || 'Professional'}}
-                </p>
-              </div>
-              
-              <div class="flex items-center justify-center text-gray-500 space-x-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                </svg>
-                <span class="text-sm">{{userProfile?.addressList?.[0]?.city || 'City'}}, {{userProfile?.addressList?.[0]?.country || 'Country'}}</span>
-              </div>
-              
-              <div class="flex items-center justify-center text-gray-500 space-x-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
-                </svg>
-                <span class="text-sm">{{userProfile?.shortProfileList?.[0]?.companyName || 'Company'}}</span>
-              </div>
-            </div>
-            
-            <!-- Skills Section -->
-            <div class="mt-8 pt-6 border-t border-gray-100">
-              <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wide">Skills & Expertise</h3>
-              <div class="flex flex-wrap gap-2">
-                @for (skill of getAllSkills(); track $index) {
-                  <span class="px-3 py-1 bg-gradient-to-r from-yellow-50 to-yello-200 text-gray-700 text-xs font-medium rounded-full border border-indigo-200 hover:from-indigo-200 hover:to-purple-200 transition-all duration-300 cursor-default">
-                    {{ skill.trim() }}
-                  </span>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
+    <!-- Address Card -->
+    <div class="rounded-lg bg-white dark:bg-gray-900 shadow-lg overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+        <p class="text-sm font-semibold text-gray-900 dark:text-white">Contact Addresses</p>
       </div>
 
-      <!-- Main Content Area -->
-      <div class="lg:col-span-8 space-y-4">
-        
-        <!-- Personal Information Card -->
-        <div class="bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300">
-          <div class="bg-gradient-to-r from-gray-400 via-white-200 to-gray-100 px-4 py-4 border-b border-gray-200">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
-                <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                </svg>
-              </div>
-              <h2 class="text-xl font-bold text-gray-900">Personal Information</h2>
-            </div>
+      <div class="divide-y divide-gray-100 dark:divide-gray-800">
+        <div *ngFor="let address of userProfile?.addressList; let i = index" class="px-6 py-4">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Address #{{ i + 1 }}</span>
           </div>
-          
-          <div class="p-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div class="space-y-6">
-                <div class="group">
-                  <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Username</label>
-                  <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                    <div class="pl-10 pr-4 py-3 bg-gray-50 rounded-xl text-gray-900 font-medium group-hover:bg-gray-100 transition-colors duration-200">
-                      {{userProfile?.username || 'Not specified'}}
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="group">
-                  <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Full Name</label>
-                  <div class="pl-4 pr-4 py-3 bg-gray-50 rounded-xl text-gray-900 font-medium group-hover:bg-gray-100 transition-colors duration-200">
-                    {{userProfile?.fullName || 'Not specified'}}
-                  </div>
-                </div>
-                
-                <div class="group">
-                  <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Gender</label>
-                  <div class="pl-4 pr-4 py-3 bg-gray-50 rounded-xl text-gray-900 font-medium group-hover:bg-gray-100 transition-colors duration-200">
-                    {{userProfile?.gender || 'Not specified'}}
-                  </div>
-                </div>
+
+          <div class="space-y-3">
+            <div class="pf-field">
+              <label class="pf-label">Street Address</label>
+              <div class="pf-display">{{ address.addressLine || '—' }}</div>
+            </div>
+
+            <div class="grid grid-cols-4 gap-3">
+              <div class="pf-field">
+                <label class="pf-label">City</label>
+                <div class="pf-display">{{ address.city || '—' }}</div>
               </div>
-              
-              <div class="space-y-6">
-                <div class="group">
-                  <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Email Address</label>
-                  <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                      </svg>
-                    </div>
-                    <div class="pl-10 pr-4 py-3 bg-gray-50 rounded-xl text-gray-900 font-medium group-hover:bg-gray-100 transition-colors duration-200">
-                      {{userProfile?.email || 'Not specified'}}
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="group">
-                  <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Date of Birth</label>
-                  <div class="pl-4 pr-4 py-3 bg-gray-50 rounded-xl text-gray-900 font-medium group-hover:bg-gray-100 transition-colors duration-200">
-                    {{userProfile?.dateOfBirth || 'Not specified'}}
-                  </div>
-                </div>
-                
-                <div class="group">
-                  <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Mobile Number</label>
-                  <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
-                      </svg>
-                    </div>
-                    <div class="pl-10 pr-4 py-3 bg-gray-50 rounded-xl text-gray-900 font-medium group-hover:bg-gray-100 transition-colors duration-200">
-                      {{userProfile?.mobileNo || 'Not specified'}}
-                    </div>
-                  </div>
-                </div>
+              <div class="pf-field">
+                <label class="pf-label">State</label>
+                <div class="pf-display">{{ address.state || '—' }}</div>
+              </div>
+              <div class="pf-field">
+                <label class="pf-label">Postcode</label>
+                <div class="pf-display">{{ address.postCode || '—' }}</div>
+              </div>
+              <div class="pf-field">
+                <label class="pf-label">Country</label>
+                <div class="pf-display">{{ address.country || '—' }}</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Addresses Section -->
-        <div class="bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300">
-          <div class="bg-gradient-to-r from-gray-400 via-white-200 to-gray-100 px-4 py-4 border-b border-gray-200">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                  <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <h2 class="text-xl font-bold text-gray-900">Contact Addresses</h2>
-              </div>
-            </div>
-          </div>
-          
-          <div class="p-4">
-            @if (userProfile?.addressList) {
-              <div class="space-y-2">
-                @for (address of userProfile?.addressList; track address.id; let i = $index) {
-                  <div class="relative group">
-                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl transition-all duration-300">
-                       <div class="space-y-2 p-4">
-                      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="md:col-span-2 lg:col-span-3">
-                          <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Street Address</label>
-                          <p class="text-gray-900 font-medium bg-white p-3 rounded-lg">{{address.addressLine || 'Not specified'}}</p>
-                        </div>
-                        <div>
-                          <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">City</label>
-                          <p class="text-gray-900 font-medium bg-white p-3 rounded-lg">{{address.city || 'Not specified'}}</p>
-                        </div>
-                        <div>
-                          <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Postal Code</label>
-                          <p class="text-gray-900 font-medium bg-white p-3 rounded-lg">{{address.postCode || 'Not specified'}}</p>
-                        </div>
-                        <div>
-                          <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Country</label>
-                          <p class="text-gray-900 font-medium bg-white p-3 rounded-lg">{{address.country || 'Not specified'}}</p>
-                        </div>
-                      </div>
-                      </div>
-                    </div>
-                  </div>
-                }
-              </div>
-            } @else {
-              <div class="text-center py-16">
-                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  </svg>
-                </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">No addresses added yet</h3>
-                <p class="text-gray-500">Add your contact addresses to complete your profile</p>
-              </div>
-            }
-          </div>
-        </div>
-
-        <!-- Work Information Section -->
-        <div class="bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300">
-          <div class="bg-gradient-to-r from-gray-400 via-white-200 to-gray-100 px-4 py-4 border-b border-gray-200">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <svg class="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <h2 class="text-xl font-bold text-gray-900">Work Information</h2>
-              </div>
-            </div>
-          </div>
-          
-          <div class="p-4">
-            @if (userProfile?.shortProfileList) {
-              <div class="space-y-2">
-                @for (profile of userProfile?.shortProfileList; track profile.id; let i = $index) {
-                  <div class="relative group">
-                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg  transition-all duration-300">
-                      <div class="space-y-2 p-4">
-                        <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
-                          <div>
-                            <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Position</label>
-                            <div class="flex items-center space-x-2 bg-white p-3 rounded-lg">
-                              <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
-                              </svg>
-                              <span class="text-gray-900 font-medium">{{profile.designation || 'Not specified'}}</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
-                          <div>
-                            <label class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Company</label>
-                            <div class="flex items-center space-x-2 bg-white p-3 rounded-lg">
-                              <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"></path>
-                              </svg>
-                              <span class="text-gray-900 font-medium">{{profile.companyName || 'Not specified'}}</span>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <label class="block text-sm font-medium text-gray-500 mb-3 uppercase tracking-wider">Skills & Technologies</label>
-                          <div class="bg-white p-4 rounded-lg">
-                            @if (profile.skills) {
-                              <div class="flex flex-wrap gap-2">
-                                @for (skill of profile.skills.split(','); track $index) {
-                                  <span class="px-3 py-1.5 bg-gradient-to-r from-yellow-50 to-yello-200 text-gray-700 text-sm font-medium rounded-full border border-purple-200 hover:from-purple-200 hover:to-indigo-200 transition-all duration-300 cursor-default">
-                                    {{ skill.trim() }}
-                                  </span>
-                                }
-                              </div>
-                            } @else {
-                              <p class="text-gray-500 italic">No skills specified</p>
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                }
-              </div>
-            } @else {
-              <div class="text-center py-16">
-                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 01-2 2H10a2 2 0 01-2-2V6m8 0H8"></path>
-                  </svg>
-                </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">No work experience added yet</h3>
-                <p class="text-gray-500">Add your professional experience to showcase your career</p>
-              </div>
-            }
-          </div>
+        <div *ngIf="!userProfile?.addressList?.length" class="px-6 py-8 text-center text-sm text-gray-400 dark:text-gray-500">
+          No addresses added yet.
         </div>
       </div>
     </div>
+
+    <!-- Work Info Card -->
+    <div class="rounded-lg bg-white dark:bg-gray-900 shadow-lg overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+        <p class="text-sm font-semibold text-gray-900 dark:text-white">Work Information</p>
+      </div>
+
+      <div class="divide-y divide-gray-100 dark:divide-gray-800">
+        <div *ngFor="let profile of userProfile?.shortProfileList; let i = index" class="px-6 py-4">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Work #{{ i + 1 }}</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4">
+            <div class="pf-field">
+              <label class="pf-label">Designation</label>
+              <div class="pf-display">{{ profile.designation || '—' }}</div>
+            </div>
+            <div class="pf-field">
+              <label class="pf-label">Company</label>
+              <div class="pf-display">{{ profile.companyName || '—' }}</div>
+            </div>
+            <div class="pf-field">
+              <label class="pf-label">Skills</label>
+              <div class="pf-display">
+                @if (profile.skills) {
+                  <div class="flex flex-wrap gap-1.5 pt-0.5">
+                    @for (skill of profile.skills.split(','); track $index) {
+                      <span class="rounded-full bg-indigo-50 dark:bg-indigo-900/30 px-2.5 py-0.5 text-[10px] font-medium text-indigo-700 dark:text-indigo-300">
+                        {{ skill.trim() }}
+                      </span>
+                    }
+                  </div>
+                } @else {
+                  —
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!userProfile?.shortProfileList?.length" class="px-6 py-8 text-center text-sm text-gray-400 dark:text-gray-500">
+          No work entries added yet.
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

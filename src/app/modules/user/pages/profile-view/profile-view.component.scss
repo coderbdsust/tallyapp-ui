@@ -218,3 +218,14 @@
     transform: translateY(-2px);
   }
 }
+
+.pf-label {
+  @apply text-xs font-medium text-gray-700 dark:text-gray-400;
+}
+
+// Add this to your existing profile SCSS alongside .pf-input
+.pf-display {
+  @apply block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5
+         text-sm text-gray-900
+         dark:border-gray-700 dark:bg-gray-800 dark:text-white;
+}

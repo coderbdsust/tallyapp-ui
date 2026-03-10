@@ -1,10 +1,8 @@
-// profile-view.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { UserprofileService } from 'src/app/core/services/userprofile.service';
 import { CommonService } from 'src/app/core/services/common.service';
-import { ButtonComponent } from 'src/app/common/components/button/button.component';
 import { trigger, transition, style, animate, stagger, query } from '@angular/animations';
 import { UserProfile } from 'src/app/core/models/profile.model';
 
@@ -18,8 +16,7 @@ interface TfaStatus {
   selector: 'app-profile-view',
   standalone: true,
   imports: [
-    CommonModule,
-    ButtonComponent
+    CommonModule
   ],
   templateUrl: './profile-view.component.html',
   styleUrl: './profile-view.component.scss',
