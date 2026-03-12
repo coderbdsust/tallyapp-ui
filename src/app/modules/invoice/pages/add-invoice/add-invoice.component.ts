@@ -8,11 +8,15 @@ import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { Customer, Invoice, Payment, ProductSale } from '../../invoice.model';
 import { ToWords } from 'to-words';
-import { Product } from 'src/app/core/models/product.model';
+import { CreateAndAddProductRequest, Product, ProductCategory, UnitType } from 'src/app/core/models/product.model';
+import { Employee } from 'src/app/core/models/employee.model';
 import { InvoiceService } from 'src/app/core/services/invoice.service';
 import { ProductService } from 'src/app/core/services/product.service';
 import { PaymentService } from 'src/app/core/services/payment.service';
 import { CustomerService } from 'src/app/core/services/customer.service';
+import { EmployeeService } from 'src/app/core/services/employee.service';
+import { ProductCategoryService } from 'src/app/core/services/product-category.service';
+import { generateRandomLuhnCode } from 'src/app/common/utils/LuhnCode';
 import { combineLatest, startWith, Subscription } from 'rxjs';
 
 
@@ -36,6 +40,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   invForm!: FormGroup;
   paymentForm!: FormGroup;
   productForm!: FormGroup;
+  createProductForm!: FormGroup;
   toWords = new ToWords({
     localeCode: 'en-BD',
     converterOptions: {
@@ -48,6 +53,10 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   invoiceId = '';
   allProducts: Product[] = [];
   allCustomers: Customer[] = [];
+  allEmployees: Employee[] = [];
+  allProductCategories: ProductCategory[] = [];
+  unitTypes: UnitType[] = [];
+  isCreatingNewProduct = false;
   readonly allPaymentMethods = [
     'Cash',
     'Bank Transfer',
@@ -65,9 +74,11 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   ];
 
   private productFormSubscription?: Subscription;
+  private createProductFormSubscription?: Subscription;
 
   ngOnDestroy(): void {
     this.productFormSubscription?.unsubscribe();
+    this.createProductFormSubscription?.unsubscribe();
   }
 
   constructor(
@@ -75,6 +86,8 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     private readonly productService: ProductService,
     private readonly paymentService: PaymentService,
     private readonly customerService: CustomerService,
+    private readonly employeeService: EmployeeService,
+    private readonly productCategoryService: ProductCategoryService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly fb: FormBuilder
@@ -90,6 +103,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     this.initiateInvoiceForm();
     this.initiatePaymentForm();
     this.initiateProductForm();
+    this.initiateCreateProductForm();
   }
 
   private handleRouteParams(): void {
@@ -393,6 +407,158 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       error: (err) => {
         this.invoiceService.showToastErrorResponse(err);
       }
+    });
+  }
+
+  // --- Create New Product Mode ---
+
+  initiateCreateProductForm(): void {
+    this.createProductForm = this.fb.group({
+      name: ['', [Validators.required, Validators.maxLength(70)]],
+      code: [generateRandomLuhnCode(6), Validators.required],
+      description: [''],
+      unitType: ['', Validators.required],
+      employeeId: ['', Validators.required],
+      categoryId: ['', Validators.required],
+      initialQuantity: [1, [Validators.required, Validators.min(1)]],
+      unitPrice: [0, [Validators.required, Validators.min(1)]],
+      perUnitProductionCost: [0],
+      perUnitEmployeeCost: [0],
+      discountPercent: [0, [Validators.min(0), Validators.max(100)]],
+      sellingUnitRate: [0, [Validators.required, Validators.min(1)]],
+      quantityToSell: [1, [Validators.required, Validators.min(1)]],
+      saleDiscountPercent: [0, [Validators.min(0), Validators.max(100)]],
+      saleAmount: [{ value: 0, disabled: true }]
+    });
+
+    this.listenCreateProductFormChanges();
+  }
+
+  private listenCreateProductFormChanges(): void {
+    this.createProductFormSubscription?.unsubscribe();
+    this.createProductFormSubscription = combineLatest([
+      this.createProductForm.get('sellingUnitRate')!.valueChanges.pipe(startWith(0)),
+      this.createProductForm.get('quantityToSell')!.valueChanges.pipe(startWith(0)),
+      this.createProductForm.get('saleDiscountPercent')!.valueChanges.pipe(startWith(0))
+    ]).subscribe(() => this.calculateCreateProductSaleAmount());
+  }
+
+  private calculateCreateProductSaleAmount(): void {
+    const rate = +this.createProductForm.get('sellingUnitRate')?.value || 0;
+    const qty = +this.createProductForm.get('quantityToSell')?.value || 0;
+    const discPct = +this.createProductForm.get('saleDiscountPercent')?.value || 0;
+    const discount = (rate * qty * discPct) / 100.0;
+    const amount = rate * qty - discount;
+    this.createProductForm.get('saleAmount')?.setValue(amount, { emitEvent: false });
+  }
+
+  toggleCreateProductMode(): void {
+    this.isCreatingNewProduct = !this.isCreatingNewProduct;
+    if (this.isCreatingNewProduct) {
+      this.initiateCreateProductForm();
+      this.loadProductUnitTypes();
+      this.loadProductCategories();
+    } else {
+      this.initiateProductForm();
+    }
+  }
+
+  generateProductCode(): void {
+    this.createProductForm.patchValue({ code: generateRandomLuhnCode(6) });
+  }
+
+  loadProductUnitTypes(): void {
+    if (this.unitTypes.length > 0) return;
+    this.productService.getProductUnitTypes().subscribe({
+      next: types => this.unitTypes = types,
+      error: err => this.productService.showToastErrorResponse(err)
+    });
+  }
+
+  loadProductCategories(): void {
+    const orgId = this.invoice?.ownerOrganization?.id;
+    if (!orgId) return;
+    this.productCategoryService.getProductCagegoriesByOrganization(orgId).subscribe({
+      next: categories => this.allProductCategories = categories,
+      error: err => this.productCategoryService.showToastErrorResponse(err)
+    });
+  }
+
+  onSearchEmployeeKeyType(event: Event): void {
+    const searchKey = (event.target as HTMLInputElement).value;
+    if (searchKey.length < 3) {
+      this.invoiceService.showToastInfo('Please type at least three (3) characters');
+      return;
+    }
+    const orgId = this.invoice?.ownerOrganization?.id;
+    if (!orgId) return;
+    this.employeeService.getEmployeesByOrganization(orgId, 0, 20, searchKey).subscribe({
+      next: page => {
+        this.allEmployees = page.content.map(e => ({
+          ...e,
+          label: `${e.fullName} - ${e.mobileNo}`
+        } as any));
+      },
+      error: err => console.error(err)
+    });
+  }
+
+  onSelectEmployee(employee: Employee): void {
+    if (!employee) return;
+    if (employee.employeeBillingType === 'DAILY') {
+      const rate = employee.billingRate || 0;
+      this.createProductForm.patchValue({
+        perUnitEmployeeCost: rate,
+        perUnitProductionCost: 0,
+        unitPrice: Math.round(rate * 1.5),
+        sellingUnitRate: Math.round(rate * 1.5)
+      });
+    }
+  }
+
+  addNewCategory = (name: string): void => {
+    const orgId = this.invoice?.ownerOrganization?.id;
+    if (!orgId) return;
+    const newCategory: ProductCategory = { id: null, name, description: '', active: true };
+    this.productCategoryService.addProductCategoryByOrganization(orgId, newCategory).subscribe({
+      next: created => {
+        this.allProductCategories = [...this.allProductCategories, created];
+        this.createProductForm.patchValue({ categoryId: created.id });
+        this.productCategoryService.showToastSuccess('Category created');
+      },
+      error: err => this.productCategoryService.showToastErrorResponse(err)
+    });
+  }
+
+  submitNewProduct(): void {
+    if (this.createProductForm.invalid) return;
+    const v = this.createProductForm.getRawValue();
+    const request: CreateAndAddProductRequest = {
+      name: v.name,
+      code: v.code,
+      description: v.description,
+      unitType: v.unitType,
+      employeeId: v.employeeId,
+      categoryId: v.categoryId,
+      initialQuantity: v.initialQuantity,
+      unitPrice: v.unitPrice,
+      perUnitProductionCost: v.perUnitProductionCost,
+      perUnitEmployeeCost: v.perUnitEmployeeCost,
+      discountPercent: v.discountPercent,
+      sellingUnitRate: v.sellingUnitRate,
+      quantityToSell: v.quantityToSell,
+      saleDiscountPercent: v.saleDiscountPercent
+    };
+
+    this.invoiceService.createAndAddProduct(this.invoiceId, request).subscribe({
+      next: () => {
+        this.invoiceService.showToastSuccess('Product created and added to invoice');
+        this.isCreatingNewProduct = false;
+        this.initiateCreateProductForm();
+        this.initiateProductForm();
+        this.refreshInvoice();
+      },
+      error: err => this.invoiceService.showToastErrorResponse(err)
     });
   }
 

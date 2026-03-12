@@ -64,3 +64,26 @@ export interface ProductToSale {
   productQuantity: number
   productAmount: number
 }
+
+
+export interface CreateAndAddProductRequest {
+  // Product fields
+  name: string;
+  code: string;
+  description?: string;
+  unitType?: UnitType;
+  employeeId: string;
+  categoryId: string;
+
+  // Stock fields
+  initialQuantity: number;
+  unitPrice: number;
+  perUnitProductionCost?: number;
+  perUnitEmployeeCost?: number;
+  discountPercent?: number;
+
+  // Sale fields
+  sellingUnitRate: number;
+  quantityToSell: number;
+  saleDiscountPercent?: number;
+}

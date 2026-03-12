@@ -7,7 +7,7 @@ import { Invoice } from '../../modules/invoice/invoice.model';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { catchError, Observable } from 'rxjs';
 import { ApiResponse } from '../models/auth.model';
-import { Product, ProductToSale } from '../models/product.model';
+import { CreateAndAddProductRequest, ProductToSale } from '../models/product.model';
 
 @Injectable({
   providedIn: 'root'
@@ -78,6 +78,12 @@ export class InvoiceService extends CommonService {
   public removeProductFromInvoice(invoiceId: string, productSaleId: string) {
     return this.http
       .delete<ApiResponse>(`${environment.tallyURL}/invoice/v1/${invoiceId}/${productSaleId}/remove`)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public createAndAddProduct(invoiceId: string, addNewProduct: CreateAndAddProductRequest) {
+    return this.http
+      .post<Invoice>(`${environment.tallyURL}/invoice/v1/${invoiceId}/create-and-add`,addNewProduct)
       .pipe(catchError(this.mapErrorResponse));
   }
 
