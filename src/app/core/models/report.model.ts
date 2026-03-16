@@ -73,3 +73,48 @@ export interface ArAgingReport {
   buckets: ArAgingBucket[];
   totalOutstanding: number;
 }
+
+// --- Cash Flow Statement ---
+export interface CashFlowLineItem {
+  description: string;
+  transactionType: string;
+  inflow: number;
+  outflow: number;
+  net: number;
+}
+
+export interface CashFlowStatementReport {
+  organizationId: string;
+  organizationName: string;
+  startDate: string;
+  endDate: string;
+  operatingActivities: CashFlowLineItem[];
+  netOperatingCashFlow: number;
+  investingActivities: CashFlowLineItem[];
+  netInvestingCashFlow: number;
+  financingActivities: CashFlowLineItem[];
+  netFinancingCashFlow: number;
+  netCashChange: number;
+  openingCashBalance: number;
+  closingCashBalance: number;
+}
+
+// --- Sales by Customer ---
+export interface CustomerSales {
+  customerId: string;
+  customerName: string;
+  invoiceCount: number;
+  totalSales: number;
+  totalTax: number;
+  totalVat: number;
+  percentageOfTotal: number;
+}
+
+export interface SalesByCustomerReport {
+  organizationId: string;
+  organizationName: string;
+  startDate: string;
+  endDate: string;
+  customers: CustomerSales[];
+  grandTotal: number;
+}

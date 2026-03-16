@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs';
 import { ProductCategory } from '../models/product.model';
+import { ApiResponse } from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,12 @@ export class ProductCategoryService extends CommonService {
   public addProductCategoryByOrganization(organizationId: string, productCategory: ProductCategory) {
     return this.http
       .post<ProductCategory>(`${environment.tallyURL}/product/category/v1/${organizationId}/add`, productCategory)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public deleteProductCategoryByOrganization(organizationId: string, productCategoryId: string) {
+    return this.http
+      .delete<ApiResponse>(`${environment.tallyURL}/product/category/v1/${organizationId}/${productCategoryId}`)
       .pipe(catchError(this.mapErrorResponse));
   }
 }

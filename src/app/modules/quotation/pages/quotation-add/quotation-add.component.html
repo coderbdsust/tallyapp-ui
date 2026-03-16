@@ -1,13 +1,13 @@
-<!-- src/app/features/invoice-standalone/invoice-standalone-add/invoice-standalone-add.component.html -->
+<!-- src/app/modules/quotation/pages/quotation-add/quotation-add.component.html -->
 
 <div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
   <form [formGroup]="invForm" (ngSubmit)="submitInvoice()">
     <div class="flex flex-col m-6 gap-6 divide-y-2 divide-dashed divide-gray-200">
-      
+
       <!-- Invoice Header Section -->
       <div class="flex flex-row justify-between">
         <div class="w-2/6 pr-2">
-          <img [src]="invoice?.organization?.logoB64 || 'https://placehold.co/400'" 
+          <img [src]="invoice?.organization?.logoB64 || 'https://placehold.co/400'"
                alt="Organization Logo"
                class="w-auto h-20 border border-dashed border-border shadow-md mb-4">
 
@@ -16,23 +16,19 @@
 
             <!-- Invoice Type Badge -->
             <div class="mb-2">
-              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                    [ngClass]="{
-                      'bg-purple-100 text-purple-800': invoice?.invoiceType === InvoiceType.QUOTATION,
-                      'bg-blue-100 text-blue-800': invoice?.invoiceType === InvoiceType.BILL
-                    }">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
                 {{ invoice?.invoiceType }}
               </span>
             </div>
 
             <label class="text-sm text-muted-foreground">Invoice No</label>
-            <input type="text" 
-                   [value]="invoice?.invoiceNumber" 
+            <input type="text"
+                   [value]="invoice?.invoiceNumber"
                    readonly
                    class="bg-gray-100 mb-2 w-full border border-muted/20 px-3 py-2 text-sm text-muted-foreground" />
 
             <label class="text-sm text-muted-foreground">Invoice Date</label>
-            <input type="date" 
+            <input type="date"
                    formControlName="invoiceDate"
                    class="mb-2 w-full border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary" />
 
@@ -45,7 +41,7 @@
             </select>
 
             <label class="text-sm text-muted-foreground">Delivery Date</label>
-            <input type="date" 
+            <input type="date"
                    formControlName="deliveryDate"
                    class="mb-2 w-full border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary" />
           </div>
@@ -53,7 +49,7 @@
 
         <!-- Organization Info -->
         <div class="w-2/6 pl-2">
-          <img [src]="invoice?.barcode || './assets/img/barcode-v2.png'" 
+          <img [src]="invoice?.barcode || './assets/img/barcode-v2.png'"
                alt="Barcode"
                class="w-full h-12 bg-gray-100 mb-2">
 
@@ -98,11 +94,11 @@
             <!-- Customer Search -->
             <div class="mb-4">
               <label class="block text-sm font-medium text-gray-700 mb-2">Search Customer</label>
-              <ng-select [items]="allCustomers" 
-                        bindValue="id" 
-                        bindLabel="label" 
+              <ng-select [items]="allCustomers"
+                        bindValue="id"
+                        bindLabel="label"
                         formControlName="customerId"
-                        placeholder="Search by name, mobile, or email" 
+                        placeholder="Search by name, mobile, or email"
                         (change)="onSelectCustomer($event)"
                         (keydown.enter)="onCustomerSearchKeyType($event)"
                         class="min-h-[38px]">
@@ -113,8 +109,8 @@
             <div class="space-y-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Customer Name *</label>
-                <input type="text" 
-                       placeholder="Enter customer name" 
+                <input type="text"
+                       placeholder="Enter customer name"
                        formControlName="customerName"
                        class="w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                 <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerName')">
@@ -125,8 +121,8 @@
               <div class="flex flex-row gap-3">
                 <div class="w-5/12">
                   <label class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
-                  <input type="text" 
-                         placeholder="Phone number" 
+                  <input type="text"
+                         placeholder="Phone number"
                          formControlName="customerMobile"
                          class="w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                   <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerMobile')">
@@ -135,16 +131,16 @@
                 </div>
                 <div class="w-7/12">
                   <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <input type="email" 
-                         placeholder="Email address" 
+                  <input type="email"
+                         placeholder="Email address"
                          formControlName="customerEmail"
                          class="w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                 </div>
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Address *</label>
-                <textarea placeholder="Enter full address" 
+                <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                <textarea placeholder="Enter full address"
                           formControlName="customerAddressLine"
                           rows="3"
                           class="w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none"></textarea>
@@ -155,8 +151,8 @@
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Postcode</label>
-                <input type="text" 
-                       placeholder="Postal code" 
+                <input type="text"
+                       placeholder="Postal code"
                        formControlName="customerPostcode"
                        class="w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
               </div>
@@ -164,7 +160,7 @@
               <div class="flex items-center justify-end gap-1">
                 <button type="submit"
                         class="inline-flex items-center px-3 py-1.5 text-xs rounded-lg font-medium text-green-600 bg-green-50 border border-green-200 transition-colors"
-                        [disabled]="invForm.invalid" 
+                        [disabled]="invForm.invalid"
                         [ngClass]="{
                           'hover:bg-green-200': !invForm.invalid,
                           'hover:bg-red-200 cursor-not-allowed': invForm.invalid
@@ -173,7 +169,7 @@
                   Save Customer
                 </button>
 
-                <button type="button" 
+                <button type="button"
                         (click)="createNewCustomer()"
                         class="inline-flex items-center px-3 py-1.5 text-xs rounded-lg font-medium text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 transition-colors">
                   <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-3 w-3 mr-1'"></svg-icon>
@@ -184,13 +180,12 @@
           </div>
         </div>
       </div>
-      <!-- Continue from Part 1 -->
 
       <!-- Products Section -->
       <div class="flex flex-col pt-6">
         <div class="w-full bg-white border-gray-200 p-4">
           <h2 class="text-lg font-semibold text-gray-800 mb-4">Products/Services</h2>
-          
+
           <form [formGroup]="productForm">
             <div class="overflow-x-auto border-gray-200">
               <table class="w-full table-auto border-collapse text-left text-sm">
@@ -205,10 +200,10 @@
                     <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-16 text-center">Action</th>
                   </tr>
                 </thead>
-                
+
                 <tbody class="divide-y divide-gray-200">
                   <!-- Existing Products -->
-                  <tr *ngFor="let product of invoice?.products?.items; let i = index" 
+                  <tr *ngFor="let product of invoice?.products?.items; let i = index"
                       class="hover:bg-gray-50 transition-colors">
                     <td class="px-3 py-4 text-gray-700 font-medium">{{i+1}}</td>
                     <td class="px-3 py-4">
@@ -234,7 +229,7 @@
                       <span class="text-sm">{{product.totalAmount| number:'1.2-2'}}</span>
                     </td>
                     <td class="px-3 py-4 text-center">
-                      <button type="button" 
+                      <button type="button"
                               *ngIf="canModify()"
                               (click)="deleteProduct(product)"
                               class="inline-flex items-center justify-center w-8 h-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors"
@@ -243,17 +238,17 @@
                       </button>
                     </td>
                   </tr>
-                  
+
                   <!-- Add New Product Row -->
                   <tr class="bg-gray-50 border-t-2 border-gray-300">
                     <td class="px-3 py-4 text-gray-700 font-medium align-top"></td>
                     <td class="px-3 py-4">
                       <div class="space-y-2">
                         <!-- Product Selection from Catalog -->
-                        <ng-select [items]="allProducts" 
-                                  bindValue="id" 
+                        <ng-select [items]="allProducts"
+                                  bindValue="id"
                                   bindLabel="label"
-                                  formControlName="productId" 
+                                  formControlName="productId"
                                   placeholder="Search product by name or code"
                                   (change)="onSelectProduct($event)"
                                   (keydown.enter)="onSearchKeyType($event)"
@@ -261,17 +256,17 @@
                         </ng-select>
 
                         <!-- Manual Product Entry -->
-                        <input type="text" 
+                        <input type="text"
                                placeholder="Product Name *"
                                formControlName="productName"
                                class="w-full px-2 py-1 border border-gray-300 text-sm">
-                        
-                        <input type="text" 
+
+                        <input type="text"
                                placeholder="Product Code (optional)"
                                formControlName="productCode"
                                class="w-full px-2 py-1 border border-gray-300 text-sm">
-                        
-                        <textarea formControlName="productDescription" 
+
+                        <textarea formControlName="productDescription"
                                  placeholder="Product description (optional)..."
                                  rows="2"
                                  class="w-full px-2 py-1 border border-gray-200 text-xs resize-none"></textarea>
@@ -287,7 +282,7 @@
                     </td>
                     <td class="px-3 py-4 align-top">
                       <div class="w-32">
-                        <input type="number" 
+                        <input type="number"
                                step="1"
                                placeholder="0.00"
                                formControlName="productUnitRate"
@@ -296,7 +291,7 @@
                     </td>
                     <td class="px-3 py-4 align-top">
                       <div class="w-32">
-                        <input type="number" 
+                        <input type="number"
                                step="1"
                                placeholder="0.00"
                                formControlName="productDiscountPercent"
@@ -305,7 +300,7 @@
                     </td>
                     <td class="px-3 py-4 align-top">
                       <div class="w-32">
-                        <input type="number" 
+                        <input type="number"
                                min="1"
                                step="1"
                                placeholder="0"
@@ -315,15 +310,15 @@
                     </td>
                     <td class="px-3 py-4 align-top">
                       <div class="w-32">
-                        <input type="text" 
-                               readonly 
+                        <input type="text"
+                               readonly
                                formControlName="productAmount"
                                placeholder="0.00"
                                class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm text-right text-gray-600">
                       </div>
                     </td>
                     <td class="px-3 py-4 text-center align-top">
-                      <button 
+                      <button
                               *ngIf="canModify()"
                               type="button"
                               [disabled]="!productForm.valid"
@@ -345,146 +340,19 @@
         </div>
       </div>
 
-      <!-- Payment History and Summary Section -->
-      <div class="flex flex-row justify-between gap-6 pt-6">
-        <!-- Payment History Table (Only for Bills) -->
-        <div class="w-4/6" *ngIf="canAddPayments()">
-          <div class="bg-white border-gray-200 p-4">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Customer Payment History</h2>
-            
-            <form [formGroup]="paymentForm">
-              <div class="overflow-x-auto border-gray-200">
-                <table class="w-full table-auto border-collapse text-left text-sm">
-                  <thead class="bg-gray-50 border-b border-gray-200">
-                    <tr>
-                      <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                      <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Method</th>
-                      <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Reference</th>
-                      <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">Amount</th>
-                      <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-16 text-center">Action</th>
-                    </tr>
-                  </thead>
-                  
-                  <tbody class="divide-y divide-gray-200">
-                    <!-- Existing Payments -->
-                    <tr *ngFor="let payment of invoice?.payments?.payments; let i = index" 
-                        class="hover:bg-gray-50 transition-colors">
-                      <td class="px-3 py-3 text-gray-700">
-                        <span class="text-sm">{{payment.paymentDate | date:'MMM dd, yyyy'}}</span>
-                      </td>
-                      <td class="px-3 py-3">
-                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          {{payment.paymentMethod}}
-                        </span>
-                      </td>
-                      <td class="px-3 py-3 text-gray-600 text-sm font-mono">{{payment.reference || '-'}}</td>
-                      <td class="px-3 py-3 text-right text-gray-900 font-semibold">
-                        <span class="text-sm">{{payment.amount | number:'1.2-2'}}</span>
-                      </td>
-                      <td class="px-3 py-3 text-center">
-                        <button type="button"
-                                *ngIf="canModify()"
-                                (click)="deletePayment(payment)"
-                                class="inline-flex items-center justify-center w-8 h-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors"
-                                title="Remove payment">
-                          <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-                        </button>
-                      </td>
-                    </tr>
-                    
-                    <!-- Add New Payment Row -->
-                    <tr class="bg-gray-50 border-t-2">
-                      <td class="px-3 py-4">
-                        <input type="date" 
-                               formControlName="paymentDate"
-                               class="w-full px-2 py-2 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
-                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(paymentForm, 'paymentDate')">
-                          {{ getErrorMessage(paymentForm, 'paymentDate') }}
-                        </div>
-                      </td>
-                      <td class="px-3 py-4">
-                        <select formControlName="paymentMethod"
-                                class="w-full px-2 py-2 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
-                          <option value="" disabled>Select Method</option>
-                          <option *ngFor="let method of allPaymentMethods" [value]="method">{{method}}</option>
-                        </select>
-                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(paymentForm, 'paymentMethod')">
-                          {{ getErrorMessage(paymentForm, 'paymentMethod') }}
-                        </div>
-                      </td>
-                      <td class="px-3 py-4">
-                        <input type="text" 
-                               placeholder="Transaction ID/Reference"
-                               formControlName="paymentRef"
-                               class="w-full px-2 py-2 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
-                      </td>
-                      <td class="px-3 py-4">
-                        <input type="number" 
-                               step="0.01"
-                               placeholder="0.00"
-                               formControlName="paymentAmount"
-                               class="w-full px-2 py-2 border border-gray-300 text-sm text-right focus:outline-none focus:ring-2 focus:ring-green-500">
-                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(paymentForm, 'paymentAmount')">
-                          {{ getErrorMessage(paymentForm, 'paymentAmount') }}
-                        </div>
-                      </td>
-                      <td class="px-3 py-4 text-center">
-                        <button type="button"
-                                *ngIf="canModify()"
-                                [disabled]="!paymentForm.valid"
-                                [ngClass]="{
-                                  'text-green-600 hover:text-green-700 hover:bg-green-100 cursor-pointer': paymentForm.valid,
-                                  'text-gray-400 cursor-not-allowed': !paymentForm.valid
-                                }"
-                                (click)="paymentForm.valid && submitPayment()"
-                                class="inline-flex items-center justify-center w-8 h-8 rounded-full transition-colors"
-                                title="Add payment">
-                          <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <!-- Quotation Note (Only for Quotations) -->
-        <div class="w-4/6" *ngIf="!canAddPayments()">
-          <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
-            <div class="flex items-start gap-3">
-              <svg-icon src="./assets/icons/heroicons/outline/information-circle.svg" [svgClass]="'h-6 w-6 text-purple-600'"></svg-icon>
-              <div>
-                <h3 class="text-sm font-semibold text-purple-900 mb-1">Quotation Mode</h3>
-                <p class="text-xs text-purple-700">
-                  This is a quotation. Payments cannot be added to quotations. 
-                  Convert this quotation to a bill to enable payment tracking.
-                </p>
-                <button type="button"
-                        (click)="convertToBill()"
-                        class="mt-3 inline-flex items-center px-3 py-1.5 text-xs font-medium text-purple-700 bg-white border border-purple-300 rounded-md hover:bg-purple-100 transition-colors">
-                  <svg-icon src="./assets/icons/heroicons/outline/arrow-path.svg" [svgClass]="'h-4 w-4 mr-1'"></svg-icon>
-                  Convert to Bill
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Invoice Summary -->
-        <div [ngClass]="canAddPayments() ? 'w-2/6' : 'w-2/6'">
+      <!-- Summary Section -->
+      <div class="flex flex-row justify-end gap-6 pt-6">
+        <!-- Quotation Summary -->
+        <div class="w-2/6">
           <div class="bg-gray-50 border-gray-200 p-4 sticky top-4">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-              {{ invoice?.invoiceType === InvoiceType.QUOTATION ? 'Quotation' : 'Invoice' }} Summary
-            </h3>
-            
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Quotation Summary</h3>
+
             <div class="space-y-3">
               <!-- Sub Total -->
               <div class="flex justify-between items-center">
                 <label class="text-sm text-gray-600">Sub Total</label>
-                <input type="text" 
-                       readonly 
+                <input type="text"
+                       readonly
                        [value]="'' + (invoice?.pricing?.subTotal | number:'1.2-2')"
                        class="w-32 px-2 py-1 bg-white border border-gray-200 text-sm text-right text-gray-700">
               </div>
@@ -492,8 +360,8 @@
               <!-- Tax -->
               <div class="flex justify-between items-center">
                 <label class="text-sm text-gray-600">Tax ({{invoice?.pricing?.taxRate || 0}}%)</label>
-                <input type="text" 
-                       readonly 
+                <input type="text"
+                       readonly
                        [value]="'' + (invoice?.pricing?.taxAmount | number:'1.2-2')"
                        class="w-32 px-2 py-1 bg-white border border-gray-200 text-sm text-right text-gray-700">
               </div>
@@ -501,8 +369,8 @@
               <!-- VAT -->
               <div class="flex justify-between items-center">
                 <label class="text-sm text-gray-600">VAT ({{invoice?.pricing?.vatRate || 0}}%)</label>
-                <input type="text" 
-                       readonly 
+                <input type="text"
+                       readonly
                        [value]="'' + (invoice?.pricing?.vatAmount | number:'1.2-2')"
                        class="w-32 px-2 py-1 bg-white border border-gray-200 text-sm text-right text-gray-700">
               </div>
@@ -510,7 +378,7 @@
               <!-- Discount -->
               <div class="flex justify-between items-center">
                 <label class="text-sm text-gray-600">Discount</label>
-                <input type="number" 
+                <input type="number"
                        min="0"
                        step="50"
                        placeholder="0.00"
@@ -521,7 +389,7 @@
               <!-- Delivery Charge -->
               <div class="flex justify-between items-center">
                 <label class="text-sm text-gray-600">Delivery</label>
-                <input type="number" 
+                <input type="number"
                        min="0"
                        step="50"
                        placeholder="0.00"
@@ -534,28 +402,10 @@
               <!-- Total Amount -->
               <div class="flex justify-between items-center p-2">
                 <label class="text-base font-semibold text-gray-800">Total Amount</label>
-                <input type="text" 
-                       readonly 
+                <input type="text"
+                       readonly
                        [value]="'' + (invoice?.totalAmount | number:'1.2-2')"
                        class="w-32 px-2 py-1 bg-white border border-blue-200 text-base font-bold text-right text-blue-900">
-              </div>
-
-              <!-- Total Paid (Only for Bills) -->
-              <div class="flex justify-between items-center p-2" *ngIf="canAddPayments()">
-                <label class="text-sm font-medium text-gray-700">Total Paid</label>
-                <input type="text" 
-                       readonly 
-                       [value]="'' + (invoice?.totalPaid | number:'1.2-2')"
-                       class="w-32 px-2 py-1 bg-white border border-green-200 text-sm text-right font-medium text-green-700">
-              </div>
-
-              <!-- Total Due (Only for Bills) -->
-              <div class="flex justify-between items-center p-2" *ngIf="canAddPayments()">
-                <label class="text-sm font-medium text-gray-700">Amount Due</label>
-                <input type="text" 
-                       readonly 
-                       [value]="'' + (invoice?.remainingAmount | number:'1.2-2')"
-                       class="w-32 px-2 py-1 bg-white border border-red-200 text-sm text-right font-medium text-red-700">
               </div>
             </div>
           </div>
@@ -574,33 +424,21 @@
       <div class="flex flex-col pt-4">
         <label class="text-lg font-semibold text-gray-800 mb-2">Notes</label>
         <p class="text-sm text-gray-600 bg-gray-50 p-3 border">
-          <span *ngIf="invoice?.invoiceType === InvoiceType.QUOTATION">
-            This quotation is valid for 30 days from the date of issue. Please contact us for any clarifications.
-          </span>
-          <span *ngIf="invoice?.invoiceType === InvoiceType.BILL">
-            Thank you for your business! If you have any questions about this invoice, please contact us.
-          </span>
+          This quotation is valid for 30 days from the date of issue. Please contact us for any clarifications.
         </p>
       </div>
 
       <!-- Action Buttons -->
       <div class="flex flex-row justify-end pt-6 gap-3">
-        <button type="submit" 
-                class="flex items-center px-4 py-2 rounded-lg transition-colors" 
-                [disabled]="invForm.invalid" 
+        <button type="submit"
+                class="flex items-center px-4 py-2 rounded-lg transition-colors"
+                [disabled]="invForm.invalid"
                 [ngClass]="{
                   'bg-blue-600 text-white hover:bg-blue-700': !invForm.invalid,
                   'bg-gray-400 text-gray-200 cursor-not-allowed': invForm.invalid
                 }">
           <svg-icon src="./assets/icons/heroicons/outline/folder.svg" [svgClass]="'h-5 w-5'"></svg-icon>
           <span class="ml-2">Save</span>
-        </button>
-
-        <button type="button" *ngIf="canConvertToBill()"
-                class="flex items-center px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors"
-                (click)="convertToBill()">
-          <svg-icon src="./assets/icons/heroicons/outline/arrow-path.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-          <span class="ml-2">Convert to Bill</span>
         </button>
 
         <button type="button"

@@ -5,19 +5,19 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { Subject, takeUntil } from 'rxjs';
 import { formatCurrency } from 'src/app/common/utils/common';
-import { InvoiceStandalone, InvoiceStandaloneTableResponse, InvoiceStatus, InvoiceType } from '../../invoice-standalone.model';
-import { InvoiceStandaloneService } from 'src/app/core/services/invoice-standalone.service';
+import { Quotation, QuotationTableResponse, InvoiceStatus, InvoiceType } from '../../quotation.model';
+import { QuotationService } from 'src/app/core/services/quotation.service';
 import { ToWords } from 'to-words';
 
 @Component({
-  selector: 'app-invoice-standalone-detail',
+  selector: 'app-quotation-detail',
   standalone: true,
   imports: [AngularSvgIconModule, CommonModule, WordPipe],
-  templateUrl: './invoice-standalone-detail.component.html',
-  styleUrl: './invoice-standalone-detail.component.scss'
+  templateUrl: './quotation-detail.component.html',
+  styleUrl: './quotation-detail.component.scss'
 })
-export class InvoiceStandaloneDetailComponent implements OnInit, OnDestroy {
-  invoice: InvoiceStandalone | null = null;
+export class QuotationDetailComponent implements OnInit, OnDestroy {
+  invoice: Quotation | null = null;
   loading: boolean = false;
   orgId: string = '';
   invoiceId: string = '';
@@ -37,7 +37,7 @@ export class InvoiceStandaloneDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private invoiceStandaloneService: InvoiceStandaloneService
+    private quotationService: QuotationService
   ) {}
 
   ngOnInit(): void {
@@ -55,7 +55,7 @@ export class InvoiceStandaloneDetailComponent implements OnInit, OnDestroy {
       this.invoiceId = params['invoiceId'];
 
       if (!this.orgId || !this.invoiceId) {
-        this.router.navigate(['/quotation-bill/list']);
+        this.router.navigate(['/quotation/list']);
         return;
       }
 
@@ -65,7 +65,7 @@ export class InvoiceStandaloneDetailComponent implements OnInit, OnDestroy {
 
   private fetchInvoice(): void {
     this.loading = true;
-    this.invoiceStandaloneService.getInvoiceById(this.orgId, this.invoiceId)
+    this.quotationService.getInvoiceById(this.orgId, this.invoiceId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: invoice => {
@@ -74,24 +74,24 @@ export class InvoiceStandaloneDetailComponent implements OnInit, OnDestroy {
         },
         error: err => {
           this.loading = false;
-          this.invoiceStandaloneService.showToastErrorResponse(err);
-          this.router.navigate(['/quotation-bill/list']);
+          this.quotationService.showToastErrorResponse(err);
+          this.router.navigate(['/quotation/list']);
         }
       });
   }
 
   editInvoice(): void {
-    this.router.navigate(['/quotation-bill/add'], {
+    this.router.navigate(['/quotation/add'], {
       queryParams: { orgId: this.orgId, invoiceId: this.invoiceId }
     });
   }
 
   backToList(): void {
-    this.router.navigate(['/quotation-bill/list']);
+    this.router.navigate(['/quotation/list']);
   }
 
   downloadInvoice(): void {
-    this.invoiceStandaloneService.downloadInvoice(this.orgId, this.invoiceId)
+    this.quotationService.downloadInvoice(this.orgId, this.invoiceId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (pdfRes: Blob) => {
@@ -106,7 +106,7 @@ export class InvoiceStandaloneDetailComponent implements OnInit, OnDestroy {
           window.URL.revokeObjectURL(url);
         },
         error: (err) => {
-          this.invoiceStandaloneService.showToastErrorResponse(err);
+          this.quotationService.showToastErrorResponse(err);
         }
       });
   }
@@ -127,22 +127,11 @@ export class InvoiceStandaloneDetailComponent implements OnInit, OnDestroy {
   }
 
   getTypeColor(): string {
-    return this.invoice?.invoiceType === InvoiceType.QUOTATION
-      ? 'bg-purple-100 text-purple-800'
-      : 'bg-blue-100 text-blue-800';
+    return 'bg-purple-100 text-purple-800';
   }
 
   getTotalProductAmount(quantity: number, price: number, discountPercent: number): number {
     return quantity * price;
-  }
-
-  canShowPayments(): boolean {
-    return this.invoice?.invoiceType === InvoiceType.BILL;
-  }
-
-  getAmountDueColor(): string {
-    if (!this.invoice) return 'text-gray-900';
-    return this.invoice.remainingAmount > 0 ? 'text-red-600' : 'text-green-600';
   }
 
   hasProducts(): boolean {
@@ -153,9 +142,8 @@ export class InvoiceStandaloneDetailComponent implements OnInit, OnDestroy {
     return !!(this.invoice?.payments?.payments && this.invoice.payments.payments.length > 0);
   }
 
-  canModify (invoice: InvoiceStandaloneTableResponse):boolean {
+  canModify (invoice: QuotationTableResponse):boolean {
       return invoice.invoiceStatus !== InvoiceStatus.PAID;
   }
-  
 
 }

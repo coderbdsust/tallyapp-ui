@@ -1,6 +1,6 @@
-// src/app/features/invoice-standalone/invoice-standalone.model.ts
+// src/app/modules/quotation/quotation.model.ts
 
-export interface InvoiceStandalone {
+export interface Quotation {
   id: string;
   invoiceNumber: string;
   invoiceDate: string;
@@ -106,11 +106,10 @@ export enum InvoiceStatus {
 }
 
 export enum InvoiceType {
-  QUOTATION = 'QUOTATION',
-  BILL = 'BILL'
+  QUOTATION = 'QUOTATION'
 }
 
-export interface InvoiceStandaloneTableResponse {
+export interface QuotationTableResponse {
   id: string;
   invoiceNumber: string;
   invoiceDate: string;

@@ -7,12 +7,11 @@ import { CashOutComponent } from './pages/cash-out/cash-out.component';
 import { CashFlowComponent } from './pages/cash-flow/cash-flow.component';
 import { JournalViewerComponent } from './pages/journal-viewer/journal-viewer.component';
 import { ReportComponent } from './pages/report/report.component';
-import { FinancialReportComponent } from './pages/financial-report/financial-report.component';
 
 
 @Component({
   selector: 'app-transaction',
-  imports: [CashInComponent, CashOutComponent, NgIf, NgFor, CashFlowComponent, JournalViewerComponent, ReportComponent, FinancialReportComponent],
+  imports: [CashInComponent, CashOutComponent, NgIf, NgFor, CashFlowComponent, JournalViewerComponent, ReportComponent],
   templateUrl: './transaction.component.html',
   styleUrl: './transaction.component.scss'
 })
@@ -26,8 +25,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
     // { id: 'expense', label: 'Expense' },
     { id: 'cash-flow', label: 'Cash Flow' },
     { id: 'journal-viewer', label: 'Journals' },
-    { id: 'report', label: 'Transactions' },
-    { id: 'financial-report', label: 'Financial Reports' }
+    { id: 'report', label: 'Transactions' }
   ];
 
   constructor(

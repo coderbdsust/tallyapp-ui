@@ -1,395 +1,226 @@
-# Report API Documentation
+## API Documentation — Implemented Reports
 
-Base URL: `/reports/v1`
-Required Module: `REPORTING`
+### Cash Flow Statement
 
----
+#### JSON Endpoint
 
-## 1. Profit and Loss
+```
+GET /reports/v1/{organizationId}/cash-flow-statement?startDate={date}&endDate={date}
+```
 
-**GET** `/{organizationId}/profit-and-loss?startDate={date}&endDate={date}`
+**Auth:** Requires `REPORTING` module access.
 
-### Parameters
+**Path Parameters:**
 
-| Name             | In    | Type   | Required | Format       | Description              |
-|------------------|-------|--------|----------|--------------|--------------------------|
-| organizationId   | path  | UUID   | Yes      |              | Organization identifier  |
-| startDate        | query | string | Yes      | `YYYY-MM-DD` | Report period start date |
-| endDate          | query | string | Yes      | `YYYY-MM-DD` | Report period end date   |
+| Parameter        | Type | Description                    |
+| ---------------- | ---- | ------------------------------ |
+| `organizationId` | UUID | Organization unique identifier |
 
-### Response `200 OK`
+**Query Parameters:**
+
+| Parameter   | Type      | Format       | Required | Description       |
+| ----------- | --------- | ------------ | -------- | ----------------- |
+| `startDate` | LocalDate | `yyyy-MM-dd` | Yes      | Period start date |
+| `endDate`   | LocalDate | `yyyy-MM-dd` | Yes      | Period end date   |
+
+**Response: `200 OK`**
 
 ```json
 {
-  "organizationId": "550e8400-e29b-41d4-a716-446655440000",
-  "organizationName": "Acme Corp",
+  "organizationId": "a1b2c3d4-...",
+  "organizationName": "Acme Ltd",
   "startDate": "2026-01-01",
   "endDate": "2026-03-31",
-  "revenueItems": [
+  "operatingActivities": [
     {
-      "accountCode": 41000,
-      "accountName": "Sales Revenue",
-      "amount": 50000.00
+      "description": "Payment Received",
+      "transactionType": "PAYMENT_RECEIVED",
+      "inflow": 50000.0,
+      "outflow": 0.0,
+      "net": 50000.0
     },
     {
-      "accountCode": 42000,
-      "accountName": "Service Revenue",
-      "amount": 12000.00
+      "description": "Payment Made",
+      "transactionType": "PAYMENT_MADE",
+      "inflow": 0.0,
+      "outflow": 30000.0,
+      "net": -30000.0
     }
   ],
-  "totalRevenue": 62000.00,
-  "expenseItems": [
-    {
-      "accountCode": 50000,
-      "accountName": "Regular Expenses",
-      "amount": 20000.00
-    },
-    {
-      "accountCode": 51030,
-      "accountName": "Employee Salary",
-      "amount": 15000.00
-    }
-  ],
-  "totalExpenses": 35000.00,
-  "netIncome": 27000.00
+  "netOperatingCashFlow": 20000.0,
+  "investingActivities": [],
+  "netInvestingCashFlow": 0.0,
+  "financingActivities": [],
+  "netFinancingCashFlow": 0.0,
+  "netCashChange": 20000.0,
+  "openingCashBalance": 15000.0,
+  "closingCashBalance": 35000.0
 }
 ```
 
-### Field Descriptions
+**Response Fields:**
 
-| Field          | Type   | Description                                          |
-|----------------|--------|------------------------------------------------------|
-| revenueItems   | array  | Revenue accounts with net activity (credits - debits)|
-| totalRevenue   | number | Sum of all revenue line items                        |
-| expenseItems   | array  | Expense accounts with net activity (debits - credits)|
-| totalExpenses  | number | Sum of all expense line items                        |
-| netIncome      | number | `totalRevenue - totalExpenses`                       |
+| Field                  | Type                     | Description                                               |
+| ---------------------- | ------------------------ | --------------------------------------------------------- |
+| `operatingActivities`  | List\<CashFlowLineItem\> | Operating section line items (includes Reversal category) |
+| `netOperatingCashFlow` | Double                   | Sum of operating line item nets                           |
+| `investingActivities`  | List\<CashFlowLineItem\> | Investing section line items                              |
+| `netInvestingCashFlow` | Double                   | Sum of investing line item nets                           |
+| `financingActivities`  | List\<CashFlowLineItem\> | Financing section line items                              |
+| `netFinancingCashFlow` | Double                   | Sum of financing line item nets                           |
+| `netCashChange`        | Double                   | `netOperating + netInvesting + netFinancing`              |
+| `openingCashBalance`   | Double                   | Net of all cash flows before `startDate`                  |
+| `closingCashBalance`   | Double                   | `openingCashBalance + netCashChange`                      |
+
+**CashFlowLineItem Fields:**
+
+| Field             | Type   | Description                                                    |
+| ----------------- | ------ | -------------------------------------------------------------- |
+| `description`     | String | Display name of the transaction type (e.g. "Payment Received") |
+| `transactionType` | String | Enum name (e.g. `PAYMENT_RECEIVED`)                            |
+| `inflow`          | Double | Total cash inflows for this type in the period                 |
+| `outflow`         | Double | Total cash outflows for this type in the period                |
+| `net`             | Double | `inflow - outflow`                                             |
+
+**Cash Flow Type Classification:**
+
+| Direction | Transaction Types                                                         |
+| --------- | ------------------------------------------------------------------------- |
+| Inflow    | `CASH_IN`, `PAYMENT_RECEIVED`, `REFUND_RECEIVED`                          |
+| Outflow   | `CASH_OUT`, `PAYMENT_MADE`, `EXPENSE`, `EMPLOYEE_EXPENSE`, `REFUND_GIVEN` |
+
+**Category Mapping:**
+
+| CashFlowEntity.category   | Section                         |
+| ------------------------- | ------------------------------- |
+| `Operating`               | Operating Activities            |
+| `Investing`               | Investing Activities            |
+| `Financing`               | Financing Activities            |
+| `Reversal` / null / other | Falls into Operating Activities |
+
+#### PDF Download Endpoint
+
+```
+GET /pdf/v1/report/{orgId}/cash-flow-statement/download?startDate={date}&endDate={date}
+```
+
+**Auth:** Requires `REPORTING` module access.
+
+**Parameters:** Same as JSON endpoint.
+
+**Response: `200 OK`**
+
+- Content-Type: `application/pdf`
+- Content-Disposition: `attachment; filename=cash-flow-statement-{orgId}.pdf`
+- Body: PDF byte stream
+
+**PDF Layout:**
+
+- 3 section tables (Operating, Investing, Financing) with columns: Activity (35%), Inflow (20%), Outflow (20%), Net (25%)
+- Empty sections show "No {type} activities" placeholder text
+- Summary table with Opening Cash Balance, Net Cash Change, Closing Cash Balance
+- Closing balance colored green (positive) or red (negative)
 
 ---
 
-## 2. Trial Balance
+### Sales by Customer
 
-**GET** `/{organizationId}/trial-balance?startDate={date}&endDate={date}`
+#### JSON Endpoint
 
-### Parameters
+```
+GET /reports/v1/{organizationId}/sales-by-customer?startDate={date}&endDate={date}
+```
 
-| Name             | In    | Type   | Required | Format       | Description              |
-|------------------|-------|--------|----------|--------------|--------------------------|
-| organizationId   | path  | UUID   | Yes      |              | Organization identifier  |
-| startDate        | query | string | Yes      | `YYYY-MM-DD` | Report period start date |
-| endDate          | query | string | Yes      | `YYYY-MM-DD` | Report period end date   |
+**Auth:** Requires `REPORTING` module access.
 
-### Response `200 OK`
+**Path Parameters:**
+
+| Parameter        | Type | Description                    |
+| ---------------- | ---- | ------------------------------ |
+| `organizationId` | UUID | Organization unique identifier |
+
+**Query Parameters:**
+
+| Parameter   | Type      | Format       | Required | Description       |
+| ----------- | --------- | ------------ | -------- | ----------------- |
+| `startDate` | LocalDate | `yyyy-MM-dd` | Yes      | Period start date |
+| `endDate`   | LocalDate | `yyyy-MM-dd` | Yes      | Period end date   |
+
+**Response: `200 OK`**
 
 ```json
 {
-  "organizationId": "550e8400-e29b-41d4-a716-446655440000",
-  "organizationName": "Acme Corp",
+  "organizationId": "a1b2c3d4-...",
+  "organizationName": "Acme Ltd",
   "startDate": "2026-01-01",
   "endDate": "2026-03-31",
-  "accounts": [
+  "customers": [
     {
-      "accountCode": 11000,
-      "accountName": "Cash",
-      "accountType": "ASSET",
-      "totalDebit": 80000.00,
-      "totalCredit": 45000.00,
-      "balance": 35000.00
+      "customerId": "c1d2e3f4-...",
+      "customerName": "John Smith",
+      "invoiceCount": 15,
+      "totalSales": 50000.0,
+      "totalTax": 2500.0,
+      "totalVat": 3750.0,
+      "percentageOfTotal": 45.23
     },
     {
-      "accountCode": 12000,
-      "accountName": "Accounts Receivable",
-      "accountType": "ASSET",
-      "totalDebit": 50000.00,
-      "totalCredit": 30000.00,
-      "balance": 20000.00
-    },
-    {
-      "accountCode": 21000,
-      "accountName": "Accounts Payable",
-      "accountType": "LIABILITY",
-      "totalDebit": 10000.00,
-      "totalCredit": 25000.00,
-      "balance": 15000.00
-    },
-    {
-      "accountCode": 23000,
-      "accountName": "Tax Payable",
-      "accountType": "LIABILITY",
-      "totalDebit": 0.00,
-      "totalCredit": 5000.00,
-      "balance": 5000.00
-    },
-    {
-      "accountCode": 41000,
-      "accountName": "Sales Revenue",
-      "accountType": "REVENUE",
-      "totalDebit": 0.00,
-      "totalCredit": 50000.00,
-      "balance": 50000.00
+      "customerId": "d4e5f6a7-...",
+      "customerName": "ABC Corp",
+      "invoiceCount": 8,
+      "totalSales": 30000.0,
+      "totalTax": 1500.0,
+      "totalVat": 2250.0,
+      "percentageOfTotal": 27.14
     }
   ],
-  "totalDebits": 140000.00,
-  "totalCredits": 140000.00
+  "grandTotal": 110500.0
 }
 ```
 
-### Field Descriptions
+**Response Fields:**
 
-| Field        | Type   | Description                                                    |
-|--------------|--------|----------------------------------------------------------------|
-| accounts     | array  | All active accounts with period debits, credits, and balance   |
-| totalDebit   | number | Sum of all debit entries to this account in the period         |
-| totalCredit  | number | Sum of all credit entries to this account in the period        |
-| balance      | number | Current running balance of the account                         |
-| totalDebits  | number | Grand total of all debit activity (should equal totalCredits)  |
-| totalCredits | number | Grand total of all credit activity (should equal totalDebits)  |
+| Field        | Type                  | Description                                             |
+| ------------ | --------------------- | ------------------------------------------------------- |
+| `customers`  | List\<CustomerSales\> | Customer sales rows, ordered by `totalSales` descending |
+| `grandTotal` | Double                | Sum of all customer `totalSales`                        |
 
----
+**CustomerSales Fields:**
 
-## 3. Tax / VAT Report
+| Field               | Type   | Description                                                       |
+| ------------------- | ------ | ----------------------------------------------------------------- |
+| `customerId`        | UUID   | Customer unique identifier                                        |
+| `customerName`      | String | Customer display name                                             |
+| `invoiceCount`      | Long   | Number of distinct invoices in the period                         |
+| `totalSales`        | Double | Total invoice amount (subtotal + tax + VAT - discount + delivery) |
+| `totalTax`          | Double | Total tax amount across invoices                                  |
+| `totalVat`          | Double | Total VAT amount across invoices                                  |
+| `percentageOfTotal` | Double | `(totalSales / grandTotal) * 100`, rounded to 2 decimal places    |
 
-**GET** `/{organizationId}/tax-vat?startDate={date}&endDate={date}`
+**Invoice Filter Criteria:**
 
-### Parameters
+- Only invoices with status `ISSUED`, `PARTIALLY_PAID`, or `PAID`
+- Invoice date must fall within `startDate` and `endDate` (inclusive)
+- Only invoices linked to a customer (JOIN, not LEFT JOIN)
 
-| Name             | In    | Type   | Required | Format       | Description              |
-|------------------|-------|--------|----------|--------------|--------------------------|
-| organizationId   | path  | UUID   | Yes      |              | Organization identifier  |
-| startDate        | query | string | Yes      | `YYYY-MM-DD` | Report period start date |
-| endDate          | query | string | Yes      | `YYYY-MM-DD` | Report period end date   |
+**Calculation Notes:**
 
-### Response `200 OK`
+- Subtotals are pre-aggregated per invoice via subquery on `product_sale` to avoid row multiplication of invoice-level fields (`total_discount`, `delivery_charge`)
+- `totalSales` = `subtotal * (1 + tax/100 + vat/100) - total_discount + delivery_charge`
+- `percentageOfTotal` is 0.00 when `grandTotal` is zero
 
-```json
-{
-  "organizationId": "550e8400-e29b-41d4-a716-446655440000",
-  "organizationName": "Acme Corp",
-  "startDate": "2026-01-01",
-  "endDate": "2026-03-31",
-  "entries": [
-    {
-      "month": "2026-01",
-      "accountCode": 23000,
-      "accountName": "Tax Payable",
-      "totalDebit": 0.00,
-      "totalCredit": 2500.00,
-      "netMovement": 2500.00
-    },
-    {
-      "month": "2026-01",
-      "accountCode": 23010,
-      "accountName": "VAT Output",
-      "totalDebit": 0.00,
-      "totalCredit": 3000.00,
-      "netMovement": 3000.00
-    },
-    {
-      "month": "2026-01",
-      "accountCode": 50010,
-      "accountName": "VAT Input (Recoverable)",
-      "totalDebit": 1200.00,
-      "totalCredit": 0.00,
-      "netMovement": -1200.00
-    },
-    {
-      "month": "2026-02",
-      "accountCode": 23000,
-      "accountName": "Tax Payable",
-      "totalDebit": 0.00,
-      "totalCredit": 1800.00,
-      "netMovement": 1800.00
-    }
-  ],
-  "totalTaxCollected": 4300.00,
-  "totalVatOutput": 5500.00,
-  "totalVatInput": 2100.00,
-  "netVatPayable": 3400.00
-}
+#### PDF Download Endpoint
+
+```
+GET /pdf/v1/report/{orgId}/sales-by-customer/download?startDate={date}&endDate={date}
 ```
 
-### Field Descriptions
+**Auth:** Requires `REPORTING` module access.
 
-| Field             | Type   | Description                                                      |
-|-------------------|--------|------------------------------------------------------------------|
-| entries           | array  | Monthly breakdown per tax/VAT account                            |
-| month             | string | Period in `YYYY-MM` format                                       |
-| totalDebit        | number | Debits to the account in the month (payments/settlements)        |
-| totalCredit       | number | Credits to the account in the month (new liabilities from sales) |
-| netMovement       | number | `totalCredit - totalDebit` (positive = liability increased)      |
-| totalTaxCollected | number | Current balance of Tax Payable (account 23000)                   |
-| totalVatOutput    | number | Current balance of VAT Output (account 23010)                    |
-| totalVatInput     | number | Current balance of VAT Input/Recoverable (account 50010)         |
-| netVatPayable     | number | `totalVatOutput - totalVatInput`                                 |
+**Parameters:** Same as JSON endpoint.
 
-### Tracked Accounts
+**Response: `200 OK`**
 
-| Code  | Name                   | Type      | Description                          |
-|-------|------------------------|-----------|--------------------------------------|
-| 23000 | Tax Payable            | LIABILITY | Tax collected on sales               |
-| 23010 | VAT Output             | LIABILITY | VAT collected on sales               |
-| 23030 | WHT Payable            | LIABILITY | Withholding tax payable              |
-| 50010 | VAT Input (Recoverable)| ASSET     | VAT paid on purchases (reclaimable)  |
-
----
-
-## 4. Accounts Receivable Aging
-
-**GET** `/{organizationId}/ar-aging`
-
-### Parameters
-
-| Name             | In   | Type | Required | Description             |
-|------------------|------|------|----------|-------------------------|
-| organizationId   | path | UUID | Yes      | Organization identifier |
-
-### Response `200 OK`
-
-```json
-{
-  "organizationId": "550e8400-e29b-41d4-a716-446655440000",
-  "organizationName": "Acme Corp",
-  "reportDate": "2026-03-14",
-  "buckets": [
-    {
-      "bucket": "CURRENT",
-      "invoiceCount": 5,
-      "totalOutstanding": 12000.00
-    },
-    {
-      "bucket": "1_30_DAYS",
-      "invoiceCount": 3,
-      "totalOutstanding": 8500.00
-    },
-    {
-      "bucket": "31_60_DAYS",
-      "invoiceCount": 2,
-      "totalOutstanding": 4200.00
-    },
-    {
-      "bucket": "61_90_DAYS",
-      "invoiceCount": 1,
-      "totalOutstanding": 3000.00
-    },
-    {
-      "bucket": "OVER_90_DAYS",
-      "invoiceCount": 1,
-      "totalOutstanding": 1500.00
-    }
-  ],
-  "totalOutstanding": 29200.00
-}
-```
-
-### Field Descriptions
-
-| Field            | Type   | Description                                           |
-|------------------|--------|-------------------------------------------------------|
-| reportDate       | string | Date the report was generated                         |
-| buckets          | array  | Aging buckets based on delivery date vs current date  |
-| bucket           | string | One of: `CURRENT`, `1_30_DAYS`, `31_60_DAYS`, `61_90_DAYS`, `OVER_90_DAYS` |
-| invoiceCount     | number | Number of invoices in the bucket                      |
-| totalOutstanding | number | Total unpaid amount (invoice total - payments made)   |
-
-### Bucket Definitions
-
-| Bucket        | Criteria                                        |
-|---------------|-------------------------------------------------|
-| CURRENT       | Delivery date is today or in the future         |
-| 1_30_DAYS     | 1 to 30 days past delivery date                 |
-| 31_60_DAYS    | 31 to 60 days past delivery date                |
-| 61_90_DAYS    | 61 to 90 days past delivery date                |
-| OVER_90_DAYS  | More than 90 days past delivery date            |
-
-Only invoices with status `ISSUED` or `PARTIALLY_PAID` are included.
-
----
-
-## PDF Download Endpoints
-
-Base URL: `/pdf/v1/report`
-Required Module: `REPORTING`
-
-Each endpoint returns a downloadable PDF file with `Content-Type: application/pdf` and `Content-Disposition: attachment`.
-
----
-
-### 5. Profit and Loss PDF
-
-**GET** `/pdf/v1/report/{orgId}/profit-and-loss/download?startDate={date}&endDate={date}`
-
-| Name      | In    | Type   | Required | Format       | Description              |
-|-----------|-------|--------|----------|--------------|--------------------------|
-| orgId     | path  | UUID   | Yes      |              | Organization identifier  |
-| startDate | query | string | Yes      | `YYYY-MM-DD` | Report period start date |
-| endDate   | query | string | Yes      | `YYYY-MM-DD` | Report period end date   |
-
-**Response:** `200 OK` — `application/pdf` binary, filename: `profit-and-loss-{orgId}.pdf`
-
-PDF contains: title, organization/period header, revenue table (code, account, amount), expense table, and net income/loss summary.
-
----
-
-### 6. Trial Balance PDF
-
-**GET** `/pdf/v1/report/{orgId}/trial-balance/download?startDate={date}&endDate={date}`
-
-| Name      | In    | Type   | Required | Format       | Description              |
-|-----------|-------|--------|----------|--------------|--------------------------|
-| orgId     | path  | UUID   | Yes      |              | Organization identifier  |
-| startDate | query | string | Yes      | `YYYY-MM-DD` | Report period start date |
-| endDate   | query | string | Yes      | `YYYY-MM-DD` | Report period end date   |
-
-**Response:** `200 OK` — `application/pdf` binary, filename: `trial-balance-{orgId}.pdf`
-
-PDF contains: title, organization/period header, accounts table (code, account, type, debit, credit, balance), and totals row.
-
----
-
-### 7. Tax & VAT Report PDF
-
-**GET** `/pdf/v1/report/{orgId}/tax-vat/download?startDate={date}&endDate={date}`
-
-| Name      | In    | Type   | Required | Format       | Description              |
-|-----------|-------|--------|----------|--------------|--------------------------|
-| orgId     | path  | UUID   | Yes      |              | Organization identifier  |
-| startDate | query | string | Yes      | `YYYY-MM-DD` | Report period start date |
-| endDate   | query | string | Yes      | `YYYY-MM-DD` | Report period end date   |
-
-**Response:** `200 OK` — `application/pdf` binary, filename: `tax-vat-report-{orgId}.pdf`
-
-PDF contains: title, organization/period header, monthly tax/VAT movements table (month, code, account, debit, credit, net movement), and summary totals (tax collected, VAT output, VAT input, net VAT payable).
-
----
-
-### 8. AR Aging Report PDF
-
-**GET** `/pdf/v1/report/{orgId}/ar-aging/download`
-
-| Name  | In   | Type | Required | Description             |
-|-------|------|------|----------|-------------------------|
-| orgId | path | UUID | Yes      | Organization identifier |
-
-**Response:** `200 OK` — `application/pdf` binary, filename: `ar-aging-report-{orgId}.pdf`
-
-PDF contains: title, organization/report date header, aging buckets table (bucket, invoice count, outstanding amount), and total outstanding.
-
----
-
-## Error Responses
-
-All endpoints return standard error responses:
-
-```json
-{
-  "sucs": false,
-  "message": "Organization not found: <id>",
-  "businessCode": 400
-}
-```
-
-| Status | Condition                          |
-|--------|------------------------------------|
-| 400    | Invalid parameters or missing data |
-| 403    | Missing REPORTING module access    |
-| 404    | Organization not found             |
+- Content-Type: `application/pdf`
+- Content-Disposition: `attachment; filename=sales-by-customer-{orgId}.pdf`
+- Body: PDF byte stream

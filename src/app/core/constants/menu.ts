@@ -13,7 +13,7 @@ export class Menu {
     'USER_MANAGEMENT': ['Settings'],
     'APP_CONFIGURATION': ['Settings'],
     'PROFILE': [],
-    'REPORTING': []
+    'REPORTING': ['Report']
   };
 
   // Base menu structure with all possible items
@@ -69,8 +69,8 @@ export class Menu {
         },
         {
           icon: 'assets/icons/heroicons/outline/newpaper.svg',
-          label: 'Quotation & Bill',
-          route: '/quotation-bill/list',
+          label: 'Quotation',
+          route: '/quotation/list',
           requiredModules: ['INVOICE_STANDALONE_MANAGEMENT']
         },
         {
@@ -82,6 +82,12 @@ export class Menu {
             { label: 'Suppliers', route: '/supplier/list' },
             { label: 'Purchase Orders', route: '/supplier/purchase-order' }
           ]
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/document-text.svg',
+          label: 'Report',
+          route: '/report',
+          requiredModules: ['REPORTING']
         }
       ],
     },

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { InvoiceStandaloneRoutingModule } from './invoice-standalone-routing.module';
+import { QuotationRoutingModule } from './quotation-routing.module';
 
 
 
@@ -8,7 +8,7 @@ import { InvoiceStandaloneRoutingModule } from './invoice-standalone-routing.mod
   declarations: [],
   imports: [
     CommonModule,
-    InvoiceStandaloneRoutingModule
+    QuotationRoutingModule
   ]
 })
-export class InvoiceStandaloneModule { }
+export class QuotationModule { }

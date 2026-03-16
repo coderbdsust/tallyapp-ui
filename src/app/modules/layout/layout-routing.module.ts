@@ -34,11 +34,11 @@ const routes: Routes = [
     loadChildren: () => import('../invoice/invoice.module').then((m) => m.InvoiceModule),
   },
   {
-    path: 'quotation-bill',
+    path: 'quotation',
     component: LayoutComponent,
     canActivate: [authGuard],
     data: { modules: ['INVOICE_STANDALONE_MANAGEMENT'] },
-    loadChildren: () => import('../invoice-standalone/invoice-standalone.module').then((m) => m.InvoiceStandaloneModule),
+    loadChildren: () => import('../quotation/quotation.module').then((m) => m.QuotationModule),
   },
   {
     path: 'cash-management',
@@ -67,6 +67,13 @@ const routes: Routes = [
     canActivate: [authGuard],
     data: { modules: ['SUPPLIER_MANAGEMENT'] },
     loadChildren: () => import('../supplier/supplier.module').then((m) => m.SupplierModule),
+  },
+  {
+    path: 'report',
+    component: LayoutComponent,
+    canActivate: [authGuard],
+    data: { modules: ['REPORTING'] },
+    loadChildren: () => import('../report/report.module').then((m) => m.ReportModule),
   },
   {
     path: 'user',

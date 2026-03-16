@@ -8,23 +8,23 @@ import { MatDialog } from '@angular/material/dialog';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { Subject, takeUntil } from 'rxjs';
 import { formatCurrency } from 'src/app/common/utils/common';
-import { InvoiceStandaloneTableResponse, InvoiceType, InvoiceStatus } from '../../invoice-standalone.model';
+import { QuotationTableResponse, InvoiceType, InvoiceStatus } from '../../quotation.model';
 import { Organization } from 'src/app/core/models/organization.model';
-import { InvoiceStandaloneService } from 'src/app/core/services/invoice-standalone.service';
+import { QuotationService } from 'src/app/core/services/quotation.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-invoice-standalone-list',
+  selector: 'app-quotation-list',
   standalone: true,
   imports: [AngularSvgIconModule, CommonModule, WordPipe, FormsModule],
-  templateUrl: './invoice-standalone-list.component.html',
-  styleUrl: './invoice-standalone-list.component.scss'
+  templateUrl: './quotation-list.component.html',
+  styleUrl: './quotation-list.component.scss'
 })
-export class InvoiceStandaloneListComponent 
-  extends PaginatedComponent<InvoiceStandaloneTableResponse> 
+export class QuotationListComponent
+  extends PaginatedComponent<QuotationTableResponse>
   implements OnInit, OnDestroy {
-  
+
   search: string = '';
   selectedInvoiceType: InvoiceType | null = null;
   loading: boolean = false;
@@ -38,7 +38,7 @@ export class InvoiceStandaloneListComponent
 
   constructor(
     private router: Router,
-    private invoiceStandaloneService: InvoiceStandaloneService,
+    private quotationService: QuotationService,
     private orgService: OrganizationService,
     public dialog: MatDialog
   ) {
@@ -58,7 +58,7 @@ export class InvoiceStandaloneListComponent
     if (!this.organization) return;
 
     this.loading = true;
-    this.invoiceStandaloneService
+    this.quotationService
       .getInvoicesForTable(
         this.organization.id,
         this.currentPage,
@@ -74,7 +74,7 @@ export class InvoiceStandaloneListComponent
         },
         error: (error) => {
           this.loading = false;
-          this.invoiceStandaloneService.showToastErrorResponse(error);
+          this.quotationService.showToastErrorResponse(error);
         },
       });
   }
@@ -108,7 +108,7 @@ export class InvoiceStandaloneListComponent
   }
 
   createInvoice(invoiceType: InvoiceType): void {
-    this.invoiceStandaloneService
+    this.quotationService
       .createInvoice({
         organizationId: this.organization.id,
         invoiceType: invoiceType
@@ -116,29 +116,29 @@ export class InvoiceStandaloneListComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (invoice) => {
-          this.router.navigate(['/quotation-bill/add'], {
+          this.router.navigate(['/quotation/add'], {
             queryParams: { orgId: this.organization.id, invoiceId: invoice.id }
           });
         },
         error: (err) => {
-          this.invoiceStandaloneService.showToastErrorResponse(err);
+          this.quotationService.showToastErrorResponse(err);
         }
       });
   }
 
-  viewInvoice(invoice: InvoiceStandaloneTableResponse): void {
-    this.router.navigate(['/quotation-bill/detail'], {
+  viewInvoice(invoice: QuotationTableResponse): void {
+    this.router.navigate(['/quotation/detail'], {
       queryParams: { orgId: this.organization.id, invoiceId: invoice.id }
     });
   }
 
-  editInvoice(invoice: InvoiceStandaloneTableResponse): void {
-    this.router.navigate(['/quotation-bill/add'], {
+  editInvoice(invoice: QuotationTableResponse): void {
+    this.router.navigate(['/quotation/add'], {
       queryParams: { orgId: this.organization.id, invoiceId: invoice.id }
     });
   }
 
-  deleteInvoice(invoice: InvoiceStandaloneTableResponse): void {
+  deleteInvoice(invoice: QuotationTableResponse): void {
     const dialogRef = this.dialog.open(ConfirmationModalComponent, {
       width: '350px',
       data: {
@@ -148,57 +148,24 @@ export class InvoiceStandaloneListComponent
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.invoiceStandaloneService
+        this.quotationService
           .deleteInvoice(invoice.id)
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: (response) => {
-              this.invoiceStandaloneService.showToastSuccess(response.message);
+              this.quotationService.showToastSuccess(response.message);
               this.loadData();
             },
             error: (errRes) => {
-              this.invoiceStandaloneService.showToastErrorResponse(errRes);
+              this.quotationService.showToastErrorResponse(errRes);
             },
           });
       }
     });
   }
 
-  convertToBill(invoice: InvoiceStandaloneTableResponse): void {
-    if (invoice.invoiceType !== InvoiceType.QUOTATION) {
-      this.invoiceStandaloneService.showToastError('Only quotations can be converted to bills');
-      return;
-    }
-
-    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
-      width: '350px',
-      data: {
-        message: `Convert quotation ${invoice.invoiceNumber} to bill?`
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.invoiceStandaloneService
-          .convertQuotationToBill(invoice.id)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: (newBill) => {
-              this.invoiceStandaloneService.showToastSuccess('Quotation converted to bill successfully');
-              this.router.navigate(['/quotation-bill/add'], {
-                queryParams: { orgId: this.organization.id, invoiceId: newBill.id }
-              });
-            },
-            error: (errRes) => {
-              this.invoiceStandaloneService.showToastErrorResponse(errRes);
-            },
-          });
-      }
-    });
-  }
-
-  downloadInvoice(invoice: InvoiceStandaloneTableResponse): void {
-    this.invoiceStandaloneService
+  downloadInvoice(invoice: QuotationTableResponse): void {
+    this.quotationService
       .downloadInvoice(this.organization.id, invoice.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -214,7 +181,7 @@ export class InvoiceStandaloneListComponent
           window.URL.revokeObjectURL(url);
         },
         error: (err) => {
-          this.invoiceStandaloneService.showToastErrorResponse(err);
+          this.quotationService.showToastErrorResponse(err);
         }
       });
   }
@@ -232,9 +199,7 @@ export class InvoiceStandaloneListComponent
   }
 
   getTypeColor(type: InvoiceType): { bg: string; text: string } {
-    return type === InvoiceType.QUOTATION
-      ? { bg: 'bg-purple-100', text: 'text-purple-800' }
-      : { bg: 'bg-blue-100', text: 'text-blue-800' };
+    return { bg: 'bg-purple-100', text: 'text-purple-800' };
   }
 
   getAmountColor(amount: number, type: 'due' | 'paid' | 'total'): string {
@@ -250,15 +215,7 @@ export class InvoiceStandaloneListComponent
     }
   }
 
-  canModify (invoice:InvoiceStandaloneTableResponse):boolean {
+  canModify (invoice:QuotationTableResponse):boolean {
     return invoice.invoiceStatus !== InvoiceStatus.PAID;
-  }
-
-  canShowPayments(invoice: InvoiceStandaloneTableResponse): boolean {
-    return invoice.invoiceType === InvoiceType.BILL;
-  }
-
-  canConvertToBill(invoice: InvoiceStandaloneTableResponse): boolean {
-    return invoice.invoiceType === InvoiceType.QUOTATION;
   }
 }

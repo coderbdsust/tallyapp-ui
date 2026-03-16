@@ -9,7 +9,9 @@ import { ReportService } from 'src/app/core/services/report.service';
 import { formatCurrency } from 'src/app/common/utils/common';
 import {
   ArAgingReport,
+  CashFlowStatementReport,
   ProfitAndLossReport,
+  SalesByCustomerReport,
   TaxVatReport,
   TrialBalanceReport
 } from 'src/app/core/models/report.model';
@@ -25,13 +27,15 @@ export class FinancialReportComponent implements OnInit, OnDestroy {
   organization: Organization | null = null;
   formatCurrency = formatCurrency;
 
-  activeReport: 'profit-loss' | 'trial-balance' | 'tax-vat' | 'ar-aging' = 'profit-loss';
+  activeReport: 'profit-loss' | 'trial-balance' | 'tax-vat' | 'ar-aging' | 'cash-flow-statement' | 'sales-by-customer' = 'profit-loss';
 
   reportTabs = [
     { id: 'profit-loss' as const, label: 'Profit & Loss' },
     { id: 'trial-balance' as const, label: 'Trial Balance' },
     { id: 'tax-vat' as const, label: 'Tax / VAT' },
-    { id: 'ar-aging' as const, label: 'AR Aging' }
+    { id: 'ar-aging' as const, label: 'AR Aging' },
+    { id: 'cash-flow-statement' as const, label: 'Cash Flow Statement' },
+    { id: 'sales-by-customer' as const, label: 'Sales by Customer' }
   ];
 
   // Date filters
@@ -43,6 +47,8 @@ export class FinancialReportComponent implements OnInit, OnDestroy {
   trialBalanceReport: TrialBalanceReport | null = null;
   taxVatReport: TaxVatReport | null = null;
   arAgingReport: ArAgingReport | null = null;
+  cashFlowStatementReport: CashFlowStatementReport | null = null;
+  salesByCustomerReport: SalesByCustomerReport | null = null;
 
   loading = false;
   downloading = false;
@@ -108,6 +114,12 @@ export class FinancialReportComponent implements OnInit, OnDestroy {
       case 'ar-aging':
         this.loadArAging(orgId);
         break;
+      case 'cash-flow-statement':
+        this.loadCashFlowStatement(orgId);
+        break;
+      case 'sales-by-customer':
+        this.loadSalesByCustomer(orgId);
+        break;
     }
   }
 
@@ -154,6 +166,28 @@ export class FinancialReportComponent implements OnInit, OnDestroy {
       });
   }
 
+  private loadCashFlowStatement(orgId: string): void {
+    if (!this.startDate || !this.endDate) return;
+    this.loading = true;
+    this.reportService.getCashFlowStatement(orgId, this.startDate, this.endDate)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: data => { this.cashFlowStatementReport = data; this.loading = false; },
+        error: err => { this.loading = false; this.reportService.showToastErrorResponse(err); }
+      });
+  }
+
+  private loadSalesByCustomer(orgId: string): void {
+    if (!this.startDate || !this.endDate) return;
+    this.loading = true;
+    this.reportService.getSalesByCustomer(orgId, this.startDate, this.endDate)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: data => { this.salesByCustomerReport = data; this.loading = false; },
+        error: err => { this.loading = false; this.reportService.showToastErrorResponse(err); }
+      });
+  }
+
   downloadPdf(): void {
     if (!this.organization) return;
     const orgId = this.organization.id;
@@ -178,6 +212,14 @@ export class FinancialReportComponent implements OnInit, OnDestroy {
       case 'ar-aging':
         download$ = this.reportService.downloadArAging(orgId);
         filename = `ar-aging-report-${orgId}.pdf`;
+        break;
+      case 'cash-flow-statement':
+        download$ = this.reportService.downloadCashFlowStatement(orgId, this.startDate, this.endDate);
+        filename = `cash-flow-statement-${orgId}.pdf`;
+        break;
+      case 'sales-by-customer':
+        download$ = this.reportService.downloadSalesByCustomer(orgId, this.startDate, this.endDate);
+        filename = `sales-by-customer-${orgId}.pdf`;
         break;
     }
 

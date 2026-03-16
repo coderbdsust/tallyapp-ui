@@ -25,7 +25,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isOrganizationRoute = false;
 
   private subscriptions: Subscription[] = [];
-  private readonly targetPaths = ['/dashboard', '/employee', '/product', '/invoice','/quotation-bill', '/cash-management', '/supplier'];
+  private readonly targetPaths = ['/dashboard', '/employee', '/product', '/invoice','/quotation', '/cash-management', '/supplier', '/report'];
 
   constructor(public menuService: MenuService, public orgService: OrganizationService, private router: Router) { }
 

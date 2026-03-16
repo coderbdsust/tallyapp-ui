@@ -1,4 +1,4 @@
-// src/app/modules/invoice-standalone/invoice-standalone-add/invoice-standalone-add.component.ts
+// src/app/modules/quotation/pages/quotation-add/quotation-add.component.ts
 
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,25 +10,23 @@ import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { ToWords } from 'to-words';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
-import { 
-  InvoiceStandalone,
+import {
+  Quotation,
   ProductItem,
-  PaymentItem,
   InvoiceStatus,
   InvoiceType,
   UpdateCustomerRequest,
   AddProductRequest,
-  AddPaymentRequest,
   UpdatePricingRequest
-} from '../../invoice-standalone.model';
-import { InvoiceStandaloneService } from 'src/app/core/services/invoice-standalone.service';
+} from '../../quotation.model';
+import { QuotationService } from 'src/app/core/services/quotation.service';
 import { ProductService } from 'src/app/core/services/product.service';
 import { Customer } from 'src/app/modules/invoice/invoice.model';
 import { CustomerService } from 'src/app/core/services/customer.service';
 import { Product, UnitType } from 'src/app/core/models/product.model';
 
 @Component({
-  selector: 'app-invoice-standalone-add',
+  selector: 'app-quotation-add',
   standalone: true,
   imports: [
     AngularSvgIconModule,
@@ -39,15 +37,14 @@ import { Product, UnitType } from 'src/app/core/models/product.model';
     NgSelectComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './invoice-standalone-add.component.html',
-  styleUrl: './invoice-standalone-add.component.scss'
+  templateUrl: './quotation-add.component.html',
+  styleUrl: './quotation-add.component.scss'
 })
-export class InvoiceStandaloneAddComponent extends FormError implements OnInit, OnDestroy {
-  invoice: InvoiceStandalone | null = null;
+export class QuotationAddComponent extends FormError implements OnInit, OnDestroy {
+  invoice: Quotation | null = null;
   invForm!: FormGroup;
-  paymentForm!: FormGroup;
   productForm!: FormGroup;
-  
+
   toWords = new ToWords({
     localeCode: 'en-BD',
     converterOptions: {
@@ -60,15 +57,6 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
   invoiceId = '';
   allProducts: (Product & { label?: string })[] = [];
   allCustomers: (Customer & { label?: string })[] = [];
-  
-  readonly allPaymentMethods = [
-    'Cash',
-    'Bank Transfer',
-    'Mobile Banking',
-    'Card',
-    'Cheque',
-    'Other'
-  ];
 
   allUnitTypes: UnitType[]=[];
 
@@ -79,13 +67,13 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
   private destroy$ = new Subject<void>();
 
   constructor(
-    private readonly invoiceStandaloneService: InvoiceStandaloneService,
+    private readonly quotationService: QuotationService,
     private readonly productService: ProductService,
     private readonly customerService: CustomerService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly fb: FormBuilder
-  ) { 
+  ) {
     super();
   }
 
@@ -103,7 +91,6 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
 
   private initForms(): void {
     this.initiateInvoiceForm();
-    this.initiatePaymentForm();
     this.initiateProductForm();
   }
 
@@ -113,28 +100,28 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       this.invoiceId = params['invoiceId'];
 
       if (!this.orgId || !this.invoiceId) {
-        this.router.navigate(['/quotation-bill/list']);
+        this.router.navigate(['/quotation/list']);
         return;
       }
-      
+
       this.fetchInvoice();
     });
   }
 
   private fetchUnitTypes():void{
-    this.invoiceStandaloneService.getUnitTypes().pipe(takeUntil(this.destroy$))
+    this.quotationService.getUnitTypes().pipe(takeUntil(this.destroy$))
       .subscribe({
         next: unitTypes => {
           this.allUnitTypes = unitTypes;
         },
         error: err => {
-          this.invoiceStandaloneService.showToastErrorResponse(err);
+          this.quotationService.showToastErrorResponse(err);
         }
       });
   }
 
   private fetchInvoice(): void {
-    this.invoiceStandaloneService.getInvoiceById(this.orgId, this.invoiceId)
+    this.quotationService.getInvoiceById(this.orgId, this.invoiceId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: invoice => {
@@ -142,8 +129,8 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
           this.initiateInvoiceForm(invoice);
         },
         error: err => {
-          this.router.navigate(['/quotation-bill/list']);
-          this.invoiceStandaloneService.showToastErrorResponse(err);
+          this.router.navigate(['/quotation/list']);
+          this.quotationService.showToastErrorResponse(err);
         }
       });
   }
@@ -153,7 +140,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
     this.productForm.get('productUnitRate')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.calculateProductAmount());
-    
+
     this.productForm.get('productQuantity')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.calculateProductAmount());
@@ -170,7 +157,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
         takeUntil(this.destroy$)
       )
       .subscribe(() => this.updatePricing());
-    
+
     this.invForm.get('deliveryCharge')?.valueChanges
       .pipe(
         debounceTime(500),
@@ -180,7 +167,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       .subscribe(() => this.updatePricing());
   }
 
-  initiateInvoiceForm(invoice: InvoiceStandalone | null = null): void {
+  initiateInvoiceForm(invoice: Quotation | null = null): void {
     this.invForm = this.fb.group({
       id: [invoice?.id],
       invoiceDate: [invoice?.invoiceDate, Validators.required],
@@ -191,21 +178,11 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       customerName: [invoice?.customer?.name, Validators.required],
       customerMobile: [invoice?.customer?.mobile, Validators.required],
       customerEmail: [invoice?.customer?.email],
-      customerAddressLine: [invoice?.customer?.address, Validators.required],
+      customerAddressLine: [invoice?.customer?.address],
       customerPostcode: [invoice?.customer?.postcode],
 
       totalDiscount: [invoice?.pricing?.discount || 0],
       deliveryCharge: [invoice?.pricing?.deliveryCharge || 0]
-    });
-  }
-
-  initiatePaymentForm(): void {
-    this.paymentForm = this.fb.group({
-      paymentDate: ['', Validators.required],
-      paymentMethod: ['', Validators.required],
-      paymentRef: [''],
-      paymentAmount: ['', [Validators.required, Validators.min(0.01)]],
-      notes: ['']
     });
   }
 
@@ -253,7 +230,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
   onCustomerSearchKeyType(event: Event): void {
     const searchKey = (event.target as HTMLInputElement).value;
     if (searchKey.length < 3) {
-      this.invoiceStandaloneService.showToastInfo('Please type at least 3 characters');
+      this.quotationService.showToastInfo('Please type at least 3 characters');
       return;
     }
     this.fetchCustomers(searchKey);
@@ -310,7 +287,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
   onSearchKeyType(event: Event): void {
     const searchKey = (event.target as HTMLInputElement).value;
     if (searchKey.length < 3) {
-      this.invoiceStandaloneService.showToastInfo('Please type at least 3 characters');
+      this.quotationService.showToastInfo('Please type at least 3 characters');
       return;
     }
     this.fetchProducts(searchKey);
@@ -349,76 +326,30 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       notes: this.productForm.get('productNotes')?.value || undefined
     };
 
-    this.invoiceStandaloneService.addProduct(this.invoiceId, productRequest)
+    this.quotationService.addProduct(this.invoiceId, productRequest)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updated) => {
           this.invoice = updated;
           this.initiateProductForm();
-          this.invoiceStandaloneService.showToastSuccess('Product added successfully');
+          this.quotationService.showToastSuccess('Product added successfully');
         },
         error: (err) => {
-          this.invoiceStandaloneService.showToastErrorResponse(err);
+          this.quotationService.showToastErrorResponse(err);
         }
       });
   }
 
   deleteProduct(product: ProductItem): void {
-    this.invoiceStandaloneService.removeProduct(this.invoiceId, { itemId: product.itemId })
+    this.quotationService.removeProduct(this.invoiceId, { itemId: product.itemId })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updated) => {
           this.invoice = updated;
-          this.invoiceStandaloneService.showToastSuccess('Product removed successfully');
+          this.quotationService.showToastSuccess('Product removed successfully');
         },
         error: (err) => {
-          this.invoiceStandaloneService.showToastErrorResponse(err);
-        }
-      });
-  }
-
-  // Payment Methods
-  submitPayment(): void {
-    if (this.paymentForm.invalid || !this.invoice?.id) return;
-
-    if (this.invoice.invoiceType === InvoiceType.QUOTATION) {
-      this.invoiceStandaloneService.showToastError('Cannot add payment to quotation');
-      return;
-    }
-
-    const paymentRequest: AddPaymentRequest = {
-      paymentDate: this.paymentForm.get('paymentDate')?.value,
-      paymentMethod: this.paymentForm.get('paymentMethod')?.value,
-      reference: this.paymentForm.get('paymentRef')?.value || undefined,
-      amount: +this.paymentForm.get('paymentAmount')?.value,
-      notes: this.paymentForm.get('notes')?.value || undefined
-    };
-
-    this.invoiceStandaloneService.addPayment(this.invoice.id, paymentRequest)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (updated) => {
-          this.invoice = updated;
-          this.initiatePaymentForm();
-          this.initiateInvoiceForm(this.invoice);
-          this.invoiceStandaloneService.showToastSuccess('Payment added successfully');
-        },
-        error: (err) => {
-          this.invoiceStandaloneService.showToastErrorResponse(err);
-        }
-      });
-  }
-
-  deletePayment(payment: PaymentItem): void {
-    this.invoiceStandaloneService.removePayment(this.invoiceId, payment.paymentId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (updated) => {
-          this.invoice = updated;
-          this.invoiceStandaloneService.showToastSuccess('Payment removed successfully');
-        },
-        error: (err) => {
-          this.invoiceStandaloneService.showToastErrorResponse(err);
+          this.quotationService.showToastErrorResponse(err);
         }
       });
   }
@@ -436,17 +367,17 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       postcode: this.invForm.get('customerPostcode')?.value || undefined
     };
 
-    this.invoiceStandaloneService.updateCustomer(this.invoiceId, customerRequest)
+    this.quotationService.updateCustomer(this.invoiceId, customerRequest)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updated) => {
           this.invoice = updated;
-          this.invoiceStandaloneService.showToastSuccess('Customer information updated');
+          this.quotationService.showToastSuccess('Customer information updated');
           // Also update pricing after customer update
           this.updatePricingWithStatus();
         },
         error: (err) => {
-          this.invoiceStandaloneService.showToastErrorResponse(err);
+          this.quotationService.showToastErrorResponse(err);
         }
       });
   }
@@ -459,7 +390,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       deliveryCharge: +this.invForm.get('deliveryCharge')?.value || 0
     };
 
-    this.invoiceStandaloneService.updatePricing(this.invoiceId, pricingRequest)
+    this.quotationService.updatePricing(this.invoiceId, pricingRequest)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updated) => {
@@ -482,7 +413,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
       deliveryDate: this.invForm.get('deliveryDate')?.value
     };
 
-    this.invoiceStandaloneService.updatePricing(this.invoiceId, pricingRequest)
+    this.quotationService.updatePricing(this.invoiceId, pricingRequest)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updated) => {
@@ -496,17 +427,17 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
 
   // Navigation Methods
   previewInvoice(): void {
-    this.router.navigate(['/quotation-bill/detail'], { 
-      queryParams: { orgId: this.orgId, invoiceId: this.invoiceId } 
+    this.router.navigate(['/quotation/detail'], {
+      queryParams: { orgId: this.orgId, invoiceId: this.invoiceId }
     });
   }
 
   backToInvoiceList(): void {
-    this.router.navigate(['/quotation-bill/list']);
+    this.router.navigate(['/quotation/list']);
   }
 
   downloadInvoice(): void {
-    this.invoiceStandaloneService.downloadInvoice(this.orgId, this.invoiceId)
+    this.quotationService.downloadInvoice(this.orgId, this.invoiceId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (pdfRes: Blob) => {
@@ -521,25 +452,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
           window.URL.revokeObjectURL(url);
         },
         error: (err) => {
-          this.invoiceStandaloneService.showToastErrorResponse(err);
-        }
-      });
-  }
-
-  convertToBill(): void {
-    if (this.invoice?.invoiceType !== InvoiceType.QUOTATION) return;
-
-    this.invoiceStandaloneService.convertQuotationToBill(this.invoiceId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (newBill) => {
-          this.invoiceStandaloneService.showToastSuccess('Quotation converted to bill');
-          this.router.navigate(['/quotation-bill/add'], {
-            queryParams: { orgId: this.orgId, invoiceId: newBill.id }
-          });
-        },
-        error: (err) => {
-          this.invoiceStandaloneService.showToastErrorResponse(err);
+          this.quotationService.showToastErrorResponse(err);
         }
       });
   }
@@ -548,19 +461,7 @@ export class InvoiceStandaloneAddComponent extends FormError implements OnInit, 
     return this.invoice?.invoiceStatus !== InvoiceStatus.PAID;
   }
 
-  // Utility Methods
-  canAddPayments(): boolean {
-    return this.invoice?.invoiceType === InvoiceType.BILL;
-  }
-
-  canConvertToBill(): boolean {
-    return this.invoice?.invoiceType === InvoiceType.QUOTATION;
-  }
-
   getFilteredInvoiceStatuses(): InvoiceStatus[] {
-    if (this.invoice?.invoiceType === InvoiceType.QUOTATION) {
-      return [InvoiceStatus.DRAFT, InvoiceStatus.QUOTATION];
-    }
-    return this.invoiceStatuses;
+    return [InvoiceStatus.DRAFT, InvoiceStatus.QUOTATION];
   }
 }
