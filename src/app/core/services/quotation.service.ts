@@ -27,7 +27,7 @@ import { UnitType } from '../models/product.model';
   providedIn: 'root'
 })
 export class QuotationService  extends CommonService {
-  private readonly apiUrl = `${environment.tallyURL}/invoice-standalone/v1`;
+  private readonly apiUrl = `${environment.tallyURL}/quotation/v1`;
 
   constructor(
     private http: HttpClient

@@ -71,7 +71,7 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/newpaper.svg',
           label: 'Quotation',
           route: '/quotation/list',
-          requiredModules: ['INVOICE_STANDALONE_MANAGEMENT']
+          requiredModules: ['QUOTATION_MANAGEMENT']
         },
         {
           icon: 'assets/icons/heroicons/outline/cube.svg',

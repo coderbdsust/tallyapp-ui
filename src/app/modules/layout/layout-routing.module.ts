@@ -37,7 +37,7 @@ const routes: Routes = [
     path: 'quotation',
     component: LayoutComponent,
     canActivate: [authGuard],
-    data: { modules: ['INVOICE_STANDALONE_MANAGEMENT'] },
+    data: { modules: ['QUOTATION_MANAGEMENT'] },
     loadChildren: () => import('../quotation/quotation.module').then((m) => m.QuotationModule),
   },
   {
