@@ -125,6 +125,20 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
     }, 0);
   }
 
+  getRowTotalEarned(index: number): number {
+    const control = this.employeeWorkUnits.at(index);
+    const workUnit = +(control.get('workUnit')?.value || 0);
+    const unitRate = +(control.get('unitRate')?.value || 0);
+    const expense = +(control.get('expense')?.value || 0);
+    return (workUnit * unitRate) - expense;
+  }
+
+  get totalEarned(): number {
+    return this.employeeWorkUnits.controls.reduce((total, _, i) => {
+      return total + this.getRowTotalEarned(i);
+    }, 0);
+  }
+
   getCurrentDate(): string {
     return new Date().toISOString().split('T')[0];
   }
