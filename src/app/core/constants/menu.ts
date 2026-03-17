@@ -64,8 +64,12 @@ export class Menu {
         {
           icon: 'assets/icons/heroicons/outline/newpaper.svg',
           label: 'Invoice',
-          route: '/invoice/list',
-          requiredModules: ['INVOICE_MANAGEMENT']
+          route: '/invoice',
+          requiredModules: ['INVOICE_MANAGEMENT'],
+          children: [
+            { label: 'Invoices', route: '/invoice/list' },
+            { label: 'Customers', route: '/invoice/customer' }
+          ]
         },
         {
           icon: 'assets/icons/heroicons/outline/newpaper.svg',

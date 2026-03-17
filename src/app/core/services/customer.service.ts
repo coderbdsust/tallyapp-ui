@@ -21,4 +21,22 @@ export class CustomerService extends CommonService {
           .get<PageResponse<Customer>>(`${environment.tallyURL}/customer/v1/${organizationId}?page=${page}&size=${size}&search=${search}`)
           .pipe(catchError(this.mapErrorResponse));
     }
+
+  public getCustomerById(organizationId: string, customerId: string) {
+    return this.http
+      .get<Customer>(`${environment.tallyURL}/customer/v1/${organizationId}/${customerId}`)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public createCustomer(organizationId: string, customer: Partial<Customer>) {
+    return this.http
+      .post<Customer>(`${environment.tallyURL}/customer/v1/${organizationId}`, customer)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public editCustomer(organizationId: string, customerId: string, customer: Partial<Customer>) {
+    return this.http
+      .put<Customer>(`${environment.tallyURL}/customer/v1/${organizationId}/${customerId}`, customer)
+      .pipe(catchError(this.mapErrorResponse));
+  }
 }

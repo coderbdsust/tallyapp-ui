@@ -5,6 +5,7 @@ import { InvoiceComponent } from './invoice.component';
 import { InvoiceListComponent } from './pages/invoice-list/invoice-list.component';
 import { AddInvoiceComponent } from './pages/add-invoice/add-invoice.component';
 import { InvoiceDetailComponent } from './pages/invoice-detail/invoice-detail.component';
+import { CustomerListComponent } from './pages/customer-list/customer-list.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
       { path: 'list', component: InvoiceListComponent },
       { path: 'add', component: AddInvoiceComponent },
       { path: 'detail', component: InvoiceDetailComponent },
+      { path: 'customer', component: CustomerListComponent },
       { path: '**', redirectTo: 'errors/404' },
     ],
   },

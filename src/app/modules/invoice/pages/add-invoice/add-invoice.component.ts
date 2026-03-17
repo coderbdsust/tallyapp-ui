@@ -18,6 +18,9 @@ import { EmployeeService } from 'src/app/core/services/employee.service';
 import { ProductCategoryService } from 'src/app/core/services/product-category.service';
 import { generateRandomLuhnCode } from 'src/app/common/utils/LuhnCode';
 import { combineLatest, startWith, Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { ReasonModalComponent } from 'src/app/common/components/reason-modal/reason-modal.component';
+import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
 
 
 @Component({
@@ -73,6 +76,10 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     'PAID'
   ];
 
+  get isPaid(): boolean {
+    return this.invoice?.invoiceStatus === 'PAID';
+  }
+
   private productFormSubscription?: Subscription;
   private createProductFormSubscription?: Subscription;
 
@@ -90,7 +97,8 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     private readonly productCategoryService: ProductCategoryService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private readonly dialog: MatDialog
   ) { super(); }
 
   ngOnInit(): void {
@@ -198,6 +206,53 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       customerAddressLine: '',
       customerPostcode: ''
     });
+  }
+
+  saveCustomer(): void {
+    const orgId = this.invoice?.ownerOrganization?.id;
+    if (!orgId) return;
+
+    const customerData = {
+      name: this.invForm.get('customerName')?.value,
+      mobile: this.invForm.get('customerMobile')?.value,
+      email: this.invForm.get('customerEmail')?.value,
+      address: this.invForm.get('customerAddressLine')?.value,
+      postcode: this.invForm.get('customerPostcode')?.value
+    };
+
+    if (!customerData.name || !customerData.mobile) {
+      this.invoiceService.showToastInfo('Customer name and mobile are required');
+      return;
+    }
+
+    const customerId = this.invForm.get('customerId')?.value;
+
+    const assignCustomerToInvoice = (customer: Customer) => {
+      this.onSelectCustomer(customer);
+      const invoiceUpdate = { ...this.invForm.value, customerId: customer.id };
+      this.invoiceService.updateInvoice(this.invoiceId, invoiceUpdate).subscribe({
+        next: (updated) => {
+          this.invoice = updated;
+          this.initiateInvoiceForm(updated);
+          this.customerService.showToastSuccess(
+            customerId ? 'Customer updated and assigned to invoice' : 'Customer created and assigned to invoice'
+          );
+        },
+        error: (err) => this.invoiceService.showToastErrorResponse(err)
+      });
+    };
+
+    if (customerId) {
+      this.customerService.editCustomer(orgId, customerId, customerData).subscribe({
+        next: (customer) => assignCustomerToInvoice(customer),
+        error: (err) => this.customerService.showToastErrorResponse(err)
+      });
+    } else {
+      this.customerService.createCustomer(orgId, customerData).subscribe({
+        next: (customer) => assignCustomerToInvoice(customer),
+        error: (err) => this.customerService.showToastErrorResponse(err)
+      });
+    }
   }
 
   onSelectCustomer(customer: Customer): void {
@@ -329,12 +384,23 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   }
 
   deletePayment(payment: Payment): void {
-    this.paymentService.deletePayment(this.invoiceId, payment.id).subscribe({
-      next: (apiRes) => {
-        this.refreshInvoice();
-      }, error: (errorRes) => {
-        this.refreshInvoice();
-        this.paymentService.showToastErrorResponse(errorRes);
+    const dialogRef = this.dialog.open(ReasonModalComponent, {
+      width: '400px',
+      data: { message: `Are you sure you want to delete this payment of ${payment.amount}?` }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.confirmed) {
+        this.paymentService.deletePayment(this.invoiceId, payment.id, result.reason).subscribe({
+          next: () => {
+            this.refreshInvoice();
+            this.paymentService.showToastSuccess('Payment deleted successfully');
+          },
+          error: (errorRes) => {
+            this.refreshInvoice();
+            this.paymentService.showToastErrorResponse(errorRes);
+          }
+        });
       }
     });
   }
@@ -379,6 +445,38 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       error: (err) => {
         this.refreshInvoice();
         this.invoiceService.showToastErrorResponse(err)
+      }
+    });
+  }
+
+  markAsPaid(): void {
+    if (this.invoice && this.invoice.remainingAmount > 0) {
+      this.dialog.open(ConfirmationModalComponent, {
+        width: '400px',
+        data: { message: `Full payment not received yet. Remaining amount: ${this.invoice.remainingAmount.toFixed(2)} BDT. Please collect the full payment before marking as paid.` }
+      });
+      return;
+    }
+
+    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+      width: '400px',
+      data: { message: 'Are you sure you want to mark this invoice as PAID? Once marked as paid, you will not be able to modify this invoice.' }
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        const invoice = { ...this.invForm.value, invoiceStatus: 'PAID' };
+        this.invoiceService.updateInvoice(this.invoiceId, invoice).subscribe({
+          next: updated => {
+            this.invoice = updated;
+            this.initiateInvoiceForm(updated);
+            this.invoiceService.showToastSuccess('Invoice marked as paid');
+          },
+          error: (err) => {
+            this.refreshInvoice();
+            this.invoiceService.showToastErrorResponse(err);
+          }
+        });
       }
     });
   }

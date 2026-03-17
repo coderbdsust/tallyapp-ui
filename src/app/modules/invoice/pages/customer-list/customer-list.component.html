@@ -1,0 +1,300 @@
+<div class="mb-4 flex justify-between">
+  <div class="inline-block">
+    <h2 class="font-semibold text-foreground">All Customers</h2>
+    <div class="space-x-1 text-xs font-medium text-muted-foreground">
+      <span *ngIf="organization">Organization: {{ organization.orgName }}</span>
+    </div>
+  </div>
+  <div class="inline-block space-x-4">
+    <div class="flex items-center justify-center gap-4">
+      <button
+        class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+        (click)="openCreateDrawer()">
+        <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
+        <p>Add Customer</p>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
+  <!-- Filters and Search Section -->
+  <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
+    <h3 class="text-sm font-medium text-muted-foreground">
+      Showing <span>{{ startIndex }}-{{ endIndex }} of {{ totalRows }}</span> rows
+    </h3>
+    <div class="flex flex-wrap gap-2">
+      <!-- Page Size Selector -->
+      <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
+        <div class="order-2 flex items-center gap-2 md:order-1">
+          Show
+          <select class="w-16 p-2" name="rowSize" (change)="onSelectChange($event)">
+            <option *ngFor="let option of getPageSizeOptions()"
+                    [value]="option.value"
+                    [selected]="option.value === selectedRows">
+              {{ option.label }}
+            </option>
+          </select>
+          per page
+        </div>
+      </div>
+
+      <!-- Search Input -->
+      <div class="flex">
+        <label class="relative text-muted-foreground">
+          <div class="absolute left-2.5 top-2.5">
+            <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'">
+            </svg-icon>
+          </div>
+          <input
+            name="search"
+            class="py-2 pl-8 pr-2"
+            placeholder="Search customers..."
+            type="text"
+            [value]="search"
+            (keydown.enter)="onSearchChange($event)"
+            (input)="onSearchChange($event)" />
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-8">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+
+  <!-- Table Section -->
+  <div *ngIf="!loading"
+    class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+    <table
+      class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+      <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-gray-300">
+        <tr>
+          <th class="min-w-[50px]">#</th>
+          <th class="min-w-[150px]">Name</th>
+          <th class="min-w-[120px]">Mobile</th>
+          <th class="min-w-[150px]">Email</th>
+          <th class="min-w-[200px]">Address</th>
+          <th class="min-w-[80px]">Postcode</th>
+          <th class="min-w-[80px]">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let customer of pageResponse?.content; let i = index"
+            class="gap-4 hover:bg-card/50">
+
+          <td>
+            <span class="text-sm">{{ getCustomerIndex(i) }}</span>
+          </td>
+
+          <td>
+            <span class="text-sm font-medium">{{ customer.name }}</span>
+          </td>
+
+          <td>
+            <span class="text-sm">{{ customer.mobile }}</span>
+          </td>
+
+          <td>
+            <span class="text-sm">{{ customer.email || '-' }}</span>
+          </td>
+
+          <td>
+            <span class="text-sm">{{ customer.address || '-' }}</span>
+          </td>
+
+          <td>
+            <span class="text-sm">{{ customer.postcode || '-' }}</span>
+          </td>
+
+          <td>
+            <div class="flex items-center gap-2">
+              <button
+                (click)="openEditDrawer(customer)"
+                class="p-1 hover:text-primary transition-colors"
+                title="Edit Customer">
+                <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'">
+                </svg-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Empty State -->
+        <tr *ngIf="!hasData">
+          <td class="py-8 text-center text-sm" colspan="7">
+            <div class="flex flex-col items-center gap-2">
+              <svg-icon src="./assets/icons/heroicons/outline/user.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
+              </svg-icon>
+              <span>No customers found</span>
+              <button
+                class="mt-2 text-primary hover:text-primary/80 text-xs underline"
+                (click)="openCreateDrawer()">
+                Add your first customer
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Section -->
+  <div *ngIf="showPagination && !loading"
+       class="flex flex-wrap items-center justify-between gap-2 py-3 px-5 text-xs text-muted-foreground">
+    <div class="flex items-center gap-2">
+      <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div class="inline-flex items-center gap-1">
+        <button
+          *ngIf="!first"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToFirstPage()"
+          title="First Page">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="first"
+          (click)="goToPreviousPage()"
+          title="Previous Page">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+
+        <ng-container *ngFor="let page of getVisiblePages()">
+          <button
+            *ngIf="isClickablePage(page)"
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm transition-colors"
+            [ngClass]="{
+              'bg-primary text-primary-foreground': isCurrentPage(page),
+              'hover:bg-muted-foreground/10': !isCurrentPage(page)
+            }"
+            (click)="goToPage(page)">
+            {{ getPageNumber(page) }}
+          </button>
+
+          <span
+            *ngIf="!isClickablePage(page)"
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center text-sm">
+            ...
+          </span>
+        </ng-container>
+
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="last"
+          (click)="goToNextPage()"
+          title="Next Page">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+
+        <button
+          *ngIf="!last"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToLastPage()"
+          title="Last Page">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Drawer -->
+<div *ngIf="showDrawer" class="fixed inset-0 z-50 flex justify-end">
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-black/50" (click)="closeDrawer()"></div>
+
+  <!-- Drawer Panel -->
+  <div class="relative w-full max-w-md bg-white shadow-xl">
+    <div class="flex flex-col h-full">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">
+          {{ isEditMode ? 'Edit Customer' : 'Add Customer' }}
+        </h3>
+        <button (click)="closeDrawer()" class="p-1 text-gray-400 hover:text-gray-600 transition-colors">
+          <svg-icon src="./assets/icons/heroicons/outline/x-mark.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        </button>
+      </div>
+
+      <!-- Form -->
+      <div class="flex-1 overflow-y-auto px-6 py-4">
+        <form [formGroup]="customerForm" class="space-y-4">
+          <input type="hidden" formControlName="id" />
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+            <input type="text"
+                   formControlName="name"
+                   placeholder="Customer name"
+                   class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                   [class.border-red-500]="isFieldInvalid('name')">
+            <div *ngIf="isFieldInvalid('name')" class="text-red-500 text-xs mt-1">Name is required</div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Mobile *</label>
+            <input type="text"
+                   formControlName="mobile"
+                   placeholder="Mobile number"
+                   class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                   [class.border-red-500]="isFieldInvalid('mobile')">
+            <div *ngIf="isFieldInvalid('mobile')" class="text-red-500 text-xs mt-1">Mobile is required</div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input type="email"
+                   formControlName="email"
+                   placeholder="Email address"
+                   class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+            <textarea formControlName="address"
+                      placeholder="Full address"
+                      rows="3"
+                      class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm resize-none"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Postcode</label>
+            <input type="text"
+                   formControlName="postcode"
+                   placeholder="Postal code"
+                   class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+          </div>
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200">
+        <button type="button"
+                (click)="closeDrawer()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+          Cancel
+        </button>
+        <button type="button"
+                (click)="saveCustomer()"
+                [disabled]="customerForm.invalid"
+                class="px-4 py-2 text-sm font-medium text-white rounded transition-colors"
+                [ngClass]="{
+                  'bg-blue-600 hover:bg-blue-700': !customerForm.invalid,
+                  'bg-gray-400 cursor-not-allowed': customerForm.invalid
+                }">
+          {{ isEditMode ? 'Update' : 'Create' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
