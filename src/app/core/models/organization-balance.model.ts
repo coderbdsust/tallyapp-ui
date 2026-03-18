@@ -27,6 +27,7 @@ export interface Transaction {
   id: string
   transactionNumber: string
   transactionDate: string
+  createdDate: string
   transactionType: string
   amount: number
   description: string
@@ -41,6 +42,7 @@ export interface Transaction {
 }
 
 export interface CashFlow {
+  createdDate: string;
   flowDate: string;
   flowType: string;
   amount: number;

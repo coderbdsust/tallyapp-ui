@@ -107,6 +107,9 @@
               <div [ngClass]="'text-lg font-semibold ' + getFlowTypeStyle(flow.flowType).textColor">
                 {{ isInflowType(flow.flowType) ? '+' : '-' }}{{ formatCurrency(flow.amount) }}
               </div>
+              <span class="text-xs text-gray-500">
+                {{ formatShortDate(flow.createdDate) }}
+              </span>
             </div>
           </div>
         </div>
