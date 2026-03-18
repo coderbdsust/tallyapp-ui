@@ -202,8 +202,8 @@
       <div class="grid grid-cols-2 gap-3">
         <div class="org-field">
           <label class="org-label">Since <span class="text-red-400">*</span></label>
-          <input type="text" formControlName="since" class="org-input"
-            [class.org-input--error]="submitted && f['since'].errors" placeholder="e.g. 2010" />
+          <input type="date" formControlName="since" class="org-input"
+            [class.org-input--error]="submitted && f['since'].errors" placeholder="e.g. 2010-01-01" />
           <p class="org-error" *ngIf="submitted && f['since'].errors?.['required']">Required</p>
         </div>
         <div class="org-field">
