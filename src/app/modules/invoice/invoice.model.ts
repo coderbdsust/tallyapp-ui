@@ -30,6 +30,10 @@ export interface Customer {
     mobile: string;
     address: string;
     postcode: string;
+    totalInvoice:number;
+    totalAmount: number;
+    totalDueAmount: number;
+    totalPaidAmount: number;
 }
 
 export interface ProductSale {

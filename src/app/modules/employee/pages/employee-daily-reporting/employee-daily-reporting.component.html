@@ -239,8 +239,11 @@
 
             <!-- Total Earned -->
             <td class="px-4 py-3 whitespace-nowrap border-r border-gray-200 text-right">
-              <span class="text-sm font-semibold text-gray-900">
+              <span *ngIf="isEarningApplicable(i)" class="text-sm font-semibold text-gray-900">
                 {{ getRowTotalEarned(i) | number:'1.2-2' }}
+              </span>
+              <span *ngIf="!isEarningApplicable(i)" class="text-sm font-medium text-gray-400">
+                N/A
               </span>
             </td>
           </tr>

@@ -77,6 +77,10 @@
           <th class="min-w-[150px]">Email</th>
           <th class="min-w-[200px]">Address</th>
           <th class="min-w-[80px]">Postcode</th>
+          <th class="min-w-[80px]">Total Invoice</th>
+          <th class="min-w-[80px]">Total Amount</th>
+          <th class="min-w-[80px]">Total Paid Amount</th>
+          <th class="min-w-[80px]">Total Due Amount</th>
           <th class="min-w-[80px]">Actions</th>
         </tr>
       </thead>
@@ -106,6 +110,21 @@
 
           <td>
             <span class="text-sm">{{ customer.postcode || '-' }}</span>
+          </td>
+          <td>
+            <span class="text-sm">{{ customer.totalInvoice || '-' }}</span>
+          </td>
+
+          <td>
+            <span class="text-sm">{{ customer.totalAmount || '-' }}</span>
+          </td>
+
+          <td>
+            <span class="text-sm">{{ customer.totalPaidAmount || '-' }}</span>
+          </td>
+
+          <td>
+            <span class="text-sm">{{ customer.totalDueAmount || '-' }}</span>
           </td>
 
           <td>

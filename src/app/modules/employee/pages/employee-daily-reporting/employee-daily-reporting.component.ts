@@ -125,7 +125,13 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
     }, 0);
   }
 
+  isEarningApplicable(index: number): boolean {
+    const billingType = this.employeeWorkUnits.at(index).get('billingType')?.value;
+    return billingType !== 'PRODUCT_BASE' && billingType !== 'NOT_APPLICABLE' && billingType !== 'MONTHLY';
+  }
+
   getRowTotalEarned(index: number): number {
+    if (!this.isEarningApplicable(index)) return 0;
     const control = this.employeeWorkUnits.at(index);
     const workUnit = +(control.get('workUnit')?.value || 0);
     const unitRate = +(control.get('unitRate')?.value || 0);
@@ -135,6 +141,7 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
 
   get totalEarned(): number {
     return this.employeeWorkUnits.controls.reduce((total, _, i) => {
+      if (!this.isEarningApplicable(i)) return total;
       return total + this.getRowTotalEarned(i);
     }, 0);
   }
