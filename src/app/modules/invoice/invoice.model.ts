@@ -36,6 +36,33 @@ export interface Customer {
     totalPaidAmount: number;
 }
 
+export interface CustomerDetail {
+    id: string;
+    name: string;
+    email: string;
+    mobile: string;
+    address: string;
+    postcode: string;
+    totalInvoice: number;
+    paidInvoiceCount: number;
+    unpaidInvoiceCount: number;
+    totalAmount: number;
+    totalDueAmount: number;
+    totalPaidAmount: number;
+    invoices: CustomerInvoice[];
+}
+
+export interface CustomerInvoice {
+    id: string;
+    invoiceNumber: string;
+    invoiceDate: string;
+    invoiceStatus: string;
+    totalAmount: number;
+    totalPaid: number;
+    remainingAmount: number;
+    payments: Payment[];
+}
+
 export interface ProductSale {
     id: string;
     quantitySold: number;

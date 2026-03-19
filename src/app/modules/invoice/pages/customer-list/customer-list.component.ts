@@ -4,15 +4,16 @@ import { PaginatedComponent } from 'src/app/common/components/pagination/paginat
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
-import { Customer } from '../../invoice.model';
+import { Customer, CustomerDetail } from '../../invoice.model';
 import { Organization } from 'src/app/core/models/organization.model';
 import { CustomerService } from 'src/app/core/services/customer.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
-import { FormError } from 'src/app/common/components/form-error/form-error.component';
+import { WordPipe } from 'src/app/common/pipes/word.pipe';
+import { formatCurrency } from 'src/app/common/utils/common';
 
 @Component({
   selector: 'app-customer-list',
-  imports: [AngularSvgIconModule, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [AngularSvgIconModule, CommonModule, FormsModule, ReactiveFormsModule, WordPipe],
   templateUrl: './customer-list.component.html',
   styleUrl: './customer-list.component.scss'
 })
@@ -23,9 +24,12 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
   showDrawer = false;
   isEditMode = false;
   customerForm!: FormGroup;
+  expandedCustomerId: string | null = null;
+  customerDetail: CustomerDetail | null = null;
+  detailLoading = false;
+  formatCurrency = formatCurrency;
 
   private destroy$ = new Subject<void>();
-  private formError: FormError;
 
   constructor(
     private customerService: CustomerService,
@@ -33,7 +37,6 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
     private fb: FormBuilder
   ) {
     super();
-    this.formError = new FormError();
     this.initForm();
   }
 
@@ -159,5 +162,61 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
   isFieldInvalid(controlName: string): boolean {
     const control = this.customerForm.get(controlName);
     return !!(control && control.invalid && control.touched);
+  }
+
+  viewCustomerDetail(customer: Customer): void {
+    if (this.expandedCustomerId === customer.id) {
+      this.expandedCustomerId = null;
+      this.customerDetail = null;
+      return;
+    }
+
+    this.expandedCustomerId = customer.id;
+    this.detailLoading = true;
+    this.customerDetail = null;
+
+    this.customerService
+      .getCustomerDetail(this.organization.id, customer.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (detail) => {
+          this.customerDetail = detail;
+          this.detailLoading = false;
+        },
+        error: (err) => {
+          this.detailLoading = false;
+          this.expandedCustomerId = null;
+          this.customerService.showToastErrorResponse(err);
+        }
+      });
+  }
+
+  downloadCustomerReport(customerId: string, customerName: string): void {
+    this.customerService
+      .downloadCustomerReport(this.organization.id, customerId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (pdfRes: Blob) => {
+          const blob = new Blob([pdfRes], { type: 'application/pdf' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `customer-${customerName}.pdf`;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: (err) => this.customerService.showToastErrorResponse(err)
+      });
+  }
+
+  getStatusColor(status: string): { bg: string; text: string } {
+    const statusMap: Record<string, { bg: string; text: string }> = {
+      'PAID': { bg: 'bg-green-100', text: 'text-green-800' },
+      'UNPAID': { bg: 'bg-red-100', text: 'text-red-800' },
+      'PARTIALLY_PAID': { bg: 'bg-yellow-100', text: 'text-yellow-800' },
+      'ISSUED': { bg: 'bg-gray-100', text: 'text-gray-800' },
+      'DRAFT': { bg: 'bg-blue-100', text: 'text-blue-800' }
+    };
+    return statusMap[status] || { bg: 'bg-gray-100', text: 'text-gray-800' };
   }
 }
