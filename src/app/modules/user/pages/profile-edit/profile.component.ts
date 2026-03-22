@@ -65,7 +65,7 @@ export class ProfileComponent extends FormError implements OnInit {
       lastName:        ['', Validators.required],
       gender:          ['', Validators.required],
       dateOfBirth:     ['', Validators.required],
-      profileImage:    [''],
+      profileImage:    [null],
       addressList:     this._formBuilder.array([]),
       shortProfileList: this._formBuilder.array([]),
     });
@@ -258,6 +258,7 @@ export class ProfileComponent extends FormError implements OnInit {
         error: (err) => this.fileUploaderService.showToastErrorResponse(err),
       });
     } else {
+      if (!userProfile.profileImage) userProfile.profileImage = null;
       this.saveFormData(userProfile);
     }
   }
