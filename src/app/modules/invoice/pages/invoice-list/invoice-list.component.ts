@@ -158,26 +158,36 @@ export class InvoiceListComponent extends PaginatedComponent<Invoice> implements
   }
 
   downloadInvoice(invoice: Invoice): void {
-    console.log(invoice);
     this.invoiceService
       .downloadInvoice(this.organization.id, invoice.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (pdfRes: Blob) => {
-          const blob = new Blob([pdfRes], { type: 'application/pdf' });
-          const url = window.URL.createObjectURL(blob);
-
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `${invoice.invoiceNumber || invoice.id}.pdf`;
-          a.click();
-
-          window.URL.revokeObjectURL(url); // clean up the blob URL
-        },
-        error: (err) => {
-          this.invoiceService.showToastErrorResponse(err);
-        }
+        next: (pdfRes: Blob) => this.handleBlobDownload(pdfRes, invoice),
+        error: (err) => this.invoiceService.showToastErrorResponse(err),
       });
+  }
+
+  downloadReceipt(invoice: Invoice): void {
+    this.invoiceService
+      .downloadInvoiceReceipt(this.organization.id, invoice.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (pdfRes: Blob) => this.handleBlobDownload(pdfRes, invoice),
+        error: (err) => this.invoiceService.showToastErrorResponse(err),
+      });
+  }
+
+  private handleBlobDownload(blob: Blob, invoice: Invoice): void {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${invoice.invoiceNumber || invoice.id}.pdf`;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => window.URL.revokeObjectURL(url), 100);
+    this.invoiceService.showToastSuccess('Downloaded successfully');
   }
 
   // Utility methods

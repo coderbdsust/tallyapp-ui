@@ -155,8 +155,9 @@
               </button>
 
               <!-- Edit Invoice -->
-              <button 
-                (click)="editInvoice(invoice)" 
+              <button
+                *ngIf="invoice.invoiceStatus !== 'PAID'"
+                (click)="editInvoice(invoice)"
                 class="p-1 hover:text-primary transition-colors"
                 title="Edit Invoice">
                 <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'">
@@ -164,11 +165,20 @@
               </button>
 
               <!-- Download Invoice -->
-              <button 
-                (click)="downloadInvoice(invoice)" 
+              <button
+                (click)="downloadInvoice(invoice)"
                 class="p-1 hover:text-green-600 transition-colors"
-                title="Download PDF">
+                title="Download Invoice">
                 <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-4 w-4'">
+                </svg-icon>
+              </button>
+
+              <!-- Download Receipt -->
+              <button
+                (click)="downloadReceipt(invoice)"
+                class="p-1 hover:text-green-800 transition-colors"
+                title="Download Receipt">
+                <svg-icon src="./assets/icons/heroicons/outline/document-text.svg" [svgClass]="'h-4 w-4'">
                 </svg-icon>
               </button>
 

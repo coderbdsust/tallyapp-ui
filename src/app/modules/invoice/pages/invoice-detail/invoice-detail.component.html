@@ -303,7 +303,8 @@
         <span>{{ downloadingBackend ? 'Downloading...' : 'Download Receipt' }}</span>
       </button>
       
-      <button 
+      <button
+        *ngIf="invoice?.invoiceStatus !== 'PAID'"
         class="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
         (click)="editInvoice()">
         <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-5 w-5'"></svg-icon>

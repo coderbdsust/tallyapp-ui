@@ -491,21 +491,29 @@ export class AddInvoiceComponent extends FormError implements OnInit {
 
   downloadInvoice() {
     this.invoiceService.downloadInvoice(this.orgId, this.invoiceId).subscribe({
-      next: (pdfRes: Blob) => {
-        const blob = new Blob([pdfRes], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${this.invoice?.invoiceNumber || this.invoice?.id}.pdf`;
-        a.click();
-
-        window.URL.revokeObjectURL(url); // clean up the blob URL
-      },
-      error: (err) => {
-        this.invoiceService.showToastErrorResponse(err);
-      }
+      next: (pdfRes: Blob) => this.handleBlobDownload(pdfRes),
+      error: (err) => this.invoiceService.showToastErrorResponse(err),
     });
+  }
+
+  downloadReceipt() {
+    this.invoiceService.downloadInvoiceReceipt(this.orgId, this.invoiceId).subscribe({
+      next: (pdfRes: Blob) => this.handleBlobDownload(pdfRes),
+      error: (err) => this.invoiceService.showToastErrorResponse(err),
+    });
+  }
+
+  private handleBlobDownload(blob: Blob): void {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${this.invoice?.invoiceNumber || this.invoice?.id}.pdf`;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => window.URL.revokeObjectURL(url), 100);
+    this.invoiceService.showToastSuccess('Downloaded successfully');
   }
 
   // --- Create New Product Mode ---
