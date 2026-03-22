@@ -5,14 +5,14 @@
     <div class="grid grid-cols-2 gap-x-6 gap-y-4">
       <!-- Row 1: Organization Name | Expense Date -->
       <div>
-        <label class="mb-1 block text-sm font-medium text-muted-foreground">Organization Name</label>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">{{ 'EMPLOYEE.EXPENSE.ORG_NAME' | translate }}</label>
         <input type="text" placeholder=" " readonly [value]="org?.orgName"
           class="w-full cursor-not-allowed rounded-md border border-muted/20 bg-gray-100 px-3 py-2 text-sm text-muted-foreground" />
         <input type="hidden" formControlName="organizationId" />
       </div>
 
       <div>
-        <label class="mb-1 block text-sm font-medium text-muted-foreground">Expense Date</label>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">{{ 'EMPLOYEE.EXPENSE.EXPENSE_DATE' | translate }}</label>
         <input type="date" formControlName="expenseDate"
           class="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
         <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'expenseDate')">
@@ -22,10 +22,10 @@
 
       <!-- Row 2: Payment Method | Employee Name -->
       <div>
-        <label class="mb-1 block text-sm font-medium text-muted-foreground">Payment Method</label>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">{{ 'COMMON.PAYMENT_METHOD' | translate }}</label>
         <select formControlName="paymentMethod"
           class="w-full appearance-none rounded-md border border-border bg-background px-3 py-2 text-sm text-gray-500 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
-          <option value="" disabled selected>Select Payment Method</option>
+          <option value="" disabled selected>{{ 'EMPLOYEE.EXPENSE.SELECT_PAYMENT_METHOD' | translate }}</option>
           <option *ngFor="let method of allPaymentMethods" [value]="method">{{ method }}</option>
         </select>
         <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'paymentMethod')">
@@ -34,10 +34,10 @@
       </div>
 
       <div>
-        <label class="mb-1 block text-sm font-medium text-muted-foreground">Employee Name</label>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">{{ 'EMPLOYEE.EMPLOYEE_NAME' | translate }}</label>
         <select formControlName="employeeId"
           class="w-full appearance-none rounded-md border border-border bg-background px-3 py-2 text-sm text-gray-500 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
-          <option value="" selected>Select Employee</option>
+          <option value="" selected>{{ 'EMPLOYEE.EXPENSE.SELECT_EMPLOYEE' | translate }}</option>
           <option *ngFor="let emp of allEmployees" [value]="emp.id">{{ emp.fullName }}</option>
         </select>
         <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'employeeId')">
@@ -47,8 +47,8 @@
 
       <!-- Row 3: Expense Type | Reference -->
       <div>
-        <app-dropdown [options]="allExpenseTypes" [(selectedOption)]="expenseType" placeholder="Select Expense Type"
-          label="Expense Type" [required]="true" addButtonText="Add" (onSelect)="onCategorySelect($event)"
+        <app-dropdown [options]="allExpenseTypes" [(selectedOption)]="expenseType" [placeholder]="'EMPLOYEE.EXPENSE.SELECT_EXPENSE_TYPE' | translate"
+          [label]="'EMPLOYEE.EXPENSE.EXPENSE_TYPE' | translate" [required]="true" [addButtonText]="'COMMON.ADD' | translate" (onSelect)="onCategorySelect($event)"
           (onAddNew)="onAddCategory()">
         </app-dropdown>
         <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'expenseType')">
@@ -57,7 +57,7 @@
       </div>
 
       <div>
-        <label class="mb-1 block text-sm font-medium text-muted-foreground">Reference</label>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">{{ 'COMMON.REFERENCE' | translate }}</label>
         <input formControlName="reference"
           class="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
         <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'reference')">
@@ -67,7 +67,7 @@
 
       <!-- Row 4: Amount | Description -->
       <div>
-        <label class="mb-1 block text-sm font-medium text-muted-foreground">Amount</label>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">{{ 'COMMON.AMOUNT' | translate }}</label>
         <input type="number" formControlName="amount"
           class="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
         <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'amount')">
@@ -76,7 +76,7 @@
       </div>
 
       <div>
-        <label class="mb-1 block text-sm font-medium text-muted-foreground">Description</label>
+        <label class="mb-1 block text-sm font-medium text-muted-foreground">{{ 'COMMON.DESCRIPTION' | translate }}</label>
         <textarea formControlName="description" rows="3"
           class="w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
         <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'description')">
@@ -92,13 +92,13 @@
           'cursor-not-allowed bg-gray-300 text-gray-400': form.invalid
         }" class="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors">
         <svg-icon src="./assets/icons/heroicons/outline/minus-v2.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-        <span>Expense</span>
+        <span>{{ 'EMPLOYEE.EXPENSE.EXPENSE_BTN' | translate }}</span>
       </button>
 
       <button type="button" (click)="cancel()"
         class="flex items-center gap-2 rounded-md bg-destructive px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-destructive/90">
         <svg-icon src="./assets/icons/heroicons/outline/back.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-        <span>Cancel</span>
+        <span>{{ 'COMMON.CANCEL' | translate }}</span>
       </button>
     </div>
   </form>

@@ -1,13 +1,16 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { throwError } from 'rxjs';
 import { ErrorResponse } from 'src/app/common/models/error-response';
 import { toast } from 'ngx-sonner';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CommonService {
+  protected translate = inject(TranslateService);
+
   constructor() {}
 
   mapErrorResponse(errorRes: HttpErrorResponse) {
@@ -37,12 +40,11 @@ export class CommonService {
   }
 
   showToastError(message: any) {
-    const msg = 'Error';
-    toast.error(msg, {
+    toast.error(this.translate.instant('TOAST.ERROR'), {
       position: 'bottom-right',
       description: message,
       action: {
-        label: 'Close',
+        label: this.translate.instant('TOAST.CLOSE'),
         onClick: () => console.log('Action!'),
       },
       actionButtonStyle: 'background-color:#DC2626; color:white;',
@@ -50,12 +52,11 @@ export class CommonService {
   }
 
   showToastInfo(message: any) {
-    const msg = 'Info';
-    toast.info(msg, {
+    toast.info(this.translate.instant('TOAST.INFO'), {
       position: 'bottom-right',
       description: message,
       action: {
-        label: 'Close',
+        label: this.translate.instant('TOAST.CLOSE'),
         onClick: () => console.log('Action!'),
       },
       actionButtonStyle: 'background-color:#DC2626; color:white;',
@@ -68,12 +69,12 @@ export class CommonService {
       if( errorResponse.errors && errorResponse.errors.length > 0) {
          errorMessage = errorResponse.errors.map((err) => {return err.errorMessage}).join(', ');
       }
-      
+
       toast.error('', {
         position: 'bottom-right',
         description: errorMessage || errorResponse.message,
         action: {
-          label: 'Close',
+          label: this.translate.instant('TOAST.CLOSE'),
           onClick: () => console.log('Action!'),
         },
         actionButtonStyle: 'background-color:#DC2626; color:white;',
@@ -84,16 +85,27 @@ export class CommonService {
   }
 
   showToastSuccess(message: any) {
-    const msg = 'Success';
     toast.success('', {
       position: 'bottom-right',
       description: message,
       action: {
-        label: 'Close',
+        label: this.translate.instant('TOAST.CLOSE'),
         onClick: () => console.log('Action!'),
       },
       actionButtonStyle: 'background-color: #006400; color:white;',
     });
+  }
+
+  showToastSuccessKey(key: string, params?: object) {
+    this.showToastSuccess(this.translate.instant(key, params));
+  }
+
+  showToastErrorKey(key: string, params?: object) {
+    this.showToastError(this.translate.instant(key, params));
+  }
+
+  showToastInfoKey(key: string, params?: object) {
+    this.showToastInfo(this.translate.instant(key, params));
   }
 
   isValidDate(year: number, month: number, day: number): boolean {

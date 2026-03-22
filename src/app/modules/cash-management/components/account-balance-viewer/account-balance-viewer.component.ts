@@ -5,10 +5,11 @@ import { Organization } from 'src/app/core/models/organization.model';
 import { OrganizationBalance } from 'src/app/core/models/organization-balance.model';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { AccountingService } from 'src/app/core/services/accounting.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-account-balance-viewer',
-  imports: [CardStatsComponent, NgIf],
+  imports: [CardStatsComponent, NgIf, TranslateModule],
   templateUrl: './account-balance-viewer.component.html',
   styleUrl: './account-balance-viewer.component.scss'
 })

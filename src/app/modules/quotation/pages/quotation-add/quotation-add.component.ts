@@ -24,6 +24,7 @@ import { ProductService } from 'src/app/core/services/product.service';
 import { Customer } from 'src/app/modules/invoice/invoice.model';
 import { CustomerService } from 'src/app/core/services/customer.service';
 import { Product, UnitType } from 'src/app/core/models/product.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-quotation-add',
@@ -34,7 +35,8 @@ import { Product, UnitType } from 'src/app/core/models/product.model';
     ReactiveFormsModule,
     CommonModule,
     WordPipe,
-    NgSelectComponent
+    NgSelectComponent,
+    TranslateModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './quotation-add.component.html',

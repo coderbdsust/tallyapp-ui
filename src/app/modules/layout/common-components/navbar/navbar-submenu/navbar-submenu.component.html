@@ -17,7 +17,7 @@
           <span class="mr-2 text-muted-foreground/50" *ngIf="item.icon">
             <svg-icon src="{{ item.icon }}" [svgClass]="'h-5 w-5'"> </svg-icon>
           </span>
-          <span class="ml-1">{{ item.label }}</span>
+          <span class="ml-1">{{ item.label | translate }}</span>
         </div>
       </button>
     </ng-template>
@@ -31,7 +31,7 @@
             <span class="mr-2 text-muted-foreground/50" *ngIf="item.icon">
               <svg-icon src="{{ item.icon }}" [svgClass]="'h-5 w-5'"> </svg-icon>
             </span>
-            <span class="ml-1">{{ item.label }}</span>
+            <span class="ml-1">{{ item.label | translate }}</span>
           </div>
           <span>
             <svg-icon

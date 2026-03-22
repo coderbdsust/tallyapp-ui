@@ -13,11 +13,12 @@ import { Organization } from 'src/app/core/models/organization.model';
 import { QuotationService } from 'src/app/core/services/quotation.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-quotation-list',
   standalone: true,
-  imports: [AngularSvgIconModule, CommonModule, WordPipe, FormsModule],
+  imports: [AngularSvgIconModule, CommonModule, WordPipe, FormsModule, TranslateModule],
   templateUrl: './quotation-list.component.html',
   styleUrl: './quotation-list.component.scss'
 })

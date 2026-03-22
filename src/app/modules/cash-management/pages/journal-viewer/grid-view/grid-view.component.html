@@ -4,8 +4,8 @@
             <div class="w-6 h-6 rounded-full flex items-center justify-center mr-3" [ngClass]="getCategoryColorClass(treeName)">
                 <svg-icon [src]="getSvgIcon(treeName)" [svgClass]="'h-4 w-4'"></svg-icon>
             </div>
-            {{treeName | titlecase}}
-            <span class="ml-2 text-sm font-normal text-gray-500">(Total: {{ formatCurrency(accountTotalBalance)
+            {{ ('CASH.JOURNAL.' + treeName.toUpperCase()) | translate }}
+            <span class="ml-2 text-sm font-normal text-gray-500">({{ 'COMMON.TOTAL' | translate }}: {{ formatCurrency(accountTotalBalance)
                 }})</span>
         </h3>
     </div>
@@ -25,7 +25,7 @@
             </div>
         </div>
         <ng-template #noData>
-            <p class="text-gray-500 italic">No {{treeName}} recorded</p>
+            <p class="text-gray-500 italic">{{ 'CASH.JOURNAL.NO_RECORDS' | translate:{ name: treeName } }}</p>
         </ng-template>
     </div>
 </div>

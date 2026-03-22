@@ -11,7 +11,7 @@
         </div>
         <div>
           <h5 class="text-sm font-semibold text-gray-900 dark:text-white">
-            {{ empForm.get('id')?.value ? 'Edit Employee' : 'Add Employee' }}
+            {{ empForm.get('id')?.value ? ('EMPLOYEE.EDIT_EMPLOYEE' | translate) : ('EMPLOYEE.ADD_EMPLOYEE' | translate) }}
           </h5>
           <p class="text-xs text-gray-400 dark:text-gray-500">{{ empForm.get('orgName')?.value || 'Organization' }}</p>
         </div>
@@ -69,7 +69,7 @@
       <div class="text-center">
         <label for="avatarInput"
           class="cursor-pointer text-xs font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">
-          {{ avatarPreviewUrl ? 'Change photo' : 'Upload photo' }}
+          {{ avatarPreviewUrl ? ('EMPLOYEE.CHANGE_PHOTO' | translate) : ('EMPLOYEE.UPLOAD_PHOTO' | translate) }}
         </label>
         <p class="text-xs text-gray-400 mt-0.5">JPG, PNG up to 5MB</p>
       </div>
@@ -77,10 +77,10 @@
 
     <!-- Section: Personal Info -->
     <div class="space-y-1">
-      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Personal Information</p>
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">{{ 'EMPLOYEE.PERSONAL_INFORMATION' | translate }}</p>
 
       <div class="emp-field">
-        <label class="emp-label">Full Name <span class="text-red-400">*</span></label>
+        <label class="emp-label">{{ 'EMPLOYEE.FULL_NAME' | translate }} <span class="text-red-400">*</span></label>
         <input type="text" formControlName="fullName" class="emp-input"
           [class.emp-input--error]="submitted && f['fullName'].errors"
           placeholder="e.g. Sarah Johnson" />
@@ -89,13 +89,13 @@
 
       <div class="grid grid-cols-2 gap-3 pt-1">
         <div class="emp-field">
-          <label class="emp-label">Date of Birth <span class="text-red-400">*</span></label>
+          <label class="emp-label">{{ 'EMPLOYEE.DOB' | translate }} <span class="text-red-400">*</span></label>
           <input type="date" formControlName="dateOfBirth" class="emp-input"
             [class.emp-input--error]="submitted && f['dateOfBirth'].errors" />
           <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'dateOfBirth')">{{ getErrorMessage(empForm, 'dateOfBirth') }}</p>
         </div>
         <div class="emp-field">
-          <label class="emp-label">Joining Date <span class="text-red-400">*</span></label>
+          <label class="emp-label">{{ 'EMPLOYEE.JOINING_DATE' | translate }} <span class="text-red-400">*</span></label>
           <input type="date" formControlName="joiningDate" class="emp-input"
             [class.emp-input--error]="submitted && f['joiningDate'].errors" />
           <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'joiningDate')">{{ getErrorMessage(empForm, 'joiningDate') }}</p>
@@ -103,7 +103,7 @@
       </div>
 
       <div class="emp-field pt-1">
-        <label class="emp-label">Mobile Number <span class="text-red-400">*</span></label>
+        <label class="emp-label">{{ 'EMPLOYEE.MOBILE' | translate }} <span class="text-red-400">*</span></label>
         <div class="relative">
           <input type="text" formControlName="mobileNo" class="emp-input pl-10"
             [class.emp-input--error]="submitted && f['mobileNo'].errors"
@@ -115,10 +115,10 @@
 
     <!-- Section: Address -->
     <div class="space-y-1">
-      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Address</p>
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">{{ 'EMPLOYEE.ADDRESS' | translate }}</p>
 
       <div class="emp-field">
-        <label class="emp-label">Street Address <span class="text-red-400">*</span></label>
+        <label class="emp-label">{{ 'EMPLOYEE.STREET' | translate }} <span class="text-red-400">*</span></label>
         <input type="text" formControlName="empAddressLine" class="emp-input"
           [class.emp-input--error]="submitted && f['empAddressLine'].errors"
           placeholder="House no, road, area" />
@@ -127,19 +127,19 @@
 
       <div class="grid grid-cols-3 gap-3 pt-1">
         <div class="emp-field">
-          <label class="emp-label">City <span class="text-red-400">*</span></label>
+          <label class="emp-label">{{ 'EMPLOYEE.CITY' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="empCity" class="emp-input"
             [class.emp-input--error]="submitted && f['empCity'].errors" placeholder="Dhaka" />
           <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'empCity')">{{ getErrorMessage(empForm, 'empCity') }}</p>
         </div>
         <div class="emp-field">
-          <label class="emp-label">Postcode <span class="text-red-400">*</span></label>
+          <label class="emp-label">{{ 'EMPLOYEE.POSTCODE' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="empPostcode" class="emp-input"
             [class.emp-input--error]="submitted && f['empPostcode'].errors" placeholder="1200" />
           <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'empPostcode')">{{ getErrorMessage(empForm, 'empPostcode') }}</p>
         </div>
         <div class="emp-field">
-          <label class="emp-label">Country <span class="text-red-400">*</span></label>
+          <label class="emp-label">{{ 'EMPLOYEE.COUNTRY' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="empCountry" class="emp-input"
             [class.emp-input--error]="submitted && f['empCountry'].errors" placeholder="BD" />
           <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'empCountry')">{{ getErrorMessage(empForm, 'empCountry') }}</p>
@@ -149,11 +149,11 @@
 
     <!-- Section: Employment -->
     <div class="space-y-1">
-      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Employment Details</p>
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">{{ 'EMPLOYEE.EMPLOYMENT_DETAILS' | translate }}</p>
 
       <div class="grid grid-cols-2 gap-3">
         <div class="emp-field">
-          <label class="emp-label">Employee Type <span class="text-red-400">*</span></label>
+          <label class="emp-label">{{ 'EMPLOYEE.EMPLOYEE_TYPE' | translate }} <span class="text-red-400">*</span></label>
           <select formControlName="employeeType" class="emp-select"
             [class.emp-input--error]="submitted && f['employeeType'].errors">
             <option value="-1">Select type</option>
@@ -162,7 +162,7 @@
           <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'employeeType')">{{ getErrorMessage(empForm, 'employeeType') }}</p>
         </div>
         <div class="emp-field">
-          <label class="emp-label">Status <span class="text-red-400">*</span></label>
+          <label class="emp-label">{{ 'COMMON.STATUS' | translate }} <span class="text-red-400">*</span></label>
           <select formControlName="status" class="emp-select"
             [class.emp-input--error]="submitted && f['status'].errors">
             <option value="-1">Select status</option>
@@ -174,7 +174,7 @@
 
       <div class="grid grid-cols-3 gap-3 pt-1">
         <div class="emp-field">
-          <label class="emp-label">Billing Type <span class="text-red-400">*</span></label>
+          <label class="emp-label">{{ 'EMPLOYEE.BILLING_TYPE' | translate }} <span class="text-red-400">*</span></label>
           <select formControlName="employeeBillingType" class="emp-select"
             [class.emp-input--error]="submitted && f['employeeBillingType'].errors">
             <option value="-1">Select</option>
@@ -183,13 +183,13 @@
           <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'employeeBillingType')">{{ getErrorMessage(empForm, 'employeeBillingType') }}</p>
         </div>
         <div class="emp-field">
-          <label class="emp-label">Billing Rate <span class="text-red-400">*</span></label>
+          <label class="emp-label">{{ 'EMPLOYEE.RATE' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="billingRate" class="emp-input"
             [class.emp-input--error]="submitted && f['billingRate'].errors" placeholder="0.00" />
           <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'billingRate')">{{ getErrorMessage(empForm, 'billingRate') }}</p>
         </div>
         <div class="emp-field">
-          <label class="emp-label">Daily Allowance <span class="text-red-400">*</span></label>
+          <label class="emp-label">{{ 'EMPLOYEE.ALLOWANCE' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="dailyAllowance" class="emp-input"
             [class.emp-input--error]="submitted && f['dailyAllowance'].errors" placeholder="0.00" />
           <p class="emp-error" *ngIf="isFieldInvalid(empForm, 'dailyAllowance')">{{ getErrorMessage(empForm, 'dailyAllowance') }}</p>
@@ -214,12 +214,12 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
-          Save Employee
+          {{ 'COMMON.SAVE' | translate }}
         </span>
       </button>
       <button type="button" (click)="closeDrawer()"
         class="flex-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-        Cancel
+        {{ 'COMMON.CANCEL' | translate }}
       </button>
     </div>
   </form>

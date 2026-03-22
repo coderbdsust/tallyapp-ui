@@ -10,10 +10,11 @@ import { Transaction } from 'src/app/core/models/organization-balance.model';
 import { Organization } from 'src/app/core/models/organization.model';
 import { AccountingService } from 'src/app/core/services/accounting.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-transaction-view',
-  imports: [CommonModule, AngularSvgIconModule, WordPipe],
+  imports: [CommonModule, AngularSvgIconModule, WordPipe, TranslateModule],
   templateUrl: './transaction-view.component.html',
   styleUrl: './transaction-view.component.scss'
 })

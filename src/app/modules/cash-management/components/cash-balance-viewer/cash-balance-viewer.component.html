@@ -3,7 +3,7 @@
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Total Cash In</p>
+            <p class="text-sm font-medium text-gray-600">{{ 'CASH.BALANCE.TOTAL_CASH_IN' | translate }}</p>
             <p class="text-2xl font-bold text-green-600 mt-1">
               {{ formatCurrency(balanceSummary?.totalCashIn??0) }}
             </p>
@@ -15,13 +15,6 @@
             </svg>
           </div>
         </div>
-        <!-- <div class="mt-4 flex items-center">
-          <svg class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span class="text-xs text-gray-500 ml-1">Cash inflows</span>
-        </div> -->
       </div>
 
 
@@ -30,7 +23,7 @@
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Total Cash Out</p>
+            <p class="text-sm font-medium text-gray-600">{{ 'CASH.BALANCE.TOTAL_CASH_OUT' | translate }}</p>
             <p class="text-2xl font-bold text-red-600 mt-1">
               {{ formatCurrency(balanceSummary?.totalCashOut??0) }}
             </p>
@@ -42,20 +35,13 @@
             </svg>
           </div>
         </div>
-        <!-- <div class="mt-4 flex items-center">
-          <svg class="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span class="text-xs text-gray-500 ml-1">Cash outflows</span>
-        </div> -->
       </div>
 
       <!-- Net Cash Flow -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Net Cash Balance</p>
+            <p class="text-sm font-medium text-gray-600">{{ 'CASH.BALANCE.NET_CASH_BALANCE' | translate }}</p>
             <p class="text-2xl font-bold text-blue-600 mt-1">
               {{ formatCurrency(balanceSummary?.netCashBalance??0) }}
             </p>

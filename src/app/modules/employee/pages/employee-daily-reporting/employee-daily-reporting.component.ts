@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,7 +16,7 @@ import { OrganizationService } from 'src/app/core/services/organization.service'
 
 @Component({
   selector: 'app-employee-daily-reporting',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, AngularSvgIconModule, ButtonComponent],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, AngularSvgIconModule, TranslateModule, ButtonComponent],
   templateUrl: './employee-daily-reporting.component.html',
   styleUrl: './employee-daily-reporting.component.scss'
 })

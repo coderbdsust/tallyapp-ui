@@ -12,11 +12,11 @@
         <div class="w-full flex justify-end gap-2 p-4 rounded-b">
             <button (click)="onCancel()"
             class="w-full py-2.5 px-5 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-            Cancel
+            {{ 'COMMON.CANCEL' | translate }}
             </button>
             <button (click)="onConfirm()"
             class="w-full py-3 px-5 text-sm font-medium text-white bg-purple-600 hover:bg-red-800 rounded-lg focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800">
-            Yes
+            {{ 'COMMON.YES' | translate }}
             </button>
         </div>
     </mat-dialog-actions>

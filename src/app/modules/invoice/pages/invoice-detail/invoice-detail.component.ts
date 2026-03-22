@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToWords } from 'to-words';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 import { formatCurrency } from 'src/app/common/utils/common';
 import { Invoice } from '../../invoice.model';
@@ -11,7 +12,7 @@ import { InvoiceService } from 'src/app/core/services/invoice.service';
 
 @Component({
   selector: 'app-invoice-detail',
-  imports: [AngularSvgIconModule, CommonModule, WordPipe],
+  imports: [AngularSvgIconModule, CommonModule, WordPipe, TranslateModule],
   templateUrl: './invoice-detail.component.html',
   styleUrl: './invoice-detail.component.scss',
 })
@@ -58,7 +59,7 @@ export class InvoiceDetailComponent implements OnInit, OnDestroy {
 
         if (!this.orgId || !this.invoiceId) {
           this.navigateToInvoiceList();
-          this.invoiceService.showToastError("Invalid invoice parameters");
+          this.invoiceService.showToastErrorKey('INVOICE.TOAST.INVALID_PARAMS');
           return;
         }
         this.fetchInvoice();
@@ -156,7 +157,7 @@ export class InvoiceDetailComponent implements OnInit, OnDestroy {
     // Clean up the blob URL
     setTimeout(() => window.URL.revokeObjectURL(url), 100);
     
-    this.invoiceService.showToastSuccess('Invoice Downloaded');
+    this.invoiceService.showToastSuccessKey('INVOICE.TOAST.INVOICE_DOWNLOADED');
   }
 
   editInvoice(): void {

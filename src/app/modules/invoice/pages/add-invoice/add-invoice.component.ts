@@ -17,6 +17,7 @@ import { CustomerService } from 'src/app/core/services/customer.service';
 import { EmployeeService } from 'src/app/core/services/employee.service';
 import { ProductCategoryService } from 'src/app/core/services/product-category.service';
 import { generateRandomLuhnCode } from 'src/app/common/utils/LuhnCode';
+import { TranslateModule } from '@ngx-translate/core';
 import { combineLatest, startWith, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ReasonModalComponent } from 'src/app/common/components/reason-modal/reason-modal.component';
@@ -32,7 +33,8 @@ import { ConfirmationModalComponent } from 'src/app/common/components/confirmati
     ReactiveFormsModule,
     CommonModule,
     WordPipe,
-    NgSelectComponent
+    NgSelectComponent,
+    TranslateModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-invoice.component.html',
@@ -221,7 +223,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     };
 
     if (!customerData.name || !customerData.mobile) {
-      this.invoiceService.showToastInfo('Customer name and mobile are required');
+      this.invoiceService.showToastInfoKey('INVOICE.TOAST.CUSTOMER_NAME_REQUIRED');
       return;
     }
 
@@ -234,8 +236,8 @@ export class AddInvoiceComponent extends FormError implements OnInit {
         next: (updated) => {
           this.invoice = updated;
           this.initiateInvoiceForm(updated);
-          this.customerService.showToastSuccess(
-            customerId ? 'Customer updated and assigned to invoice' : 'Customer created and assigned to invoice'
+          this.customerService.showToastSuccessKey(
+            customerId ? 'INVOICE.TOAST.CUSTOMER_UPDATED_ASSIGNED' : 'INVOICE.TOAST.CUSTOMER_CREATED_ASSIGNED'
           );
         },
         error: (err) => this.invoiceService.showToastErrorResponse(err)
@@ -273,7 +275,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   onCustomerSearchKeyType(event: Event): void {
     const searchKey = (event.target as HTMLInputElement).value;
     if (searchKey.length < 4) {
-      this.invoiceService.showToastInfo('Please type at least four (4) characters');
+      this.invoiceService.showToastInfoKey('INVOICE.TOAST.TYPE_4_CHARS');
       return;
     }
     this.fetchCustomer(searchKey);
@@ -333,7 +335,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   onSearchKeyType(event: Event): void {
     const searchKey = (event.target as HTMLInputElement).value;
     if (searchKey.length < 3) {
-      this.invoiceService.showToastInfo('Please type at least three (3) characters');
+      this.invoiceService.showToastInfoKey('INVOICE.TOAST.TYPE_3_CHARS');
       return;
     }
     this.fetchProducts(searchKey);
@@ -394,7 +396,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
         this.paymentService.deletePayment(this.invoiceId, payment.id, result.reason).subscribe({
           next: () => {
             this.refreshInvoice();
-            this.paymentService.showToastSuccess('Payment deleted successfully');
+            this.paymentService.showToastSuccessKey('INVOICE.TOAST.PAYMENT_DELETED');
           },
           error: (errorRes) => {
             this.refreshInvoice();
@@ -413,7 +415,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       next: () => {
         this.initiatePaymentForm();
         this.refreshInvoice();
-        this.paymentService.showToastSuccess("Payment added successfully");
+        this.paymentService.showToastSuccessKey('INVOICE.TOAST.PAYMENT_ADDED');
       },
       error: (errorRes) => {
         this.refreshInvoice();
@@ -440,7 +442,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       next: updated => {
         this.invoice = updated;
         this.initiateInvoiceForm(updated);
-        this.invoiceService.showToastSuccess("Invoice info updated");
+        this.invoiceService.showToastSuccessKey('INVOICE.TOAST.INVOICE_UPDATED');
       },
       error: (err) => {
         this.refreshInvoice();
@@ -470,7 +472,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
           next: updated => {
             this.invoice = updated;
             this.initiateInvoiceForm(updated);
-            this.invoiceService.showToastSuccess('Invoice marked as paid');
+            this.invoiceService.showToastSuccessKey('INVOICE.TOAST.MARKED_PAID');
           },
           error: (err) => {
             this.refreshInvoice();
@@ -513,7 +515,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     a.click();
     document.body.removeChild(a);
     setTimeout(() => window.URL.revokeObjectURL(url), 100);
-    this.invoiceService.showToastSuccess('Downloaded successfully');
+    this.invoiceService.showToastSuccessKey('TOAST.DOWNLOADED_SUCCESSFULLY');
   }
 
   // --- Create New Product Mode ---
@@ -593,7 +595,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   onSearchEmployeeKeyType(event: Event): void {
     const searchKey = (event.target as HTMLInputElement).value;
     if (searchKey.length < 3) {
-      this.invoiceService.showToastInfo('Please type at least three (3) characters');
+      this.invoiceService.showToastInfoKey('INVOICE.TOAST.TYPE_3_CHARS');
       return;
     }
     const orgId = this.invoice?.ownerOrganization?.id;
@@ -630,7 +632,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       next: created => {
         this.allProductCategories = [...this.allProductCategories, created];
         this.createProductForm.patchValue({ categoryId: created.id });
-        this.productCategoryService.showToastSuccess('Category created');
+        this.productCategoryService.showToastSuccessKey('INVOICE.TOAST.CATEGORY_CREATED');
       },
       error: err => this.productCategoryService.showToastErrorResponse(err)
     });
@@ -658,7 +660,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
 
     this.invoiceService.createAndAddProduct(this.invoiceId, request).subscribe({
       next: () => {
-        this.invoiceService.showToastSuccess('Product created and added to invoice');
+        this.invoiceService.showToastSuccessKey('INVOICE.TOAST.PRODUCT_CREATED_ADDED');
         this.isCreatingNewProduct = false;
         this.initiateCreateProductForm();
         this.initiateProductForm();

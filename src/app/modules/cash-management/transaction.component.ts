@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CashInComponent } from './pages/cash-in/cash-in.component';
@@ -11,7 +12,7 @@ import { ReportComponent } from './pages/report/report.component';
 
 @Component({
   selector: 'app-transaction',
-  imports: [CashInComponent, CashOutComponent, NgIf, NgFor, CashFlowComponent, JournalViewerComponent, ReportComponent],
+  imports: [CashInComponent, CashOutComponent, NgIf, NgFor, CashFlowComponent, JournalViewerComponent, ReportComponent, TranslateModule],
   templateUrl: './transaction.component.html',
   styleUrl: './transaction.component.scss'
 })
@@ -20,12 +21,11 @@ export class TransactionComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
 
   tabs = [
-    { id: 'cash-in', label: 'Cash In' },
-    { id: 'cash-out', label: 'Cash Out' },
-    // { id: 'expense', label: 'Expense' },
-    { id: 'cash-flow', label: 'Cash Flow' },
-    { id: 'journal-viewer', label: 'Journals' },
-    { id: 'report', label: 'Transactions' }
+    { id: 'cash-in', label: 'CASH.CASH_IN.TITLE' },
+    { id: 'cash-out', label: 'CASH.CASH_OUT.TITLE' },
+    { id: 'cash-flow', label: 'CASH.CASH_FLOW.TITLE' },
+    { id: 'journal-viewer', label: 'CASH.JOURNAL.JOURNALS' },
+    { id: 'report', label: 'CASH.TRANSACTION.TITLE' }
   ];
 
   constructor(

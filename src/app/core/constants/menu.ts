@@ -3,110 +3,110 @@ import { MenuItem } from '../models/menu.model';
 export class Menu {
   // Define module to menu item mapping
   private static readonly MODULE_MENU_MAP: Record<string, string[]> = {
-    'DASHBOARD': ['Dashboard'],
-    'EMPLOYEE_MANAGEMENT': ['Employee'],
-    'PRODUCT_MANAGEMENT': ['Product'],
-    'INVOICE_MANAGEMENT': ['Invoice'],
-    'ORGANIZATION_MANAGEMENT': ['Organization'],
-    'SUPPLIER_MANAGEMENT': ['Supplier'],
-    'CASH_MANAGEMENT': ['Transaction'],
-    'USER_MANAGEMENT': ['Settings'],
-    'APP_CONFIGURATION': ['Settings'],
+    'DASHBOARD': ['MENU.DASHBOARD'],
+    'EMPLOYEE_MANAGEMENT': ['MENU.EMPLOYEE'],
+    'PRODUCT_MANAGEMENT': ['MENU.PRODUCT'],
+    'INVOICE_MANAGEMENT': ['MENU.INVOICE'],
+    'ORGANIZATION_MANAGEMENT': ['MENU.ORGANIZATION'],
+    'SUPPLIER_MANAGEMENT': ['MENU.SUPPLIER'],
+    'CASH_MANAGEMENT': ['MENU.CASH_MANAGEMENT'],
+    'USER_MANAGEMENT': ['MENU.SETTINGS'],
+    'APP_CONFIGURATION': ['MENU.SETTINGS'],
     'PROFILE': [],
-    'REPORTING': ['Report']
+    'REPORTING': ['MENU.REPORT']
   };
 
   // Base menu structure with all possible items
   private static readonly ALL_PAGES: MenuItem[] = [
     {
-      group: 'Base',
+      group: 'MENU.BASE',
       separator: false,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/chart-pie.svg',
-          label: 'Dashboard',
+          label: 'MENU.DASHBOARD',
           route: '/dashboard',
           requiredModules: ['DASHBOARD'],
           children: [
-            { label: 'Home', route: '/dashboard/home' }
+            { label: 'MENU.HOME', route: '/dashboard/home' }
           ],
         }
       ],
     },
     {
-      group: 'Module',
+      group: 'MENU.MODULE',
       separator: false,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/building-library.svg',
-          label: 'Organization',
+          label: 'MENU.ORGANIZATION',
           route: '/organization/list',
           requiredModules: ['ORGANIZATION_MANAGEMENT']
         },
         {
           icon: 'assets/icons/heroicons/outline/banknotes.svg',
-          label: 'Cash Management',
+          label: 'MENU.CASH_MANAGEMENT',
           route: '/cash-management',
           requiredModules: ['CASH_MANAGEMENT']
         },
         {
           icon: 'assets/icons/heroicons/outline/user.svg',
-          label: 'Employee',
+          label: 'MENU.EMPLOYEE',
           route: '/employee',
           requiredModules: ['EMPLOYEE_MANAGEMENT']
         },
         {
           icon: 'assets/icons/heroicons/outline/cart.svg',
-          label: 'Product',
+          label: 'MENU.PRODUCT',
           route: '/product',
           requiredModules: ['PRODUCT_MANAGEMENT']
         },
         {
           icon: 'assets/icons/heroicons/outline/newpaper.svg',
-          label: 'Invoice',
+          label: 'MENU.INVOICE',
           route: '/invoice',
           requiredModules: ['INVOICE_MANAGEMENT'],
           children: [
-            { label: 'Invoices', route: '/invoice/list' },
-            { label: 'Customers', route: '/invoice/customer' }
+            { label: 'MENU.INVOICES', route: '/invoice/list' },
+            { label: 'MENU.CUSTOMERS', route: '/invoice/customer' }
           ]
         },
         {
           icon: 'assets/icons/heroicons/outline/newpaper.svg',
-          label: 'Quotation',
+          label: 'MENU.QUOTATION',
           route: '/quotation/list',
           requiredModules: ['QUOTATION_MANAGEMENT']
         },
         {
           icon: 'assets/icons/heroicons/outline/cube.svg',
-          label: 'Supplier',
+          label: 'MENU.SUPPLIER',
           route: '/supplier',
           requiredModules: ['SUPPLIER_MANAGEMENT'],
           children: [
-            { label: 'Suppliers', route: '/supplier/list' },
-            { label: 'Purchase Orders', route: '/supplier/purchase-order' }
+            { label: 'MENU.SUPPLIERS', route: '/supplier/list' },
+            { label: 'MENU.PURCHASE_ORDERS', route: '/supplier/purchase-order' }
           ]
         },
         {
           icon: 'assets/icons/heroicons/outline/document-text.svg',
-          label: 'Report',
+          label: 'MENU.REPORT',
           route: '/report',
           requiredModules: ['REPORTING']
         }
       ],
     },
     {
-      group: 'Super Admin',
+      group: 'MENU.SUPER_ADMIN',
       separator: false,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/cog.svg',
-          label: 'Settings',
+          label: 'MENU.SETTINGS',
           route: '/admin',
           requiredModules: ['USER_MANAGEMENT', 'APP_CONFIGURATION'],
           children: [
             {
-              label: 'User Management',
+              label: 'MENU.USER_MANAGEMENT',
               route: '/admin/user-management',
               requiredModules: ['USER_MANAGEMENT']
             }

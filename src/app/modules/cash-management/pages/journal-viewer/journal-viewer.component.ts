@@ -7,11 +7,12 @@ import { AccountingService } from 'src/app/core/services/accounting.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { TreeViewComponent } from "./tree-view/tree-view.component";
 import { GridViewComponent } from './grid-view/grid-view.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-journal-viewer',
-  imports: [CommonModule, TreeViewComponent, GridViewComponent],
+  imports: [CommonModule, TreeViewComponent, GridViewComponent, TranslateModule],
   templateUrl: './journal-viewer.component.html',
   styleUrl: './journal-viewer.component.scss'
 })

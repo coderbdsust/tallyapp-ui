@@ -1,21 +1,21 @@
 <div class="flex flex-col gap-2">
-  <h2 mat-dialog-title class="text-lg font-semibold text-foreground px-2 pt-2">Add Product Category</h2>
+  <h2 mat-dialog-title class="text-lg font-semibold text-foreground px-2 pt-2">{{ 'PRODUCT.CATEGORY_FORM.TITLE' | translate }}</h2>
 
   <mat-dialog-content>
     <form [formGroup]="form" class="flex flex-col gap-4 px-2">
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-muted-foreground">Name <span class="text-red-500">*</span></label>
-        <input formControlName="name" type="text" placeholder="Enter category name"
+        <label class="text-sm font-medium text-muted-foreground">{{ 'PRODUCT.CATEGORY_FORM.NAME' | translate }} <span class="text-red-500">*</span></label>
+        <input formControlName="name" type="text" [placeholder]="'PRODUCT.CATEGORY_FORM.ENTER_NAME' | translate"
           class="w-full rounded-md border border-muted/40 bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none" />
-        <span *ngIf="submitted && f['name'].errors?.['required']" class="text-xs text-red-500">Name is required</span>
-        <span *ngIf="submitted && f['name'].errors?.['maxlength']" class="text-xs text-red-500">Name cannot exceed 70 characters</span>
+        <span *ngIf="submitted && f['name'].errors?.['required']" class="text-xs text-red-500">{{ 'PRODUCT.CATEGORY_FORM.NAME_REQUIRED' | translate }}</span>
+        <span *ngIf="submitted && f['name'].errors?.['maxlength']" class="text-xs text-red-500">{{ 'PRODUCT.CATEGORY_FORM.NAME_MAX' | translate }}</span>
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-muted-foreground">Description</label>
-        <textarea formControlName="description" rows="3" placeholder="Enter description (optional)"
+        <label class="text-sm font-medium text-muted-foreground">{{ 'COMMON.DESCRIPTION' | translate }}</label>
+        <textarea formControlName="description" rows="3" [placeholder]="'PRODUCT.CATEGORY_FORM.ENTER_DESC' | translate"
           class="w-full rounded-md border border-muted/40 bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none resize-none"></textarea>
-        <span *ngIf="submitted && f['description'].errors?.['maxlength']" class="text-xs text-red-500">Description cannot exceed 200 characters</span>
+        <span *ngIf="submitted && f['description'].errors?.['maxlength']" class="text-xs text-red-500">{{ 'PRODUCT.CATEGORY_FORM.DESCRIPTION_MAX' | translate }}</span>
       </div>
     </form>
   </mat-dialog-content>
@@ -24,12 +24,12 @@
     <div class="w-full flex justify-end gap-2 p-4 rounded-b">
       <button (click)="onCancel()" [disabled]="loading"
         class="py-2.5 px-5 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-        Cancel
+        {{ 'COMMON.CANCEL' | translate }}
       </button>
       <button (click)="onSubmit()" [disabled]="loading"
         class="py-2.5 px-5 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg focus:outline-none">
-        <span *ngIf="!loading">Save</span>
-        <span *ngIf="loading">Saving...</span>
+        <span *ngIf="!loading">{{ 'COMMON.SAVE' | translate }}</span>
+        <span *ngIf="loading">{{ 'COMMON.SAVING' | translate }}</span>
       </button>
     </div>
   </mat-dialog-actions>

@@ -11,10 +11,11 @@ import { SupplierService } from 'src/app/core/services/supplier.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { Organization } from 'src/app/core/models/organization.model';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-purchase-order-create',
-  imports: [AngularSvgIconModule, CommonModule, FormsModule, ReactiveFormsModule, ButtonComponent],
+  imports: [AngularSvgIconModule, CommonModule, FormsModule, ReactiveFormsModule, ButtonComponent, TranslateModule],
   templateUrl: './purchase-order-create.component.html',
   styleUrl: './purchase-order-create.component.scss'
 })

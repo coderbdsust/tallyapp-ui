@@ -16,6 +16,7 @@ import { AccountingService } from 'src/app/core/services/accounting.service';
 import { ToWords } from 'to-words';
 import { CashtypeService } from 'src/app/core/services/cashtype.service';
 import { CashTxnViewComponent } from '../../components/cash-txn-view/cash-txn-view.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
@@ -28,7 +29,8 @@ import { CashTxnViewComponent } from '../../components/cash-txn-view/cash-txn-vi
     CashBalanceViewerComponent,
     CashTxnViewComponent,
     DropdownComponent,
-    CashoutTypeDrawerComponent
+    CashoutTypeDrawerComponent,
+    TranslateModule
   ],
   templateUrl: './cash-out.component.html',
   styleUrl: './cash-out.component.scss'

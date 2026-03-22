@@ -1,6 +1,6 @@
 <div class="space-y-4">
       <div class="mb-2">
-        <div 
+        <div
           class="flex items-center justify-between p-3 rounded-lg border cursor-pointer hover:shadow-sm transition-all"
           [ngClass]="getCategoryColorClass(treeName)"
           (click)="toggleNode()">
@@ -14,8 +14,8 @@
               </svg>
             </div>
             <svg-icon [src]="getSvgIcon(treeName)" [svgClass]="'h-4 w-4'"></svg-icon>
-            <span class="font-semibold text-lg">{{ treeName | titlecase }}</span>
-            <span class="text-sm opacity-75">({{ accounts.length || 0 }} accounts)</span>
+            <span class="font-semibold text-lg">{{ ('CASH.JOURNAL.' + treeName.toUpperCase()) | translate }}</span>
+            <span class="text-sm opacity-75">({{ accounts.length || 0 }} {{ 'CASH.JOURNAL.ACCOUNTS' | translate }})</span>
           </div>
           <span class="font-bold text-lg" [ngClass]="getBalanceColorClass(treeName, accountTotalBalance)">
             {{ formatCurrency(accountTotalBalance || 0) }}

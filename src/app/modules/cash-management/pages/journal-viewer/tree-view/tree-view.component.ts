@@ -1,12 +1,13 @@
-import { NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { formatCurrency, formatDate } from 'src/app/common/utils/common';
 import { Account } from 'src/app/core/models/journal.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tree-view',
-  imports: [NgClass, NgFor, NgIf, TitleCasePipe, AngularSvgIconModule],
+  imports: [NgClass, NgFor, NgIf, AngularSvgIconModule, TranslateModule],
   templateUrl: './tree-view.component.html',
   styleUrl: './tree-view.component.scss'
 })

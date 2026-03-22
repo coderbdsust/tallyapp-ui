@@ -9,11 +9,12 @@ import { Organization } from 'src/app/core/models/organization.model';
 import { CustomerService } from 'src/app/core/services/customer.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 import { formatCurrency } from 'src/app/common/utils/common';
 
 @Component({
   selector: 'app-customer-list',
-  imports: [AngularSvgIconModule, CommonModule, FormsModule, ReactiveFormsModule, WordPipe],
+  imports: [AngularSvgIconModule, CommonModule, FormsModule, ReactiveFormsModule, WordPipe, TranslateModule],
   templateUrl: './customer-list.component.html',
   styleUrl: './customer-list.component.scss'
 })
@@ -134,7 +135,7 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: () => {
-            this.customerService.showToastSuccess('Customer updated successfully');
+            this.customerService.showToastSuccessKey('INVOICE.CUSTOMER_LIST.TOAST.UPDATED');
             this.closeDrawer();
             this.loadData();
           },
@@ -146,7 +147,7 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: () => {
-            this.customerService.showToastSuccess('Customer created successfully');
+            this.customerService.showToastSuccessKey('INVOICE.CUSTOMER_LIST.TOAST.CREATED');
             this.closeDrawer();
             this.loadData();
           },

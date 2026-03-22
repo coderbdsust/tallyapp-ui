@@ -7,12 +7,14 @@ import { ThemeService } from '../../../../../core/services/theme.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { RolePipe } from 'src/app/common/pipes/role.pipe';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from 'src/app/core/services/language.service';
 
 @Component({
     selector: 'app-profile-menu',
     templateUrl: './profile-menu.component.html',
     styleUrls: ['./profile-menu.component.scss'],
-    imports: [ClickOutsideDirective, NgClass, RouterLink, AngularSvgIconModule, CommonModule, RolePipe],
+    imports: [ClickOutsideDirective, NgClass, RouterLink, AngularSvgIconModule, CommonModule, RolePipe, TranslateModule],
     animations: [
         trigger('openClose', [
             state('open', style({
@@ -36,19 +38,19 @@ export class ProfileMenuComponent implements OnInit {
   public menuItem: { title: string; icon: string; link: string }[] = [];
 
   public logoutItem = {
-    title: 'Log out',
+    title: 'PROFILE_MENU.LOG_OUT',
     icon: './assets/icons/heroicons/outline/logout.svg',
     link: '/auth',
   };
 
   public profileMenuUser = [
     {
-      title: 'My Profile',
+      title: 'PROFILE_MENU.MY_PROFILE',
       icon: './assets/icons/heroicons/outline/user-circle.svg',
       link: '/user/profile-view',
     },
     {
-      title: 'Change Password',
+      title: 'PROFILE_MENU.CHANGE_PASSWORD',
       icon: './assets/icons/heroicons/outline/wrench.svg',
       link: '/user/change-password',
     }
@@ -87,7 +89,7 @@ export class ProfileMenuComponent implements OnInit {
 
   public themeMode = ['light', 'dark'];
 
-  constructor(public themeService: ThemeService, public authService: AuthService, private router: Router) {}
+  constructor(public themeService: ThemeService, public authService: AuthService, private router: Router, private languageService: LanguageService) {}
 
   ngOnInit(): void {
     this.menuItem = this.profileMenuUser;
@@ -118,7 +120,7 @@ export class ProfileMenuComponent implements OnInit {
     const lang = (event.target as HTMLSelectElement).value;
     if (lang && lang !== '-1') {
       this.selectedLanguage = lang;
-      localStorage.setItem('app-language', lang);
+      this.languageService.switchLanguage(lang);
     }
   }
 }

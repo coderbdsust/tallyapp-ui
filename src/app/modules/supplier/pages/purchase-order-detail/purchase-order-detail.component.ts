@@ -12,10 +12,11 @@ import { formatCurrency } from 'src/app/common/utils/common';
 import { PurchaseOrder, PurchaseOrderPayment } from '../../supplier.model';
 import { PurchaseOrderService } from 'src/app/core/services/purchase-order.service';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-purchase-order-detail',
-  imports: [AngularSvgIconModule, CommonModule, FormsModule, ReactiveFormsModule, ButtonComponent, WordPipe],
+  imports: [AngularSvgIconModule, CommonModule, FormsModule, ReactiveFormsModule, ButtonComponent, WordPipe, TranslateModule],
   templateUrl: './purchase-order-detail.component.html',
   styleUrl: './purchase-order-detail.component.scss'
 })

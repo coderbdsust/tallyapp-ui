@@ -1,6 +1,6 @@
 <div class="mb-4 flex justify-between">
   <div class="inline-block">
-    <h2 class="font-semibold text-foreground">All Inventory Invoices</h2>
+    <h2 class="font-semibold text-foreground">{{ 'INVOICE.ALL_INVOICES' | translate }}</h2>
     <div class="space-x-1 text-xs font-medium text-muted-foreground">
       <span *ngIf="organization">Organization: {{ organization.orgName }}</span>
     </div>
@@ -11,7 +11,7 @@
         class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
         (click)="createInvoice()">
         <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
-        <p>Create Invoice</p>
+        <p>{{ 'INVOICE.ADD_INVOICE' | translate }}</p>
       </button>
     </div>
   </div>
@@ -21,21 +21,21 @@
   <!-- Filters and Search Section -->
   <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
     <h3 class="text-sm font-medium text-muted-foreground">
-      Showing <span>{{ startIndex }}-{{ endIndex }} of {{ totalRows }}</span> rows
+      {{ 'COMMON.SHOWING' | translate }} <span>{{ startIndex }}-{{ endIndex }} {{ 'COMMON.OF' | translate }} {{ totalRows }}</span> {{ 'COMMON.RESULTS' | translate }}
     </h3>
     <div class="flex flex-wrap gap-2">
       <!-- Page Size Selector -->
       <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
         <div class="order-2 flex items-center gap-2 md:order-1">
-          Show
+          {{ 'COMMON.SHOW' | translate }}
           <select class="w-16 p-2" name="rowSize" (change)="onSelectChange($event)">
-            <option *ngFor="let option of getPageSizeOptions()" 
-                    [value]="option.value" 
+            <option *ngFor="let option of getPageSizeOptions()"
+                    [value]="option.value"
                     [selected]="option.value === selectedRows">
               {{ option.label }}
             </option>
           </select>
-          per page
+          {{ 'COMMON.PER_PAGE' | translate }}
         </div>
       </div>
 
@@ -49,7 +49,7 @@
           <input 
             name="search" 
             class="py-2 pl-8 pr-2" 
-            placeholder="Search invoices..." 
+            [placeholder]="'COMMON.SEARCH_PLACEHOLDER' | translate"
             type="text" 
             [value]="search"
             (keydown.enter)="onSearchChange($event)"
@@ -71,14 +71,14 @@
       class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
       <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-gray-300">
         <tr>
-          <th class="min-w-[130px]">Invoice Number</th>
-          <th class="min-w-[110px]">Invoice Date</th>
-          <th class="min-w-[150px]">Customer</th>
-          <th class="min-w-[120px]">Total Amount</th>
-          <th class="min-w-[110px]">Total Paid</th>
-          <th class="min-w-[110px]">Amount Due</th>
-          <th class="min-w-[100px]">Status</th>
-          <th class="min-w-[140px]">Actions</th>
+          <th class="min-w-[130px]">{{ 'INVOICE.INVOICE_NUMBER' | translate }}</th>
+          <th class="min-w-[110px]">{{ 'INVOICE.INVOICE_DATE' | translate }}</th>
+          <th class="min-w-[150px]">{{ 'INVOICE.CUSTOMER' | translate }}</th>
+          <th class="min-w-[120px]">{{ 'INVOICE.TOTAL_AMOUNT' | translate }}</th>
+          <th class="min-w-[110px]">{{ 'INVOICE.PAID_AMOUNT' | translate }}</th>
+          <th class="min-w-[110px]">{{ 'INVOICE.DUE_AMOUNT' | translate }}</th>
+          <th class="min-w-[100px]">{{ 'COMMON.STATUS' | translate }}</th>
+          <th class="min-w-[140px]">{{ 'COMMON.ACTIONS' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -90,7 +90,7 @@
           <td>
             <div class="flex flex-col">
               <span class="font-mono text-sm font-semibold">{{ invoice.invoiceNumber }}</span>
-              <span *ngIf="isOverdue(invoice)" class="text-xs text-red-600 font-medium">OVERDUE</span>
+              <span *ngIf="isOverdue(invoice)" class="text-xs text-red-600 font-medium">{{ 'COMMON.OVERDUE' | translate }}</span>
             </div>
           </td>
 
@@ -149,7 +149,7 @@
               <button 
                 (click)="viewInvoice(invoice)" 
                 class="p-1 hover:text-blue-600 transition-colors"
-                title="View Invoice">
+                [title]="'INVOICE.VIEW_INVOICE' | translate">
                 <svg-icon src="./assets/icons/heroicons/outline/eye.svg" [svgClass]="'h-4 w-4'">
                 </svg-icon>
               </button>
@@ -159,7 +159,7 @@
                 *ngIf="invoice.invoiceStatus !== 'PAID'"
                 (click)="editInvoice(invoice)"
                 class="p-1 hover:text-primary transition-colors"
-                title="Edit Invoice">
+                [title]="'INVOICE.EDIT_INVOICE' | translate">
                 <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'">
                 </svg-icon>
               </button>
@@ -168,7 +168,7 @@
               <button
                 (click)="downloadInvoice(invoice)"
                 class="p-1 hover:text-green-600 transition-colors"
-                title="Download Invoice">
+                [title]="'INVOICE.DOWNLOAD_INVOICE' | translate">
                 <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-4 w-4'">
                 </svg-icon>
               </button>
@@ -177,7 +177,7 @@
               <button
                 (click)="downloadReceipt(invoice)"
                 class="p-1 hover:text-green-800 transition-colors"
-                title="Download Receipt">
+                [title]="'INVOICE.DOWNLOAD_RECEIPT' | translate">
                 <svg-icon src="./assets/icons/heroicons/outline/document-text.svg" [svgClass]="'h-4 w-4'">
                 </svg-icon>
               </button>
@@ -186,7 +186,7 @@
               <button 
                 (click)="deleteInvoice(invoice)" 
                 class="p-1 hover:text-red-600 transition-colors"
-                title="Delete Invoice">
+                [title]="'INVOICE.DELETE_INVOICE' | translate">
                 <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'">
                 </svg-icon>
               </button>
@@ -200,11 +200,11 @@
             <div class="flex flex-col items-center gap-2">
               <svg-icon src="./assets/icons/heroicons/outline/document-text.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
               </svg-icon>
-              <span>No invoices found</span>
-              <button 
+              <span>{{ 'INVOICE.NO_INVOICES_FOUND' | translate }}</span>
+              <button
                 class="mt-2 text-primary hover:text-primary/80 text-xs underline"
                 (click)="createInvoice()">
-                Create your first invoice
+                {{ 'INVOICE.CREATE_FIRST_INVOICE' | translate }}
               </button>
             </div>
           </td>

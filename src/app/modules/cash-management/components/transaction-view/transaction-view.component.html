@@ -7,20 +7,20 @@
       <div class="flex items-center gap-2">
         <select name="transactionType" [value]="transactionType" (change)="onSelectTxnTypeChange($event)"
           class="px-2 py-1 text-xs text-gray-700 bg-white border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
-          <option value="">All Types</option>
+          <option value="">{{ 'CASH.TRANSACTION.ALL_TYPES' | translate }}</option>
           <option *ngFor="let txn of allTransactionTypes" [value]="txn">
             {{ txn | word }}
           </option>
         </select>
 
-        <label class="text-xs font-medium">From:</label>
+        <label class="text-xs font-medium">{{ 'CASH.TRANSACTION.FROM' | translate }}:</label>
         <input name="startDate"
           class="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary"
           type="date" [value]="startDate || ''" (change)="onStartDateChange($event)" />
       </div>
 
       <div class="flex items-center gap-1">
-        <label class="text-xs font-medium">To:</label>
+        <label class="text-xs font-medium">{{ 'CASH.TRANSACTION.TO' | translate }}:</label>
         <input name="endDate"
           class="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary"
           type="date" [value]="endDate || ''" (change)="onEndDateChange($event)" />
@@ -29,22 +29,22 @@
       <!-- Clear Filters Button -->
       <button *ngIf="hasActiveFilters()" (click)="clearFilters()"
         class="px-2 py-1 text-xs bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
-        title="Clear all filters">
+        [title]="'COMMON.CLEAR_FILTERS' | translate">
         <svg-icon src="./assets/icons/heroicons/outline/x-mark.svg" [svgClass]="'h-3 w-3'"></svg-icon>
-        Clear
+        {{ 'COMMON.CLEAR' | translate }}
       </button>
 
       <button class="flex flex-row rounded bg-gray-300 px-2 py-1 text-gray-700 hover:bg-gray-400"
         (click)="downloadReport()">
         <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-3 w-3'"> </svg-icon>
-        <span class="ml-2">Download</span>
+        <span class="ml-2">{{ 'COMMON.DOWNLOAD' | translate }}</span>
       </button>
     </div>
 
     <!-- Compact Search and Page Size -->
     <div class="flex items-center gap-2">
       <div class="flex items-center gap-1 text-xs text-muted-foreground">
-        <span>Show</span>
+        <span>{{ 'COMMON.SHOW' | translate }}</span>
         <select class="px-2 py-1 border border-gray-300 rounded text-xs" name="rowSize"
           (change)="onSelectChange($event)">
           <option *ngFor="let option of getPageSizeOptions()" [value]="option.value"
@@ -59,7 +59,7 @@
         </div>
         <input name="search"
           class="pl-6 pr-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary"
-          placeholder="Search..." type="text" [value]="search" (keydown.enter)="onSearchChange($event)"
+          [placeholder]="'COMMON.SEARCH_PLACEHOLDER' | translate" type="text" [value]="search" (keydown.enter)="onSearchChange($event)"
           (input)="onSearchChange($event)" />
       </div>
     </div>
@@ -69,7 +69,7 @@
   <div *ngIf="hasActiveFilters()" class="px-3 py-1">
     <div class="flex items-center gap-1 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
       <svg-icon src="./assets/icons/heroicons/outline/funnel.svg" [svgClass]="'h-3 w-3'"></svg-icon>
-      <span>Active filters: {{ getFilterSummary() }}</span>
+      <span>{{ 'COMMON.ACTIVE_FILTERS' | translate }}: {{ getFilterSummary() }}</span>
     </div>
   </div>
 
@@ -85,17 +85,17 @@
       class="table w-full table-auto border-collapse border-0 text-left align-middle text-xs text-muted-foreground">
       <thead class="border border-muted/20 text-xs text-muted-foreground bg-gray-200 text-gray-300">
         <tr>
-          <th class="min-w-[100px] px-2 py-2 border-r border-gray-100">Type</th>
-          <th class="min-w-[80px] px-2 py-2 text-right border-r border-gray-100">Amount</th>
-          <th class="min-w-[90px] px-2 py-2 border-r border-gray-100">Transaction Date</th>
-          <th class="min-w-[100px] px-2 py-2 border-r border-gray-100">Primary Account</th>
-          <th class="min-w-[100px] px-2 py-2 border-r border-gray-100">Contra Account</th>
-          <th class="min-w-[90px] px-2 py-2 border-r border-gray-100">Party</th>
-          <th class="min-w-[120px] px-2 py-2 border-r border-gray-100">Description</th>
-          <th class="min-w-[120px] px-2 py-2 border-r border-gray-100">Reference</th>
-          <th class="min-w-[80px] px-2 py-2 border-r border-gray-100">Entry By</th>
-          <th class="min-w-[80px] px-2 py-2">Txn ID #</th>
-          <th class="min-w-[120px] px-2 py-2 border-r border-gray-100">Created Date</th>
+          <th class="min-w-[100px] px-2 py-2 border-r border-gray-100">{{ 'COMMON.TYPE' | translate }}</th>
+          <th class="min-w-[80px] px-2 py-2 text-right border-r border-gray-100">{{ 'COMMON.AMOUNT' | translate }}</th>
+          <th class="min-w-[90px] px-2 py-2 border-r border-gray-100">{{ 'CASH.TRANSACTION.TRANSACTION_DATE' | translate }}</th>
+          <th class="min-w-[100px] px-2 py-2 border-r border-gray-100">{{ 'CASH.TRANSACTION.PRIMARY_ACCOUNT' | translate }}</th>
+          <th class="min-w-[100px] px-2 py-2 border-r border-gray-100">{{ 'CASH.TRANSACTION.CONTRA_ACCOUNT' | translate }}</th>
+          <th class="min-w-[90px] px-2 py-2 border-r border-gray-100">{{ 'CASH.TRANSACTION.PARTY' | translate }}</th>
+          <th class="min-w-[120px] px-2 py-2 border-r border-gray-100">{{ 'COMMON.DESCRIPTION' | translate }}</th>
+          <th class="min-w-[120px] px-2 py-2 border-r border-gray-100">{{ 'COMMON.REFERENCE' | translate }}</th>
+          <th class="min-w-[80px] px-2 py-2 border-r border-gray-100">{{ 'CASH.TRANSACTION.ENTRY_BY' | translate }}</th>
+          <th class="min-w-[80px] px-2 py-2">{{ 'CASH.TRANSACTION.TXN_ID' | translate }} #</th>
+          <th class="min-w-[120px] px-2 py-2 border-r border-gray-100">{{ 'CASH.TRANSACTION.CREATED_DATE' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -154,13 +154,13 @@
           <!-- Description -->
           <td class="px-2 py-1.5 border-r border-gray-100">
             <span class="text-xs" [title]="txn.description">
-              {{ txn.description || 'No description' }}
+              {{ txn.description || ('CASH.TRANSACTION.NO_DESCRIPTION' | translate) }}
             </span>
           </td>
 
           <td class="px-2 py-1.5 border-r border-gray-100">
             <span class="text-xs" [title]="txn.reference">
-              {{ txn.reference || 'No reference' }}
+              {{ txn.reference || ('CASH.TRANSACTION.NO_REFERENCE' | translate) }}
             </span>
           </td>
 
@@ -192,9 +192,9 @@
             <div class="flex flex-col items-center gap-2">
               <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg"
                 [svgClass]="'h-10 w-10 text-muted-foreground/50'"></svg-icon>
-              <span>No transactions found</span>
+              <span>{{ 'CASH.TRANSACTION.NO_TRANSACTIONS' | translate }}</span>
               <span *ngIf="hasActiveFilters()" class="text-xs text-muted-foreground">
-                Try adjusting your search criteria or date range
+                {{ 'CASH.TRANSACTION.TRY_FILTERS' | translate }}
               </span>
             </div>
           </td>
@@ -208,8 +208,8 @@
     class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 border-t border-muted/20 bg-muted/5 text-xs text-muted-foreground">
     <!-- Page Info -->
     <div class="flex items-center gap-2">
-      <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
-      <span *ngIf="hasActiveFilters()" class="text-blue-600">(filtered)</span>
+      <span>{{ 'COMMON.SHOWING' | translate }} {{ startIndex }} {{ 'COMMON.TO' | translate }} {{ endIndex }} {{ 'COMMON.OF' | translate }} {{ totalRows }} {{ 'COMMON.ENTRIES' | translate }}</span>
+      <span *ngIf="hasActiveFilters()" class="text-blue-600">{{ 'CASH.TRANSACTION.FILTERED' | translate }}</span>
     </div>
 
     <!-- Compact Pagination Controls -->
@@ -218,14 +218,14 @@
         <!-- First Page Button -->
         <button *ngIf="!first"
           class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs hover:bg-muted-foreground/10 transition-colors"
-          (click)="goToFirstPage()" title="First Page">
+          (click)="goToFirstPage()" [title]="'COMMON.FIRST_PAGE' | translate">
           <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         </button>
 
         <!-- Previous Page Button -->
         <button
           class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
-          [disabled]="first" (click)="goToPreviousPage()" title="Previous Page">
+          [disabled]="first" (click)="goToPreviousPage()" [title]="'COMMON.PREVIOUS' | translate">
           <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         </button>
 
@@ -249,14 +249,14 @@
         <!-- Next Page Button -->
         <button
           class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
-          [disabled]="last" (click)="goToNextPage()" title="Next Page">
+          [disabled]="last" (click)="goToNextPage()" [title]="'COMMON.NEXT' | translate">
           <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         </button>
 
         <!-- Last Page Button -->
         <button *ngIf="!last"
           class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs hover:bg-muted-foreground/10 transition-colors"
-          (click)="goToLastPage()" title="Last Page">
+          (click)="goToLastPage()" [title]="'COMMON.LAST_PAGE' | translate">
           <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-3 w-3'"></svg-icon>
         </button>
       </div>

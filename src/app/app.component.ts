@@ -4,6 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { ResponsiveHelperComponent } from './common/components/responsive-helper/responsive-helper.component';
 import { NgxSonnerToaster } from 'ngx-sonner';
 import { LoaderComponent } from "./modules/loader/loader.component";
+import { LanguageService } from './core/services/language.service';
 
 @Component({
     selector: 'app-root',
@@ -12,5 +13,5 @@ import { LoaderComponent } from "./modules/loader/loader.component";
     imports: [RouterOutlet, ResponsiveHelperComponent, NgxSonnerToaster, LoaderComponent]
 })
 export class AppComponent {
-  constructor(public themeService: ThemeService) {}
+  constructor(public themeService: ThemeService, private languageService: LanguageService) {}
 }

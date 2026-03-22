@@ -11,10 +11,11 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule, NgIf } from '@angular/common';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-cash-txn-view',
-  imports: [CommonModule, AngularSvgIconModule, WordPipe, FormsModule, NgIf],
+  imports: [CommonModule, AngularSvgIconModule, WordPipe, FormsModule, NgIf, TranslateModule],
   templateUrl: './cash-txn-view.component.html',
   styleUrl: './cash-txn-view.component.scss'
 })

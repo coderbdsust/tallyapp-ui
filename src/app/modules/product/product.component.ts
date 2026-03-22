@@ -1,13 +1,14 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { ProductListComponent } from './pages/product-list/product-list.component';
 import { ProductCategoryListComponent } from './pages/product-category-list/product-category-list.component';
 
 @Component({
   selector: 'app-product',
-  imports: [ProductListComponent, ProductCategoryListComponent, NgIf, NgFor],
+  imports: [ProductListComponent, ProductCategoryListComponent, NgIf, NgFor, TranslateModule],
   templateUrl: './product.component.html',
   styleUrl: './product.component.scss'
 })
@@ -16,8 +17,8 @@ export class ProductComponent {
     private subscription = new Subscription();
   
     tabs = [
-      { id: 'product-list', label: 'Product' },
-      { id: 'product-category-list', label: 'Product Category' }
+      { id: 'product-list', label: 'PRODUCT.TITLE' },
+      { id: 'product-category-list', label: 'PRODUCT.CATEGORY_LIST.TITLE' }
     ];
   
     constructor(

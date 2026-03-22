@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { catchError, of, tap } from 'rxjs';
 import { FileUploaderService } from 'src/app/core/services/file-uploader.service';
@@ -14,7 +15,7 @@ export type FileUploaderShape = 'rectangle' | 'avatar';
 
 @Component({
   selector: 'app-file-uploader',
-  imports: [CommonModule, AngularSvgIconModule],
+  imports: [CommonModule, AngularSvgIconModule, TranslateModule],
   templateUrl: './file-uploader.component.html',
   styleUrl: './file-uploader.component.scss'
 })

@@ -5,12 +5,21 @@ import { AppComponent } from './app/app.component';
 import { AppRoutingModule } from './app/app-routing.module';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 import { LoaderService } from './app/core/services/loader.service';
 import { provideAngularSvgIcon } from 'angular-svg-icon';
 import { LanguageInterceptor } from './app/core/interceptor/language-interceptor.service';
 import { provideKeycloak, includeBearerTokenInterceptor, INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG } from 'keycloak-angular';
 import { keycloakConfig } from './app/init/keycloak.config';
+import { TranslateModule, TranslateLoader, MissingTranslationHandler, MissingTranslationHandlerParams } from '@ngx-translate/core';
+import { TranslateHttpLoader, TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
+
+export class AppMissingTranslationHandler implements MissingTranslationHandler {
+  handle(params: MissingTranslationHandlerParams) {
+    console.warn(`Missing translation: ${params.key}`);
+    return params.key;
+  }
+}
 
 if (environment.production) {
   enableProdMode();
@@ -22,7 +31,21 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-      importProvidersFrom(BrowserModule, AppRoutingModule),
+      importProvidersFrom(
+        BrowserModule,
+        AppRoutingModule,
+        TranslateModule.forRoot({
+          defaultLanguage: 'en',
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateHttpLoader,
+          },
+          missingTranslationHandler: {
+            provide: MissingTranslationHandler,
+            useClass: AppMissingTranslationHandler,
+          },
+        }),
+      ),
       provideAnimations(),
       provideKeycloak(keycloakConfig),
       provideHttpClient(
@@ -37,6 +60,7 @@ bootstrapApplication(AppComponent, {
           },
         ],
       },
+      { provide: TRANSLATE_HTTP_LOADER_CONFIG, useValue: { prefix: './assets/i18n/', suffix: '.json' } },
       { provide: HTTP_INTERCEPTORS, useClass: LanguageInterceptor, multi: true },
       LoaderService,
       provideAngularSvgIcon()

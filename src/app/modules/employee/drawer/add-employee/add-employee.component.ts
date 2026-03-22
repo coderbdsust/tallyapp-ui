@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { Organization } from '../../../../core/models/organization.model';
 import { Drawer, DrawerInterface, DrawerOptions, InstanceOptions } from 'flowbite';
 import { OrganizationService } from '../../../../core/services/organization.service';
@@ -15,7 +16,7 @@ import { FileUploadResponse } from 'src/app/core/models/file-upload-response.mod
 
 @Component({
   selector: 'app-add-employee',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, WordPipe],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, TranslateModule, WordPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-employee.component.html',
   styleUrl: './add-employee.component.scss'

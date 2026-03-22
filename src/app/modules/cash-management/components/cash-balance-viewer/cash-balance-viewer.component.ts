@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { formatCurrency } from 'src/app/common/utils/common';
 import { CashFlowBalanceSummary, PageCashFlowReport } from 'src/app/core/models/organization-balance.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-cash-balance-viewer',
-  imports: [],
+  imports: [TranslateModule],
   templateUrl: './cash-balance-viewer.component.html',
   styleUrl: './cash-balance-viewer.component.scss'
 })

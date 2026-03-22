@@ -7,18 +7,19 @@ import { EmployeeListComponent } from './pages/employee-list/employee-list.compo
 import { EmployeeDailyReportingComponent } from './pages/employee-daily-reporting/employee-daily-reporting.component';
 import { EmployeeIncomeComponent } from './pages/employee-income/employee-income.component';
 import { EmployeeDailyReportingCalendarComponent } from "./pages/employee-daily-reporting-calendar/employee-daily-reporting-calendar.component";
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-employee',
   imports: [
-    EmployeeListComponent, 
+    EmployeeListComponent,
     EmployeeExpenseComponent,
-    EmployeeDailyReportingComponent, 
-    EmployeeIncomeComponent, 
-    EmployeeDailyReportingCalendarComponent, 
-    NgIf, 
-    NgFor, 
-    EmployeeDailyReportingCalendarComponent],
+    EmployeeDailyReportingComponent,
+    EmployeeIncomeComponent,
+    EmployeeDailyReportingCalendarComponent,
+    NgIf,
+    NgFor,
+    TranslateModule],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss'
 })
@@ -27,11 +28,11 @@ export class EmployeeComponent {
   private subscription = new Subscription();
 
   tabs = [
-    { id: 'employee', label: 'Employee' },
-    { id: 'expense', label: 'Expense' },
-    { id: 'daily-reporting', label: 'Daily Reporting' },
-    { id: 'daily-reporting-calendar', label: 'Daily Reporting Calendar' },
-    { id: 'income', label: 'Income' },
+    { id: 'employee', label: 'EMPLOYEE.TITLE' },
+    { id: 'expense', label: 'EMPLOYEE.EXPENSE.TITLE' },
+    { id: 'daily-reporting', label: 'EMPLOYEE.DAILY_REPORTING.TITLE' },
+    { id: 'daily-reporting-calendar', label: 'EMPLOYEE.DAILY_REPORTING.CALENDAR' },
+    { id: 'income', label: 'EMPLOYEE.INCOME.TITLE' },
   ];
 
   constructor(

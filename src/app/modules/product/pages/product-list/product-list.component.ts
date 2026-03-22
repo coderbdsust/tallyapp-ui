@@ -12,10 +12,11 @@ import { Organization } from 'src/app/core/models/organization.model';
 import { ProductService } from 'src/app/core/services/product.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { AddProductComponent } from '../../modal/add-product/add-product.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-product-list',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, AddProductComponent, NgIf],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, AddProductComponent, NgIf, TranslateModule],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss',
 })

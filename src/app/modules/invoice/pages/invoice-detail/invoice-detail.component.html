@@ -2,7 +2,7 @@
 <div *ngIf="loading" class="flex justify-center items-center min-h-screen">
   <div class="flex flex-col items-center gap-4">
     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-    <p class="text-muted-foreground">Loading invoice details...</p>
+    <p class="text-muted-foreground">{{ 'COMMON.LOADING' | translate }}</p>
   </div>
 </div>
 
@@ -14,36 +14,36 @@
     <div class="flex flex-row justify-between gap-6">
       <!-- Left Side - Invoice Details -->
       <div class="w-5/12 pr-4">
-        <img 
-          [src]="getCompanyInfo('logoB64') !== 'N/A' ? invoice.ownerOrganization.logoB64 : 'https://placehold.co/400'" 
+        <img
+          [src]="getCompanyInfo('logoB64') !== 'N/A' ? invoice.ownerOrganization.logoB64 : 'https://placehold.co/400'"
           alt="Invoice Logo"
           class="w-auto h-20 rounded-lg shadow-md mb-6 object-contain">
 
         <div class="space-y-3">
           <div class="flex justify-between items-center text-lg font-bold text-muted-foreground">
-            <span>Invoice No:</span>
+            <span>{{ 'INVOICE.INVOICE_NUMBER' | translate }}:</span>
             <span class="font-mono bg-gray-100 px-2 py-1 rounded text-sm">{{ invoice.invoiceNumber }}</span>
           </div>
 
           <div class="flex justify-between items-center text-sm text-muted-foreground">
-            <span>Invoice Date:</span>
+            <span>{{ 'INVOICE.INVOICE_DATE' | translate }}:</span>
             <span class="font-medium">{{ formatDate(invoice.invoiceDate) }}</span>
           </div>
 
           <div class="flex justify-between items-center text-sm text-muted-foreground">
-            <span>Payment Status:</span>
+            <span>{{ 'COMMON.STATUS' | translate }}:</span>
             <span class="font-medium px-2 py-1 rounded text-xs" [ngClass]="getStatusColor()">
               {{ invoice.invoiceStatus | word }}
             </span>
           </div>
 
           <div class="flex justify-between items-center text-sm text-muted-foreground">
-            <span>Delivery Date:</span>
+            <span>{{ 'INVOICE.DELIVERY_DATE' | translate }}:</span>
             <span class="font-medium">{{ invoice.deliveryDate }}</span>
           </div>
 
           <div class="flex justify-between items-center text-lg font-bold text-muted-foreground pt-2 border-t border-gray-200">
-            <span>Invoice Amount:</span>
+            <span>{{ 'INVOICE.TOTAL_AMOUNT' | translate }}:</span>
             <span class="font-bold">{{ formatCurrency(invoice.totalAmount) }}</span>
           </div>
         </div>
@@ -51,44 +51,44 @@
 
       <!-- Right Side - Company Details -->
       <div class="w-6/12 flex flex-col gap-4">
-        <img 
-          [src]="invoice.barcode || './assets/img/barcode-v2.png'" 
-          alt="Invoice QR Code" 
+        <img
+          [src]="invoice.barcode || './assets/img/barcode-v2.png'"
+          alt="Invoice QR Code"
           class="w-full h-12 rounded object-contain">
 
         <div class="grid grid-cols-1 gap-3">
           <div class="flex justify-between text-sm text-muted-foreground">
-            <span class="font-medium">Company Name:</span>
+            <span class="font-medium">{{ 'COMMON.ORGANIZATION' | translate }}:</span>
             <span>{{ getCompanyInfo('orgName') }}</span>
           </div>
 
           <div class="flex justify-between text-sm text-muted-foreground">
-            <span class="font-medium">Address:</span>
+            <span class="font-medium">{{ 'COMMON.ADDRESS' | translate }}:</span>
             <span class="text-right max-w-xs">{{ getCompanyInfo('orgAddressLine') }}</span>
           </div>
 
           <div class="flex justify-between text-sm text-muted-foreground">
-            <span class="font-medium">Postcode:</span>
+            <span class="font-medium">{{ 'INVOICE.POSTCODE' | translate }}:</span>
             <span>{{ getCompanyInfo('orgAddressPostcode') }}</span>
           </div>
 
           <div class="flex justify-between text-sm text-muted-foreground">
-            <span class="font-medium">TIN No:</span>
+            <span class="font-medium">{{ 'INVOICE.TIN' | translate }}:</span>
             <span class="font-mono text-xs bg-gray-100 px-1 rounded">{{ getCompanyInfo('orgTinNumber') }}</span>
           </div>
 
           <div class="flex justify-between text-sm text-muted-foreground">
-            <span class="font-medium">VAT Registration No:</span>
+            <span class="font-medium">{{ 'INVOICE.VAT' | translate }}:</span>
             <span class="font-mono text-xs bg-gray-100 px-1 rounded">{{ getCompanyInfo('orgVatNumber') }}</span>
           </div>
 
           <div class="flex justify-between text-sm text-muted-foreground">
-            <span class="font-medium">Email Address:</span>
+            <span class="font-medium">{{ 'COMMON.EMAIL' | translate }}:</span>
             <span >{{ getCompanyInfo('orgEmail') }}</span>
           </div>
 
           <div class="flex justify-between text-sm text-muted-foreground">
-            <span class="font-medium">Contact No:</span>
+            <span class="font-medium">{{ 'INVOICE.CONTACT' | translate }}:</span>
             <span class="font-mono">{{ getCompanyInfo('orgMobileNo') }}</span>
           </div>
         </div>
@@ -98,31 +98,31 @@
     <!-- Billing Address -->
     <div class="flex flex-row pt-4">
       <div class="w-1/2 pr-4">
-        <h2 class="text-lg font-semibold text-muted-foreground mb-4">Billing Address</h2>
+        <h2 class="text-lg font-semibold text-muted-foreground mb-4">{{ 'INVOICE.BILLING_ADDRESS' | translate }}</h2>
 
         <div class="grid grid-cols-1 gap-3">
           <div class="flex justify-between text-sm text-muted-foreground">
-            <span class="font-medium">Customer Name:</span>
+            <span class="font-medium">{{ 'INVOICE.CUSTOMER_NAME' | translate }}:</span>
             <span>{{ getCustomerInfo('name') }}</span>
           </div>
 
           <div class="flex justify-between text-sm text-muted-foreground">
-            <span class="font-medium">Address:</span>
+            <span class="font-medium">{{ 'COMMON.ADDRESS' | translate }}:</span>
             <span class="text-right max-w-xs">{{ getCustomerInfo('address') }}</span>
           </div>
 
           <div class="flex justify-between text-sm text-muted-foreground">
-            <span class="font-medium">Postcode:</span>
+            <span class="font-medium">{{ 'INVOICE.POSTCODE' | translate }}:</span>
             <span>{{ getCustomerInfo('postcode') }}</span>
           </div>
 
           <div class="flex justify-between text-sm text-muted-foreground">
-            <span class="font-medium">Phone:</span>
+            <span class="font-medium">{{ 'COMMON.PHONE' | translate }}:</span>
             <span class="font-mono">{{ getCustomerInfo('mobile') }}</span>
           </div>
 
           <div class="flex justify-between text-sm text-muted-foreground">
-            <span class="font-medium">Email:</span>
+            <span class="font-medium">{{ 'COMMON.EMAIL' | translate }}:</span>
             <span >{{ getCustomerInfo('email') }}</span>
           </div>
         </div>
@@ -131,22 +131,22 @@
 
     <!-- Product Table -->
     <div class="flex flex-col pt-4">
-      <h2 class="text-lg font-semibold text-muted-foreground mb-4">Purchase History</h2>
-      
+      <h2 class="text-lg font-semibold text-muted-foreground mb-4">{{ 'INVOICE.PURCHASE_HISTORY' | translate }}</h2>
+
       <div *ngIf="!hasProducts()" class="text-center py-8 text-muted-foreground">
-        <p>No products found in this invoice.</p>
+        <p>{{ 'INVOICE.NO_PRODUCTS' | translate }}</p>
       </div>
 
       <div *ngIf="hasProducts()" class="overflow-x-auto">
         <table class="table w-full table-auto border-collapse border border-gray-200 text-left align-middle leading-5 text-muted-foreground">
           <thead class="bg-gray-100 border-b border-gray-200">
             <tr>
-              <th class="px-4 py-3 text-sm font-medium">SL</th>
-              <th class="px-4 py-3 text-sm font-medium">Product Details</th>
-              <th class="px-4 py-3 text-sm font-medium text-right">Unit Rate</th>
-               <th class="px-4 py-3 text-sm font-medium text-right">Discount %</th>
-              <th class="px-4 py-3 text-sm font-medium text-center">Units</th>
-              <th class="px-4 py-3 text-sm font-medium text-right">Amount</th>
+              <th class="px-4 py-3 text-sm font-medium">{{ 'INVOICE.SL' | translate }}</th>
+              <th class="px-4 py-3 text-sm font-medium">{{ 'INVOICE.PRODUCT_DETAILS' | translate }}</th>
+              <th class="px-4 py-3 text-sm font-medium text-right">{{ 'INVOICE.UNIT_RATE' | translate }}</th>
+               <th class="px-4 py-3 text-sm font-medium text-right">{{ 'INVOICE.DISCOUNT_PERCENT' | translate }}</th>
+              <th class="px-4 py-3 text-sm font-medium text-center">{{ 'INVOICE.QUANTITY' | translate }}</th>
+              <th class="px-4 py-3 text-sm font-medium text-right">{{ 'COMMON.AMOUNT' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -178,20 +178,20 @@
     <div class="flex flex-row justify-between gap-6 pt-4">
       <!-- Left Side - Payment History -->
       <div class="w-7/12 pr-4">
-        <h2 class="text-lg font-semibold text-muted-foreground mb-4">Customer Payment History</h2>
-        
+        <h2 class="text-lg font-semibold text-muted-foreground mb-4">{{ 'INVOICE.PAYMENT_HISTORY' | translate }}</h2>
+
         <div *ngIf="!hasPayments()" class="text-center py-8 text-muted-foreground">
-          <p>No payments recorded for this invoice.</p>
+          <p>{{ 'INVOICE.NO_PAYMENTS' | translate }}</p>
         </div>
 
         <div *ngIf="hasPayments()" class="overflow-x-auto">
           <table class="table w-full table-auto border-collapse border border-gray-200 text-left align-middle leading-5 text-muted-foreground">
             <thead class="bg-gray-100 border-b border-gray-200">
               <tr>
-                <th class="px-4 py-3 text-sm font-medium">Date</th>
-                <th class="px-4 py-3 text-sm font-medium">Method</th>
-                <th class="px-4 py-3 text-sm font-medium">Ref#</th>
-                <th class="px-4 py-3 text-sm font-medium text-right">Amount</th>
+                <th class="px-4 py-3 text-sm font-medium">{{ 'COMMON.DATE' | translate }}</th>
+                <th class="px-4 py-3 text-sm font-medium">{{ 'COMMON.PAYMENT_METHOD' | translate }}</th>
+                <th class="px-4 py-3 text-sm font-medium">{{ 'COMMON.REFERENCE' | translate }}</th>
+                <th class="px-4 py-3 text-sm font-medium text-right">{{ 'COMMON.AMOUNT' | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -213,71 +213,71 @@
       <!-- Right Side - Summary -->
       <div class="w-5/12">
         <div class="bg-gray-50 p-6 rounded-lg">
-          <h3 class="text-lg font-semibold text-muted-foreground mb-4">Invoice Summary</h3>
-          
+          <h3 class="text-lg font-semibold text-muted-foreground mb-4">{{ 'INVOICE.INVOICE_SUMMARY' | translate }}</h3>
+
           <div class="space-y-3">
             <div class="flex justify-between text-sm">
-              <span>Sub Total:</span>
+              <span>{{ 'INVOICE.SUB_TOTAL' | translate }}:</span>
               <span class="font-mono">{{ formatCurrency(invoice.productSubTotal) }}</span>
             </div>
-            
+
             <div class="flex justify-between text-sm">
-              <span>Total Tax ({{ invoice.taxRate }}%):</span>
+              <span>{{ 'INVOICE.TAX' | translate }} ({{ invoice.taxRate }}%):</span>
               <span class="font-mono">{{ formatCurrency(invoice.productTotalTax) }}</span>
             </div>
-            
+
             <div class="flex justify-between text-sm">
-              <span>Total VAT ({{ invoice.vatRate }}%):</span>
+              <span>{{ 'INVOICE.VAT' | translate }} ({{ invoice.vatRate }}%):</span>
               <span class="font-mono">{{ formatCurrency(invoice.productTotalVat) }}</span>
             </div>
-            
+
             <div class="flex justify-between text-sm">
-              <span>Total Discount:</span>
+              <span>{{ 'INVOICE.DISCOUNT' | translate }}:</span>
               <span class="font-mono text-green-600">-{{ formatCurrency(invoice.totalDiscount) }}</span>
             </div>
-            
+
             <div class="flex justify-between text-sm">
-              <span>Delivery Charge:</span>
+              <span>{{ 'INVOICE.DELIVERY_CHARGE' | translate }}:</span>
               <span class="font-mono">{{ formatCurrency(invoice.deliveryCharge) }}</span>
             </div>
-            
+
             <div class="border-t border-gray-300 pt-3">
               <div class="flex justify-between text-base font-semibold">
-                <span>Total Amount:</span>
+                <span>{{ 'INVOICE.TOTAL_AMOUNT' | translate }}:</span>
                 <span class="font-semibold ">{{ formatCurrency(invoice.totalAmount) }}</span>
               </div>
             </div>
-            
+
             <div class="flex justify-between text-sm">
-              <span>Total Paid:</span>
+              <span>{{ 'INVOICE.PAID_AMOUNT' | translate }}:</span>
               <span class="font-semibold text-green-600">{{ formatCurrency(invoice.totalPaid) }}</span>
             </div>
-            
+
             <div class="flex justify-between text-base font-semibold border-t border-gray-300 pt-3">
-              <span>Amount Due:</span>
+              <span>{{ 'INVOICE.DUE_AMOUNT' | translate }}:</span>
               <span class="font-mono" [ngClass]="getAmountDueColor()">{{ formatCurrency(invoice.remainingAmount) }}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
+
     <!-- Amount in Words -->
     <div class="pt-4">
       <div class="rounded-lg">
         <p class="text-sm text-muted-foreground">
-          <strong>In words:</strong> 
+          <strong>{{ 'INVOICE.AMOUNT_IN_WORDS' | translate }}:</strong>
           <span class="font-medium">{{ toWords.convert(invoice.totalAmount) }}</span>
         </p>
       </div>
     </div>
-    
+
     <!-- Notes -->
     <div class="pt-4">
-      <h3 class="text-lg font-semibold text-muted-foreground mb-3">Notes</h3>
+      <h3 class="text-lg font-semibold text-muted-foreground mb-3">{{ 'INVOICE.NOTES' | translate }}</h3>
       <div class="bg-gray-50 p-4 rounded-lg">
         <p class="text-sm text-muted-foreground">
-          Thank you for your business! If you have any questions about this invoice, please contact us at
+          {{ 'INVOICE.NOTES_TEXT' | translate }}
           <a href="mailto:contacts.tallyapp&#64;gmail.com" class="font-semibold">
             contacts.tallyapp&#64;gmail.com
           </a>.
@@ -287,35 +287,35 @@
 
     <!-- Action Buttons -->
     <div class="flex flex-row justify-end pt-6 gap-3" id="buttonSection">
-      <button 
+      <button
         class="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         (click)="downloadInvoice()"
         [disabled]="downloadingBackend">
         <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-        <span>{{ downloadingBackend ? 'Downloading...' : 'Download Invoice' }}</span>
+        <span>{{ downloadingBackend ? ('COMMON.LOADING' | translate) : ('INVOICE.DOWNLOAD_INVOICE' | translate) }}</span>
       </button>
 
-      <button 
+      <button
         class="flex items-center gap-2 px-4 py-2 bg-green-800 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         (click)="downloadReceiptInvoice()"
         [disabled]="downloadingBackend">
         <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-        <span>{{ downloadingBackend ? 'Downloading...' : 'Download Receipt' }}</span>
+        <span>{{ downloadingBackend ? ('COMMON.LOADING' | translate) : ('INVOICE.DOWNLOAD_RECEIPT' | translate) }}</span>
       </button>
-      
+
       <button
         *ngIf="invoice?.invoiceStatus !== 'PAID'"
         class="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
         (click)="editInvoice()">
         <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-        <span>Edit Invoice</span>
+        <span>{{ 'INVOICE.EDIT_INVOICE' | translate }}</span>
       </button>
 
       <button
         class="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
         (click)="backToInvoiceList()">
         <svg-icon src="./assets/icons/heroicons/outline/uturn-back.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-        <span>Back</span>
+        <span>{{ 'COMMON.BACK' | translate }}</span>
       </button>
     </div>
   </div>
@@ -325,12 +325,12 @@
 <div *ngIf="!loading && !invoice" class="flex justify-center items-center min-h-screen">
   <div class="text-center">
     <svg-icon src="./assets/icons/heroicons/outline/exclamation-triangle.svg" [svgClass]="'h-16 w-16 text-red-500 mx-auto mb-4'"></svg-icon>
-    <h2 class="text-xl font-semibold text-muted-foreground mb-2">Invoice Not Found</h2>
-    <p class="text-muted-foreground mb-4">The requested invoice could not be loaded.</p>
-    <button 
+    <h2 class="text-xl font-semibold text-muted-foreground mb-2">{{ 'INVOICE.NOT_FOUND' | translate }}</h2>
+    <p class="text-muted-foreground mb-4">{{ 'INVOICE.NOT_FOUND_DESC' | translate }}</p>
+    <button
       class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
       (click)="backToInvoiceList()">
-      Back to Invoice List
+      {{ 'INVOICE.BACK_TO_LIST' | translate }}
     </button>
   </div>
 </div>

@@ -5,6 +5,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 import { EmployeeExpense } from 'src/app/core/models/employee-expense.model';
 import { EmployeeExpenseService } from 'src/app/core/services/employee-expense.service';
@@ -12,7 +13,7 @@ import { PaginatedComponent } from 'src/app/common/components/pagination/paginat
 
 @Component({
   selector: 'app-employee-expense-list',
-  imports: [CommonModule, FormsModule, AngularSvgIconModule],
+  imports: [CommonModule, FormsModule, AngularSvgIconModule, TranslateModule],
   templateUrl: './employee-expense-list.component.html',
   styleUrl: './employee-expense-list.component.scss',
 })

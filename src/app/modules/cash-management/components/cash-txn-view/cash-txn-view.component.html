@@ -8,7 +8,7 @@
       <div class="flex items-center gap-1">
         <select name="cashTxnStatus" [value]="cashTxnStatus" (change)="onSelectTxnStatusChange($event)"
           class="px-2 py-1 text-xs text-gray-700 bg-white border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
-          <option value="">All Status</option>
+          <option value="">{{ 'CASH.CASH_TXN.ALL_STATUS' | translate }}</option>
           <option *ngFor="let txn of txnStatusList" [value]="txn">
             {{ txn | word }}
           </option>
@@ -43,13 +43,13 @@
         </ng-container>
 
         <span *ngIf="!cashTxnStatus && !cashType"
-          class="text-[10px] text-muted-foreground/60 italic">No filters active</span>
+          class="text-[10px] text-muted-foreground/60 italic">{{ 'CASH.CASH_TXN.NO_FILTERS' | translate }}</span>
       </div>
     </div>
 
     <!-- Page Size -->
     <div class="flex items-center gap-1 text-xs text-muted-foreground">
-      <span>Show</span>
+      <span>{{ 'COMMON.SHOW' | translate }}</span>
       <select class="rounded border border-gray-300 px-2 py-1 text-xs" name="rowSize" (change)="onSelectChange($event)">
         <option *ngFor="let option of getPageSizeOptions()" [value]="option.value" [selected]="option.value === selectedRows">
           {{ option.label }}
@@ -69,14 +69,14 @@
     <table class="w-full table-auto border-collapse text-left text-xs text-muted-foreground">
       <thead>
         <tr class="border-b border-muted/20 bg-muted/10 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-          <th class="px-3 py-2.5 border-r border-muted/10">Cash Type</th>
-          <th class="px-3 py-2.5 border-r border-muted/10">Date</th>
-          <th class="px-3 py-2.5 border-r border-muted/10 text-right">Amount</th>
-          <th class="px-3 py-2.5 border-r border-muted/10">Status</th>
-          <th class="px-3 py-2.5 border-r border-muted/10">Reference</th>
-          <th class="px-3 py-2.5 border-r border-muted/10">Description</th>
-          <th class="px-3 py-2.5 border-r border-muted/10">Entry By</th>
-          <th class="px-3 py-2.5 text-center">Action</th>
+          <th class="px-3 py-2.5 border-r border-muted/10">{{ 'CASH.CASH_TXN.CASH_TYPE' | translate }}</th>
+          <th class="px-3 py-2.5 border-r border-muted/10">{{ 'COMMON.DATE' | translate }}</th>
+          <th class="px-3 py-2.5 border-r border-muted/10 text-right">{{ 'COMMON.AMOUNT' | translate }}</th>
+          <th class="px-3 py-2.5 border-r border-muted/10">{{ 'COMMON.STATUS' | translate }}</th>
+          <th class="px-3 py-2.5 border-r border-muted/10">{{ 'COMMON.REFERENCE' | translate }}</th>
+          <th class="px-3 py-2.5 border-r border-muted/10">{{ 'COMMON.DESCRIPTION' | translate }}</th>
+          <th class="px-3 py-2.5 border-r border-muted/10">{{ 'CASH.TRANSACTION.ENTRY_BY' | translate }}</th>
+          <th class="px-3 py-2.5 text-center">{{ 'COMMON.ACTIONS' | translate }}</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-muted/10">
@@ -153,13 +153,13 @@
                 <button
                   class="inline-flex h-6 w-6 items-center justify-center rounded border border-emerald-200 bg-emerald-50 text-emerald-600 transition-colors hover:bg-emerald-100 hover:text-emerald-700"
                   (click)="approveTxn(txn.id)"
-                  title="Approve">
+                  [title]="'COMMON.APPROVE' | translate">
                   <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-3.5 w-3.5'"></svg-icon>
                 </button>
                 <button
                   class="inline-flex h-6 w-6 items-center justify-center rounded border border-red-200 bg-red-50 text-red-500 transition-colors hover:bg-red-100 hover:text-red-700"
                   (click)="openRejectModal(txn.id)"
-                  title="Reject">
+                  [title]="'COMMON.REJECT' | translate">
                   <svg-icon src="./assets/icons/heroicons/outline/x.svg" [svgClass]="'h-3.5 w-3.5'"></svg-icon>
                 </button>
             </ng-container>
@@ -172,7 +172,7 @@
           <td class="py-10 text-center" colspan="8">
             <div class="flex flex-col items-center gap-2 text-muted-foreground/50">
               <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg" [svgClass]="'h-10 w-10'"></svg-icon>
-              <span class="text-xs">No transactions found</span>
+              <span class="text-xs">{{ 'CASH.TRANSACTION.NO_TRANSACTIONS' | translate }}</span>
             </div>
           </td>
         </tr>
@@ -184,17 +184,17 @@
   <!-- Pagination -->
   <div *ngIf="showPagination && !loading"
     class="flex flex-wrap items-center justify-between gap-2 border-t border-muted/20 bg-muted/5 px-3 py-2 text-xs text-muted-foreground">
-    <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
+    <span>{{ 'COMMON.SHOWING' | translate }} {{ startIndex }} {{ 'COMMON.TO' | translate }} {{ endIndex }} {{ 'COMMON.OF' | translate }} {{ totalRows }} {{ 'COMMON.ENTRIES' | translate }}</span>
 
     <div class="inline-flex items-center gap-1">
       <button *ngIf="!first"
         class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs transition-colors hover:bg-muted-foreground/10"
-        (click)="goToFirstPage()" title="First Page">
+        (click)="goToFirstPage()" [title]="'COMMON.FIRST_PAGE' | translate">
         <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-3 w-3'"></svg-icon>
       </button>
       <button
         class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs transition-colors disabled:opacity-50 hover:bg-muted-foreground/10"
-        [disabled]="first" (click)="goToPreviousPage()" title="Previous Page">
+        [disabled]="first" (click)="goToPreviousPage()" [title]="'COMMON.PREVIOUS' | translate">
         <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-3 w-3'"></svg-icon>
       </button>
 
@@ -214,12 +214,12 @@
 
       <button
         class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs transition-colors disabled:opacity-50 hover:bg-muted-foreground/10"
-        [disabled]="last" (click)="goToNextPage()" title="Next Page">
+        [disabled]="last" (click)="goToNextPage()" [title]="'COMMON.NEXT' | translate">
         <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-3 w-3'"></svg-icon>
       </button>
       <button *ngIf="!last"
         class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs transition-colors hover:bg-muted-foreground/10"
-        (click)="goToLastPage()" title="Last Page">
+        (click)="goToLastPage()" [title]="'COMMON.LAST_PAGE' | translate">
         <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-3 w-3'"></svg-icon>
       </button>
     </div>
@@ -235,32 +235,32 @@
           <span class="flex h-7 w-7 items-center justify-center rounded-full bg-red-100 text-red-500">
             <svg-icon src="./assets/icons/heroicons/outline/x.svg" [svgClass]="'h-4 w-4'"></svg-icon>
           </span>
-          <h3 class="text-sm font-semibold text-gray-800">Reject Transaction</h3>
+          <h3 class="text-sm font-semibold text-gray-800">{{ 'CASH.CASH_TXN.REJECT_TRANSACTION' | translate }}</h3>
         </div>
         <button class="text-gray-400 hover:text-gray-600" (click)="closeRejectModal()">
           <svg-icon src="./assets/icons/heroicons/outline/x.svg" [svgClass]="'h-4 w-4'"></svg-icon>
         </button>
       </div>
       <p class="mb-3 text-xs text-muted-foreground">
-        Please provide a reason for rejecting this transaction. This will be recorded against the transaction.
+        {{ 'CASH.CASH_TXN.REJECT_REASON_DESC' | translate }}
       </p>
       <textarea
         class="w-full rounded border border-gray-300 p-2 text-xs text-gray-700 focus:border-red-400 focus:outline-none focus:ring-1 focus:ring-red-200"
         rows="4"
-        placeholder="Enter rejection reason..."
+        [placeholder]="'CASH.CASH_TXN.REJECTION_PLACEHOLDER' | translate"
         [(ngModel)]="rejectReason">
       </textarea>
       <div class="mt-4 flex justify-end gap-2">
         <button
           class="rounded border border-gray-300 px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-50"
           (click)="closeRejectModal()">
-          Cancel
+          {{ 'COMMON.CANCEL' | translate }}
         </button>
         <button
           class="rounded bg-red-500 px-3 py-1.5 text-xs text-white disabled:opacity-50 hover:bg-red-600"
           [disabled]="!rejectReason.trim()"
           (click)="confirmReject()">
-          Confirm Reject
+          {{ 'CASH.CASH_TXN.CONFIRM_REJECT' | translate }}
         </button>
       </div>
     </div>

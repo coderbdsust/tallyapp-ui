@@ -10,10 +10,11 @@ import { CashtypeService } from 'src/app/core/services/cashtype.service';
 import { Organization } from 'src/app/core/models/organization.model';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { CashTypeName } from 'src/app/core/models/cashtype.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-cashout-type-drawer',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './cashout-type-drawer.component.html',
   styleUrls: ['./cashout-type-drawer.component.scss'],
   animations: [

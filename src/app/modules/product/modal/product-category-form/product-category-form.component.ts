@@ -5,10 +5,11 @@ import { NgIf } from '@angular/common';
 import { Organization } from 'src/app/core/models/organization.model';
 import { ProductCategory } from 'src/app/core/models/product.model';
 import { ProductCategoryService } from 'src/app/core/services/product-category.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-product-category-form',
-  imports: [MatDialogModule, ReactiveFormsModule, NgIf],
+  imports: [MatDialogModule, ReactiveFormsModule, NgIf, TranslateModule],
   templateUrl: './product-category-form.component.html',
   styleUrl: './product-category-form.component.scss'
 })

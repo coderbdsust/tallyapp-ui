@@ -9,10 +9,11 @@ import { ProductCategory } from 'src/app/core/models/product.model';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { ProductCategoryService } from 'src/app/core/services/product-category.service';
 import { ProductCategoryFormComponent } from '../../modal/product-category-form/product-category-form.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-product-category-list',
-  imports: [AngularSvgIconModule, NgIf, NgFor],
+  imports: [AngularSvgIconModule, NgIf, NgFor, TranslateModule],
   templateUrl: './product-category-list.component.html',
   styleUrl: './product-category-list.component.scss'
 })

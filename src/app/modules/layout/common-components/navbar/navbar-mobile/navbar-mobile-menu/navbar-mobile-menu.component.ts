@@ -5,6 +5,7 @@ import { NavbarMobileSubmenuComponent } from '../navbar-mobile-submenu/navbar-mo
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { NgFor, NgClass, NgTemplateOutlet, NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-navbar-mobile-menu',
@@ -19,6 +20,7 @@ import { NgFor, NgClass, NgTemplateOutlet, NgIf } from '@angular/common';
         RouterLinkActive,
         NgIf,
         NavbarMobileSubmenuComponent,
+        TranslateModule,
     ]
 })
 export class NavbarMobileMenuComponent implements OnInit {

@@ -4,6 +4,7 @@ import { CashBalanceViewerComponent } from 'src/app/modules/cash-management/comp
 import { CashFlowBalanceSummary } from 'src/app/core/models/organization-balance.model';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { Organization } from 'src/app/core/models/organization.model';
 import { Employee } from 'src/app/core/models/employee.model';
@@ -25,10 +26,11 @@ import { EmployeeExpenseListComponent } from '../employee-expense-list/employee-
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
+    TranslateModule,
     CashBalanceViewerComponent,
     ExpenseTypeDrawerComponent,
     DropdownComponent,
-    EmployeeExpenseListComponent,  // ← added
+    EmployeeExpenseListComponent,
   ],
   templateUrl: './employee-expense.component.html',
   styleUrl: './employee-expense.component.scss',

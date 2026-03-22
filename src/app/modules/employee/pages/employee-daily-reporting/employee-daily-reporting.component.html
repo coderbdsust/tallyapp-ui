@@ -3,10 +3,10 @@
     <table class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
       <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
         <tr>
-          <th class="px-4 py-2"># No</th>
-          <th class="px-4 py-2">Entry Date</th>
-          <th class="px-4 py-2">Status</th>
-          <th class="px-4 py-2">Action</th>
+          <th class="px-4 py-2">{{ 'INVOICE.SL' | translate }}</th>
+          <th class="px-4 py-2">{{ 'EMPLOYEE.DAILY_REPORTING.ENTRY_DATE' | translate }}</th>
+          <th class="px-4 py-2">{{ 'COMMON.STATUS' | translate }}</th>
+          <th class="px-4 py-2">{{ 'COMMON.ACTIONS' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -26,34 +26,34 @@
           </td>
           <td class="px-4 py-2 text-center">
             <div class="flex gap-2">
-              <app-button 
-                (click)="editReport(d)" 
-                type="button" 
-                impact="bold" 
-                tone="primary" 
-                shape="rounded" 
+              <app-button
+                (click)="editReport(d)"
+                type="button"
+                impact="bold"
+                tone="primary"
+                shape="rounded"
                 size="small"
                 [disabled]="d.status === 'APPROVED'">
                 <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4 text-white'"></svg-icon>
               </app-button>
-              
-              <app-button 
-                (click)="approveReport(d)" 
-                type="button" 
-                impact="bold" 
-                tone="success" 
-                shape="rounded" 
+
+              <app-button
+                (click)="approveReport(d)"
+                type="button"
+                impact="bold"
+                tone="success"
+                shape="rounded"
                 size="small"
                 [disabled]="d.status === 'APPROVED'">
                 <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-4 w-4 text-white'"></svg-icon>
               </app-button>
 
-              <app-button 
-                (click)="deleteReport(d)" 
-                type="button" 
-                impact="bold" 
-                tone="danger" 
-                shape="rounded" 
+              <app-button
+                (click)="deleteReport(d)"
+                type="button"
+                impact="bold"
+                tone="danger"
+                shape="rounded"
                 size="small"
                 [disabled]="d.status === 'APPROVED'">
                 <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'"></svg-icon>
@@ -69,20 +69,20 @@
 <form [formGroup]="expenditureForm" (ngSubmit)="onSubmit()">
   <div class="bg-white rounded shadow-lg p-4 mb-2">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-xl font-semibold text-gray-900">Employee Entries</h2>
+      <h2 class="text-xl font-semibold text-gray-900">{{ 'EMPLOYEE.DAILY_REPORTING.EMPLOYEE_ENTRIES' | translate }}</h2>
       <div>
         <input type="hidden" formControlName="dailyWorkId"/>
-        <label class="block text-sm font-semibold text-gray-700 mb-2">Reporting Date</label>
-        <input 
-          type="date" 
+        <label class="block text-sm font-semibold text-gray-700 mb-2">{{ 'EMPLOYEE.DAILY_REPORTING.REPORTING_DATE' | translate }}</label>
+        <input
+          type="date"
           formControlName="entryDate"
           [readonly]="dailyWork?.status === 'APPROVED'"
           class="w-full px-6 py-3 border-2 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
           [class.border-red-500]="expenditureForm.get('entryDate')?.invalid && expenditureForm.get('entryDate')?.touched"
           [class.bg-gray-100]="dailyWork?.status === 'APPROVED'">
-        <div *ngIf="expenditureForm.get('entryDate')?.invalid && expenditureForm.get('entryDate')?.touched" 
+        <div *ngIf="expenditureForm.get('entryDate')?.invalid && expenditureForm.get('entryDate')?.touched"
              class="text-red-500 text-sm mt-1">
-          Entry date is required
+          {{ 'EMPLOYEE.DAILY_REPORTING.ENTRY_DATE_REQUIRED' | translate }}
         </div>
       </div>
     </div>
@@ -90,40 +90,40 @@
     <!-- Employee Rows -->
     <div formArrayName="employeeWorkUnits" class="overflow-x-auto">
       <div *ngIf="employeeWorkUnits.length === 0" class="text-center py-8 text-gray-500">
-        <p>No employees added yet. Click "Initiate Report" to start.</p>
+        <p>{{ 'EMPLOYEE.DAILY_REPORTING.NO_EMPLOYEES' | translate }}</p>
       </div>
-      
+
       <table *ngIf="employeeWorkUnits.length > 0" class="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
         <thead class="bg-gray-50">
           <tr>
             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-              #
+              {{ 'INVOICE.SL' | translate }}
             </th>
             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-              Name
+              {{ 'COMMON.NAME' | translate }}
             </th>
             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-              Work Unit
+              {{ 'EMPLOYEE.DAILY_REPORTING.WORK_UNIT' | translate }}
             </th>
             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-              Expense (BDT)
+              {{ 'EMPLOYEE.DAILY_REPORTING.EXPENSE_BDT' | translate }}
             </th>
             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-              Unit Rate (BDT)
+              {{ 'EMPLOYEE.DAILY_REPORTING.UNIT_RATE_BDT' | translate }}
             </th>
             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-              Billing Type
+              {{ 'EMPLOYEE.BILLING_TYPE' | translate }}
             </th>
             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-              Present
+              {{ 'EMPLOYEE.DAILY_REPORTING.PRESENT' | translate }}
             </th>
             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-              Total Earned (BDT)
+              {{ 'EMPLOYEE.DAILY_REPORTING.TOTAL_EARNED_BDT' | translate }}
             </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr *ngFor="let employee of employeeWorkUnits.controls; let i = index" 
+          <tr *ngFor="let employee of employeeWorkUnits.controls; let i = index"
               [formGroupName]="i"
               class="hover:bg-gray-50 transition-colors">
 
@@ -131,51 +131,51 @@
             <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
               {{ i + 1 }}
             </td>
-            
+
             <input type="hidden" formControlName="employeeWorkUnitId"/>
             <input type="hidden" formControlName="employeeId"/>
 
             <!-- Employee Name -->
             <td class="px-4 py-3 whitespace-nowrap border-r border-gray-200">
-              <input 
-                type="text" 
-                formControlName="employeeName" 
-                placeholder="Employee Name"
+              <input
+                type="text"
+                formControlName="employeeName"
+                [placeholder]="'EMPLOYEE.EMPLOYEE_NAME' | translate"
                 [readonly]="dailyWork?.status === 'APPROVED'"
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
                 [class.border-red-500]="getEmployeeControl(i, 'employeeName')?.invalid && getEmployeeControl(i, 'employeeName')?.touched"
                 [class.bg-gray-100]="dailyWork?.status === 'APPROVED'">
-              <div *ngIf="getEmployeeControl(i, 'employeeName')?.invalid && getEmployeeControl(i, 'employeeName')?.touched" 
+              <div *ngIf="getEmployeeControl(i, 'employeeName')?.invalid && getEmployeeControl(i, 'employeeName')?.touched"
                    class="text-red-500 text-xs mt-1">
-                Employee name is required
+                {{ 'EMPLOYEE.DAILY_REPORTING.EMPLOYEE_NAME_REQUIRED' | translate }}
               </div>
             </td>
 
             <!-- Work Unit -->
             <td class="px-4 py-3 whitespace-nowrap border-r border-gray-200">
-              <input 
-                type="number" 
-                formControlName="workUnit" 
-                step="0.5" 
+              <input
+                type="number"
+                formControlName="workUnit"
+                step="0.5"
                 min="0"
                 placeholder="1.0"
                 [readonly]="dailyWork?.status === 'APPROVED'"
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
                 [class.border-red-500]="getEmployeeControl(i, 'workUnit')?.invalid && getEmployeeControl(i, 'workUnit')?.touched"
                 [class.bg-gray-100]="dailyWork?.status === 'APPROVED'">
-              <div *ngIf="getEmployeeControl(i, 'workUnit')?.invalid && getEmployeeControl(i, 'workUnit')?.touched" 
+              <div *ngIf="getEmployeeControl(i, 'workUnit')?.invalid && getEmployeeControl(i, 'workUnit')?.touched"
                    class="text-red-500 text-xs mt-1">
-                Work unit is required
+                {{ 'EMPLOYEE.DAILY_REPORTING.WORK_UNIT_REQUIRED' | translate }}
               </div>
             </td>
 
             <!-- Expense -->
             <td class="px-4 py-3 whitespace-nowrap border-r border-gray-200">
-              <input 
-                type="number" 
-                formControlName="expense" 
-                placeholder="0.00" 
-                step="0.01" 
+              <input
+                type="number"
+                formControlName="expense"
+                placeholder="0.00"
+                step="0.01"
                 min="0"
                 [readonly]="dailyWork?.status === 'APPROVED'"
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
@@ -185,32 +185,32 @@
 
             <!-- Unit Rate -->
             <td class="px-4 py-3 whitespace-nowrap border-r border-gray-200">
-              <input 
-                type="number" 
-                formControlName="unitRate" 
-                placeholder="0.00" 
-                step="0.01" 
+              <input
+                type="number"
+                formControlName="unitRate"
+                placeholder="0.00"
+                step="0.01"
                 min="0"
                 readonly
                 class="bg-gray-100 w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
                 [class.border-red-500]="getEmployeeControl(i, 'unitRate')?.invalid && getEmployeeControl(i, 'unitRate')?.touched">
-              <div *ngIf="getEmployeeControl(i, 'unitRate')?.invalid && getEmployeeControl(i, 'unitRate')?.touched" 
+              <div *ngIf="getEmployeeControl(i, 'unitRate')?.invalid && getEmployeeControl(i, 'unitRate')?.touched"
                    class="text-red-500 text-xs mt-1">
-                Unit rate is required
+                {{ 'EMPLOYEE.DAILY_REPORTING.UNIT_RATE_REQUIRED' | translate }}
               </div>
             </td>
 
             <!-- Billing Type -->
             <td class="px-4 py-3 whitespace-nowrap border-r border-gray-200">
-              <input 
+              <input
                 readonly
                 formControlName="billingType"
                 class="bg-gray-100 w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
                 [class.border-red-500]="getEmployeeControl(i, 'billingType')?.invalid && getEmployeeControl(i, 'billingType')?.touched"
               />
-              <div *ngIf="getEmployeeControl(i, 'billingType')?.invalid && getEmployeeControl(i, 'billingType')?.touched" 
+              <div *ngIf="getEmployeeControl(i, 'billingType')?.invalid && getEmployeeControl(i, 'billingType')?.touched"
                    class="text-red-500 text-xs mt-1">
-                Billing type is required
+                {{ 'EMPLOYEE.DAILY_REPORTING.BILLING_TYPE_REQUIRED' | translate }}
               </div>
             </td>
 
@@ -225,14 +225,14 @@
                   [class]="getEmployeeControl(i, 'isPresent')?.value ? 'bg-green-600' : 'bg-gray-200'"
                   [class.opacity-50]="dailyWork?.status === 'APPROVED'"
                   [class.cursor-not-allowed]="dailyWork?.status === 'APPROVED'">
-                  <span class="sr-only">Toggle present status</span>
+                  <span class="sr-only">{{ 'EMPLOYEE.DAILY_REPORTING.TOGGLE_PRESENT' | translate }}</span>
                   <span
                     class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
                     [class]="getEmployeeControl(i, 'isPresent')?.value ? 'translate-x-6' : 'translate-x-1'">
                   </span>
                 </button>
                 <span class="ml-3 text-sm font-medium text-gray-700">
-                  {{ getEmployeeControl(i, 'isPresent')?.value ? 'Yes' : 'No' }}
+                  {{ getEmployeeControl(i, 'isPresent')?.value ? ('COMMON.YES' | translate) : ('COMMON.NO' | translate) }}
                 </span>
               </div>
             </td>
@@ -253,9 +253,9 @@
 
     <!-- Total Summary -->
     <div class="mt-4 p-4 bg-gray-50 rounded border-2 border-dashed border-gray-300" *ngIf="employeeWorkUnits.length > 0">
-      <div class="flex justify-between items-center"> 
+      <div class="flex justify-between items-center">
         <div class="text-lg font-semibold text-gray-900">
-          Reporting Status: 
+          {{ 'EMPLOYEE.DAILY_REPORTING.REPORTING_STATUS' | translate }}
           <span [ngClass]="{
             'text-yellow-600': dailyWork?.status === 'PENDING',
             'text-green-600': dailyWork?.status === 'APPROVED',
@@ -266,61 +266,61 @@
         </div>
 
         <div class="text-lg font-semibold text-gray-900">
-          Total Work Units: <span class="text-blue-600">{{ getTotalWorkUnits() }}</span>
+          {{ 'EMPLOYEE.DAILY_REPORTING.TOTAL_WORK_UNITS' | translate }} <span class="text-blue-600">{{ getTotalWorkUnits() }}</span>
         </div>
 
         <div class="text-lg font-semibold text-gray-900">
-          Total Employees: <span class="text-blue-600">{{ totalEmployees }}</span>
+          {{ 'EMPLOYEE.DAILY_REPORTING.TOTAL_EMPLOYEES' | translate }} <span class="text-blue-600">{{ totalEmployees }}</span>
         </div>
 
         <div class="text-lg font-semibold text-gray-900">
-          Total Expenses: <span class="text-green-600">BDT {{ totalExpenses.toFixed(2) }}</span>
+          {{ 'EMPLOYEE.DAILY_REPORTING.TOTAL_EXPENSES' | translate }} <span class="text-green-600">BDT {{ totalExpenses.toFixed(2) }}</span>
         </div>
 
         <div class="text-lg font-semibold text-gray-900">
-          Total Earned: <span class="text-purple-600">BDT {{ totalEarned.toFixed(2) }}</span>
+          {{ 'EMPLOYEE.DAILY_REPORTING.TOTAL_EARNED' | translate }} <span class="text-purple-600">BDT {{ totalEarned.toFixed(2) }}</span>
         </div>
       </div>
 
     </div>
     <div class="flex text-muted-foreground items-center mt-4">
-        <span><strong>Note:</strong> Only Billing Type Daily / Hourly work units are required for future reports.</span>
+        <span><strong>{{ 'EMPLOYEE.DAILY_REPORTING.NOTE' | translate }}</strong> {{ 'EMPLOYEE.DAILY_REPORTING.NOTE_TEXT' | translate }}</span>
     </div>
   </div>
 
   <!-- Submit Section -->
   <div class="flex flex-row justify-center gap-4 text-center mb-8">
-    <app-button 
+    <app-button
       *ngIf="dailyWork?.status!=='APPROVED'"
       (click)="onSubmit()"
-      type="submit" 
-      impact="bold" 
-      tone="primary" 
-      shape="rounded" 
+      type="submit"
+      impact="bold"
+      tone="primary"
+      shape="rounded"
       size="medium"
       [disabled]="!expenditureForm.valid || !dailyWork">
-      {{ dailyWork ? 'Update' : 'Submit' }}
+      {{ dailyWork ? ('COMMON.UPDATE' | translate) : ('COMMON.SUBMIT' | translate) }}
     </app-button>
 
-    <app-button 
+    <app-button
       *ngIf="dailyWork"
-      (click)="clearAll()" 
-      type="button" 
-      impact="bold" 
-      tone="danger" 
-      shape="rounded" 
+      (click)="clearAll()"
+      type="button"
+      impact="bold"
+      tone="danger"
+      shape="rounded"
       size="medium">
-      Clear All
+      {{ 'EMPLOYEE.DAILY_REPORTING.CLEAR_ALL' | translate }}
     </app-button>
 
-    <app-button 
-      (click)="newReport()" 
-      type="button" 
-      impact="bold" 
-      tone="light" 
-      shape="rounded" 
+    <app-button
+      (click)="newReport()"
+      type="button"
+      impact="bold"
+      tone="light"
+      shape="rounded"
       size="medium">
-      Initiate Report
+      {{ 'EMPLOYEE.DAILY_REPORTING.INITIATE_REPORT' | translate }}
     </app-button>
   </div>
 </form>

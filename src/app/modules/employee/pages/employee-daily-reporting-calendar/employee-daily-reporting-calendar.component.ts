@@ -1,6 +1,7 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { formatCurrency } from 'src/app/common/utils/common';
 import { DailyWorkCalendarEntry, MonthlyCalendar } from 'src/app/core/models/calendar.model';
@@ -10,7 +11,7 @@ import { OrganizationService } from 'src/app/core/services/organization.service'
 
 @Component({
   selector: 'app-employee-daily-reporting-calendar',
-  imports: [NgClass, NgIf, NgFor, WordPipe],
+  imports: [NgClass, NgIf, NgFor, WordPipe, TranslateModule],
   templateUrl: './employee-daily-reporting-calendar.component.html',
   styleUrl: './employee-daily-reporting-calendar.component.scss'
 })

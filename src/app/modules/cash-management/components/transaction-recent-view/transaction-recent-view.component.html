@@ -7,13 +7,13 @@
                     <img  [src]="transactionReport?.orgLogo || 'https://placehold.co/600x400'" alt="Org Logo" class="h-auto w-24 object-contain">
                     <div>
                         <h1 class="text-2xl font-bold text-gray-900">{{transactionReport?.organizationName}}</h1>
-                        <p class="text-sm text-gray-500">Transaction Summary</p>
+                        <p class="text-sm text-gray-500">{{ 'CASH.TRANSACTION.TRANSACTION_SUMMARY' | translate }}</p>
                     </div>
                 </div>
                 <!-- Report Time & Actions -->
                 <div class="flex items-center space-x-4">
                     <div class="text-right">
-                        <p class="text-sm text-gray-500">Last Updated</p>
+                        <p class="text-sm text-gray-500">{{ 'CASH.TRANSACTION.LAST_UPDATED' | translate }}</p>
                         <p class="text-sm font-medium text-gray-900" id="reportTime">{{transactionReport?.reportTime| date: 'dd-MM-yyyy HH:mm'}}</p>
                     </div>
                 </div>
@@ -33,21 +33,21 @@
     <table class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
       <thead class="border border-muted/20 text-xs text-muted-foreground bg-black-100 text-gray-300">
         <tr>
-          <th class="min-w-[150px] px-4 py-3">Transaction Type</th>
-          <th class="min-w-[120px] px-4 py-3 text-right">Amount</th>
-          <th class="min-w-[140px] px-4 py-3">Date & Time</th>
-          <th class="min-w-[120px] px-4 py-3">Primary Account</th>
-          <th class="min-w-[120px] px-4 py-3">Contra Account</th>
-          <th class="min-w-[140px] px-4 py-3">Party</th>
-          <th class="min-w-[200px] px-4 py-3">Description</th>
+          <th class="min-w-[150px] px-4 py-3">{{ 'CASH.TRANSACTION.TRANSACTION_TYPE' | translate }}</th>
+          <th class="min-w-[120px] px-4 py-3 text-right">{{ 'COMMON.AMOUNT' | translate }}</th>
+          <th class="min-w-[140px] px-4 py-3">{{ 'CASH.TRANSACTION.DATE_TIME' | translate }}</th>
+          <th class="min-w-[120px] px-4 py-3">{{ 'CASH.TRANSACTION.PRIMARY_ACCOUNT' | translate }}</th>
+          <th class="min-w-[120px] px-4 py-3">{{ 'CASH.TRANSACTION.CONTRA_ACCOUNT' | translate }}</th>
+          <th class="min-w-[140px] px-4 py-3">{{ 'CASH.TRANSACTION.PARTY' | translate }}</th>
+          <th class="min-w-[200px] px-4 py-3">{{ 'COMMON.DESCRIPTION' | translate }}</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let txn of transactionReport?.recentTransactions; let i = index" class="hover:bg-card/50 border-b border-gray-100">
           <!-- Transaction Type -->
           <td class="px-4 py-3">
-            <span 
-              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" 
+            <span
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
               [ngClass]="[
                 getTransactionTypeColor(txn.transactionType).bg,
                 getTransactionTypeColor(txn.transactionType).text
@@ -96,7 +96,7 @@
           <!-- Description -->
           <td class="px-4 py-3">
             <span class="text-sm" [title]="txn.description">
-              {{ txn.description || 'No description' }}
+              {{ txn.description || ('CASH.TRANSACTION.NO_DESCRIPTION' | translate) }}
             </span>
           </td>
         </tr>
@@ -107,7 +107,7 @@
             <div class="flex flex-col items-center gap-2">
               <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
               </svg-icon>
-              <span>No transactions found</span>
+              <span>{{ 'CASH.TRANSACTION.NO_TRANSACTIONS' | translate }}</span>
             </div>
           </td>
         </tr>

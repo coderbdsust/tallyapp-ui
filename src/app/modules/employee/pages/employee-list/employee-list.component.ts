@@ -2,6 +2,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild, OnInit, OnDestroy } from 
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { MatDialog } from '@angular/material/dialog';
@@ -21,6 +22,7 @@ import { EmployeeService } from 'src/app/core/services/employee.service';
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
+    TranslateModule,
     AddEmployeeComponent,
     WordPipe,
     NgIf

@@ -1,12 +1,13 @@
-import { CommonModule, NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { formatCurrency, formatDate } from 'src/app/common/utils/common';
 import { Account } from 'src/app/core/models/journal.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-grid-view',
-  imports: [CommonModule, TitleCasePipe, NgFor, NgIf, AngularSvgIconModule],
+  imports: [CommonModule, NgFor, NgIf, AngularSvgIconModule, TranslateModule],
   templateUrl: './grid-view.component.html',
   styleUrl: './grid-view.component.scss'
 })

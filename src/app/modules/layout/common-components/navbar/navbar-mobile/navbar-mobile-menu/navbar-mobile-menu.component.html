@@ -1,7 +1,7 @@
 <div class="pt-4" *ngFor="let menu of menuService.pagesMenu">
   <div class="mx-1 mb-2 flex items-center justify-between">
     <small class="text-xs font-semibold text-muted-foreground">
-      {{ menu.group }}
+      {{ menu.group | translate }}
     </small>
   </div>
   <ul class="flex flex-col space-y-1">
@@ -31,7 +31,7 @@
               routerLinkActive="text-primary"
               (click)="closeMenu()"
               class="ml-10 truncate text-xs font-semibold tracking-wide focus:outline-none">
-              {{ item.label }}
+              {{ item.label | translate }}
             </a>
           </div>
         </ng-template>
@@ -40,7 +40,7 @@
         <ng-template #childMenu let-item="item">
           <div class="flex h-9 cursor-pointer items-center justify-start rounded hover:bg-card">
             <a class="ml-10 truncate text-xs font-semibold tracking-wide focus:outline-none">
-              {{ item.label }}
+              {{ item.label | translate }}
             </a>
           </div>
         </ng-template>

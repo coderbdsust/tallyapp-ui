@@ -21,18 +21,18 @@
               </span>
             </div>
 
-            <label class="text-sm text-muted-foreground">Invoice No</label>
+            <label class="text-sm text-muted-foreground">{{ 'QUOTATION.INVOICE_NUMBER' | translate }}</label>
             <input type="text"
                    [value]="invoice?.invoiceNumber"
                    readonly
                    class="bg-gray-100 mb-2 w-full border border-muted/20 px-3 py-2 text-sm text-muted-foreground" />
 
-            <label class="text-sm text-muted-foreground">Invoice Date</label>
+            <label class="text-sm text-muted-foreground">{{ 'QUOTATION.INVOICE_DATE' | translate }}</label>
             <input type="date"
                    formControlName="invoiceDate"
                    class="mb-2 w-full border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary" />
 
-            <label class="text-sm text-muted-foreground">Status</label>
+            <label class="text-sm text-muted-foreground">{{ 'COMMON.STATUS' | translate }}</label>
             <select formControlName="invoiceStatus"
                     class="mb-2 w-full border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary">
               <option *ngFor="let status of getFilteredInvoiceStatuses()" [value]="status">
@@ -40,7 +40,7 @@
               </option>
             </select>
 
-            <label class="text-sm text-muted-foreground">Delivery Date</label>
+            <label class="text-sm text-muted-foreground">{{ 'QUOTATION.DELIVERY_DATE' | translate }}</label>
             <input type="date"
                    formControlName="deliveryDate"
                    class="mb-2 w-full border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary" />
@@ -53,31 +53,31 @@
                alt="Barcode"
                class="w-full h-12 bg-gray-100 mb-2">
 
-          <label class="text-sm text-muted-foreground">Organization Name</label>
+          <label class="text-sm text-muted-foreground">{{ 'QUOTATION.ORG_NAME' | translate }}</label>
           <input type="text" readonly [value]="invoice?.organization?.orgName"
                  class="bg-gray-100 mb-2 w-full border border-muted/20 px-3 py-2 text-sm text-muted-foreground" />
 
-          <label class="text-sm text-muted-foreground">Address</label>
+          <label class="text-sm text-muted-foreground">{{ 'COMMON.ADDRESS' | translate }}</label>
           <textarea readonly [value]="invoice?.organization?.orgAddressLine"
                     class="bg-gray-100 mb-2 w-full border border-muted/20 px-3 py-2 text-sm text-muted-foreground"></textarea>
 
-          <label class="text-sm text-muted-foreground">Postcode</label>
+          <label class="text-sm text-muted-foreground">{{ 'QUOTATION.POSTCODE' | translate }}</label>
           <input type="text" readonly [value]="invoice?.organization?.orgAddressPostcode"
                  class="bg-gray-100 mb-2 w-full border border-muted/20 px-3 py-2 text-sm text-muted-foreground" />
 
-          <label class="text-sm text-muted-foreground">TIN No</label>
+          <label class="text-sm text-muted-foreground">{{ 'QUOTATION.TIN_NO' | translate }}</label>
           <input type="text" readonly [value]="invoice?.organization?.orgTinNumber"
                  class="bg-gray-100 mb-2 w-full border border-muted/20 px-3 py-2 text-sm text-muted-foreground" />
 
-          <label class="text-sm text-muted-foreground">VAT Registration No</label>
+          <label class="text-sm text-muted-foreground">{{ 'QUOTATION.VAT_REG_NO' | translate }}</label>
           <input type="text" readonly [value]="invoice?.organization?.orgVatNumber"
                  class="bg-gray-100 mb-2 w-full border border-muted/20 px-3 py-2 text-sm text-muted-foreground" />
 
-          <label class="text-sm text-muted-foreground">Email</label>
+          <label class="text-sm text-muted-foreground">{{ 'COMMON.EMAIL' | translate }}</label>
           <input type="text" readonly [value]="invoice?.organization?.orgEmail"
                  class="bg-gray-100 mb-2 w-full border border-muted/20 px-3 py-2 text-sm text-muted-foreground" />
 
-          <label class="text-sm text-muted-foreground">Contact No</label>
+          <label class="text-sm text-muted-foreground">{{ 'QUOTATION.CONTACT_NO' | translate }}</label>
           <input type="text" readonly [value]="invoice?.organization?.orgMobileNo"
                  class="bg-gray-100 mb-2 w-full border border-muted/20 px-3 py-2 text-sm text-muted-foreground" />
         </div>
@@ -88,17 +88,17 @@
         <div class="w-5/12 pr-4">
           <div class="bg-white border-gray-200 p-4">
             <div class="flex items-center justify-between mb-4">
-              <h2 class="text-lg font-semibold text-gray-800">Billing Address</h2>
+              <h2 class="text-lg font-semibold text-gray-800">{{ 'QUOTATION.BILLING_ADDRESS' | translate }}</h2>
             </div>
 
             <!-- Customer Search -->
             <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Search Customer</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">{{ 'QUOTATION.SEARCH_CUSTOMER' | translate }}</label>
               <ng-select [items]="allCustomers"
                         bindValue="id"
                         bindLabel="label"
                         formControlName="customerId"
-                        placeholder="Search by name, mobile, or email"
+                        [placeholder]="'QUOTATION.SEARCH_CUSTOMER_HINT' | translate"
                         (change)="onSelectCustomer($event)"
                         (keydown.enter)="onCustomerSearchKeyType($event)"
                         class="min-h-[38px]">
@@ -108,9 +108,9 @@
             <!-- Customer Details -->
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Customer Name *</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'QUOTATION.CUSTOMER_NAME' | translate }}</label>
                 <input type="text"
-                       placeholder="Enter customer name"
+                       [placeholder]="'QUOTATION.ENTER_CUSTOMER_NAME' | translate"
                        formControlName="customerName"
                        class="w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                 <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerName')">
@@ -120,9 +120,9 @@
 
               <div class="flex flex-row gap-3">
                 <div class="w-5/12">
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'COMMON.PHONE' | translate }}</label>
                   <input type="text"
-                         placeholder="Phone number"
+                         [placeholder]="'QUOTATION.PHONE_NUMBER' | translate"
                          formControlName="customerMobile"
                          class="w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                   <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerMobile')">
@@ -130,17 +130,17 @@
                   </div>
                 </div>
                 <div class="w-7/12">
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'COMMON.EMAIL' | translate }}</label>
                   <input type="email"
-                         placeholder="Email address"
+                         [placeholder]="'QUOTATION.EMAIL_ADDRESS' | translate"
                          formControlName="customerEmail"
                          class="w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                 </div>
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                <textarea placeholder="Enter full address"
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'COMMON.ADDRESS' | translate }}</label>
+                <textarea [placeholder]="'QUOTATION.ENTER_ADDRESS' | translate"
                           formControlName="customerAddressLine"
                           rows="3"
                           class="w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none"></textarea>
@@ -150,9 +150,9 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Postcode</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'QUOTATION.POSTCODE' | translate }}</label>
                 <input type="text"
-                       placeholder="Postal code"
+                       [placeholder]="'QUOTATION.POSTAL_CODE' | translate"
                        formControlName="customerPostcode"
                        class="w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
               </div>
@@ -166,14 +166,14 @@
                           'hover:bg-red-200 cursor-not-allowed': invForm.invalid
                         }">
                   <svg-icon src="./assets/icons/heroicons/outline/folder.svg" [svgClass]="'h-3 w-3 mr-1'"></svg-icon>
-                  Save Customer
+                  {{ 'QUOTATION.SAVE_CUSTOMER' | translate }}
                 </button>
 
                 <button type="button"
                         (click)="createNewCustomer()"
                         class="inline-flex items-center px-3 py-1.5 text-xs rounded-lg font-medium text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 transition-colors">
                   <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-3 w-3 mr-1'"></svg-icon>
-                  Clear
+                  {{ 'COMMON.CLEAR' | translate }}
                 </button>
               </div>
             </div>
@@ -184,20 +184,20 @@
       <!-- Products Section -->
       <div class="flex flex-col pt-6">
         <div class="w-full bg-white border-gray-200 p-4">
-          <h2 class="text-lg font-semibold text-gray-800 mb-4">Products/Services</h2>
+          <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ 'QUOTATION.PRODUCTS_SERVICES' | translate }}</h2>
 
           <form [formGroup]="productForm">
             <div class="overflow-x-auto border-gray-200">
               <table class="w-full table-auto border-collapse text-left text-sm">
                 <thead class="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">SL</th>
-                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Product Details</th>
-                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">Unit Rate</th>
-                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">Discount (%)</th>
-                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-24 text-center">Qty</th>
-                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">Amount</th>
-                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-16 text-center">Action</th>
+                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">{{ 'QUOTATION.SL' | translate }}</th>
+                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">{{ 'QUOTATION.PRODUCT_DETAILS' | translate }}</th>
+                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">{{ 'QUOTATION.UNIT_RATE' | translate }}</th>
+                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">{{ 'QUOTATION.DISCOUNT_PERCENT' | translate }}</th>
+                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-24 text-center">{{ 'QUOTATION.QTY' | translate }}</th>
+                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">{{ 'COMMON.AMOUNT' | translate }}</th>
+                    <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-16 text-center">{{ 'COMMON.ACTIONS' | translate }}</th>
                   </tr>
                 </thead>
 
@@ -233,7 +233,7 @@
                               *ngIf="canModify()"
                               (click)="deleteProduct(product)"
                               class="inline-flex items-center justify-center w-8 h-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors"
-                              title="Remove product">
+                              [title]="'QUOTATION.REMOVE_PRODUCT' | translate">
                         <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'"></svg-icon>
                       </button>
                     </td>
@@ -249,7 +249,7 @@
                                   bindValue="id"
                                   bindLabel="label"
                                   formControlName="productId"
-                                  placeholder="Search product by name or code"
+                                  [placeholder]="'QUOTATION.SEARCH_PRODUCT' | translate"
                                   (change)="onSelectProduct($event)"
                                   (keydown.enter)="onSearchKeyType($event)"
                                   class="text-sm">
@@ -257,23 +257,23 @@
 
                         <!-- Manual Product Entry -->
                         <input type="text"
-                               placeholder="Product Name *"
+                               [placeholder]="'QUOTATION.PRODUCT_NAME' | translate"
                                formControlName="productName"
                                class="w-full px-2 py-1 border border-gray-300 text-sm">
 
                         <input type="text"
-                               placeholder="Product Code (optional)"
+                               [placeholder]="'QUOTATION.PRODUCT_CODE' | translate"
                                formControlName="productCode"
                                class="w-full px-2 py-1 border border-gray-300 text-sm">
 
                         <textarea formControlName="productDescription"
-                                 placeholder="Product description (optional)..."
+                                 [placeholder]="'QUOTATION.PRODUCT_DESC' | translate"
                                  rows="2"
                                  class="w-full px-2 py-1 border border-gray-200 text-xs resize-none"></textarea>
 
                         <select formControlName="productUnitType"
                                 class="w-full px-2 py-1 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                          <option value="" disabled>Select Unit Type</option>
+                          <option value="" disabled>{{ 'QUOTATION.SELECT_UNIT_TYPE' | translate }}</option>
                           <option *ngFor="let unit of allUnitTypes" [value]="unit.value">
                             {{ unit.displayName ? unit.value + ' (' + unit.symbol + ')' : unit.symbol }}
                           </option>
@@ -328,7 +328,7 @@
                               }"
                               (click)="productForm.valid && submitProduct()"
                               class="inline-flex items-center justify-center w-8 h-8 rounded-full transition-colors"
-                              title="Add product">
+                              [title]="'QUOTATION.ADD_PRODUCT' | translate">
                         <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-5 w-5'"></svg-icon>
                       </button>
                     </td>
@@ -345,12 +345,12 @@
         <!-- Quotation Summary -->
         <div class="w-2/6">
           <div class="bg-gray-50 border-gray-200 p-4 sticky top-4">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Quotation Summary</h3>
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ 'QUOTATION.SUMMARY' | translate }}</h3>
 
             <div class="space-y-3">
               <!-- Sub Total -->
               <div class="flex justify-between items-center">
-                <label class="text-sm text-gray-600">Sub Total</label>
+                <label class="text-sm text-gray-600">{{ 'QUOTATION.SUB_TOTAL' | translate }}</label>
                 <input type="text"
                        readonly
                        [value]="'' + (invoice?.pricing?.subTotal | number:'1.2-2')"
@@ -359,7 +359,7 @@
 
               <!-- Tax -->
               <div class="flex justify-between items-center">
-                <label class="text-sm text-gray-600">Tax ({{invoice?.pricing?.taxRate || 0}}%)</label>
+                <label class="text-sm text-gray-600">{{ 'QUOTATION.TAX' | translate }} ({{invoice?.pricing?.taxRate || 0}}%)</label>
                 <input type="text"
                        readonly
                        [value]="'' + (invoice?.pricing?.taxAmount | number:'1.2-2')"
@@ -368,7 +368,7 @@
 
               <!-- VAT -->
               <div class="flex justify-between items-center">
-                <label class="text-sm text-gray-600">VAT ({{invoice?.pricing?.vatRate || 0}}%)</label>
+                <label class="text-sm text-gray-600">{{ 'QUOTATION.VAT' | translate }} ({{invoice?.pricing?.vatRate || 0}}%)</label>
                 <input type="text"
                        readonly
                        [value]="'' + (invoice?.pricing?.vatAmount | number:'1.2-2')"
@@ -377,7 +377,7 @@
 
               <!-- Discount -->
               <div class="flex justify-between items-center">
-                <label class="text-sm text-gray-600">Discount</label>
+                <label class="text-sm text-gray-600">{{ 'QUOTATION.DISCOUNT' | translate }}</label>
                 <input type="number"
                        min="0"
                        step="50"
@@ -388,7 +388,7 @@
 
               <!-- Delivery Charge -->
               <div class="flex justify-between items-center">
-                <label class="text-sm text-gray-600">Delivery</label>
+                <label class="text-sm text-gray-600">{{ 'QUOTATION.DELIVERY' | translate }}</label>
                 <input type="number"
                        min="0"
                        step="50"
@@ -401,7 +401,7 @@
 
               <!-- Total Amount -->
               <div class="flex justify-between items-center p-2">
-                <label class="text-base font-semibold text-gray-800">Total Amount</label>
+                <label class="text-base font-semibold text-gray-800">{{ 'QUOTATION.TOTAL_AMOUNT' | translate }}</label>
                 <input type="text"
                        readonly
                        [value]="'' + (invoice?.totalAmount | number:'1.2-2')"
@@ -415,16 +415,16 @@
       <!-- Invoice Total in Words -->
       <div class="pt-4">
         <h3 class="text-gray-700">
-          <strong>In words: </strong>
+          <strong>{{ 'QUOTATION.IN_WORDS' | translate }} </strong>
           <span class="text-gray-600">{{this.toWords.convert(this.invoice?.totalAmount ?? 0)}}</span>
         </h3>
       </div>
 
       <!-- Notes Section -->
       <div class="flex flex-col pt-4">
-        <label class="text-lg font-semibold text-gray-800 mb-2">Notes</label>
+        <label class="text-lg font-semibold text-gray-800 mb-2">{{ 'QUOTATION.NOTES' | translate }}</label>
         <p class="text-sm text-gray-600 bg-gray-50 p-3 border">
-          This quotation is valid for 30 days from the date of issue. Please contact us for any clarifications.
+          {{ 'QUOTATION.NOTES_DEFAULT' | translate }}
         </p>
       </div>
 
@@ -438,28 +438,28 @@
                   'bg-gray-400 text-gray-200 cursor-not-allowed': invForm.invalid
                 }">
           <svg-icon src="./assets/icons/heroicons/outline/folder.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-          <span class="ml-2">Save</span>
+          <span class="ml-2">{{ 'COMMON.SAVE' | translate }}</span>
         </button>
 
         <button type="button"
                 class="flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
                 (click)="previewInvoice()">
           <svg-icon src="./assets/icons/heroicons/outline/eye.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-          <span class="ml-2">Preview</span>
+          <span class="ml-2">{{ 'QUOTATION.PREVIEW' | translate }}</span>
         </button>
 
         <button type="button"
                 class="flex items-center px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors"
                 (click)="downloadInvoice()">
           <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-          <span class="ml-2">Download</span>
+          <span class="ml-2">{{ 'COMMON.DOWNLOAD' | translate }}</span>
         </button>
 
         <button type="button"
                 class="flex items-center px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
                 (click)="backToInvoiceList()">
           <svg-icon src="./assets/icons/heroicons/outline/uturn-back.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-          <span class="ml-2">Back</span>
+          <span class="ml-2">{{ 'COMMON.BACK' | translate }}</span>
         </button>
       </div>
     </div>

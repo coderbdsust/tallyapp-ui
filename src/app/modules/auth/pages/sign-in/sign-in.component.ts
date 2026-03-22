@@ -4,12 +4,13 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from '../../../../common/components/button/button.component';
 import { inject } from '@angular/core';
 import Keycloak from 'keycloak-js';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss'],
-  imports: [AngularSvgIconModule, ButtonComponent],
+  imports: [AngularSvgIconModule, ButtonComponent, TranslateModule],
 })
 export class SignInComponent {
   

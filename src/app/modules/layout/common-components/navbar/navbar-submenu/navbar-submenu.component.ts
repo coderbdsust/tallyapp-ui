@@ -3,12 +3,13 @@ import { SubMenuItem } from 'src/app/core/models/menu.model';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RouterLinkActive, RouterLink } from '@angular/router';
 import { NgFor, NgTemplateOutlet, NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'div[navbar-submenu]',
     templateUrl: './navbar-submenu.component.html',
     styleUrls: ['./navbar-submenu.component.scss'],
-    imports: [NgFor, NgTemplateOutlet, RouterLinkActive, RouterLink, NgIf, AngularSvgIconModule]
+    imports: [NgFor, NgTemplateOutlet, RouterLinkActive, RouterLink, NgIf, AngularSvgIconModule, TranslateModule]
 })
 export class NavbarSubmenuComponent implements OnInit {
   @Input() public submenu = <SubMenuItem[]>{};

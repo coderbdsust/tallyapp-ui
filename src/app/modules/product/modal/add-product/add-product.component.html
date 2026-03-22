@@ -5,7 +5,7 @@
     <div class="relative rounded bg-white shadow dark:bg-gray-700">
       <!-- Modal header -->
       <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Product / Service</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ 'PRODUCT.PRODUCT_SERVICE' | translate }}</h3>
         <button type="button"
           class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
           (click)="closeModal()">
@@ -13,7 +13,7 @@
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
           </svg>
-          <span class="sr-only">Close</span>
+          <span class="sr-only">{{ 'COMMON.CLOSE' | translate }}</span>
         </button>
       </div>
 
@@ -36,7 +36,7 @@
                         [ngClass]="{ 'is__invalid-input': submitted && f['name'].errors }" formControlName="name" />
                       <label for="name"
                         class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                        Product or Service Name
+                        {{ 'PRODUCT.PRODUCT_SERVICE_NAME' | translate }}
                       </label>
                     </div>
                     <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'name')">
@@ -50,7 +50,7 @@
                           [ngClass]="{ 'is__invalid-input': submitted && f['code'].errors }" formControlName="code" />
                         <label for="code"
                           class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                          Code
+                          {{ 'PRODUCT.PRODUCT_CODE' | translate }}
                         </label>
                       </div>
                       <div class="pl-4 mt-2">
@@ -72,7 +72,7 @@
                     </textarea>
                     <label for="description"
                       class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                      Description
+                      {{ 'COMMON.DESCRIPTION' | translate }}
                     </label>
                   </div>
                   <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'description')">
@@ -86,11 +86,11 @@
                       <div class="relative">
                         <ng-select class="block w-full rounded-lg border pl-2 pr-2 text-sm text-gray-900"
                           [items]="unitTypes" [multiple]="false" bindValue="value" bindLabel="displayName"
-                          formControlName="unitType" placeholder="Select Unit Type" [searchable]="true">
+                          formControlName="unitType" [placeholder]="'PRODUCT.SELECT_UNIT_TYPE' | translate" [searchable]="true">
                         </ng-select>
                         <label for="unitType"
                           class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                          Unit Type
+                          {{ 'PRODUCT.UNIT_TYPE' | translate }}
                         </label>
                       </div>
                       <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'unitType')">
@@ -104,11 +104,11 @@
                         <ng-select class="block w-full rounded-lg border p-2 text-sm text-gray-900"
                           [items]="allProductCategories" [multiple]="false" [addTag]="addNewCategory.bind(this)"
                           bindValue="id" bindLabel="name" formControlName="categoryId"
-                          placeholder="Type or Add Product Category" [searchable]="true">
+                          [placeholder]="'PRODUCT.SELECT_CATEGORY' | translate" [searchable]="true">
                         </ng-select>
                         <label for="categoryId"
                           class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                          Product Category
+                          {{ 'PRODUCT.CATEGORY' | translate }}
                         </label>
                       </div>
                       <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'categoryId')">
@@ -123,13 +123,13 @@
                     <ng-select
                       class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
                       [items]="allEmployees" [multiple]="false" bindValue="id" bindLabel="fullName"
-                      formControlName="madeBy" placeholder="Type name or mobile no partially and press enter"
+                      formControlName="madeBy" [placeholder]="'PRODUCT.SEARCH_EMPLOYEE' | translate"
                       [searchable]="true" [compareWith]="compareEmployee" (change)="onSelectEmployee($event)"
                       (keydown.enter)="onSearchEmployeeKeyType($event)">
                     </ng-select>
                     <label for="madeBy"
                       class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                      Service Provider
+                      {{ 'PRODUCT.SERVICE_PROVIDER' | translate }}
                     </label>
                   </div>
                   <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'madeBy')">
@@ -140,7 +140,7 @@
                 <!-- ── Inventory (unchanged) ── -->
                 <div class="flex flex-col gap-2 mt-4">
                   <div class="flex flex-row border-dashed border-y-2 justify-between">
-                    <h1 class="text-sm text-muted-foreground text-center font-bold mt-2">Inventory</h1>
+                    <h1 class="text-sm text-muted-foreground text-center font-bold mt-2">{{ 'PRODUCT.INVENTORY' | translate }}</h1>
                     <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5 mb-2'"
                       (click)="addStock()" class="text-primary mt-3"> </svg-icon>
                   </div>
@@ -159,7 +159,7 @@
                         <div class="relative">
                           <label for="perUnitEmployeeCost-{{ i }}"
                             class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            Employee Cost / Unit
+                            {{ 'PRODUCT.EMPLOYEE_COST' | translate }} / {{ 'PRODUCT.UNIT_TYPE' | translate }}
                           </label>
                           <input type="text" id="perUnitEmployeeCost-{{ i }}" class="peer block" placeholder=" "
                             [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('perUnitEmployeeCost')?.errors }"
@@ -175,7 +175,7 @@
                         <div class="relative">
                           <label for="perUnitProductionCost-{{ i }}"
                             class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            Production Cost / Unit
+                            {{ 'PRODUCT.PRODUCTION_COST' | translate }} / {{ 'PRODUCT.UNIT_TYPE' | translate }}
                           </label>
                           <input type="text" id="perUnitProductionCost-{{ i }}" class="peer block" placeholder=" "
                             [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('perUnitProductionCost')?.errors }"
@@ -191,7 +191,7 @@
                         <div class="relative">
                           <label for="unitPrice-{{ i }}"
                             class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            Unit Price
+                            {{ 'PRODUCT.UNIT_PRICE' | translate }}
                           </label>
                           <input type="text" id="unitPrice-{{ i }}" class="peer block" placeholder=" "
                             [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('unitPrice')?.errors }"
@@ -207,7 +207,7 @@
                         <div class="relative">
                           <label for="discountPercent-{{ i }}"
                             class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            Discount (%)
+                            {{ 'PRODUCT.DISCOUNT_PERCENT' | translate }}
                           </label>
                           <input type="text" id="discountPercent-{{ i }}" class="peer block" placeholder=" "
                             [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('discountPercent')?.errors }"
@@ -223,7 +223,7 @@
                         <div class="relative">
                           <label for="initialQuantity-{{ i }}"
                             class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            Initial Stock
+                            {{ 'PRODUCT.INITIAL_QTY' | translate }}
                           </label>
                           <input type="text" readonly id="initialQuantity-{{ i }}" class="peer block bg-gray-100"
                             placeholder=" "
@@ -240,7 +240,7 @@
                         <div class="relative">
                           <label for="availableQuantity-{{ i }}"
                             class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            Available Stock
+                            {{ 'PRODUCT.AVAILABLE_STOCK' | translate }}
                           </label>
                           <input type="text" readonly id="availableQuantity-{{ i }}" class="peer block bg-gray-100"
                             placeholder=" "
@@ -257,7 +257,7 @@
                         <div class="relative">
                           <label for="quantityToAdd-{{ i }}"
                             class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            Add Quantity
+                            {{ 'PRODUCT.ADD_QUANTITY' | translate }}
                           </label>
                           <input type="text" id="quantityToAdd-{{ i }}" class="peer block" placeholder=" "
                             [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('quantityToAdd')?.errors }"
@@ -289,7 +289,7 @@
                 <!-- Header: label + add button -->
                 <div class="flex w-full items-center justify-between">
                   <span class="text-sm text-muted-foreground font-medium">
-                    Photos ({{ images.length }}/{{ MAX_IMAGES }})
+                    {{ 'COMMON.PHOTOS' | translate }} ({{ images.length }}/{{ MAX_IMAGES }})
                   </span>
                   <button
                     type="button"
@@ -297,7 +297,7 @@
                     (click)="triggerFileInput(fileInput)"
                     class="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-white text-lg leading-none
                            hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
-                    title="Add photo">
+                    [title]="'COMMON.ADD_PHOTO' | translate">
                     +
                   </button>
                 </div>
@@ -323,14 +323,14 @@
                     <span *ngIf="img === images[0]"
                       class="absolute top-1 left-1 z-10 rounded bg-primary px-1.5 py-0.5
                              text-[10px] font-bold uppercase tracking-wide text-white pointer-events-none">
-                      Main
+                      {{ 'COMMON.MAIN' | translate }}
                     </span>
 
                     <!-- "Pending" indicator for files not yet uploaded -->
                     <span *ngIf="img.file !== null"
                       class="absolute bottom-1 left-1 z-10 rounded bg-yellow-500 px-1.5 py-0.5
                              text-[10px] font-bold uppercase tracking-wide text-white pointer-events-none">
-                      New
+                      {{ 'COMMON.NEW' | translate }}
                     </span>
 
                     <img [src]="img.previewUrl" alt="product photo" class="h-full w-full object-cover" />
@@ -343,7 +343,7 @@
                       class="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full
                              bg-black/50 text-white text-sm opacity-0 transition-opacity
                              group-hover:opacity-100 hover:bg-red-500 disabled:cursor-not-allowed"
-                      title="Remove">
+                      [title]="'COMMON.REMOVE' | translate">
                       &times;
                     </button>
                   </div>
@@ -360,7 +360,7 @@
                       <circle cx="8.5" cy="8.5" r="1.5"/>
                       <path d="m21 15-5-5L5 21"/>
                     </svg>
-                    Add photo
+                    {{ 'COMMON.ADD_PHOTO' | translate }}
                   </div>
 
                   <!-- Uploading spinner slot -->
@@ -375,11 +375,11 @@
 
                 <!-- Hint text -->
                 <p class="w-full text-center text-xs text-muted-foreground">
-                  <ng-container *ngIf="images.length === 0">Upload up to {{ MAX_IMAGES }} photos. First = main.</ng-container>
+                  <ng-container *ngIf="images.length === 0">{{ 'COMMON.UPLOAD_PHOTOS_HINT' | translate:{ max: MAX_IMAGES } }}</ng-container>
                   <ng-container *ngIf="images.length > 0 && canAddImage">
-                    {{ MAX_IMAGES - images.length }} slot(s) left · First = main photo
+                    {{ MAX_IMAGES - images.length }} {{ 'COMMON.SLOTS_LEFT' | translate }} · {{ 'COMMON.FIRST_MAIN_PHOTO' | translate }}
                   </ng-container>
-                  <ng-container *ngIf="!canAddImage">Maximum {{ MAX_IMAGES }} images reached.</ng-container>
+                  <ng-container *ngIf="!canAddImage">{{ 'COMMON.MAX_IMAGES_REACHED' | translate:{ max: MAX_IMAGES } }}</ng-container>
                 </p>
 
               </div>
@@ -390,7 +390,7 @@
             <div class="flex justify-between space-x-2 pb-4">
               <div class="w-full">
                 <app-button full [disabled]="form.invalid || isUploading" impact="bold" tone="primary" shape="rounded" size="medium">
-                  {{ isUploading ? 'Uploading...' : 'Save' }}
+                  {{ isUploading ? ('COMMON.UPLOADING' | translate) : ('COMMON.SAVE' | translate) }}
                 </app-button>
               </div>
             </div>

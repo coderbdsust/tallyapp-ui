@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { trigger, style, transition, animate } from '@angular/animations';
 import { DrawerConfig, DrawerService } from 'src/app/core/services/drawer.service';
@@ -12,7 +13,7 @@ import { CashTypeName } from 'src/app/core/models/cashtype.model';
 
 @Component({
   selector: 'app-expense-type-drawer',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './expense-type-drawer.component.html',
   styleUrl: './expense-type-drawer.component.scss',
   animations: [

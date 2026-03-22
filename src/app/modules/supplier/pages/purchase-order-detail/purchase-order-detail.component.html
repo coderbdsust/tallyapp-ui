@@ -1,6 +1,6 @@
 <div class="mb-4 flex justify-between">
   <div class="inline-block">
-    <h2 class="font-semibold text-foreground">Purchase Order Detail</h2>
+    <h2 class="font-semibold text-foreground">{{ 'SUPPLIER.PO.DETAIL_TITLE' | translate }}</h2>
     <div class="space-x-1 text-xs font-medium text-muted-foreground">
       <span *ngIf="po">{{ po.poNumber }}</span>
     </div>
@@ -10,7 +10,7 @@
       class="flex rounded-md border border-muted/20 px-4 py-2.5 text-xs font-semibold text-muted-foreground hover:bg-muted/10 transition-colors"
       (click)="goBack()">
       <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
-      <p>Back to List</p>
+      <p>{{ 'SUPPLIER.PO.BACK_TO_LIST' | translate }}</p>
     </button>
   </div>
 </div>
@@ -38,19 +38,19 @@
 
     <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <div>
-        <p class="text-xs text-muted-foreground">Order Date</p>
+        <p class="text-xs text-muted-foreground">{{ 'SUPPLIER.PO.ORDER_DATE' | translate }}</p>
         <p class="text-sm font-medium">{{ po.orderDate | date: 'dd-MM-yyyy' }}</p>
       </div>
       <div>
-        <p class="text-xs text-muted-foreground">Due Date</p>
+        <p class="text-xs text-muted-foreground">{{ 'SUPPLIER.PO.DUE_DATE' | translate }}</p>
         <p class="text-sm font-medium">{{ po.dueDate | date: 'dd-MM-yyyy' }}</p>
       </div>
       <div>
-        <p class="text-xs text-muted-foreground">Reference</p>
+        <p class="text-xs text-muted-foreground">{{ 'COMMON.REFERENCE' | translate }}</p>
         <p class="text-sm font-medium">{{ po.reference || '-' }}</p>
       </div>
       <div>
-        <p class="text-xs text-muted-foreground">Description</p>
+        <p class="text-xs text-muted-foreground">{{ 'COMMON.DESCRIPTION' | translate }}</p>
         <textarea class="text-sm font-medium" readonly rows="5">{{ po.description || '-' }}</textarea>
       </div>
     </div>
@@ -58,15 +58,15 @@
     <!-- Amount Summary -->
     <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
       <div class="rounded-lg border border-muted/20 p-4 text-center">
-        <p class="text-xs text-muted-foreground">Total Amount</p>
+        <p class="text-xs text-muted-foreground">{{ 'SUPPLIER.PO.TOTAL_AMOUNT' | translate }}</p>
         <p class="text-lg font-bold text-blue-600">{{ formatCurrency(po.totalAmount) }}</p>
       </div>
       <div class="rounded-lg border border-muted/20 p-4 text-center">
-        <p class="text-xs text-muted-foreground">Total Paid</p>
+        <p class="text-xs text-muted-foreground">{{ 'SUPPLIER.TOTAL_PAID' | translate }}</p>
         <p class="text-lg font-bold text-green-600">{{ formatCurrency(po.totalPaid) }}</p>
       </div>
       <div class="rounded-lg border border-muted/20 p-4 text-center">
-        <p class="text-xs text-muted-foreground">Amount Due</p>
+        <p class="text-xs text-muted-foreground">{{ 'SUPPLIER.PO.AMOUNT_DUE' | translate }}</p>
         <p class="text-lg font-bold" [ngClass]="po.dueAmount > 0 ? 'text-red-600' : 'text-green-600'">
           {{ formatCurrency(po.dueAmount) }}
         </p>
@@ -79,36 +79,36 @@
       <button *ngIf="isDraft" (click)="editPurchaseOrder()"
         class="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
         <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-        Edit
+        {{ 'COMMON.EDIT' | translate }}
       </button>
       <button *ngIf="isDraft" (click)="approvePurchaseOrder()"
         class="flex items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-xs font-semibold text-white hover:bg-green-700 transition-colors">
         <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-        Approve
+        {{ 'SUPPLIER.PO.APPROVE' | translate }}
       </button>
       <button *ngIf="isDraft" (click)="cancelPurchaseOrder()"
         class="flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 transition-colors">
         <svg-icon src="./assets/icons/heroicons/outline/close.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-        Cancel PO
+        {{ 'SUPPLIER.PO.CANCEL_PO' | translate }}
       </button>
 
       <!-- APPROVED / PARTIALLY_PAID actions -->
       <button *ngIf="canAddPayment" (click)="togglePaymentForm()"
         class="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
         <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-        {{ showPaymentForm ? 'Hide Payment Form' : 'Add Payment' }}
+        {{ showPaymentForm ? ('SUPPLIER.PO.HIDE_PAYMENT' | translate) : ('SUPPLIER.PO.ADD_PAYMENT' | translate) }}
       </button>
       <button *ngIf="(isApproved || isPartiallyPaid) && !hasPayments" (click)="cancelPurchaseOrder()"
         class="flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 transition-colors">
         <svg-icon src="./assets/icons/heroicons/outline/close.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-        Cancel PO
+        {{ 'SUPPLIER.PO.CANCEL_PO' | translate }}
       </button>
     </div>
   </div>
 
   <!-- Payment Form -->
   <div *ngIf="showPaymentForm && canAddPayment" class="rounded-xl border border-muted/20 bg-background p-6">
-    <h4 class="mb-4 text-sm font-semibold text-foreground">Add Payment</h4>
+    <h4 class="mb-4 text-sm font-semibold text-foreground">{{ 'SUPPLIER.PO.ADD_PAYMENT' | translate }}</h4>
     <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()">
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div class="form__group">
@@ -118,7 +118,7 @@
               formControlName="paymentAmount" />
             <label for="paymentAmount"
               class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-              Amount *
+              {{ 'COMMON.AMOUNT' | translate }} *
             </label>
           </div>
           <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(paymentForm, 'paymentAmount')">
@@ -133,7 +133,7 @@
               formControlName="paymentDate" />
             <label for="paymentDate"
               class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-              Date *
+              {{ 'COMMON.DATE' | translate }} *
             </label>
           </div>
           <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(paymentForm, 'paymentDate')">
@@ -146,15 +146,15 @@
             <select id="paymentMethod" formControlName="paymentMethod"
               class="peer block w-full appearance-none border border-b-2 border-gray-200 bg-transparent py-2.5 px-0 indent-4 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400"
               [ngClass]="{ 'is__invalid-input': paymentSubmitted && pf['paymentMethod'].errors }">
-              <option value="">Select Method</option>
-              <option value="Cash">Cash</option>
-              <option value="Bank Transfer">Bank Transfer</option>
-              <option value="Check">Check</option>
-              <option value="Mobile Banking">Mobile Banking</option>
+              <option value="">{{ 'SUPPLIER.PO.SELECT_METHOD' | translate }}</option>
+              <option value="Cash">{{ 'SUPPLIER.PO.METHOD_CASH' | translate }}</option>
+              <option value="Bank Transfer">{{ 'SUPPLIER.PO.METHOD_BANK_TRANSFER' | translate }}</option>
+              <option value="Check">{{ 'SUPPLIER.PO.METHOD_CHECK' | translate }}</option>
+              <option value="Mobile Banking">{{ 'SUPPLIER.PO.METHOD_MOBILE_BANKING' | translate }}</option>
             </select>
             <label for="paymentMethod"
               class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-              Method *
+              {{ 'SUPPLIER.PO.METHOD' | translate }} *
             </label>
           </div>
           <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(paymentForm, 'paymentMethod')">
@@ -167,7 +167,7 @@
             <input type="text" id="paymentRef" class="peer block" placeholder=" " formControlName="paymentRef" />
             <label for="paymentRef"
               class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-              Reference
+              {{ 'COMMON.REFERENCE' | translate }}
             </label>
           </div>
         </div>
@@ -176,10 +176,10 @@
       <div class="mt-4 flex justify-end gap-3">
         <button type="button" (click)="togglePaymentForm()"
           class="rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs font-medium text-gray-900 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-          Cancel
+          {{ 'COMMON.CANCEL' | translate }}
         </button>
         <app-button [disabled]="paymentForm.invalid" impact="bold" tone="primary" shape="rounded">
-          Submit Payment
+          {{ 'SUPPLIER.PO.SUBMIT_PAYMENT' | translate }}
         </app-button>
       </div>
     </form>
@@ -188,7 +188,7 @@
   <!-- Payments Table -->
   <div class="rounded-xl border border-muted/20 bg-background p-6">
     <h4 class="mb-4 text-sm font-semibold text-foreground">
-      Payments
+      {{ 'SUPPLIER.PO.PAYMENTS' | translate }}
       <span class="text-muted-foreground">({{ po.payments.length || 0 }})</span>
     </h4>
 
@@ -198,11 +198,11 @@
         class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
         <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
           <tr>
-            <th class="min-w-[110px]">Date</th>
-            <th class="min-w-[120px]">Amount</th>
-            <th class="min-w-[130px]">Method</th>
-            <th class="min-w-[150px]">Reference</th>
-            <th class="min-w-[80px]">Actions</th>
+            <th class="min-w-[110px]">{{ 'COMMON.DATE' | translate }}</th>
+            <th class="min-w-[120px]">{{ 'COMMON.AMOUNT' | translate }}</th>
+            <th class="min-w-[130px]">{{ 'SUPPLIER.PO.METHOD' | translate }}</th>
+            <th class="min-w-[150px]">{{ 'COMMON.REFERENCE' | translate }}</th>
+            <th class="min-w-[80px]">{{ 'COMMON.ACTIONS' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -221,7 +221,7 @@
             </td>
             <td>
               <button *ngIf="!isPaid && !isCancelled" (click)="deletePayment(payment)"
-                class="p-1 hover:text-red-600 transition-colors" title="Delete Payment">
+                class="p-1 hover:text-red-600 transition-colors" [title]="'SUPPLIER.PO.DELETE_PAYMENT' | translate">
                 <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'"></svg-icon>
               </button>
             </td>
@@ -233,7 +233,7 @@
     <div *ngIf="!hasPayments" class="py-8 text-center text-sm text-muted-foreground">
       <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg"
         [svgClass]="'mx-auto h-12 w-12 text-muted-foreground/50'"></svg-icon>
-      <p class="mt-2">No payments recorded yet</p>
+      <p class="mt-2">{{ 'SUPPLIER.PO.NO_PAYMENTS' | translate }}</p>
     </div>
   </div>
 </div>

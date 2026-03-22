@@ -8,10 +8,11 @@ import { Drawer, DrawerInterface, DrawerOptions, InstanceOptions } from 'flowbit
 import { SupplierService } from 'src/app/core/services/supplier.service';
 import { Supplier } from '../../supplier.model';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-supplier',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, ButtonComponent],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, ButtonComponent, TranslateModule],
   templateUrl: './add-supplier.component.html',
   styleUrl: './add-supplier.component.scss'
 })

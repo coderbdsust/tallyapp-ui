@@ -8,11 +8,12 @@ import { formatCurrency } from 'src/app/common/utils/common';
 import { Quotation, QuotationTableResponse, InvoiceStatus, InvoiceType } from '../../quotation.model';
 import { QuotationService } from 'src/app/core/services/quotation.service';
 import { ToWords } from 'to-words';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-quotation-detail',
   standalone: true,
-  imports: [AngularSvgIconModule, CommonModule, WordPipe],
+  imports: [AngularSvgIconModule, CommonModule, WordPipe, TranslateModule],
   templateUrl: './quotation-detail.component.html',
   styleUrl: './quotation-detail.component.scss'
 })

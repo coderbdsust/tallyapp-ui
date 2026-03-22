@@ -1,6 +1,6 @@
 <div class="mb-4 flex justify-between">
   <div class="inline-block">
-    <h2 class="font-semibold text-foreground">All Employees</h2>
+    <h2 class="font-semibold text-foreground">{{ 'EMPLOYEE.ALL_EMPLOYEES' | translate }}</h2>
     <div class="space-x-1 text-xs font-medium text-muted-foreground"></div>
   </div>
   <div class="inline-block space-x-4">
@@ -9,7 +9,7 @@
         class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
         (click)="openEmployeeDrawer()">
         <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-        <p>Add Employee</p>
+        <p>{{ 'EMPLOYEE.ADD_EMPLOYEE' | translate }}</p>
       </button>
     </div>
   </div>
@@ -19,12 +19,12 @@
   <!-- Filters and Search Section -->
   <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
     <h3 class="text-sm font-medium text-muted-foreground">
-      Showing <span>{{ startIndex }}-{{ endIndex }} of {{ totalRows }}</span> rows
+      {{ 'COMMON.SHOWING' | translate }} <span>{{ startIndex }}-{{ endIndex }} {{ 'COMMON.OF' | translate }} {{ totalRows }}</span> {{ 'COMMON.RESULTS' | translate }}
     </h3>
     <div class="flex flex-wrap gap-2">
       <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
         <div class="order-2 flex items-center gap-2 md:order-1">
-          Show
+          {{ 'COMMON.SHOW' | translate }}
           <select class="w-16 p-2" name="rowSize" (change)="onSelectChange($event)">
             <option *ngFor="let option of getPageSizeOptions()" 
                     [value]="option.value" 
@@ -32,7 +32,7 @@
               {{ option.label }}
             </option>
           </select>
-          per page
+          {{ 'COMMON.PER_PAGE' | translate }}
         </div>
       </div>
       <div class="flex">
@@ -44,7 +44,7 @@
           <input 
             name="search" 
             class="py-2 pl-8 pr-2" 
-            placeholder="Search Employee" 
+            [placeholder]="'COMMON.SEARCH_PLACEHOLDER' | translate"
             type="text" 
             [value]="search"
             (keydown.enter)="onSearchChange($event)"
@@ -66,17 +66,17 @@
       class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
       <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-gray-300">
         <tr>
-          <th># No</th>
-          <th>Full Name</th>
-          <th>Date of Birth</th>
-          <th>Joining Date</th>
-          <th>Mobile No</th>
-          <th>Employee Type</th>
-          <th>Billing Type</th>
-          <th>Billing Rate</th>
-          <th>Daily Allowance</th>
-          <th>Status</th>
-          <th>Action</th>
+          <th>#</th>
+          <th>{{ 'COMMON.NAME' | translate }}</th>
+          <th>{{ 'EMPLOYEE.DOB' | translate }}</th>
+          <th>{{ 'EMPLOYEE.JOINING_DATE' | translate }}</th>
+          <th>{{ 'EMPLOYEE.MOBILE' | translate }}</th>
+          <th>{{ 'EMPLOYEE.EMPLOYEE_TYPE' | translate }}</th>
+          <th>{{ 'EMPLOYEE.BILLING_TYPE' | translate }}</th>
+          <th>{{ 'EMPLOYEE.RATE' | translate }}</th>
+          <th>{{ 'EMPLOYEE.ALLOWANCE' | translate }}</th>
+          <th>{{ 'COMMON.STATUS' | translate }}</th>
+          <th>{{ 'COMMON.ACTIONS' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -137,7 +137,7 @@
               <button 
                 (click)="editEmployee(emp)" 
                 class="p-1 hover:text-primary transition-colors"
-                title="Edit Employee">
+                [title]="'EMPLOYEE.EDIT_EMPLOYEE' | translate">
                 <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'">
                 </svg-icon>
               </button>
@@ -145,7 +145,7 @@
               <button 
                 (click)="deleteEmployee(emp)" 
                 class="p-1 hover:text-red-600 transition-colors"
-                title="Delete Employee">
+                [title]="'EMPLOYEE.DELETE_EMPLOYEE' | translate">
                 <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'">
                 </svg-icon>
               </button>
@@ -157,7 +157,7 @@
             <div class="flex flex-col items-center gap-2">
               <svg-icon src="./assets/icons/heroicons/outline/users.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
               </svg-icon>
-              <span>No employees found</span>
+              <span>{{ 'EMPLOYEE.NO_EMPLOYEES_FOUND' | translate }}</span>
             </div>
           </td>
         </tr>
@@ -170,7 +170,7 @@
        class="flex flex-wrap items-center justify-between gap-2 py-3 px-5 text-xs text-muted-foreground">
     <!-- Page Info -->
     <div class="flex items-center gap-2">
-      <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
+      <span>{{ 'COMMON.SHOWING' | translate }} {{ startIndex }} {{ 'COMMON.TO' | translate }} {{ endIndex }} {{ 'COMMON.OF' | translate }} {{ totalRows }} {{ 'COMMON.ENTRIES' | translate }}</span>
     </div>
     
     <!-- Pagination Controls -->
@@ -181,7 +181,7 @@
           *ngIf="!first"
           class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
           (click)="goToFirstPage()"
-          title="First Page">
+          [title]="'COMMON.FIRST_PAGE' | translate">
           <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-4 w-4'">
           </svg-icon>
         </button>
@@ -191,7 +191,7 @@
           class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
           [disabled]="first" 
           (click)="goToPreviousPage()"
-          title="Previous Page">
+          [title]="'COMMON.PREVIOUS_PAGE' | translate">
           <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'">
           </svg-icon>
         </button>
@@ -221,7 +221,7 @@
           class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
           [disabled]="last" 
           (click)="goToNextPage()"
-          title="Next Page">
+          [title]="'COMMON.NEXT_PAGE' | translate">
           <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'">
           </svg-icon>
         </button>
@@ -231,7 +231,7 @@
           *ngIf="!last"
           class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
           (click)="goToLastPage()"
-          title="Last Page">
+          [title]="'COMMON.LAST_PAGE' | translate">
           <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-4 w-4'">
           </svg-icon>
         </button>

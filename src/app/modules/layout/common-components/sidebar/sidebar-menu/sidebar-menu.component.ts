@@ -5,6 +5,7 @@ import { SidebarSubmenuComponent } from '../sidebar-submenu/sidebar-submenu.comp
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { NgFor, NgClass, NgTemplateOutlet, NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-sidebar-menu',
@@ -20,6 +21,7 @@ import { NgFor, NgClass, NgTemplateOutlet, NgIf } from '@angular/common';
         RouterLinkActive,
         NgIf,
         SidebarSubmenuComponent,
+        TranslateModule,
     ]
 })
 export class SidebarMenuComponent implements OnInit {

@@ -10,10 +10,11 @@ import { Organization } from 'src/app/core/models/organization.model';
 import { SupplierService } from 'src/app/core/services/supplier.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { AddSupplierComponent } from '../../drawer/add-supplier/add-supplier.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-supplier-list',
-  imports: [AngularSvgIconModule, CommonModule, AddSupplierComponent],
+  imports: [AngularSvgIconModule, CommonModule, AddSupplierComponent, TranslateModule],
   templateUrl: './supplier-list.component.html',
   styleUrl: './supplier-list.component.scss'
 })

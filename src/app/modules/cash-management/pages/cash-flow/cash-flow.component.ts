@@ -9,10 +9,11 @@ import { PaginatedComponent } from 'src/app/common/components/pagination/paginat
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { getFlowTypeStyle, isInflowType } from 'src/app/common/utils/cashflow-map';
 import { CashBalanceViewerComponent } from '../../components/cash-balance-viewer/cash-balance-viewer.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-cash-flow',
-  imports: [NgClass, NgFor, NgIf, AngularSvgIconModule, CashBalanceViewerComponent],
+  imports: [NgClass, NgFor, NgIf, AngularSvgIconModule, CashBalanceViewerComponent, TranslateModule],
   templateUrl: './cash-flow.component.html',
   styleUrl: './cash-flow.component.scss',
 })

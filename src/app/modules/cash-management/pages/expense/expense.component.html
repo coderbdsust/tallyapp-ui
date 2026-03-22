@@ -6,7 +6,7 @@
             <div class="flex flex-row gap-2">
                 <div class="w-1/2">
                     <div>
-                        <label class="text-sm text-muted-foreground">Organization Name</label>
+                        <label class="text-sm text-muted-foreground">{{ 'COMMON.ORGANIZATION' | translate }}</label>
                         <input type="text" placeholder=" " readonly [value]="org?.orgName"
                             class="bg-gray-100 mb-2 w-full rounded border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
@@ -16,7 +16,7 @@
                 </div>
                 <div class="w-1/2">
                     <div>
-                        <label class="text-sm text-muted-foreground">Date</label>
+                        <label class="text-sm text-muted-foreground">{{ 'COMMON.DATE' | translate }}</label>
                         <input type="date" placeholder=" " formControlName="transactionDate"
                             class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
                         <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'transactionDate')">
@@ -29,7 +29,7 @@
             <div class="flex flex-row gap-2">
                 <div class="w-1/2">
                     <div>
-                        <label class="text-sm text-muted-foreground">Amount</label>
+                        <label class="text-sm text-muted-foreground">{{ 'COMMON.AMOUNT' | translate }}</label>
                         <input type="number" placeholder=" " formControlName="amount"
                             class=" mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
                         <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'amount')">
@@ -39,10 +39,10 @@
                 </div>
                 <div class="w-1/2">
                     <div>
-                        <label class="text-sm text-muted-foreground">Payment Method</label>
+                        <label class="text-sm text-muted-foreground">{{ 'COMMON.PAYMENT_METHOD' | translate }}</label>
                         <select formControlName="paymentMethod"
                             class="block py-2  w-full  text-sm text-gray-500 bg-transparent border-1 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                            <option value="" disabled selected>Select Payment Method</option>
+                            <option value="" disabled selected>{{ 'COMMON.SELECT' | translate }} {{ 'COMMON.PAYMENT_METHOD' | translate }}</option>
                             <ng-container *ngFor="let method of allPaymentMethods; let i = index;">
                                 <option [value]="method">{{method}}</option>
                             </ng-container>
@@ -56,7 +56,7 @@
             <div class="flex flex-row gap-2">
                 <div class="w-1/2">
                     <div>
-                        <label class="text-sm text-muted-foreground">Expense Type</label>
+                        <label class="text-sm text-muted-foreground">{{ 'CASH.EXPENSE.EXPENSE_TYPE' | translate }}</label>
                         <select formControlName="expenseType"
                             class="block py-2  w-full  text-sm text-gray-500 bg-transparent border-1 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                             <option value="" disabled selected>Select Expense Type</option>

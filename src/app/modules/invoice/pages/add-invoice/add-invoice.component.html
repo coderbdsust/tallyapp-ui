@@ -1,7 +1,7 @@
 <div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
     <form [formGroup]="invForm" (ngSubmit)="submitInvoice()">
         <div class="flex flex-col m-6 gap-6 divide-y-2 divide-dashed divide-gray-200">
-            
+
             <!-- Invoice Header Section (Keep your existing organization info) -->
             <div class="flex flex-row justify-between">
                 <div class="w-2/6 pr-2">
@@ -11,22 +11,22 @@
                     <div class="flex flex-col">
                         <input type="hidden" formControlName="id" />
 
-                        <label class="text-sm text-muted-foreground">Invoice No</label>
+                        <label class="text-sm text-muted-foreground">{{ 'INVOICE.INVOICE_NUMBER' | translate }}</label>
                         <input type="text" placeholder=" " [value]="invoice?.invoiceNumber" readonly
                             class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
-                        <label class="text-sm text-muted-foreground">Invoice Date</label>
+                        <label class="text-sm text-muted-foreground">{{ 'INVOICE.INVOICE_DATE' | translate }}</label>
                         <input type="date" placeholder=" " [value]="invoice?.invoiceDate" formControlName="invoiceDate"
                             class="mb-2 w-full  border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
-                        <label class="text-sm text-muted-foreground">Payment Status</label>
+                        <label class="text-sm text-muted-foreground">{{ 'COMMON.STATUS' | translate }}</label>
                         <select type="text" placeholder=" " [value]="invoice?.invoiceStatus"
                             formControlName="invoiceStatus"
                             class="mb-2 w-full  border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
                             <option *ngFor="let status of invoiceStatus" [value]="status">{{ status | word }}</option>
                         </select>
 
-                        <label class="text-sm text-muted-foreground">Delivery Date</label>
+                        <label class="text-sm text-muted-foreground">{{ 'INVOICE.DELIVERY_DATE' | translate }}</label>
                         <input type="date" placeholder=" " [value]="invoice?.deliveryDate"
                             formControlName="deliveryDate"
                             class="mb-2 w-full  border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
@@ -37,31 +37,31 @@
                     <img [src]="invoice?.barcode || './assets/img/barcode-v2.png'" alt="Invoice QR Code"
                         class="w-full h-12  bg-gray-100">
 
-                    <label class="text-sm text-muted-foreground">Organization Name</label>
+                    <label class="text-sm text-muted-foreground">{{ 'COMMON.ORGANIZATION' | translate }}</label>
                     <input type="text" placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgName"
                         class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
-                    <label class="text-sm text-muted-foreground">Address</label>
+                    <label class="text-sm text-muted-foreground">{{ 'COMMON.ADDRESS' | translate }}</label>
                     <textarea placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgAddressLine"
                         class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
 
-                    <label class="text-sm text-muted-foreground">Postcode</label>
+                    <label class="text-sm text-muted-foreground">{{ 'INVOICE.POSTCODE' | translate }}</label>
                     <input type="text" placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgAddressPostcode"
                         class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
-                    <label class="text-sm text-muted-foreground">TIN No</label>
+                    <label class="text-sm text-muted-foreground">{{ 'INVOICE.TIN' | translate }}</label>
                     <input type="text" placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgTinNumber"
                         class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
-                    <label class="text-sm text-muted-foreground">VAT Registration No</label>
+                    <label class="text-sm text-muted-foreground">{{ 'INVOICE.VAT' | translate }}</label>
                     <input type="text" placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgVatNumber"
                         class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
-                    <label class="text-sm text-muted-foreground">Email</label>
+                    <label class="text-sm text-muted-foreground">{{ 'COMMON.EMAIL' | translate }}</label>
                     <input type="text" placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgEmail"
                         class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
-                    <label class="text-sm text-muted-foreground">Contact No</label>
+                    <label class="text-sm text-muted-foreground">{{ 'INVOICE.CONTACT' | translate }}</label>
                     <input type="text" placeholder=" " readonly [value]="invoice?.ownerOrganization?.orgMobileNo"
                         class="bg-gray-100 mb-2 w-full  border border-muted/20 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
                 </div>
@@ -72,17 +72,17 @@
                 <div class="w-5/12 pr-4">
                     <div class="bg-white  border-gray-200 p-4">
                         <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-lg font-semibold text-gray-800">Billing Address</h2>
+                            <h2 class="text-lg font-semibold text-gray-800">{{ 'INVOICE.BILLING_ADDRESS' | translate }}</h2>
                         </div>
 
                         <!-- Customer Search -->
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Search Customer</label>
-                            <ng-select [items]="allCustomers" 
-                                      bindValue="id" 
-                                      bindLabel="label" 
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ 'INVOICE.SEARCH_CUSTOMER' | translate }}</label>
+                            <ng-select [items]="allCustomers"
+                                      bindValue="id"
+                                      bindLabel="label"
                                       formControlName="customerId"
-                                      placeholder="Search by name, mobile, or email" 
+                                      [placeholder]="'INVOICE.SEARCH_CUSTOMER' | translate"
                                       (change)="onSelectCustomer($event)"
                                       (keydown.enter)="onCustomerSearchKeyType($event)"
                                       class="min-h-[38px]">
@@ -93,9 +93,9 @@
                         <div class="space-y-4">
                             <!-- Customer Name -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Customer Name *</label>
-                                <input type="text" 
-                                       placeholder="Enter customer name" 
+                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INVOICE.CUSTOMER_NAME' | translate }} *</label>
+                                <input type="text"
+                                       [placeholder]="'INVOICE.CUSTOMER_NAME' | translate"
                                        [value]="invoice?.customer?.name"
                                        formControlName="customerName"
                                        class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
@@ -107,9 +107,9 @@
                             <!-- Phone and Email Row -->
                             <div class="flex flex-row gap-3">
                                 <div class="w-5/12">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
-                                    <input type="text" 
-                                           placeholder="Phone number" 
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INVOICE.CUSTOMER_PHONE' | translate }} *</label>
+                                    <input type="text"
+                                           [placeholder]="'INVOICE.CUSTOMER_PHONE' | translate"
                                            [value]="invoice?.customer?.mobile"
                                            formControlName="customerMobile"
                                            class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
@@ -118,9 +118,9 @@
                                     </div>
                                 </div>
                                 <div class="w-7/12">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                    <input type="email" 
-                                           placeholder="Email address" 
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INVOICE.CUSTOMER_EMAIL' | translate }}</label>
+                                    <input type="email"
+                                           [placeholder]="'INVOICE.CUSTOMER_EMAIL' | translate"
                                            [value]="invoice?.customer?.email"
                                            formControlName="customerEmail"
                                            class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
@@ -132,8 +132,8 @@
 
                             <!-- Address -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                                <textarea placeholder="Enter full address" 
+                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INVOICE.CUSTOMER_ADDRESS' | translate }}</label>
+                                <textarea [placeholder]="'INVOICE.CUSTOMER_ADDRESS' | translate"
                                           [value]="invoice?.customer?.address"
                                           formControlName="customerAddressLine"
                                           rows="3"
@@ -145,9 +145,9 @@
 
                             <!-- Postcode -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Postcode</label>
-                                <input type="text" 
-                                       placeholder="Postal code" 
+                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INVOICE.POSTCODE' | translate }}</label>
+                                <input type="text"
+                                       [placeholder]="'INVOICE.POSTCODE' | translate"
                                        [value]="invoice?.customer?.postcode"
                                        formControlName="customerPostcode"
                                        class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
@@ -159,21 +159,21 @@
                                 <button type="button"
                                         (click)="saveCustomer()"
                                         class="inline-flex items-center px-3 py-1.5 text-xs rounded-lg  font-medium text-green-600 bg-green-50 border border-green-200 transition-colors"
-                                        title="Save Customer"
+                                        [title]="'INVOICE.SAVE_CUSTOMER' | translate"
                                         [ngClass]="{
                                             'hover:bg-green-200': invForm.get('customerName')?.value && invForm.get('customerMobile')?.value,
                                             'hover:bg-red-200 cursor-not-allowed': !invForm.get('customerName')?.value || !invForm.get('customerMobile')?.value
                                         }">
                                     <svg-icon src="./assets/icons/heroicons/outline/folder.svg" [svgClass]="'h-3 w-3 mr-1'"></svg-icon>
-                                    Save Customer
+                                    {{ 'INVOICE.SAVE_CUSTOMER' | translate }}
                                 </button>
 
-                                <button type="button" 
+                                <button type="button"
                                     (click)="createNewCustomer()"
                                     class="inline-flex items-center px-3 py-1.5 text-xs rounded-lg font-medium text-red-600 bg-red-50 border border-red-200  hover:bg-red-100 transition-colors"
-                                    title="Create New Customer">
+                                    [title]="'INVOICE.CLEAR_CUSTOMER' | translate">
                                     <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-3 w-3 mr-1'"></svg-icon>
-                                    Clear
+                                    {{ 'INVOICE.CLEAR_CUSTOMER' | translate }}
                                 </button>
                             </div>
                         </div>
@@ -184,27 +184,27 @@
             <!-- REFACTORED PURCHASE HISTORY SECTION -->
           <div class="flex flex-col pt-6">
     <div class="w-full bg-white   border-gray-200 p-4">
-        <h2 class="text-lg font-semibold text-gray-800 mb-4">Purchase History</h2>
-        
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ 'INVOICE.PURCHASE_HISTORY' | translate }}</h2>
+
         <form [formGroup]="productForm">
             <div class="overflow-x-auto   border-gray-200">
                 <table class="w-full table-auto border-collapse text-left text-sm">
                     <!-- Table Header -->
                     <thead class="bg-gray-50 border-b border-gray-200">
                         <tr>
-                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">SL</th>
-                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Product Details</th>
-                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">Unit Rate</th>
-                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">Discount (%)</th>
-                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-24 text-center">Qty</th>
-                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">Amount</th>
-                            <th *ngIf="!isPaid" class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-16 text-center">Action</th>
+                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">{{ 'INVOICE.SL' | translate }}</th>
+                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">{{ 'INVOICE.PRODUCT_DETAILS' | translate }}</th>
+                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">{{ 'INVOICE.UNIT_RATE' | translate }}</th>
+                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">{{ 'INVOICE.DISCOUNT_PERCENT' | translate }}</th>
+                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-24 text-center">{{ 'INVOICE.QUANTITY' | translate }}</th>
+                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-32 text-right">{{ 'COMMON.AMOUNT' | translate }}</th>
+                            <th *ngIf="!isPaid" class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-16 text-center">{{ 'COMMON.ACTIONS' | translate }}</th>
                         </tr>
                     </thead>
 
                     <tbody class="divide-y divide-gray-200">
                         <!-- Existing Products -->
-                        <tr *ngFor="let prod of invoice?.productSales; let i = index" 
+                        <tr *ngFor="let prod of invoice?.productSales; let i = index"
                             class="hover:bg-gray-50 transition-colors">
                             <td class="px-3 py-4 text-gray-700 font-medium">{{i+1}}</td>
                             <td class="px-3 py-4">
@@ -233,12 +233,12 @@
                                 <button type="button"
                                         (click)="deleteProduct(prod)"
                                         class="inline-flex items-center justify-center w-8 h-8 text-red-500 hover:text-red-700 hover:bg-red-50 -full transition-colors"
-                                        title="Remove product">
+                                        [title]="'COMMON.DELETE' | translate">
                                     <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'"></svg-icon>
                                 </button>
                             </td>
                         </tr>
-                        
+
                         <!-- Add New Product Row -->
                         <tr class="bg-gray-50 border-t-2 border-gray-300" *ngIf="!isCreatingNewProduct && !isPaid">
                             <td class="px-3 py-4 text-gray-700 font-medium align-top">
@@ -248,7 +248,7 @@
                                 <div class="mb-2">
                                     <button type="button" (click)="toggleCreateProductMode()"
                                             class="text-xs text-blue-600 hover:text-blue-800 font-medium underline">
-                                        Create New Product
+                                        {{ 'INVOICE.NEW_PRODUCT' | translate }}
                                     </button>
                                 </div>
                                 <!-- Product Selection -->
@@ -257,7 +257,7 @@
                                               bindValue="id"
                                               bindLabel="label"
                                               formControlName="productId"
-                                              placeholder="Search product by name or code"
+                                              [placeholder]="'INVOICE.SEARCH_PRODUCT' | translate"
                                               (change)="onSelectProduct($event)"
                                               (keydown.enter)="onSearchKeyType($event)"
                                               class="text-sm">
@@ -266,7 +266,7 @@
                                     <!-- Product Description -->
                                     <textarea formControlName="productDescription"
                                              readonly
-                                             placeholder="Product description will appear here..."
+                                             [placeholder]="'COMMON.DESCRIPTION' | translate"
                                              rows="2"
                                              class="w-full px-2 py-1 bg-gray-50 border border-gray-200  text-xs text-gray-600 resize-none focus:outline-none"></textarea>
                                 </div>
@@ -316,7 +316,7 @@
                                         }"
                                         (click)="productForm.valid && submitProduct()"
                                         class="inline-flex items-center justify-center w-8 h-8 -full transition-colors"
-                                        title="Add product">
+                                        [title]="'INVOICE.ADD_PRODUCT' | translate">
                                     <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-5 w-5'"></svg-icon>
                                 </button>
                             </td>
@@ -331,25 +331,25 @@
                                 <div class="mb-3">
                                     <button type="button" (click)="toggleCreateProductMode()"
                                             class="text-xs text-blue-600 hover:text-blue-800 font-medium underline">
-                                        Select Existing Product
+                                        {{ 'INVOICE.SEARCH_PRODUCT' | translate }}
                                     </button>
                                 </div>
 
                                 <!-- Row 1: Product Name + Code -->
                                 <div class="flex gap-3 mb-3">
                                     <div class="w-4/6">
-                                        <label class="block text-xs font-medium text-gray-700 mb-1">Product Name *</label>
-                                        <input type="text" formControlName="name" placeholder="Enter product name"
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'INVOICE.PRODUCT_NAME' | translate }} *</label>
+                                        <input type="text" formControlName="name" [placeholder]="'INVOICE.PRODUCT_NAME' | translate"
                                                class="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     </div>
                                     <div class="w-2/6">
-                                        <label class="block text-xs font-medium text-gray-700 mb-1">Code *</label>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'INVOICE.PRODUCT_CODE' | translate }} *</label>
                                         <div class="flex gap-1">
                                             <input type="text" formControlName="code" readonly
                                                    class="w-full px-3 py-2 bg-gray-100 border border-gray-300 text-sm text-gray-600 focus:outline-none">
                                             <button type="button" (click)="generateProductCode()"
                                                     class="px-2 py-2 bg-gray-200 hover:bg-gray-300 border border-gray-300 text-xs transition-colors"
-                                                    title="Regenerate code">
+                                                    [title]="'PRODUCT.REGENERATE_CODE' | translate">
                                                 <svg-icon src="./assets/icons/heroicons/outline/arrow-path.svg" [svgClass]="'h-4 w-4'"></svg-icon>
                                             </button>
                                         </div>
@@ -359,34 +359,34 @@
                                 <!-- Row 2: Unit Type + Category + Employee -->
                                 <div class="flex gap-3 mb-3">
                                     <div class="w-1/3">
-                                        <label class="block text-xs font-medium text-gray-700 mb-1">Unit Type *</label>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'INVOICE.UNIT_TYPE' | translate }} *</label>
                                         <ng-select [items]="unitTypes"
                                                    bindValue="value"
                                                    bindLabel="symbol"
                                                    formControlName="unitType"
-                                                   placeholder="Select unit type"
+                                                   [placeholder]="'INVOICE.UNIT_TYPE' | translate"
                                                    class="text-sm">
                                         </ng-select>
                                     </div>
                                     <div class="w-1/3">
-                                        <label class="block text-xs font-medium text-gray-700 mb-1">Category *</label>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'PRODUCT.CATEGORY' | translate }} *</label>
                                         <ng-select [items]="allProductCategories"
                                                    bindValue="id"
                                                    bindLabel="name"
                                                    formControlName="categoryId"
-                                                   placeholder="Select or create category"
+                                                   [placeholder]="'PRODUCT.CATEGORY' | translate"
                                                    [addTag]="addNewCategory"
                                                    addTagText="Create new: "
                                                    class="text-sm">
                                         </ng-select>
                                     </div>
                                     <div class="w-1/3">
-                                        <label class="block text-xs font-medium text-gray-700 mb-1">Made By (Employee) *</label>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'PRODUCT.MADE_BY' | translate }} *</label>
                                         <ng-select [items]="allEmployees"
                                                    bindValue="id"
                                                    bindLabel="label"
                                                    formControlName="employeeId"
-                                                   placeholder="Search employee"
+                                                   [placeholder]="'PRODUCT.MADE_BY' | translate"
                                                    (change)="onSelectEmployee($event)"
                                                    (keydown.enter)="onSearchEmployeeKeyType($event)"
                                                    class="text-sm">
@@ -396,8 +396,8 @@
 
                                 <!-- Row 3: Description -->
                                 <div class="mb-3">
-                                    <label class="block text-xs font-medium text-gray-700 mb-1">Description</label>
-                                    <textarea formControlName="description" placeholder="Product description (optional)"
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'COMMON.DESCRIPTION' | translate }}</label>
+                                    <textarea formControlName="description" [placeholder]="'COMMON.DESCRIPTION' | translate"
                                               rows="2"
                                               class="w-full px-3 py-2 border border-gray-300 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
                                 </div>
@@ -405,27 +405,27 @@
                                 <!-- Row 4: Cost & Stock fields -->
                                 <div class="flex gap-3 mb-3">
                                     <div class="w-1/5">
-                                        <label class="block text-xs font-medium text-gray-700 mb-1">Unit Price *</label>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'PRODUCT.UNIT_PRICE' | translate }} *</label>
                                         <input type="number" step="0.01" min="1" formControlName="unitPrice" placeholder="0.00"
                                                class="w-full px-3 py-2 border border-gray-300 text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     </div>
                                     <div class="w-1/5">
-                                        <label class="block text-xs font-medium text-gray-700 mb-1">Employee Cost</label>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'PRODUCT.EMPLOYEE_COST' | translate }}</label>
                                         <input type="number" step="0.01" formControlName="perUnitEmployeeCost" placeholder="0.00"
                                                class="w-full px-3 py-2 border border-gray-300 text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     </div>
                                     <div class="w-1/5">
-                                        <label class="block text-xs font-medium text-gray-700 mb-1">Production Cost</label>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'PRODUCT.PRODUCTION_COST' | translate }}</label>
                                         <input type="number" step="0.01" formControlName="perUnitProductionCost" placeholder="0.00"
                                                class="w-full px-3 py-2 border border-gray-300 text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     </div>
                                     <div class="w-1/5">
-                                        <label class="block text-xs font-medium text-gray-700 mb-1">Initial Qty *</label>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'PRODUCT.INITIAL_QTY' | translate }} *</label>
                                         <input type="number" min="1" formControlName="initialQuantity" placeholder="1"
                                                class="w-full px-3 py-2 border border-gray-300 text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     </div>
                                     <div class="w-1/5">
-                                        <label class="block text-xs font-medium text-gray-700 mb-1">Discount %</label>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'INVOICE.DISCOUNT_PERCENT' | translate }}</label>
                                         <input type="number" step="0.5" min="0" max="100" formControlName="discountPercent" placeholder="0"
                                                class="w-full px-3 py-2 border border-gray-300 text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     </div>
@@ -433,25 +433,25 @@
 
                                 <!-- Row 5: Sale fields -->
                                 <div class="border-t border-blue-200 pt-3">
-                                    <label class="block text-xs font-semibold text-blue-700 mb-2">Sale Details</label>
+                                    <label class="block text-xs font-semibold text-blue-700 mb-2">{{ 'INVOICE.SALE_DETAILS' | translate }}</label>
                                     <div class="flex gap-3">
                                         <div class="w-1/4">
-                                            <label class="block text-xs font-medium text-gray-700 mb-1">Selling Rate *</label>
+                                            <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'INVOICE.SELLING_RATE' | translate }} *</label>
                                             <input type="number" step="0.01" min="1" formControlName="sellingUnitRate" placeholder="0.00"
                                                    class="w-full px-3 py-2 border border-gray-300 text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                         </div>
                                         <div class="w-1/4">
-                                            <label class="block text-xs font-medium text-gray-700 mb-1">Sale Discount %</label>
+                                            <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'INVOICE.SALE_DISCOUNT_PERCENT' | translate }}</label>
                                             <input type="number" step="0.5" min="0" max="100" formControlName="saleDiscountPercent" placeholder="0"
                                                    class="w-full px-3 py-2 border border-gray-300 text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                         </div>
                                         <div class="w-1/4">
-                                            <label class="block text-xs font-medium text-gray-700 mb-1">Qty to Sell *</label>
+                                            <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'INVOICE.QTY_TO_SELL' | translate }} *</label>
                                             <input type="number" min="1" formControlName="quantityToSell" placeholder="1"
                                                    class="w-full px-3 py-2 border border-gray-300 text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                         </div>
                                         <div class="w-1/4">
-                                            <label class="block text-xs font-medium text-gray-700 mb-1">Sale Amount</label>
+                                            <label class="block text-xs font-medium text-gray-700 mb-1">{{ 'INVOICE.SALE_AMOUNT' | translate }}</label>
                                             <input type="text" readonly formControlName="saleAmount" placeholder="0.00"
                                                    class="w-full px-3 py-2 bg-gray-50 border border-gray-200 text-sm text-right text-gray-600 focus:outline-none">
                                         </div>
@@ -467,7 +467,7 @@
                                         }"
                                         (click)="createProductForm.valid && submitNewProduct()"
                                         class="inline-flex items-center justify-center w-8 h-8 -full transition-colors"
-                                        title="Create & add product">
+                                        [title]="'INVOICE.ADD_PRODUCT' | translate">
                                     <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-5 w-5'"></svg-icon>
                                 </button>
                             </td>
@@ -484,25 +484,25 @@
                 <!-- Payment History Table -->
                 <div class="w-4/6">
                     <div class="bg-white   border-gray-200 p-4">
-                        <h2 class="text-lg font-semibold text-gray-800 mb-4">Customer Payment History</h2>
-                        
+                        <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ 'INVOICE.PAYMENT_HISTORY' | translate }}</h2>
+
                         <form [formGroup]="paymentForm">
                             <div class="overflow-x-auto   border-gray-200">
                                 <table class="w-full table-auto border-collapse text-left text-sm">
                                     <!-- Table Header -->
                                     <thead class="bg-gray-50 border-b border-gray-200">
                                         <tr>
-                                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Method</th>
-                                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Reference</th>
-                                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">Amount</th>
-                                            <th *ngIf="!isPaid" class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-16 text-center">Action</th>
+                                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">{{ 'COMMON.DATE' | translate }}</th>
+                                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">{{ 'COMMON.PAYMENT_METHOD' | translate }}</th>
+                                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">{{ 'COMMON.REFERENCE' | translate }}</th>
+                                            <th class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">{{ 'COMMON.AMOUNT' | translate }}</th>
+                                            <th *ngIf="!isPaid" class="px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider w-16 text-center">{{ 'COMMON.ACTIONS' | translate }}</th>
                                         </tr>
                                     </thead>
 
                                     <tbody class="divide-y divide-gray-200">
                                         <!-- Existing Payments -->
-                                        <tr *ngFor="let pay of invoice?.payments; let i = index" 
+                                        <tr *ngFor="let pay of invoice?.payments; let i = index"
                                             class="hover:bg-gray-50 transition-colors">
                                             <td class="px-3 py-3 text-gray-700">
                                                 <span class="text-sm">{{pay.paymentDate | date:'MMM dd, yyyy'}}</span>
@@ -520,16 +520,16 @@
                                                 <button type="button"
                                                         (click)="deletePayment(pay)"
                                                         class="inline-flex items-center justify-center w-8 h-8 text-red-500 hover:text-red-700 hover:bg-red-50 -full transition-colors"
-                                                        title="Remove payment">
+                                                        [title]="'COMMON.DELETE' | translate">
                                                     <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'"></svg-icon>
                                                 </button>
                                             </td>
                                         </tr>
-                                        
+
                                         <!-- Add New Payment Row -->
                                         <tr class="bg-gray-50 border-t-2 " *ngIf="!isPaid">
                                             <td class="px-3 py-4">
-                                                <input type="date" 
+                                                <input type="date"
                                                        formControlName="paymentDate"
                                                        class="w-full px-2 py-2 border border-gray-300  text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
                                                 <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(paymentForm, 'paymentDate')">
@@ -539,7 +539,7 @@
                                             <td class="px-3 py-4">
                                                 <select formControlName="paymentMethod"
                                                         class="w-full px-2 py-2 border border-gray-300  text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                                                    <option value="" disabled>Select Method</option>
+                                                    <option value="" disabled>{{ 'COMMON.PAYMENT_METHOD' | translate }}</option>
                                                     <option *ngFor="let method of allPaymentMethods" [value]="method">{{method}}</option>
                                                 </select>
                                                 <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(paymentForm, 'paymentMethod')">
@@ -547,8 +547,8 @@
                                                 </div>
                                             </td>
                                             <td class="px-3 py-4">
-                                                <input type="text" 
-                                                       placeholder="Transaction ID/Reference"
+                                                <input type="text"
+                                                       [placeholder]="'COMMON.REFERENCE' | translate"
                                                        formControlName="paymentRef"
                                                        class="w-full px-2 py-2 border border-gray-300  text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
                                                 <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(paymentForm, 'paymentRef')">
@@ -556,7 +556,7 @@
                                                 </div>
                                             </td>
                                             <td class="px-3 py-4">
-                                                <input type="number" 
+                                                <input type="number"
                                                        step="0.01"
                                                        placeholder="0.00"
                                                        formControlName="paymentAmount"
@@ -574,7 +574,7 @@
                                                         }"
                                                         (click)="paymentForm.valid && submitPayment()"
                                                         class="inline-flex items-center justify-center w-8 h-8 -full transition-colors"
-                                                        title="Add payment">
+                                                        [title]="'INVOICE.ADD_PAYMENT' | translate">
                                                     <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-5 w-5'"></svg-icon>
                                                 </button>
                                             </td>
@@ -589,40 +589,40 @@
                 <!-- Invoice Summary -->
                 <div class="w-2/6">
                     <div class="bg-gray-50  border-gray-200 p-4 sticky top-4">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Invoice Summary</h3>
-                        
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ 'INVOICE.INVOICE_SUMMARY' | translate }}</h3>
+
                         <div class="space-y-3">
                             <!-- Sub Total -->
                             <div class="flex justify-between items-center">
-                                <label class="text-sm text-gray-600">Sub Total</label>
-                                <input type="text" 
-                                       readonly 
+                                <label class="text-sm text-gray-600">{{ 'INVOICE.SUB_TOTAL' | translate }}</label>
+                                <input type="text"
+                                       readonly
                                        [value]="'' + (invoice?.productSubTotal | number:'1.2-2')"
                                        class="w-32 px-2 py-1 bg-white border border-gray-200  text-sm text-right text-gray-700">
                             </div>
 
                             <!-- Tax -->
                             <div class="flex justify-between items-center">
-                                <label class="text-sm text-gray-600">Tax ({{invoice?.taxRate || 0}}%)</label>
-                                <input type="text" 
-                                       readonly 
+                                <label class="text-sm text-gray-600">{{ 'INVOICE.TAX' | translate }} ({{invoice?.taxRate || 0}}%)</label>
+                                <input type="text"
+                                       readonly
                                        [value]="'' + (invoice?.productTotalTax | number:'1.2-2')"
                                        class="w-32 px-2 py-1 bg-white border border-gray-200  text-sm text-right text-gray-700">
                             </div>
 
                             <!-- VAT -->
                             <div class="flex justify-between items-center">
-                                <label class="text-sm text-gray-600">VAT ({{invoice?.vatRate || 0}}%)</label>
-                                <input type="text" 
-                                       readonly 
+                                <label class="text-sm text-gray-600">{{ 'INVOICE.VAT' | translate }} ({{invoice?.vatRate || 0}}%)</label>
+                                <input type="text"
+                                       readonly
                                        [value]="'' + (invoice?.productTotalVat | number:'1.2-2')"
                                        class="w-32 px-2 py-1 bg-white border border-gray-200  text-sm text-right text-gray-700">
                             </div>
 
                             <!-- Discount -->
                             <div class="flex justify-between items-center">
-                                <label class="text-sm text-gray-600">Discount</label>
-                                <input type="number" 
+                                <label class="text-sm text-gray-600">{{ 'INVOICE.DISCOUNT' | translate }}</label>
+                                <input type="number"
                                        min="0"
                                        step="50"
                                        placeholder="0.00"
@@ -632,8 +632,8 @@
 
                             <!-- Delivery Charge -->
                             <div class="flex justify-between items-center">
-                                <label class="text-sm text-gray-600">Delivery</label>
-                                <input type="number" 
+                                <label class="text-sm text-gray-600">{{ 'INVOICE.DELIVERY_CHARGE' | translate }}</label>
+                                <input type="number"
                                        min="0"
                                        step="50"
                                        placeholder="0.00"
@@ -645,27 +645,27 @@
 
                             <!-- Total Amount -->
                             <div class="flex justify-between items-center p-2 ">
-                                <label class="text-base font-semibold text-gray-800">Total Amount</label>
-                                <input type="text" 
-                                       readonly 
+                                <label class="text-base font-semibold text-gray-800">{{ 'INVOICE.TOTAL_AMOUNT' | translate }}</label>
+                                <input type="text"
+                                       readonly
                                        [value]="'' + (invoice?.totalAmount | number:'1.2-2')"
                                        class="w-32 px-2 py-1 bg-white border border-blue-200  text-base font-bold text-right text-blue-900">
                             </div>
 
                             <!-- Total Paid -->
                             <div class="flex justify-between items-center  p-2 ">
-                                <label class="text-sm font-medium text-gray-700">Total Paid</label>
-                                <input type="text" 
-                                       readonly 
+                                <label class="text-sm font-medium text-gray-700">{{ 'INVOICE.PAID_AMOUNT' | translate }}</label>
+                                <input type="text"
+                                       readonly
                                        [value]="'' + (invoice?.totalPaid | number:'1.2-2')"
                                        class="w-32 px-2 py-1 bg-white border border-green-200  text-sm text-right font-medium text-green-700">
                             </div>
 
                             <!-- Total Due -->
                             <div class="flex justify-between items-center p-2 ">
-                                <label class="text-sm font-medium text-gray-700">Amount Due</label>
-                                <input type="text" 
-                                       readonly 
+                                <label class="text-sm font-medium text-gray-700">{{ 'INVOICE.DUE_AMOUNT' | translate }}</label>
+                                <input type="text"
+                                       readonly
                                        [value]="'' + (invoice?.remainingAmount | number:'1.2-2')"
                                        class="w-32 px-2 py-1 bg-white border border-red-200  text-sm text-right font-medium text-red-700">
                             </div>
@@ -677,14 +677,14 @@
             <!-- Invoice Total in Words -->
             <div class="pt-4">
                 <h3 class="text-gray-700">
-                    <strong>In words: </strong>
+                    <strong>{{ 'INVOICE.AMOUNT_IN_WORDS' | translate }}: </strong>
                     <span class="text-gray-600">{{this.toWords.convert(this.invoice?.totalAmount ?? 0)}}</span>
                 </h3>
             </div>
 
             <!-- Notes Section -->
             <div class="flex flex-col pt-4">
-                <label class="text-lg font-semibold text-gray-800 mb-2">Notes</label>
+                <label class="text-lg font-semibold text-gray-800 mb-2">{{ 'INVOICE.NOTES' | translate }}</label>
                 <p class="text-sm text-gray-600 bg-gray-50 p-3  border">
                     Thank you for your business! If you have any questions about this invoice, please contact us at
                     <a href="mailto:contacts.tallyapp&#64;gmail.com" class="font-semibold">
@@ -697,7 +697,7 @@
             <div *ngIf="invoice?.invoiceStatus === 'PAID'" class="pt-6">
                 <div class="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
                     <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-6 w-6 text-green-600'"></svg-icon>
-                    <span class="text-sm font-medium text-green-800">This invoice has been marked as PAID. No further modifications are allowed.</span>
+                    <span class="text-sm font-medium text-green-800">{{ 'INVOICE.PAID_NOTICE' | translate }}</span>
                 </div>
             </div>
 
@@ -712,7 +712,7 @@
                             'bg-gray-400 text-gray-200 cursor-not-allowed': invForm.invalid
                         }">
                     <svg-icon src="./assets/icons/heroicons/outline/folder.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                    <span class="ml-2">Save</span>
+                    <span class="ml-2">{{ 'COMMON.SAVE' | translate }}</span>
                 </button>
 
                 <button *ngIf="invoice?.invoiceStatus !== 'PAID'"
@@ -720,35 +720,35 @@
                         class="flex items-center px-4 py-2 rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition-colors"
                         (click)="markAsPaid()">
                     <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                    <span class="ml-2">Mark as Paid</span>
+                    <span class="ml-2">{{ 'INVOICE.MARK_AS_PAID' | translate }}</span>
                 </button>
 
                 <button type="button"
                         class="flex items-center px-4 py-2 rounded-lg  bg-purple-600 text-white  hover:bg-purple-700 transition-colors"
                         (click)="previewInvoice()">
                     <svg-icon src="./assets/icons/heroicons/outline/eye.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                    <span class="ml-2">Preview</span>
+                    <span class="ml-2">{{ 'INVOICE.PREVIEW' | translate }}</span>
                 </button>
 
                 <button type="button"
                         class="flex items-center px-4 py-2 rounded-lg  bg-green-600 text-white  hover:bg-green-700 transition-colors"
                         (click)="downloadInvoice()">
                     <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                    <span class="ml-2">Invoice</span>
+                    <span class="ml-2">{{ 'INVOICE.DOWNLOAD_INVOICE' | translate }}</span>
                 </button>
 
                 <button type="button"
                         class="flex items-center px-4 py-2 rounded-lg  bg-green-800 text-white  hover:bg-green-700 transition-colors"
                         (click)="downloadReceipt()">
                     <svg-icon src="./assets/icons/heroicons/outline/document-text.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                    <span class="ml-2">Receipt</span>
+                    <span class="ml-2">{{ 'INVOICE.DOWNLOAD_RECEIPT' | translate }}</span>
                 </button>
 
                 <button type="button"
                         class="flex items-center px-4 py-2 rounded-lg  bg-red-600 text-white  hover:bg-red-700 transition-colors"
                         (click)="backToInvoiceList()">
                     <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                    <span class="ml-2">Back</span>
+                    <span class="ml-2">{{ 'COMMON.BACK' | translate }}</span>
                 </button>
             </div>
         </div>

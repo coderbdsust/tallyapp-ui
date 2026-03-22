@@ -3,13 +3,9 @@
   <div class="auth-bg hidden flex-1 items-center justify-center bg-primary bg-cover lg:flex">
     <div class="max-w-2xl space-y-4 p-8 text-center text-white">
       <img src="./assets/images/auth-screens.png" alt="dashboard widget" />
-      <h1 class="text-4xl font-bold">"Fast, Efficient and Productive"</h1>
+      <h1 class="text-4xl font-bold">{{ 'AUTH.TAGLINE' | translate }}</h1>
       <p class="text-xs font-light">
-        At our furniture shop, every piece tells a story of craftsmanship and care.
-        From the very beginning, we source only the finest raw materials, ensuring 
-        quality and durability in every creation. Each item is crafted from scratch
-        by our expert carpenters, who bring years of skill, passion, and attention
-        to detail to every products.
+        {{ 'AUTH.TAGLINE_DESC' | translate }}
       </p>
     </div>
   </div>
@@ -17,7 +13,7 @@
   <!-- Select positioned to the top right corner -->
   <div class="absolute top-0 right-0 p-4">
     <select  (change)="onLanguageChange($event)">
-      <option value="-1">Select Language</option>
+      <option value="-1">{{ 'AUTH.SELECT_LANGUAGE' | translate }}</option>
       <option value="en" [selected]="selectedLanguage === 'en'">English</option>
       <option value="bn" [selected]="selectedLanguage === 'bn'">বাংলা</option>
     </select>

@@ -4,7 +4,7 @@
     <div class="mb-8">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">Cash Flow Dashboard</h1>
+          <h1 class="text-3xl font-bold text-gray-900">{{ 'CASH.CASH_FLOW.DASHBOARD' | translate }}</h1>
         </div>
         <div class="flex items-center space-x-2 bg-white px-4 py-2 rounded-lg shadow-sm border">
           <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -25,35 +25,35 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-200">
       <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
         <div class="p-6 border-b border-gray-200">
-          <h2 class="text-xl font-semibold text-gray-900">Transaction Details</h2>
-          <p class="text-gray-600 text-sm mt-1">{{ pageResponse?.totalElements }} transactions recorded</p>
+          <h2 class="text-xl font-semibold text-gray-900">{{ 'CASH.CASH_FLOW.TRANSACTION_DETAILS' | translate }}</h2>
+          <p class="text-gray-600 text-sm mt-1">{{ pageResponse?.totalElements }} {{ 'CASH.CASH_FLOW.TRANSACTIONS_RECORDED' | translate }}</p>
         </div>
         <div class="flex flex-wrap gap-2">
           <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
-            
+
             <button *ngIf="hasActiveFilters()" (click)="clearFilters()"
                   class="px-2 py-2 text-xs bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
-                  title="Clear all filters">
+                  [title]="'COMMON.CLEAR_FILTERS' | translate">
                   <svg-icon src="./assets/icons/heroicons/outline/x-mark.svg" [svgClass]="'h-3 w-3'"></svg-icon>
-                  Clear
+                  {{ 'COMMON.CLEAR' | translate }}
             </button>
 
             <div class="flex items-center gap-2">
-              From
+              {{ 'CASH.TRANSACTION.FROM' | translate }}
               <input name="startDate"
                 class="px-2 py-2 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary"
                 type="date" [value]="startDate || ''" (change)="onStartDateChange($event)" />
 
             </div>
             <div class="flex items-center gap-2">
-              To
+              {{ 'CASH.TRANSACTION.TO' | translate }}
               <input name="endDate"
                 class="px-2 py-2 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary"
                 type="date" [value]="endDate || ''" (change)="onEndDateChange($event)" />
 
             </div>
             <div class="flex items-center gap-2">
-              Show
+              {{ 'COMMON.SHOW' | translate }}
               <select class="w-16 p-2 border border-gray-300 rounded-md" name="rowSize"
                 (change)="onSelectChange($event)">
                 <option *ngFor="let option of getPageSizeOptions()" [value]="option.value"
@@ -61,7 +61,7 @@
                   {{ option.label }}
                 </option>
               </select>
-              per page
+              {{ 'COMMON.PER_PAGE' | translate }}
             </div>
           </div>
           <div class="flex">
@@ -72,7 +72,7 @@
               </div>
               <input name="search"
                 class="py-2 pl-8 pr-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="Search transactions..." type="text" [value]="search"
+                [placeholder]="'CASH.CASH_FLOW.SEARCH_TRANSACTIONS' | translate" type="text" [value]="search"
                 (keydown.enter)="onSearchChange($event)" (input)="onSearchChange($event)" />
             </label>
           </div>
@@ -94,8 +94,8 @@
                   <span class="text-sm text-gray-500">
                     {{ formatShortDate(flow.flowDate) }}
                   </span>
-                  <span [ngClass]="'inline-flex px-2 py-1 text-xs font-medium rounded-full ' + 
-                           getFlowTypeStyle(flow.flowType).bgColor + ' ' + 
+                  <span [ngClass]="'inline-flex px-2 py-1 text-xs font-medium rounded-full ' +
+                           getFlowTypeStyle(flow.flowType).bgColor + ' ' +
                            getFlowTypeStyle(flow.flowType).textColor">
                     {{ getFlowTypeStyle(flow.flowType).label }}
                   </span>
@@ -125,7 +125,7 @@
           <!-- First Page Button -->
           <button *ngIf="!first"
             class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
-            (click)="goToFirstPage()" title="First Page">
+            (click)="goToFirstPage()" [title]="'COMMON.FIRST_PAGE' | translate">
             <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-4 w-4'">
             </svg-icon>
           </button>
@@ -133,7 +133,7 @@
           <!-- Previous Page Button -->
           <button
             class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
-            [disabled]="first" (click)="goToPreviousPage()" title="Previous Page">
+            [disabled]="first" (click)="goToPreviousPage()" [title]="'COMMON.PREVIOUS' | translate">
             <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'">
             </svg-icon>
           </button>
@@ -158,7 +158,7 @@
           <!-- Next Page Button -->
           <button
             class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
-            [disabled]="last" (click)="goToNextPage()" title="Next Page">
+            [disabled]="last" (click)="goToNextPage()" [title]="'COMMON.NEXT' | translate">
             <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'">
             </svg-icon>
           </button>
@@ -166,7 +166,7 @@
           <!-- Last Page Button -->
           <button *ngIf="!last"
             class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
-            (click)="goToLastPage()" title="Last Page">
+            (click)="goToLastPage()" [title]="'COMMON.LAST_PAGE' | translate">
             <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-4 w-4'">
             </svg-icon>
           </button>
@@ -176,7 +176,7 @@
 
     <!-- Footer -->
     <div class="mt-8 text-center text-sm text-gray-500">
-      <p>Cash Flow Report Generated on {{ getCurrentDate() }}</p>
+      <p>{{ 'CASH.CASH_FLOW.REPORT_GENERATED' | translate:{ date: getCurrentDate() } }}</p>
     </div>
   </div>
 </div>

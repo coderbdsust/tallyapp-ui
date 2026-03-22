@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { Organization } from 'src/app/core/models/organization.model';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { ReportService } from 'src/app/core/services/report.service';
@@ -19,7 +20,7 @@ import {
 @Component({
   selector: 'app-financial-report',
   standalone: true,
-  imports: [CommonModule, FormsModule, AngularSvgIconModule],
+  imports: [CommonModule, FormsModule, AngularSvgIconModule, TranslateModule],
   templateUrl: './financial-report.component.html',
   styleUrl: './financial-report.component.scss'
 })
@@ -30,12 +31,12 @@ export class FinancialReportComponent implements OnInit, OnDestroy {
   activeReport: 'profit-loss' | 'trial-balance' | 'tax-vat' | 'ar-aging' | 'cash-flow-statement' | 'sales-by-customer' = 'profit-loss';
 
   reportTabs = [
-    { id: 'profit-loss' as const, label: 'Profit & Loss' },
-    { id: 'trial-balance' as const, label: 'Trial Balance' },
-    { id: 'tax-vat' as const, label: 'Tax / VAT' },
-    { id: 'ar-aging' as const, label: 'AR Aging' },
-    { id: 'cash-flow-statement' as const, label: 'Cash Flow Statement' },
-    { id: 'sales-by-customer' as const, label: 'Sales by Customer' }
+    { id: 'profit-loss' as const, label: 'REPORT.PROFIT_LOSS' },
+    { id: 'trial-balance' as const, label: 'REPORT.TRIAL_BALANCE' },
+    { id: 'tax-vat' as const, label: 'REPORT.TAX_VAT' },
+    { id: 'ar-aging' as const, label: 'REPORT.AR_AGING' },
+    { id: 'cash-flow-statement' as const, label: 'REPORT.CASH_FLOW_STATEMENT' },
+    { id: 'sales-by-customer' as const, label: 'REPORT.SALES_BY_CUSTOMER' }
   ];
 
   // Date filters

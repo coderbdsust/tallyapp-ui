@@ -2,6 +2,7 @@ import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { CardStatsComponent } from 'src/app/modules/dashboard/components/cards/card-stats/card-stats.component';
 import { formatCurrency } from 'src/app/common/utils/common';
@@ -15,7 +16,7 @@ import { OrganizationService } from 'src/app/core/services/organization.service'
 
 @Component({
   selector: 'app-employee-income',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, CardStatsComponent, NgIf, NgFor, WordPipe],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, TranslateModule, CardStatsComponent, NgIf, NgFor, WordPipe],
   templateUrl: './employee-income.component.html',
   styleUrl: './employee-income.component.scss',
 })

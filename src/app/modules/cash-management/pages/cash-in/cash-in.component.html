@@ -6,7 +6,7 @@
             <div class="flex flex-row gap-2">
                 <div class="w-1/2">
                     <div>
-                        <label class="text-sm text-muted-foreground">Organization Name</label>
+                        <label class="text-sm text-muted-foreground">{{ 'COMMON.ORGANIZATION' | translate }}</label>
                         <input type="text" placeholder=" " readonly [value]="org?.orgName"
                             class="mb-2 w-full rounded border border-muted/20 bg-gray-100 bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
 
@@ -16,7 +16,7 @@
                 </div>
                 <div class="w-1/2">
                     <div>
-                        <label class="text-sm text-muted-foreground">Date</label>
+                        <label class="text-sm text-muted-foreground">{{ 'COMMON.DATE' | translate }}</label>
                         <input type="date" placeholder=" " formControlName="transactionDate"
                             class="mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
                         <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'transactionDate')">
@@ -28,7 +28,7 @@
             <div class="flex flex-row gap-2">
                 <div class="w-1/2">
                     <div>
-                        <label class="text-sm text-muted-foreground">Amount</label>
+                        <label class="text-sm text-muted-foreground">{{ 'COMMON.AMOUNT' | translate }}</label>
                         <label class="text-sm text-gray-800" *ngIf="this.amountLabel"> : {{this.amountLabel}}</label>
                         <input type="number" placeholder=" " formControlName="amount"
                             class="mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
@@ -39,10 +39,10 @@
                 </div>
                 <div class="w-1/2">
                     <div>
-                        <label class="text-sm text-muted-foreground">Payment Method</label>
+                        <label class="text-sm text-muted-foreground">{{ 'COMMON.PAYMENT_METHOD' | translate }}</label>
                         <select formControlName="paymentMethod"
                             class="border-1 peer block w-full appearance-none border-b-2 border-gray-200 bg-transparent py-2 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400">
-                            <option value="" disabled selected>Select Payment Method</option>
+                            <option value="" disabled selected>{{ 'COMMON.SELECT' | translate }} {{ 'COMMON.PAYMENT_METHOD' | translate }}</option>
                             <ng-container *ngFor="let method of allPaymentMethods; let i = index">
                                 <option [value]="method">{{ method }}</option>
                             </ng-container>
@@ -57,7 +57,7 @@
             <div class="flex flex-row gap-2">
                 <div class="w-1/2">
                     <div>
-                        <label class="text-sm text-muted-foreground">Reference</label>
+                        <label class="text-sm text-muted-foreground">{{ 'COMMON.REFERENCE' | translate }}</label>
                         <input type="text" placeholder=" " formControlName="reference"
                             class="mb-2 w-full rounded border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary" />
                         <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'reference')">
@@ -68,8 +68,9 @@
                 <div class="w-1/2">
                     <div>
                         <app-dropdown [options]="cashInCategories" [(selectedOption)]="selectedCashInType"
-                            placeholder="Select Cash In Type" label="Cash In Type" [required]="true"
-                            addButtonText="Add" (onSelect)="onCategorySelect($event)" (onAddNew)="onAddCategory()">
+                            placeholder="{{'CASH.CASH_IN.CASH_IN_TYPE' | translate}} {{'COMMON.SELECT' | translate}}"
+                            label="{{'CASH.CASH_IN.CASH_IN_TYPE' | translate}}" [required]="true"
+                            addButtonText="{{'CASH.CASH_IN.ADD_TYPE' | translate}}" (onSelect)="onCategorySelect($event)" (onAddNew)="onAddCategory()">
                         </app-dropdown>
 
                         <div class="is__invalid-error" *ngIf="isFieldInvalid(form, 'cashInType')">
@@ -80,7 +81,7 @@
             </div>
             <div>
                 <div>
-                    <label class="text-sm text-muted-foreground">Description</label>
+                    <label class="text-sm text-muted-foreground">{{ 'COMMON.DESCRIPTION' | translate }}</label>
                     <textarea placeholder="" formControlName="description"
                         class="mb-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary">
                     </textarea>
@@ -96,13 +97,13 @@
             'cursor-not-allowed bg-gray-400 text-gray-200': form.invalid
           }">
                     <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-5 w-5'"></svg-icon>
-                    <span class="ml-2">Cash In</span>
+                    <span class="ml-2">{{ 'CASH.CASH_IN.TITLE' | translate }}</span>
                 </button>
 
                 <button class="flex flex-row rounded-md bg-destructive px-4 py-2 text-white hover:bg-primary/80"
                     (click)="cancel()">
                     <svg-icon src="./assets/icons/heroicons/outline/back.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
-                    <span class="ml-2">Cancel</span>
+                    <span class="ml-2">{{ 'COMMON.CANCEL' | translate }}</span>
                 </button>
             </div>
         </div>

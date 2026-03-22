@@ -11,11 +11,12 @@ import { CashBalanceViewerComponent } from '../../components/cash-balance-viewer
 import { TransactionViewComponent } from '../../components/transaction-view/transaction-view.component';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { AccountingService } from 'src/app/core/services/accounting.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-expense',
-  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, WordPipe, CashBalanceViewerComponent, TransactionViewComponent],
+  imports: [AngularSvgIconModule, FormsModule, ReactiveFormsModule, CommonModule, WordPipe, CashBalanceViewerComponent, TransactionViewComponent, TranslateModule],
   templateUrl: './expense.component.html',
   styleUrl: './expense.component.scss',
 })

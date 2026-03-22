@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 import { formatCurrency } from 'src/app/common/utils/common';
 import { Invoice } from '../../invoice.model';
@@ -15,7 +16,7 @@ import { OrganizationService } from 'src/app/core/services/organization.service'
 
 @Component({
   selector: 'app-invoice-list',
-  imports: [AngularSvgIconModule, CommonModule, WordPipe],
+  imports: [AngularSvgIconModule, CommonModule, WordPipe, TranslateModule],
   templateUrl: './invoice-list.component.html',
   styleUrl: './invoice-list.component.scss'
 })

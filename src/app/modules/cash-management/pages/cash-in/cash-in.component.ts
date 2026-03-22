@@ -16,6 +16,7 @@ import { CashtypeService } from 'src/app/core/services/cashtype.service';
 import { DropdownComponent, DropdownOption } from 'src/app/common/components/dropdown/dropdown.component';
 import { CashinTypeDrawerComponent } from './cashin-type-drawer/cashin-type-drawer.component';
 import { CashTxnViewComponent } from '../../components/cash-txn-view/cash-txn-view.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
@@ -28,7 +29,8 @@ import { CashTxnViewComponent } from '../../components/cash-txn-view/cash-txn-vi
     CashBalanceViewerComponent,
     CashTxnViewComponent,
     DropdownComponent,
-    CashinTypeDrawerComponent
+    CashinTypeDrawerComponent,
+    TranslateModule
   ],
   templateUrl: './cash-in.component.html',
   styleUrl: './cash-in.component.scss',

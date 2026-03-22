@@ -9,10 +9,11 @@ import { RecentTransactionReport, Transaction } from 'src/app/core/models/organi
 import { Organization } from 'src/app/core/models/organization.model';
 import { AccountingService } from 'src/app/core/services/accounting.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-transaction-recent-view',
-  imports: [CommonModule, AngularSvgIconModule, WordPipe],
+  imports: [CommonModule, AngularSvgIconModule, WordPipe, TranslateModule],
   templateUrl: './transaction-recent-view.component.html',
   styleUrl: './transaction-recent-view.component.scss'
 })

@@ -10,10 +10,11 @@ import { PurchaseOrderListItem } from '../../supplier.model';
 import { Organization } from 'src/app/core/models/organization.model';
 import { PurchaseOrderService } from 'src/app/core/services/purchase-order.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-purchase-order-list',
-  imports: [AngularSvgIconModule, CommonModule, WordPipe],
+  imports: [AngularSvgIconModule, CommonModule, WordPipe, TranslateModule],
   templateUrl: './purchase-order-list.component.html',
   styleUrl: './purchase-order-list.component.scss'
 })

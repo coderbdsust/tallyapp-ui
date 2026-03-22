@@ -1,11 +1,12 @@
 import { Component, Inject} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 
 
 @Component({
     selector: 'app-confirmation-modal',
-    imports: [MatDialogModule, AngularSvgIconModule],
+    imports: [MatDialogModule, AngularSvgIconModule, TranslateModule],
     templateUrl: './confirmation-modal.component.html',
     styleUrl: './confirmation-modal.component.scss'
 })

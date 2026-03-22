@@ -42,6 +42,7 @@ import { Employee } from '../../../../core/models/employee.model';
 import { ProductCategoryService } from '../../../../core/services/product-category.service';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 /** Local UI representation of one image slot */
 export interface ImageItem {
@@ -65,7 +66,8 @@ export interface ImageItem {
     ReactiveFormsModule,
     NgSelectComponent,
     AngularSvgIconModule,
-    ButtonComponent
+    ButtonComponent,
+    TranslateModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-product.component.html',
