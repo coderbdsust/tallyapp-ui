@@ -11,9 +11,9 @@
         </div>
         <div>
           <h5 class="text-sm font-semibold text-gray-900 dark:text-white">
-            {{ orgForm.get('id')?.value ? 'Edit Organization' : 'New Organization' }}
+            {{ orgForm.get('id')?.value ? ('ORG.EDIT_ORGANIZATION' | translate) : ('ORG.NEW_ORGANIZATION' | translate) }}
           </h5>
-          <p class="text-xs text-gray-400 dark:text-gray-500">Manage your organization details</p>
+          <p class="text-xs text-gray-400 dark:text-gray-500">{{ 'ORG.MANAGE_DETAILS' | translate }}</p>
         </div>
       </div>
       <button type="button" (click)="closeDrawer()"
@@ -31,11 +31,11 @@
 
     <!-- Media Section: Banner, Avatar, Logo -->
     <div class="space-y-1">
-      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Media</p>
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">{{ 'ORG.MEDIA' | translate }}</p>
 
       <!-- Banner -->
       <div class="org-field">
-        <label class="org-label">Banner Image</label>
+        <label class="org-label">{{ 'ORG.BANNER_IMAGE' | translate }}</label>
         <div class="relative group h-28 w-full rounded-xl overflow-hidden bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border-2 border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-center transition-colors hover:border-indigo-300 dark:hover:border-indigo-600">
           <img *ngIf="bannerPreviewUrl" [src]="bannerPreviewUrl" class="absolute inset-0 h-full w-full object-cover" alt="Banner" />
 
@@ -44,7 +44,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-indigo-300 dark:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <span class="text-xs text-indigo-400 dark:text-indigo-500 font-medium">Upload Banner</span>
+            <span class="text-xs text-indigo-400 dark:text-indigo-500 font-medium">{{ 'ORG.UPLOAD_BANNER' | translate }}</span>
           </label>
 
           <!-- Hover overlay when image exists -->
@@ -71,7 +71,7 @@
       <div class="flex gap-4 pt-2">
         <!-- Avatar -->
         <div class="org-field flex-1">
-          <label class="org-label">Owner Avatar</label>
+          <label class="org-label">{{ 'ORG.OWNER_AVATAR' | translate }}</label>
           <div class="flex flex-col items-center gap-2">
             <div class="relative group">
               <div class="h-20 w-20 rounded-full overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/40 dark:to-purple-900/40 ring-4 ring-white dark:ring-gray-800 shadow-md flex items-center justify-center">
@@ -97,14 +97,14 @@
                 class="hidden" (change)="onAvatarFileChange($event)" />
             </div>
             <label for="avatarInput" class="cursor-pointer text-xs font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400">
-              {{ avatarPreviewUrl ? 'Change' : 'Upload' }}
+              {{ avatarPreviewUrl ? ('ORG.CHANGE' | translate) : ('ORG.UPLOAD' | translate) }}
             </label>
           </div>
         </div>
 
         <!-- Logo -->
         <div class="org-field flex-1">
-          <label class="org-label">Logo</label>
+          <label class="org-label">{{ 'ORG.LOGO' | translate }}</label>
           <div class="flex flex-col items-center gap-2">
             <div class="relative group">
               <div class="h-20 w-20 rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-800 ring-4 ring-white dark:ring-gray-800 shadow-md border border-gray-200 dark:border-gray-700 flex items-center justify-center">
@@ -130,7 +130,7 @@
                 class="hidden" (change)="onLogoFileChange($event)" />
             </div>
             <label for="logoInput" class="cursor-pointer text-xs font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400">
-              {{ logoPreviewUrl ? 'Change' : 'Upload' }}
+              {{ logoPreviewUrl ? ('ORG.CHANGE' | translate) : ('ORG.UPLOAD' | translate) }}
             </label>
           </div>
         </div>
@@ -139,100 +139,100 @@
 
     <!-- Section: Basic Info -->
     <div class="space-y-3">
-      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Organization Info</p>
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">{{ 'ORG.ORG_INFO' | translate }}</p>
 
       <div class="org-field">
-        <label class="org-label">Organization Name <span class="text-red-400">*</span></label>
+        <label class="org-label">{{ 'ORG.ORG_NAME' | translate }} <span class="text-red-400">*</span></label>
         <input type="text" formControlName="orgName" class="org-input"
           [class.org-input--error]="submitted && f['orgName'].errors"
           placeholder="e.g. Acme Corp Ltd." />
-        <p class="org-error" *ngIf="submitted && f['orgName'].errors?.['required']">Required field</p>
+        <p class="org-error" *ngIf="submitted && f['orgName'].errors?.['required']">{{ 'COMMON.REQUIRED_FIELD' | translate }}</p>
       </div>
 
       <div class="org-field">
-        <label class="org-label">Owner Name <span class="text-red-400">*</span></label>
+        <label class="org-label">{{ 'ORG.OWNER_NAME' | translate }} <span class="text-red-400">*</span></label>
         <input type="text" formControlName="owner" class="org-input"
           [class.org-input--error]="submitted && f['owner'].errors"
           placeholder="e.g. John Doe" />
-        <p class="org-error" *ngIf="submitted && f['owner'].errors?.['required']">Required field</p>
+        <p class="org-error" *ngIf="submitted && f['owner'].errors?.['required']">{{ 'COMMON.REQUIRED_FIELD' | translate }}</p>
       </div>
 
       <div class="grid grid-cols-3 gap-3">
         <div class="org-field">
-          <label class="org-label">Reg. Number <span class="text-red-400">*</span></label>
+          <label class="org-label">{{ 'ORG.REG_NUMBER' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="orgRegNumber" class="org-input"
             [class.org-input--error]="submitted && f['orgRegNumber'].errors" placeholder="REG-XXXX" />
-          <p class="org-error" *ngIf="submitted && f['orgRegNumber'].errors?.['required']">Required</p>
+          <p class="org-error" *ngIf="submitted && f['orgRegNumber'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
         </div>
         <div class="org-field">
-          <label class="org-label">TIN Number <span class="text-red-400">*</span></label>
+          <label class="org-label">{{ 'ORG.TIN_NUMBER' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="orgTinNumber" class="org-input"
             [class.org-input--error]="submitted && f['orgTinNumber'].errors" placeholder="TIN-XXXX" />
-          <p class="org-error" *ngIf="submitted && f['orgTinNumber'].errors?.['required']">Required</p>
+          <p class="org-error" *ngIf="submitted && f['orgTinNumber'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
         </div>
         <div class="org-field">
-          <label class="org-label">VAT Number <span class="text-red-400">*</span></label>
+          <label class="org-label">{{ 'ORG.VAT_NUMBER' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="orgVatNumber" class="org-input"
             [class.org-input--error]="submitted && f['orgVatNumber'].errors" placeholder="VAT-XXXX" />
-          <p class="org-error" *ngIf="submitted && f['orgVatNumber'].errors?.['required']">Required</p>
+          <p class="org-error" *ngIf="submitted && f['orgVatNumber'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <div class="org-field">
-          <label class="org-label">Email <span class="text-red-400">*</span></label>
+          <label class="org-label">{{ 'COMMON.EMAIL' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="orgEmail" class="org-input"
             [class.org-input--error]="submitted && f['orgEmail'].errors"
             placeholder="hello@org.com" />
-          <p class="org-error" *ngIf="submitted && f['orgEmail'].errors?.['required']">Required</p>
-          <p class="org-error" *ngIf="submitted && f['orgEmail'].errors?.['email']">Invalid email</p>
+          <p class="org-error" *ngIf="submitted && f['orgEmail'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
+          <p class="org-error" *ngIf="submitted && f['orgEmail'].errors?.['email']">{{ 'COMMON.INVALID_EMAIL' | translate }}</p>
         </div>
         <div class="org-field">
-          <label class="org-label">Mobile <span class="text-red-400">*</span></label>
+          <label class="org-label">{{ 'ORG.MOBILE' | translate }} <span class="text-red-400">*</span></label>
           <div class="relative">
             <input type="text" formControlName="orgMobileNo" class="org-input pl-10"
               [class.org-input--error]="submitted && f['orgMobileNo'].errors"
               placeholder="01XXXXXXXXX" maxlength="11" />
           </div>
-          <p class="org-error" *ngIf="submitted && f['orgMobileNo'].errors?.['required']">Required</p>
-          <p class="org-error" *ngIf="submitted && f['orgMobileNo'].errors?.['pattern']">Invalid number</p>
+          <p class="org-error" *ngIf="submitted && f['orgMobileNo'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
+          <p class="org-error" *ngIf="submitted && f['orgMobileNo'].errors?.['pattern']">{{ 'COMMON.INVALID_NUMBER' | translate }}</p>
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <div class="org-field">
-          <label class="org-label">Since <span class="text-red-400">*</span></label>
+          <label class="org-label">{{ 'ORG.SINCE' | translate }} <span class="text-red-400">*</span></label>
           <input type="date" formControlName="since" class="org-input"
             [class.org-input--error]="submitted && f['since'].errors" placeholder="e.g. 2010-01-01" />
-          <p class="org-error" *ngIf="submitted && f['since'].errors?.['required']">Required</p>
+          <p class="org-error" *ngIf="submitted && f['since'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
         </div>
         <div class="org-field">
-          <label class="org-label">Status <span class="text-red-400">*</span></label>
+          <label class="org-label">{{ 'COMMON.STATUS' | translate }} <span class="text-red-400">*</span></label>
           <select formControlName="status" class="org-select"
             [class.org-input--error]="submitted && f['status'].errors">
-            <option value="">Select status</option>
+            <option value="">{{ 'ORG.SELECT_STATUS' | translate }}</option>
             <option *ngFor="let s of status" [value]="s">{{ s | word }}</option>
           </select>
-          <p class="org-error" *ngIf="submitted && f['status'].errors?.['required']">Required</p>
+          <p class="org-error" *ngIf="submitted && f['status'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
         </div>
       </div>
     </div>
 
     <!-- Section: Opening Hours -->
     <div class="space-y-3">
-      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Opening Hours</p>
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">{{ 'ORG.OPENING_HOURS' | translate }}</p>
 
       <div class="grid grid-cols-3 gap-3">
         <div class="org-field">
-          <label class="org-label">Open At</label>
+          <label class="org-label">{{ 'ORG.OPEN_AT' | translate }}</label>
           <input type="text" formControlName="orgOpenAt" class="org-input" placeholder="e.g. 9:00 AM" />
         </div>
         <div class="org-field">
-          <label class="org-label">Open in Week</label>
+          <label class="org-label">{{ 'ORG.OPEN_IN_WEEK' | translate }}</label>
           <input type="text" formControlName="orgOpenInWeek" class="org-input" placeholder="Mon–Fri" />
         </div>
         <div class="org-field">
-          <label class="org-label">Opening Title</label>
+          <label class="org-label">{{ 'ORG.OPENING_TITLE' | translate }}</label>
           <input type="text" formControlName="orgOpeningTitle" class="org-input" placeholder="Business Hours" />
         </div>
       </div>
@@ -240,54 +240,54 @@
 
     <!-- Section: Address -->
     <div class="space-y-3">
-      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Address</p>
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">{{ 'ORG.ADDRESS_SECTION' | translate }}</p>
 
       <div class="org-field">
-        <label class="org-label">Street Address <span class="text-red-400">*</span></label>
+        <label class="org-label">{{ 'ORG.STREET_ADDRESS' | translate }} <span class="text-red-400">*</span></label>
         <input type="text" formControlName="orgAddressLine" class="org-input"
           [class.org-input--error]="submitted && f['orgAddressLine'].errors"
           placeholder="House, Road, Area" />
-        <p class="org-error" *ngIf="submitted && f['orgAddressLine'].errors?.['required']">Required</p>
+        <p class="org-error" *ngIf="submitted && f['orgAddressLine'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
       </div>
 
       <div class="grid grid-cols-3 gap-3">
         <div class="org-field">
-          <label class="org-label">City <span class="text-red-400">*</span></label>
+          <label class="org-label">{{ 'ORG.CITY' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="orgAddressCity" class="org-input"
             [class.org-input--error]="submitted && f['orgAddressCity'].errors" placeholder="Dhaka" />
-          <p class="org-error" *ngIf="submitted && f['orgAddressCity'].errors?.['required']">Required</p>
+          <p class="org-error" *ngIf="submitted && f['orgAddressCity'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
         </div>
         <div class="org-field">
-          <label class="org-label">Postcode <span class="text-red-400">*</span></label>
+          <label class="org-label">{{ 'ORG.POSTCODE' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="orgAddressPostcode" class="org-input"
             [class.org-input--error]="submitted && f['orgAddressPostcode'].errors" placeholder="1200" />
-          <p class="org-error" *ngIf="submitted && f['orgAddressPostcode'].errors?.['required']">Required</p>
+          <p class="org-error" *ngIf="submitted && f['orgAddressPostcode'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
         </div>
         <div class="org-field">
-          <label class="org-label">Country <span class="text-red-400">*</span></label>
+          <label class="org-label">{{ 'ORG.COUNTRY' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="orgAddressCountry" class="org-input"
             [class.org-input--error]="submitted && f['orgAddressCountry'].errors" placeholder="BD" />
-          <p class="org-error" *ngIf="submitted && f['orgAddressCountry'].errors?.['required']">Required</p>
+          <p class="org-error" *ngIf="submitted && f['orgAddressCountry'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
         </div>
       </div>
     </div>
 
     <!-- Section: Tax & Rates -->
     <div class="space-y-3">
-      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Tax & Rates</p>
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">{{ 'ORG.TAX_AND_RATES' | translate }}</p>
 
       <div class="grid grid-cols-2 gap-3">
         <div class="org-field">
-          <label class="org-label">VAT Rate <span class="text-red-400">*</span></label>
+          <label class="org-label">{{ 'ORG.VAT_RATE' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="vat" class="org-input"
             [class.org-input--error]="submitted && f['vat'].errors" placeholder="e.g. 15" />
-          <p class="org-error" *ngIf="submitted && f['vat'].errors?.['required']">Required</p>
+          <p class="org-error" *ngIf="submitted && f['vat'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
         </div>
         <div class="org-field">
-          <label class="org-label">TAX Rate <span class="text-red-400">*</span></label>
+          <label class="org-label">{{ 'ORG.TAX_RATE' | translate }} <span class="text-red-400">*</span></label>
           <input type="text" formControlName="tax" class="org-input"
             [class.org-input--error]="submitted && f['tax'].errors" placeholder="e.g. 10" />
-          <p class="org-error" *ngIf="submitted && f['tax'].errors?.['required']">Required</p>
+          <p class="org-error" *ngIf="submitted && f['tax'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
         </div>
       </div>
     </div>
@@ -310,19 +310,19 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
-          Save Organization
+          {{ 'ORG.SAVE_ORGANIZATION' | translate }}
         </span>
       </button>
       <button type="button" (click)="closeDrawer()"
         class="flex-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-        Cancel
+        {{ 'COMMON.CANCEL' | translate }}
       </button>
     </div>
 
     <!-- Note -->
     <p class="pb-4 text-xs text-gray-400 dark:text-gray-500 text-center">
-      <strong class="text-gray-500 dark:text-gray-400">Note:</strong>
-      You can create your own organization or join another via an admin invite.
+      <strong class="text-gray-500 dark:text-gray-400">{{ 'ORG.NOTE' | translate }}:</strong>
+      {{ 'ORG.NOTE_TEXT' | translate }}
     </p>
   </form>
 </div>

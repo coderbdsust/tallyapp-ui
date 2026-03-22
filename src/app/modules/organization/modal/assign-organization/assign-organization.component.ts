@@ -5,10 +5,11 @@ import { ButtonComponent } from 'src/app/common/components/button/button.compone
 import { Organization } from '../../../../core/models/organization.model';
 import { OrganizationService } from '../../../../core/services/organization.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-assign-organization',
-  imports: [NgClass, NgIf, FormsModule, CommonModule, ReactiveFormsModule, ButtonComponent, NgSelectComponent],
+  imports: [NgClass, NgIf, FormsModule, CommonModule, ReactiveFormsModule, ButtonComponent, NgSelectComponent, TranslateModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './assign-organization.component.html',
   styleUrl: './assign-organization.component.scss',

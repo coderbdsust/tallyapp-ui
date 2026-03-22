@@ -12,6 +12,7 @@ import { Organization } from 'src/app/core/models/organization.model';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { EmployeeService } from 'src/app/core/services/employee.service';
 import { OrganizationOwnerComponent } from '../../modal/organization-owner/organization-owner.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-organization-list',
@@ -24,6 +25,7 @@ import { OrganizationOwnerComponent } from '../../modal/organization-owner/organ
     AddOrganizationComponent,
     WordPipe,
     NgIf,
+    TranslateModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './organization-list.component.html',

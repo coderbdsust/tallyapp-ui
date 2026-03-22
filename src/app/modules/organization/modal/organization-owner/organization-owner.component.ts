@@ -5,10 +5,11 @@ import { OrganizationService } from '../../../../core/services/organization.serv
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from 'src/app/common/components/button/button.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-organization-owner',
-  imports: [ AngularSvgIconModule, CommonModule, ButtonComponent],
+  imports: [ AngularSvgIconModule, CommonModule, ButtonComponent, TranslateModule],
   templateUrl: './organization-owner.component.html',
   styleUrl: './organization-owner.component.scss'
 })

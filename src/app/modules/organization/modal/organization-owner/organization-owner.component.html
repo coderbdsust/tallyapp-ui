@@ -1,6 +1,6 @@
 <div class="mb-4 flex justify-between m-4">
   <div class="inline-block">
-    <h2 class="font-semibold text-foreground">All Owners</h2>
+    <h2 class="font-semibold text-foreground">{{ 'ORG.ALL_OWNERS' | translate }}</h2>
     <div class="space-x-1 text-xs font-medium text-muted-foreground"></div>
   </div>
 </div>
@@ -11,9 +11,9 @@
       class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
       <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-white">
         <tr>
-          <th>Full Name </th>
-          <th>Email</th>
-          <th>Action</th>
+          <th>{{ 'ORG.FULL_NAME' | translate }}</th>
+          <th>{{ 'COMMON.EMAIL' | translate }}</th>
+          <th>{{ 'COMMON.ACTIONS' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -39,6 +39,6 @@
     </table>
   </div>
   <div class="flex items-center justify-end gap-2 p-4">
-    <app-button (click)="close()" impact="bold" tone="primary" shape="rounded" size="medium"> Close </app-button>   
+    <app-button (click)="close()" impact="bold" tone="primary" shape="rounded" size="medium"> {{ 'COMMON.CLOSE' | translate }} </app-button>
   </div>
 </div>

@@ -9,6 +9,7 @@ import { FileUploaderService } from 'src/app/core/services/file-uploader.service
 import { catchError, forkJoin, map, of, switchMap, throwError } from 'rxjs';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { FileUploadResponse } from 'src/app/core/models/file-upload-response.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-organization',
@@ -18,6 +19,7 @@ import { FileUploadResponse } from 'src/app/core/models/file-upload-response.mod
     ReactiveFormsModule,
     CommonModule,
     WordPipe,
+    TranslateModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-organization.component.html',
