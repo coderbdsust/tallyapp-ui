@@ -100,7 +100,7 @@ export class PurchaseOrderCreateComponent extends FormError implements OnInit, O
       .subscribe({
         next: (po) => {
           if (po.status !== 'DRAFT') {
-            this.poService.showToastError('Only DRAFT purchase orders can be edited');
+            this.poService.showToastErrorKey('SUPPLIER.PO.TOAST.DRAFT_ONLY');
             this.router.navigate(['/supplier/purchase-order/detail'], {
               queryParams: { orgId: this.orgId, poId: this.poId }
             });
@@ -166,7 +166,7 @@ export class PurchaseOrderCreateComponent extends FormError implements OnInit, O
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (po) => {
-            this.poService.showToastSuccess('Purchase order updated successfully');
+            this.poService.showToastSuccessKey('SUPPLIER.PO.TOAST.UPDATED');
             this.router.navigate(['/supplier/purchase-order/detail'], {
               queryParams: { orgId: this.orgId, poId: po.id }
             });
@@ -180,7 +180,7 @@ export class PurchaseOrderCreateComponent extends FormError implements OnInit, O
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (po) => {
-            this.poService.showToastSuccess('Purchase order created successfully');
+            this.poService.showToastSuccessKey('SUPPLIER.PO.TOAST.CREATED');
             this.router.navigate(['/supplier/purchase-order/detail'], {
               queryParams: { orgId: this.orgId, poId: po.id }
             });

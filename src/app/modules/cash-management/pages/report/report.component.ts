@@ -119,7 +119,7 @@ export class ReportComponent extends PaginatedComponent<Transaction> implements 
     onSearchChange(event: Event): void {
       const input = (event.target as HTMLInputElement).value;
       if (input.length < 4 && input.length > 0) {
-        this.orgService.showToastInfo('Search term must be at least 4 characters long.');
+        this.orgService.showToastInfoKey('COMMON.SEARCH_MIN_CHARS');
         return;
       }
       this.search = input;

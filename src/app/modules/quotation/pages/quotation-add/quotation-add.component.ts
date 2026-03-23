@@ -232,7 +232,7 @@ export class QuotationAddComponent extends FormError implements OnInit, OnDestro
   onCustomerSearchKeyType(event: Event): void {
     const searchKey = (event.target as HTMLInputElement).value;
     if (searchKey.length < 3) {
-      this.quotationService.showToastInfo('Please type at least 3 characters');
+      this.quotationService.showToastInfoKey('QUOTATION.TOAST.TYPE_3_CHARS');
       return;
     }
     this.fetchCustomers(searchKey);
@@ -289,7 +289,7 @@ export class QuotationAddComponent extends FormError implements OnInit, OnDestro
   onSearchKeyType(event: Event): void {
     const searchKey = (event.target as HTMLInputElement).value;
     if (searchKey.length < 3) {
-      this.quotationService.showToastInfo('Please type at least 3 characters');
+      this.quotationService.showToastInfoKey('QUOTATION.TOAST.TYPE_3_CHARS');
       return;
     }
     this.fetchProducts(searchKey);
@@ -334,7 +334,7 @@ export class QuotationAddComponent extends FormError implements OnInit, OnDestro
         next: (updated) => {
           this.invoice = updated;
           this.initiateProductForm();
-          this.quotationService.showToastSuccess('Product added successfully');
+          this.quotationService.showToastSuccessKey('QUOTATION.TOAST.PRODUCT_ADDED');
         },
         error: (err) => {
           this.quotationService.showToastErrorResponse(err);
@@ -348,7 +348,7 @@ export class QuotationAddComponent extends FormError implements OnInit, OnDestro
       .subscribe({
         next: (updated) => {
           this.invoice = updated;
-          this.quotationService.showToastSuccess('Product removed successfully');
+          this.quotationService.showToastSuccessKey('QUOTATION.TOAST.PRODUCT_REMOVED');
         },
         error: (err) => {
           this.quotationService.showToastErrorResponse(err);
@@ -374,7 +374,7 @@ export class QuotationAddComponent extends FormError implements OnInit, OnDestro
       .subscribe({
         next: (updated) => {
           this.invoice = updated;
-          this.quotationService.showToastSuccess('Customer information updated');
+          this.quotationService.showToastSuccessKey('QUOTATION.TOAST.CUSTOMER_UPDATED');
           // Also update pricing after customer update
           this.updatePricingWithStatus();
         },

@@ -120,7 +120,7 @@ export class CashTxnViewComponent extends PaginatedComponent<CashTxnSummaryDTO> 
   approveTxn(id: string): void {
     this.accService.approveCashTransaction(id).subscribe({
       next: () => {
-        this.accService.showToastSuccess('Transaction approved successfully');
+        this.accService.showToastSuccessKey('CASH.CASH_TXN.TOAST.APPROVED');
         this.loadData();
       },
       error: (error) => {
@@ -132,7 +132,7 @@ export class CashTxnViewComponent extends PaginatedComponent<CashTxnSummaryDTO> 
   rejectTxn(id: string, reason: string): void {
     this.accService.rejectCashTransaction(id, reason).subscribe({
       next: () => {
-        this.accService.showToastSuccess('Transaction rejected successfully');
+        this.accService.showToastSuccessKey('CASH.CASH_TXN.TOAST.REJECTED');
         this.loadData();
       },
       error: (error) => {

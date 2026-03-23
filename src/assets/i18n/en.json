@@ -73,7 +73,8 @@
     "REQUIRED_FIELD": "Required field",
     "REQUIRED": "Required",
     "INVALID_EMAIL": "Invalid email",
-    "INVALID_NUMBER": "Invalid number"
+    "INVALID_NUMBER": "Invalid number",
+    "SEARCH_MIN_CHARS": "Search term must be at least 4 characters long."
   },
   "TOAST": {
     "ERROR": "Error",
@@ -682,7 +683,11 @@
       "NO_FILTERS": "No filters active",
       "REJECT_TRANSACTION": "Reject Transaction",
       "CONFIRM_REJECT": "Confirm Reject",
-      "REJECT_REASON_DESC": "Please provide a reason for rejecting this transaction. This will be recorded against the transaction."
+      "REJECT_REASON_DESC": "Please provide a reason for rejecting this transaction. This will be recorded against the transaction.",
+      "TOAST": {
+        "APPROVED": "Transaction approved successfully",
+        "REJECTED": "Transaction rejected successfully"
+      }
     },
     "JOURNAL": {
       "TITLE": "Journal Viewer",
@@ -838,7 +843,8 @@
       "SYNC_TIME": "Sync Time",
       "MAX_ORG": "Max Organization",
       "TOAST": {
-        "SAVED": "User saved successfully"
+        "SAVED": "User saved successfully",
+        "SYNCED": "User synced successfully"
       }
     }
   },
@@ -1038,7 +1044,10 @@
     "TAX_RATE": "TAX Rate",
     "SAVE_ORGANIZATION": "Save Organization",
     "NOTE": "Note",
-    "NOTE_TEXT": "You can create your own organization or join another via an admin invite."
+    "NOTE_TEXT": "You can create your own organization or join another via an admin invite.",
+    "TOAST": {
+      "TYPE_5_CHARS": "Please type at least five (5) characters"
+    }
   },
   "LAYOUT": {
     "OPEN_MENU": "Open menu",

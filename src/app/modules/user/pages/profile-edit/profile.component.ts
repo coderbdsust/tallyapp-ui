@@ -244,7 +244,7 @@ export class ProfileComponent extends FormError implements OnInit {
     this.submitted = true;
 
     if (this.userProfileForm.invalid) {
-      this.commonService.showToastError('Please fill up the form');
+      this.commonService.showToastErrorKey('USER.PROFILE.TOAST.FILL_FORM');
       return;
     }
 
@@ -274,7 +274,7 @@ export class ProfileComponent extends FormError implements OnInit {
     if (Object.keys(userProfile).length > 0) apiCalls.push(this.userProfileService.updateUserProfile(userProfile));
 
     if (apiCalls.length === 0) {
-      this.userProfileService.showToastSuccess('No changes to save');
+      this.userProfileService.showToastSuccessKey('USER.PROFILE.TOAST.NO_CHANGES');
       return;
     }
 
@@ -288,7 +288,7 @@ export class ProfileComponent extends FormError implements OnInit {
             this.userProfile = { ...this.userProfile, ...(responses[idx] as UserProfile) };
           }
         }
-        this.userProfileService.showToastSuccess(`${this.userProfile?.fullName}, Profile Updated`);
+        this.userProfileService.showToastSuccessKey('USER.PROFILE.TOAST.UPDATED');
         this.router.navigate(['/user/profile-view']);
       },
       error: (err) => this.userProfileService.showToastErrorResponse(err),

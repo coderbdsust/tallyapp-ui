@@ -213,7 +213,7 @@ export class AddEmployeeComponent extends FormError implements OnInit {
     ).subscribe({
       next: (employee) => {
         this.employeeEmitter.emit(employee);
-        this.empService.showToastSuccess('Employee saved successfully');
+        this.empService.showToastSuccessKey('EMPLOYEE.TOAST.SAVED');
         this.closeDrawer();
       },
       error: (err) => {

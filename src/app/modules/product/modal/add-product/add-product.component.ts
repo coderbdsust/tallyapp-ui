@@ -415,7 +415,7 @@ export class AddProductComponent extends FormError implements OnInit, OnDestroy 
 
           this.productService.editProduct(product.id, product).subscribe({
             next: () => {
-              this.productService.showToastSuccess('Product updated successfully');
+              this.productService.showToastSuccessKey('PRODUCT.TOAST.UPDATED');
               this.closeModal();
               this.modifiedEmitter.emit(true);
             },
@@ -427,7 +427,7 @@ export class AddProductComponent extends FormError implements OnInit, OnDestroy 
         } else {
           this.productService.addProduct(product.madeBy, product).subscribe({
             next: () => {
-              this.productService.showToastSuccess('Product added successfully');
+              this.productService.showToastSuccessKey('PRODUCT.TOAST.ADDED');
               this.closeModal();
               this.modifiedEmitter.emit(true);
             },

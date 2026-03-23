@@ -129,7 +129,7 @@ export class InvoiceListComponent extends PaginatedComponent<Invoice> implements
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: (response) => {
-              this.invoiceService.showToastSuccess('Invoice deleted successfully');
+              this.invoiceService.showToastSuccessKey('INVOICE.TOAST.DELETED');
               this.loadData();
             },
             error: (errRes) => {
@@ -188,7 +188,7 @@ export class InvoiceListComponent extends PaginatedComponent<Invoice> implements
     a.click();
     document.body.removeChild(a);
     setTimeout(() => window.URL.revokeObjectURL(url), 100);
-    this.invoiceService.showToastSuccess('Downloaded successfully');
+    this.invoiceService.showToastSuccessKey('TOAST.DOWNLOADED_SUCCESSFULLY');
   }
 
   // Utility methods

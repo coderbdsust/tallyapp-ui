@@ -95,7 +95,7 @@ export class OrganizationListComponent extends PaginatedComponent<Organization> 
   // Event handlers
   onSearchChange(event: Event): void {
     if (!this.searchEnabled) {
-      this.orgService.showToastInfo('Search functionality is not implemented yet.');
+      this.orgService.showToastInfoKey('ORGANIZATION.TOAST.SEARCH_NOT_IMPL');
       return;
     }
 

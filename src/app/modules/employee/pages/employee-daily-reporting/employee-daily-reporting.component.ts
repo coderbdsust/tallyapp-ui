@@ -224,13 +224,13 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
 
       // Ensure we have a valid dailyWorkId
       if (!formData.dailyWorkId) {
-        this.dailyWorkService.showToastInfo('Please initiate a new report first.');
+        this.dailyWorkService.showToastInfoKey('EMPLOYEE.DAILY_REPORTING.TOAST.INITIATE_FIRST');
         return;
       }
 
       this.dailyWorkService.editDailyWorkEntry(formData.dailyWorkId, formData).subscribe({
         next: (response) => {
-          this.dailyWorkService.showToastSuccess('Daily work entry updated successfully');
+          this.dailyWorkService.showToastSuccessKey('EMPLOYEE.DAILY_REPORTING.TOAST.UPDATED');
           if (this.organzation) {
             this.pendingDailyWorks(this.organzation);
           }
@@ -241,7 +241,7 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
       });
     } else {
       this.markFormGroupTouched();
-      this.dailyWorkService.showToastInfo('Please fill in all required fields correctly.');
+      this.dailyWorkService.showToastInfoKey('EMPLOYEE.DAILY_REPORTING.TOAST.FILL_REQUIRED');
     }
   }
 
@@ -281,19 +281,19 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
     if (this.organzation) {
       const entryDate = this.expenditureForm.get('entryDate')?.value;
       if (!entryDate) {
-        this.dailyWorkService.showToastInfo('Please select an entry date');
+        this.dailyWorkService.showToastInfoKey('EMPLOYEE.DAILY_REPORTING.TOAST.SELECT_DATE');
         return;
       }
       this.newReportForm(this.organzation, entryDate);
     } else {
-      this.dailyWorkService.showToastError('Organization not found');
+      this.dailyWorkService.showToastErrorKey('EMPLOYEE.DAILY_REPORTING.TOAST.ORG_NOT_FOUND');
     }
   }
 
   editReport(dailyWork: DailyWork): void {
     this.dailyWork = dailyWork;
     this.initializeDailyWorkForm(dailyWork.dailyWorkId, dailyWork.entryDate, dailyWork.employeeWorkUnits);
-    this.dailyWorkService.showToastInfo('Modify Daily Work Entry : ' + dailyWork.entryDate);
+    this.dailyWorkService.showToastInfoKey('EMPLOYEE.DAILY_REPORTING.TOAST.MODIFY_ENTRY', { date: dailyWork.entryDate });
   }
 
   deleteReport(dailyWork: DailyWork): void {
@@ -338,7 +338,7 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
       if (result) {
         this.dailyWorkService.approveDailyWorkEntry(dailyWork.dailyWorkId, dailyWork).subscribe({
           next: (response) => {
-            this.dailyWorkService.showToastSuccess('Daily work entry approved successfully');
+            this.dailyWorkService.showToastSuccessKey('EMPLOYEE.DAILY_REPORTING.TOAST.APPROVED');
             if (this.organzation) {
               this.pendingDailyWorks(this.organzation);
             }
@@ -363,7 +363,7 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
       if (existingDailyWork) {
         this.editReport(existingDailyWork);
       } else {
-        this.dailyWorkService.showToastError('Daily work entry not found');
+        this.dailyWorkService.showToastErrorKey('EMPLOYEE.DAILY_REPORTING.TOAST.NOT_FOUND');
       }
     } else {
       // Create new report for selected date
@@ -373,7 +373,7 @@ export class EmployeeDailyReportingComponent extends FormError implements OnInit
         // Then create new report
         this.newReportForm(this.organzation, event.date);
       } else {
-        this.dailyWorkService.showToastError('Organization not found');
+        this.dailyWorkService.showToastErrorKey('EMPLOYEE.DAILY_REPORTING.TOAST.ORG_NOT_FOUND');
       }
     }
   }

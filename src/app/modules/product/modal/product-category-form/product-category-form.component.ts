@@ -53,7 +53,7 @@ export class ProductCategoryFormComponent {
       .addProductCategoryByOrganization(this.organization.id, category)
       .subscribe({
         next: (response) => {
-          this.pcService.showToastSuccess('Product category added successfully');
+          this.pcService.showToastSuccessKey('PRODUCT.CATEGORY_LIST.TOAST.ADDED');
           this.loading = false;
           this.dialogRef.close(response);
         },

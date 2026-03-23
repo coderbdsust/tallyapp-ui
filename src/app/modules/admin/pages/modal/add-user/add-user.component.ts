@@ -88,7 +88,7 @@ export class AddUserComponent {
 
     this.regUserService.addUser(user).subscribe({
       next: () => {
-        this.regUserService.showToastSuccess('User saved successfully');
+        this.regUserService.showToastSuccessKey('ADMIN.USER_MANAGEMENT.TOAST.SAVED');
         this.submitted = false;
         this.closeModal();
         this.modifiedEmitter.emit(true);

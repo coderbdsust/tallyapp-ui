@@ -114,7 +114,7 @@ export class RegisteredUserComponent extends PaginatedComponent<RegisteredUser> 
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          this.registerUserService.showToastSuccess("User sync successfully");
+          this.registerUserService.showToastSuccessKey('ADMIN.USER_MANAGEMENT.TOAST.SYNCED');
           this.loading = false;
           this.loadData();
         },

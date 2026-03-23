@@ -93,7 +93,7 @@ export class ProductListComponent extends PaginatedComponent<Product> implements
     this.search = input;
 
     if (this.searchCriteria === '' && this.search !== '') {
-      this.productService.showToastError('Please select a search criteria');
+      this.productService.showToastErrorKey('PRODUCT.TOAST.SELECT_CRITERIA');
       return;
     }
 

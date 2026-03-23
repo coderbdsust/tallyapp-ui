@@ -113,13 +113,13 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
 
   submit() {
     if (this.form.invalid) {
-      this.orgService.showToastError('Please fill in all required fields correctly.');
+      this.orgService.showToastErrorKey('EMPLOYEE.EXPENSE.TOAST.FILL_REQUIRED');
       return;
     }
 
     this.empExpenseService.createExpense(this.form.value).subscribe({
       next: () => {
-        this.orgService.showToastSuccess('Employee expense created successfully');
+        this.orgService.showToastSuccessKey('EMPLOYEE.EXPENSE.TOAST.CREATED');
         this.initiatlizeForm(this.org);
         this.triggerListReload();
       },
@@ -142,7 +142,7 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
   approveExpense(expenseId: string) {
     this.empExpenseService.approveExpense(expenseId, { notes: 'Approved by admin' }).subscribe({
       next: () => {
-        this.orgService.showToastSuccess('Employee expense approved successfully');
+        this.orgService.showToastSuccessKey('EMPLOYEE.EXPENSE.TOAST.APPROVED');
         this.triggerListReload();
         this.loadBalanceSummary(this.org!);
       },
@@ -153,7 +153,7 @@ export class EmployeeExpenseComponent extends FormError implements OnInit {
   rejectExpense(expenseId: string) {
     this.empExpenseService.rejectExpense(expenseId, { reason: 'Rejected by admin' }).subscribe({
       next: () => {
-        this.orgService.showToastSuccess('Employee expense rejected successfully');
+        this.orgService.showToastSuccessKey('EMPLOYEE.EXPENSE.TOAST.REJECTED');
         this.triggerListReload();
       },
       error: (error) => this.orgService.showToastErrorResponse(error),

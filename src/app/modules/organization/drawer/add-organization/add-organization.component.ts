@@ -308,7 +308,7 @@ export class AddOrganizationComponent implements OnInit {
           this.orgEmitter.emit(org);
           this.orgForm.patchValue({ id: org.id });
           this.orgService.syncOrganization(org);
-          this.orgService.showToastSuccess('Organization saved successfully');
+          this.orgService.showToastSuccessKey('ORGANIZATION.TOAST.SAVED');
           this.closeDrawer();
         },
         error: (error) => {

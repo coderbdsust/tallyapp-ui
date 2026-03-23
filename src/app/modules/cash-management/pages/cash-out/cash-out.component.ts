@@ -132,7 +132,7 @@ export class CashOutComponent extends FormError implements OnInit {
 
   submit() {
     if (this.form.invalid) {
-      this.orgService.showToastError('Please fill in all required fields correctly.');
+      this.orgService.showToastErrorKey('CASH.CASH_OUT.TOAST.FILL_REQUIRED');
       return;
     }
 

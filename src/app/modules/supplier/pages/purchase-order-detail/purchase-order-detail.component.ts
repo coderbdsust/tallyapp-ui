@@ -121,7 +121,7 @@ export class PurchaseOrderDetailComponent extends FormError implements OnInit, O
           .subscribe({
             next: (po) => {
               this.po = po;
-              this.poService.showToastSuccess('Purchase order approved successfully');
+              this.poService.showToastSuccessKey('SUPPLIER.PO.TOAST.APPROVED');
             },
             error: (err) => {
               this.poService.showToastErrorResponse(err);
@@ -143,7 +143,7 @@ export class PurchaseOrderDetailComponent extends FormError implements OnInit, O
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
-              this.poService.showToastSuccess('Purchase order cancelled successfully');
+              this.poService.showToastSuccessKey('SUPPLIER.PO.TOAST.CANCELLED');
               this.loadPurchaseOrder();
             },
             error: (err) => {
@@ -171,7 +171,7 @@ export class PurchaseOrderDetailComponent extends FormError implements OnInit, O
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          this.poService.showToastSuccess('Payment added successfully');
+          this.poService.showToastSuccessKey('SUPPLIER.PO.TOAST.PAYMENT_ADDED');
           this.showPaymentForm = false;
           this.paymentSubmitted = false;
           this.loadPurchaseOrder();
@@ -194,7 +194,7 @@ export class PurchaseOrderDetailComponent extends FormError implements OnInit, O
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
-              this.poService.showToastSuccess('Payment deleted successfully');
+              this.poService.showToastSuccessKey('SUPPLIER.PO.TOAST.PAYMENT_DELETED');
               this.loadPurchaseOrder();
             },
             error: (err) => {

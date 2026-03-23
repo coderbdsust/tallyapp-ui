@@ -138,7 +138,7 @@ export class CashInComponent extends FormError implements OnInit {
 
   submit() {
     if (this.form.invalid) {
-      this.orgService.showToastError('Please fill in all required fields correctly.');
+      this.orgService.showToastErrorKey('CASH.CASH_IN.TOAST.FILL_REQUIRED');
       return;
     }
 

@@ -64,7 +64,7 @@ export class AssignOrganizationComponent implements OnChanges {
   onSearchKeyType(event: Event) {
     const searchKey = (event.target as HTMLSelectElement).value;
     if (searchKey && searchKey.length < 5) {
-      this.orgService.showToastInfo('Please type atleast five (5) characters');
+      this.orgService.showToastInfoKey('ORG.TOAST.TYPE_5_CHARS');
       return;
     }
     this.fetchUsers(searchKey);

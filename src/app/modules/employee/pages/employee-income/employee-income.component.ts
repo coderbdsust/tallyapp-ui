@@ -88,7 +88,7 @@ export class EmployeeIncomeComponent extends FormError implements OnInit {
 
   submit(): void {
   if (!this.form.valid) {
-    this.orgService.showToastError('Please fill all required fields correctly.');
+    this.orgService.showToastErrorKey('EMPLOYEE.INCOME.TOAST.FILL_REQUIRED');
     return;
   }
 
@@ -103,7 +103,7 @@ export class EmployeeIncomeComponent extends FormError implements OnInit {
   this.selectedEmployee = this.allEmployees.find(emp => emp.id === formData.employeeId) ?? null;
   
   if (!this.selectedEmployee) {
-    this.orgService.showToastError('Selected employee not found.');
+    this.orgService.showToastErrorKey('EMPLOYEE.INCOME.TOAST.EMPLOYEE_NOT_FOUND');
     this.loading = false;
     return;
   }
@@ -112,7 +112,7 @@ export class EmployeeIncomeComponent extends FormError implements OnInit {
   if (this.selectedEmployee.employeeBillingType === 'MONTHLY') {
     
     if(!formData.year || !formData.month){
-      this.orgService.showToastError('Please select year and month.');
+      this.orgService.showToastErrorKey('EMPLOYEE.INCOME.TOAST.SELECT_YEAR_MONTH');
       this.loading = false;
       return;
     }
@@ -308,7 +308,7 @@ export class EmployeeIncomeComponent extends FormError implements OnInit {
   generateReport(){
     
     if (!this.form.valid) {
-      this.empExpenseService.showToastInfo('Please select an employee');
+      this.empExpenseService.showToastInfoKey('EMPLOYEE.INCOME.TOAST.SELECT_EMPLOYEE');
       return;
     }
 

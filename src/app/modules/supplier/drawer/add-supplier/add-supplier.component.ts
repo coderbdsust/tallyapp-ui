@@ -89,7 +89,7 @@ export class AddSupplierComponent  extends FormError implements OnInit {
       .subscribe({
         next: (supplier) => {
           this.supplierEmitter.emit(supplier);
-          this.supplierService.showToastSuccess('Supplier saved successfully');
+          this.supplierService.showToastSuccessKey('SUPPLIER.TOAST.SAVED');
           this.closeDrawer();
           this.initForm(null);
         },
