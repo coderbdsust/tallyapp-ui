@@ -247,6 +247,11 @@
   },
   "EMPLOYEE": {
     "TITLE": "কর্মচারীগণ",
+    "PERSONAL_INFORMATION":"ব্যক্তিগত তথ্য",
+    "POSTCODE":"পোস্টকোড",
+    "ADDRESS":"ঠিকানা",
+    "EMPLOYMENT_DETAILS":"কর্মসংস্থান বিবরণ",
+    "FULL_NAME":"নাম",
     "ALL_EMPLOYEES": "সকল কর্মচারী",
     "ADD_EMPLOYEE": "কর্মচারী যোগ করুন",
     "EDIT_EMPLOYEE": "কর্মচারী সম্পাদনা",

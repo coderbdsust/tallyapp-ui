@@ -247,6 +247,11 @@
   },
   "EMPLOYEE": {
     "TITLE": "Employees",
+    "PERSONAL_INFORMATION":"Personal Information",
+    "FULL_NAME": "Full Name",
+    "POSTCODE":"Postcode",
+    "ADDRESS":"Address",
+    "EMPLOYMENT_DETAILS":"Employment Details",
     "ALL_EMPLOYEES": "All Employees",
     "ADD_EMPLOYEE": "Add Employee",
     "EDIT_EMPLOYEE": "Edit Employee",
