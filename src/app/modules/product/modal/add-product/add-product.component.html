@@ -1,6 +1,6 @@
 <div [ngClass]="isModalOpen ? 'flex' : 'hidden'" id="crud-modal" tabindex="-1" aria-hidden="true"
   class="fixed inset-0 z-50 h-full w-full items-center justify-center bg-black bg-opacity-50">
-  <div class="relative w-full max-w-screen-lg p-4">
+  <div class="relative w-full max-w-screen-2xl p-4 mx-4">
     <!-- Modal content -->
     <div class="relative rounded bg-white shadow dark:bg-gray-700">
       <!-- Modal header -->
@@ -151,8 +151,30 @@
 
                       <input formControlName="id" type="hidden" />
                       <input formControlName="batchNumber" type="hidden" />
-                      <input formControlName="manufactureDate" type="hidden" />
-                      <input formControlName="expiryDate" type="hidden" />
+
+                      <!-- Manufacture Date -->
+                      <div class="form__group w-2/12">
+                        <div class="relative">
+                          <label for="manufactureDate-{{ i }}"
+                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
+                            {{ 'PRODUCT.MFG_DATE' | translate }}
+                          </label>
+                          <input type="date" id="manufactureDate-{{ i }}" class="peer block" placeholder=" "
+                            formControlName="manufactureDate" />
+                        </div>
+                      </div>
+
+                      <!-- Expiry Date -->
+                      <div class="form__group w-2/12">
+                        <div class="relative">
+                          <label for="expiryDate-{{ i }}"
+                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
+                            {{ 'PRODUCT.EXPIRY_DATE' | translate }}
+                          </label>
+                          <input type="date" id="expiryDate-{{ i }}" class="peer block" placeholder=" "
+                            formControlName="expiryDate" />
+                        </div>
+                      </div>
 
                       <!-- Employee Cost -->
                       <div class="form__group w-2/12">
