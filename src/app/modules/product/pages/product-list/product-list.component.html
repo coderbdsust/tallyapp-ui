@@ -90,90 +90,185 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let p of pageResponse?.content; let i = index" class="gap-4 hover:bg-card/50">
-          <td class="relative">
-            <div class="flex items-center gap-2.5 group">
-              <!-- Product Image -->
-              <img [src]="productService.renderFirstProductImage(p)" alt="product image"
-                class="h-9 w-9 shrink-0 rounded-full object-cover" loading="lazy" />
+        <ng-container *ngFor="let p of pageResponse?.content; let i = index">
+          <tr class="gap-4 cursor-pointer hover:bg-card/50"
+              [ngClass]="{'bg-muted/30': expandedProductId === p.id}"
+              (click)="toggleProductDetail(p)">
+            <td class="relative">
+              <div class="flex items-center gap-2.5 group">
+                <!-- Chevron Icon -->
+                <svg-icon [src]="expandedProductId === p.id ? './assets/icons/heroicons/solid/chevron-down.svg' : './assets/icons/heroicons/solid/chevron-right.svg'"
+                          [svgClass]="'h-4 w-4 text-muted-foreground shrink-0'"></svg-icon>
 
-              <!-- Product Name -->
+                <!-- Product Image -->
+                <img [src]="productService.renderFirstProductImage(p)" alt="product image"
+                  class="h-9 w-9 shrink-0 rounded-full object-cover" loading="lazy" />
+
+                <!-- Product Name -->
+                <div class="flex flex-col">
+                  <a class="text-sm font-semibold text-foreground hover:text-primary" href="#">
+                    {{ p.name }}
+                  </a>
+                </div>
+
+                <!-- Hover Image Preview -->
+                <div class="absolute left-12 top-0 w-32 h-32 bg-white shadow-lg rounded-lg border border-gray-300 p-1
+                         opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
+                         z-50">
+                  <img [src]="productService.renderFirstProductImage(p)" alt="Preview"
+                    class="w-full h-full object-cover rounded-lg" loading="lazy">
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
+                {{ p.code }}
+              </span>
+            </td>
+            <td>
               <div class="flex flex-col">
                 <a class="text-sm font-semibold text-foreground hover:text-primary" href="#">
-                  {{ p.name }}
+                  {{ p.productCategory.name }}
                 </a>
               </div>
-
-
-
-              <!-- Hover Image Preview -->
-              <div class="absolute left-12 top-0 w-32 h-32 bg-white shadow-lg rounded-lg border border-gray-300 p-1
-                       opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
-                       z-50">
-                <img [src]="productService.renderFirstProductImage(p)" alt="Preview"
-                  class="w-full h-full object-cover rounded-lg" loading="lazy">
+            </td>
+            <td>
+              <span class="font-semibold text-green-600">
+                {{ formatCurrency(p.unitPrice) }}
+              </span>
+            </td>
+            <td>
+              <span class="font-semibold text-yellow-500">
+                {{ p.discountPercent }} %
+              </span>
+            </td>
+            <td>{{ formatCurrency(p.perUnitEmployeeCost) }}</td>
+            <td>{{ formatCurrency(p.perUnitProductionCost) }}</td>
+            <td>
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" [ngClass]="{
+                  'bg-green-100 text-green-800': p.availableQuantity > 10,
+                  'bg-yellow-100 text-yellow-800': p.availableQuantity > 0 && p.availableQuantity <= 10,
+                  'bg-red-100 text-red-800': p.availableQuantity === 0
+                }">
+                {{ p.availableQuantity }} ({{ p.unitType }})
+              </span>
+            </td>
+            <td>
+              <div class="flex items-center gap-2">
+                <div class="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span class="text-xs font-medium text-primary">
+                    {{ p.madeBy.fullName.charAt(0).toUpperCase() }}
+                  </span>
+                </div>
+                <span class="text-sm">{{ p.madeBy.fullName }}</span>
               </div>
-            </div>
-          </td>
-          <td>
-            <span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
-              {{ p.code }}
-            </span>
-          </td>
-          <td>
-            <div class="flex flex-col">
-              <a class="text-sm font-semibold text-foreground hover:text-primary" href="#">
-                {{ p.productCategory.name }}
-              </a>
-            </div>
-          </td>
-          <td>
-            <span class="font-semibold text-green-600">
-              {{ formatCurrency(p.unitPrice) }}
-            </span>
-          </td>
-          <td>
-            <span class="font-semibold text-yellow-500">
-              {{ p.discountPercent }} %
-            </span>
-          </td>
-          <td>{{ formatCurrency(p.perUnitEmployeeCost) }}</td>
-          <td>{{ formatCurrency(p.perUnitProductionCost) }}</td>
-          <td>
-            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" [ngClass]="{
-                'bg-green-100 text-green-800': p.availableQuantity > 10,
-                'bg-yellow-100 text-yellow-800': p.availableQuantity > 0 && p.availableQuantity <= 10,
-                'bg-red-100 text-red-800': p.availableQuantity === 0
-              }">
-              {{ p.availableQuantity }} ({{ p.unitType }})
-            </span>
-          </td>
-          <td>
-            <div class="flex items-center gap-2">
-              <div class="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
-                <span class="text-xs font-medium text-primary">
-                  {{ p.madeBy.fullName.charAt(0).toUpperCase() }}
-                </span>
-              </div>
-              <span class="text-sm">{{ p.madeBy.fullName }}</span>
-            </div>
-          </td>
-          <td>{{ p.createdDate | date: 'dd-MM-yyyy' }}</td>
-          <td class="text-center">
-            <div class="flex items-center justify-center gap-4">
-              <button (click)="editProduct(p)" class="p-1 hover:text-primary transition-colors" [title]="'COMMON.EDIT' | translate">
-                <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'">
-                </svg-icon>
-              </button>
+            </td>
+            <td>{{ p.createdDate | date: 'dd-MM-yyyy' }}</td>
+            <td class="text-center">
+              <div class="flex items-center justify-center gap-4">
+                <button (click)="editProduct(p); $event.stopPropagation()" class="p-1 hover:text-primary transition-colors" [title]="'COMMON.EDIT' | translate">
+                  <svg-icon src="./assets/icons/heroicons/outline/edit.svg" [svgClass]="'h-4 w-4'">
+                  </svg-icon>
+                </button>
 
-              <button (click)="deleteProduct(p)" class="p-1 hover:text-red-600 transition-colors"
-                [title]="'COMMON.DELETE' | translate">
-                <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'">
-                </svg-icon>
-              </button>
-            </div>
-          </td>
-        </tr>
+                <button (click)="deleteProduct(p); $event.stopPropagation()" class="p-1 hover:text-red-600 transition-colors"
+                  [title]="'COMMON.DELETE' | translate">
+                  <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'">
+                  </svg-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Expanded Detail Row -->
+          <tr *ngIf="expandedProductId === p.id">
+            <td colspan="11" class="p-0">
+              <div class="bg-gray-50 border-t border-b border-gray-200 px-6 py-4">
+                <div class="space-y-6">
+
+                  <!-- Photos Section (Top) -->
+                  <div>
+                    <h4 class="text-sm font-semibold text-foreground mb-3">{{ 'PRODUCT.PRODUCT_PHOTOS' | translate }}</h4>
+                    <div *ngIf="p.photos && p.photos.length > 0" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                      <div *ngFor="let photo of p.photos.slice(0, 4)" class="aspect-square">
+                        <img [src]="photo.url" [alt]="photo.originalName"
+                          class="w-full h-full object-cover rounded-lg border border-gray-200 shadow-sm" loading="lazy" />
+                      </div>
+                    </div>
+                    <div *ngIf="!p.photos || p.photos.length === 0"
+                      class="flex items-center justify-center h-24 bg-gray-100 rounded-lg border border-dashed border-gray-300">
+                      <span class="text-sm text-muted-foreground">{{ 'PRODUCT.NO_PHOTOS' | translate }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Stock Details Section (Below) -->
+                  <div>
+                    <h4 class="text-sm font-semibold text-foreground mb-3">{{ 'PRODUCT.STOCK_DETAILS' | translate }}</h4>
+
+                    <!-- Description -->
+                    <p *ngIf="p.description" class="text-sm text-muted-foreground mb-3">{{ p.description }}</p>
+
+                    <!-- Summary Row -->
+                    <div class="flex flex-wrap gap-4 mb-3">
+                      <div class="bg-white rounded-lg border border-gray-200 px-3 py-2">
+                        <span class="text-xs text-muted-foreground">{{ 'PRODUCT.INITIAL_QTY' | translate }}</span>
+                        <p class="text-sm font-semibold text-foreground">{{ p.initialQuantity }}</p>
+                      </div>
+                      <div class="bg-white rounded-lg border border-gray-200 px-3 py-2">
+                        <span class="text-xs text-muted-foreground">{{ 'PRODUCT.AVAILABLE_QTY' | translate }}</span>
+                        <p class="text-sm font-semibold text-foreground">{{ p.availableQuantity }}</p>
+                      </div>
+                      <div class="bg-white rounded-lg border border-gray-200 px-3 py-2">
+                        <span class="text-xs text-muted-foreground">{{ 'PRODUCT.UNIT_TYPE' | translate }}</span>
+                        <p class="text-sm font-semibold text-foreground">{{ p.unitType }}</p>
+                      </div>
+                    </div>
+
+                    <!-- Stock Batch Table -->
+                    <div *ngIf="p.productStockList && p.productStockList.length > 0"
+                      class="overflow-x-auto rounded-lg border border-gray-200">
+                      <table class="w-full text-xs text-left text-muted-foreground">
+                        <thead class="bg-gray-100 text-gray-600">
+                          <tr>
+                            <th class="px-3 py-2">{{ 'PRODUCT.BATCH_NUMBER' | translate }}</th>
+                            <th class="px-3 py-2">{{ 'PRODUCT.MFG_DATE' | translate }}</th>
+                            <th class="px-3 py-2">{{ 'PRODUCT.EXPIRY_DATE' | translate }}</th>
+                            <th class="px-3 py-2">{{ 'PRODUCT.QTY_ADDED' | translate }}</th>
+                            <th class="px-3 py-2">{{ 'PRODUCT.AVAILABLE_QTY' | translate }}</th>
+                            <th class="px-3 py-2">{{ 'PRODUCT.BATCH_PRICE' | translate }}</th>
+                            <th class="px-3 py-2">{{ 'PRODUCT.DISCOUNT_PERCENT' | translate }}</th>
+                            <th class="px-3 py-2">{{ 'PRODUCT.PRODUCTION_COST' | translate }}</th>
+                            <th class="px-3 py-2">{{ 'PRODUCT.EMPLOYEE_COST' | translate }}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let stock of p.productStockList" class="border-t border-gray-100 hover:bg-gray-50">
+                            <td class="px-3 py-2 font-mono">{{ stock.batchNumber }}</td>
+                            <td class="px-3 py-2">{{ stock.manufactureDate | date: 'dd-MM-yyyy' }}</td>
+                            <td class="px-3 py-2">{{ stock.expiryDate | date: 'dd-MM-yyyy' }}</td>
+                            <td class="px-3 py-2">{{ stock.initialQuantity }}</td>
+                            <td class="px-3 py-2">{{ stock.availableQuantity }}</td>
+                            <td class="px-3 py-2">{{ formatCurrency(stock.unitPrice) }}</td>
+                            <td class="px-3 py-2">{{ stock.discountPercent }}%</td>
+                            <td class="px-3 py-2">{{ formatCurrency(stock.perUnitProductionCost) }}</td>
+                            <td class="px-3 py-2">{{ formatCurrency(stock.perUnitEmployeeCost) }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div *ngIf="!p.productStockList || p.productStockList.length === 0"
+                      class="flex items-center justify-center h-20 bg-gray-100 rounded-lg border border-dashed border-gray-300">
+                      <span class="text-sm text-muted-foreground">{{ 'PRODUCT.NO_STOCK_ENTRIES' | translate }}</span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+
         <tr *ngIf="!hasData">
           <td class="py-8 text-center text-sm" colspan="9">
             <div class="flex flex-col items-center gap-2">

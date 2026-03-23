@@ -26,6 +26,7 @@ export class ProductListComponent extends PaginatedComponent<Product> implements
   search: string = '';
   searchCriteria: string = '';
   loading: boolean = false;
+  expandedProductId: string | null = null;
   submitted = false;
   errorMessage = '';
   organization!: Organization;
@@ -115,6 +116,10 @@ export class ProductListComponent extends PaginatedComponent<Product> implements
     }
     
     this.onFilterChange();
+  }
+
+  toggleProductDetail(product: Product): void {
+    this.expandedProductId = this.expandedProductId === product.id ? null : product.id;
   }
 
   // Product actions
