@@ -200,6 +200,11 @@
     "NOT_FOUND_DESC": "অনুরোধকৃত চালান লোড করা যায়নি।",
     "BACK_TO_LIST": "চালান তালিকায় ফিরুন",
     "NOTES_TEXT": "আপনার ব্যবসার জন্য ধন্যবাদ! এই চালান সম্পর্কে কোনো প্রশ্ন থাকলে, আমাদের সাথে যোগাযোগ করুন",
+    "SALE_DETAILS": "বিক্রয় বিবরণ",
+    "SELLING_RATE": "বিক্রয় মূল্য",
+    "SALE_DISCOUNT_PERCENT": "ছাড় %",
+    "QTY_TO_SELL": "বিক্রয়ের পরিমাণ",
+    "SALE_AMOUNT": "বিক্রয় পরিমাণ",
     "TOAST": {
       "DELETED": "চালান সফলভাবে মুছে ফেলা হয়েছে",
       "DOWNLOADED": "সফলভাবে ডাউনলোড হয়েছে",
@@ -778,10 +783,25 @@
       "COMPANY": "কোম্পানি",
       "DESIGNATION": "পদবী",
       "DEPARTMENT": "বিভাগ",
+      "SAVE_CHANGES": "পরিবর্তন সংরক্ষণ",
+      "EMAIL": "ইমেইল ঠিকানা",
+      "MOBILE_NO": "মোবাইল নম্বর",
+      "STREET_ADDRESS": "রাস্তার ঠিকানা",
+      "CITY": "শহর",
+      "STATE": "রাজ্য",
+      "POSTCODE": "পোস্টকোড",
+      "COUNTRY": "দেশ",
+      "ADDRESS": "ঠিকানা",
+      "WORK": "কর্ম",
+      "NO_ADDRESSES": "এখনো কোনো ঠিকানা যোগ করা হয়নি।",
+      "NO_WORK_ENTRIES": "এখনো কোনো কর্ম যোগ করা হয়নি।",
+      "CHANGE_PHOTO": "ছবি পরিবর্তন",
+      "UPLOAD_PHOTO": "ছবি আপলোড",
       "PROFILE_COMPLETENESS": "প্রোফাইল সম্পূর্ণতা",
       "TOAST": {
         "NO_CHANGES": "সংরক্ষণ করার কিছু নেই",
-        "UPDATED": "প্রোফাইল আপডেট হয়েছে"
+        "UPDATED": "প্রোফাইল আপডেট হয়েছে",
+        "FILL_FORM": "দয়া করে ফর্মটি পূরণ করুন"
       }
     },
     "CHANGE_PASSWORD": {
@@ -790,6 +810,9 @@
       "NEW_PASSWORD": "নতুন পাসওয়ার্ড",
       "CONFIRM_PASSWORD": "পাসওয়ার্ড নিশ্চিত করুন",
       "PASSWORD_STRENGTH": "পাসওয়ার্ডের শক্তি",
+      "PASSWORD_HINT": "৮ বা তার বেশি অক্ষর ব্যবহার করুন যেখানে অক্ষর, সংখ্যা ও চিহ্ন মিশ্রিত থাকবে।",
+      "ERROR_SAME_PASSWORD": "পুরাতন পাসওয়ার্ড ও নতুন পাসওয়ার্ড একই হতে পারবে না",
+      "ERROR_MISMATCH": "পাসওয়ার্ড ও নিশ্চিত পাসওয়ার্ড মিলছে না",
       "CHANGE": "পাসওয়ার্ড পরিবর্তন করুন"
     },
     "TWO_FA": {
@@ -797,7 +820,9 @@
       "SCAN_QR": "QR কোড স্ক্যান করুন",
       "ENTER_OTP": "OTP দিন",
       "ENABLE_2FA": "2FA চালু করুন",
-      "DISABLE_2FA": "2FA বন্ধ করুন"
+      "DISABLE_2FA": "2FA বন্ধ করুন",
+      "AUTH_APP": "2FA প্রমাণীকরণ অ্যাপ",
+      "VALIDATE": "যাচাই করুন"
     }
   },
   "ADMIN": {
@@ -820,7 +845,43 @@
   "DASHBOARD": {
     "TITLE": "ড্যাশবোর্ড",
     "NFT_DASHBOARD": "NFT ড্যাশবোর্ড",
-    "MANAGE_BIDS": "বিড পরিচালনা"
+    "DASHBOARDS": "ড্যাশবোর্ড",
+    "NFTS": "NFTs",
+    "MANAGE_BIDS": "বিড পরিচালনা",
+    "TOP_EMPLOYEE": "শীর্ষ কর্মচারী",
+    "TOTAL_EMPLOYEES": "মোট কর্মচারী",
+    "REG_ID": "নিবন্ধন আইডি",
+    "REGISTRATION_NUMBER": "নিবন্ধন নম্বর",
+    "ORGANIZATION_NAME": "প্রতিষ্ঠানের নাম",
+    "CREATOR": "প্রতিষ্ঠাতা",
+    "CREATOR_NAME": "প্রতিষ্ঠাতার নাম",
+    "OPEN_IN_WEEK": "সাপ্তাহিক খোলা",
+    "OPEN_AT": "খোলার সময়",
+    "CURRENT_PRODUCTS": "বর্তমান পণ্যসমূহ",
+    "HISTORY": "ইতিহাস",
+    "ITEM": "আইটেম",
+    "CODE": "কোড",
+    "UNIT_PRICE": "একক মূল্য",
+    "DISCOUNT_PERCENT": "ছাড় %",
+    "AVAILABLE_UNITS": "উপলব্ধ একক",
+    "CREATED": "তৈরি",
+    "MADE_BY": "তৈরি করেছেন",
+    "ALL_TXN_TYPES": "সকল লেনদেনের ধরন",
+    "FROM": "থেকে",
+    "TO": "পর্যন্ত",
+    "SEARCH_TXN": "লেনদেন অনুসন্ধান...",
+    "TXN_TYPE": "লেনদেনের ধরন",
+    "DATE_TIME": "তারিখ ও সময়",
+    "ACCOUNT": "হিসাব",
+    "PARTY": "পক্ষ",
+    "NO_TXN_FOUND": "কোনো লেনদেন পাওয়া যায়নি",
+    "ADJUST_SEARCH": "আপনার অনুসন্ধান বা তারিখ পরিসীমা পরিবর্তন করুন",
+    "FILTERED": "ফিল্টার করা",
+    "NO_DESCRIPTION": "কোনো বিবরণ নেই",
+    "PERFORMANCE": "কর্মক্ষমতা",
+    "TOTAL_ORDERS": "মোট অর্ডার",
+    "OVERVIEW": "সংক্ষিপ্ত বিবরণ",
+    "SALES_VALUE": "বিক্রয় মূল্য"
   },
   "REPORT": {
     "TITLE": "প্রতিবেদন",

@@ -4,11 +4,12 @@ import { NgStyle } from '@angular/common';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { Organization } from 'src/app/core/models/organization.model';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: '[nft-dual-card]',
     templateUrl: './nft-dual-card.component.html',
-    imports: [NgStyle]
+    imports: [NgStyle, TranslateModule]
 })
 export class NftDualCardComponent implements OnInit {
   @Input() nft: Nft = <Nft>{};

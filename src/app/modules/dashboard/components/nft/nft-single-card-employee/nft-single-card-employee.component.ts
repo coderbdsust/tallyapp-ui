@@ -3,11 +3,12 @@ import { Nft } from '../../../../../core/models/nft';
 import { NgStyle } from '@angular/common';
 import { Organization } from 'src/app/core/models/organization.model';
 import { OrganizationService } from 'src/app/core/services/organization.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: '[nft-single-card-employee]',
   templateUrl: './nft-single-card-employee.component.html',
-  imports: [NgStyle],
+  imports: [NgStyle, TranslateModule],
 })
 export class NftSingleCardEmployeeComponent implements OnInit {
   organization: Organization | null = null;

@@ -5,6 +5,7 @@ import { UserprofileService } from 'src/app/core/services/userprofile.service';
 import { CommonService } from 'src/app/core/services/common.service';
 import { trigger, transition, style, animate, stagger, query } from '@angular/animations';
 import { UserProfile } from 'src/app/core/models/profile.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface TfaStatus {
   byEmail: boolean;
@@ -16,7 +17,8 @@ interface TfaStatus {
   selector: 'app-profile-view',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    TranslateModule,
   ],
   templateUrl: './profile-view.component.html',
   styleUrl: './profile-view.component.scss',

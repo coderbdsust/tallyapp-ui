@@ -7,10 +7,11 @@ import { ButtonComponent } from 'src/app/common/components/button/button.compone
 import { passwordStrength } from 'check-password-strength'
 import { UserprofileService } from 'src/app/core/services/userprofile.service';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-change-password',
-    imports: [FormsModule, AngularSvgIconModule, ButtonComponent, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, NgClass],
+    imports: [FormsModule, AngularSvgIconModule, ButtonComponent, ReactiveFormsModule, AngularSvgIconModule, NgIf, NgFor, NgClass, TranslateModule],
     templateUrl: './change-password.component.html',
     styleUrl: './change-password.component.scss'
 })

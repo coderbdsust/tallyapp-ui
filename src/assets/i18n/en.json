@@ -200,6 +200,11 @@
     "NOT_FOUND_DESC": "The requested invoice could not be loaded.",
     "BACK_TO_LIST": "Back to Invoice List",
     "NOTES_TEXT": "Thank you for your business! If you have any questions about this invoice, please contact us at",
+    "SALE_DETAILS": "Sale Details",
+    "SELLING_RATE": "Selling Rate",
+    "SALE_DISCOUNT_PERCENT": "Sale Discount %",
+    "QTY_TO_SELL": "Qty to Sell",
+    "SALE_AMOUNT": "Sale Amount",
     "TOAST": {
       "DELETED": "Invoice deleted successfully",
       "DOWNLOADED": "Downloaded successfully",
@@ -778,10 +783,25 @@
       "COMPANY": "Company",
       "DESIGNATION": "Designation",
       "DEPARTMENT": "Department",
+      "SAVE_CHANGES": "Save Changes",
+      "EMAIL": "Email Address",
+      "MOBILE_NO": "Mobile No",
+      "STREET_ADDRESS": "Street Address",
+      "CITY": "City",
+      "STATE": "State",
+      "POSTCODE": "Postcode",
+      "COUNTRY": "Country",
+      "ADDRESS": "Address",
+      "WORK": "Work",
+      "NO_ADDRESSES": "No addresses added yet.",
+      "NO_WORK_ENTRIES": "No work entries added yet.",
+      "CHANGE_PHOTO": "Change photo",
+      "UPLOAD_PHOTO": "Upload photo",
       "PROFILE_COMPLETENESS": "Profile Completeness",
       "TOAST": {
         "NO_CHANGES": "No changes to save",
-        "UPDATED": "Profile Updated"
+        "UPDATED": "Profile Updated",
+        "FILL_FORM": "Please fill up the form"
       }
     },
     "CHANGE_PASSWORD": {
@@ -790,6 +810,9 @@
       "NEW_PASSWORD": "New Password",
       "CONFIRM_PASSWORD": "Confirm Password",
       "PASSWORD_STRENGTH": "Password Strength",
+      "PASSWORD_HINT": "Use 8 or more characters with a mix of letters, numbers & symbols.",
+      "ERROR_SAME_PASSWORD": "Old password and new password can't be same",
+      "ERROR_MISMATCH": "Password and confirm password didn't match",
       "CHANGE": "Change Password"
     },
     "TWO_FA": {
@@ -797,7 +820,9 @@
       "SCAN_QR": "Scan QR Code",
       "ENTER_OTP": "Enter OTP",
       "ENABLE_2FA": "Enable 2FA",
-      "DISABLE_2FA": "Disable 2FA"
+      "DISABLE_2FA": "Disable 2FA",
+      "AUTH_APP": "2FA Authenticator App",
+      "VALIDATE": "Validate"
     }
   },
   "ADMIN": {
@@ -820,7 +845,43 @@
   "DASHBOARD": {
     "TITLE": "Dashboard",
     "NFT_DASHBOARD": "NFTs Dashboard",
-    "MANAGE_BIDS": "Manage Bids"
+    "DASHBOARDS": "Dashboards",
+    "NFTS": "NFTs",
+    "MANAGE_BIDS": "Manage Bids",
+    "TOP_EMPLOYEE": "Top Employee",
+    "TOTAL_EMPLOYEES": "Total Employees",
+    "REG_ID": "Reg ID",
+    "REGISTRATION_NUMBER": "Registration Number",
+    "ORGANIZATION_NAME": "Organization Name",
+    "CREATOR": "Creator",
+    "CREATOR_NAME": "Creator Name",
+    "OPEN_IN_WEEK": "Open in a week",
+    "OPEN_AT": "Open At",
+    "CURRENT_PRODUCTS": "Current Products",
+    "HISTORY": "History",
+    "ITEM": "Item",
+    "CODE": "Code",
+    "UNIT_PRICE": "Unit Price",
+    "DISCOUNT_PERCENT": "Discount %",
+    "AVAILABLE_UNITS": "Available Units",
+    "CREATED": "Created",
+    "MADE_BY": "Made By",
+    "ALL_TXN_TYPES": "All Transaction Types",
+    "FROM": "From",
+    "TO": "To",
+    "SEARCH_TXN": "Search transactions...",
+    "TXN_TYPE": "Transaction Type",
+    "DATE_TIME": "Date & Time",
+    "ACCOUNT": "Account",
+    "PARTY": "Party",
+    "NO_TXN_FOUND": "No transactions found",
+    "ADJUST_SEARCH": "Try adjusting your search criteria or date range",
+    "FILTERED": "filtered",
+    "NO_DESCRIPTION": "No description",
+    "PERFORMANCE": "Performance",
+    "TOTAL_ORDERS": "Total orders",
+    "OVERVIEW": "Overview",
+    "SALES_VALUE": "Sales value"
   },
   "REPORT": {
     "TITLE": "Reports",

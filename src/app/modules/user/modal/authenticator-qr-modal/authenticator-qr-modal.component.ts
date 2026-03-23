@@ -9,11 +9,12 @@ import { AuthenticatorAppService } from '../../../../core/services/authenticator
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { OtpComponent } from 'src/app/common/components/otp/otp.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-authenticator-qr-modal',
   imports: [CommonModule, MatDialogModule, MatRadioModule, MatButtonModule, FormsModule,
-     ButtonComponent, MatFormFieldModule, MatInputModule, OtpComponent, NgIf],
+     ButtonComponent, MatFormFieldModule, MatInputModule, OtpComponent, NgIf, TranslateModule],
   templateUrl: './authenticator-qr-modal.component.html',
   styleUrl: './authenticator-qr-modal.component.scss'
 })

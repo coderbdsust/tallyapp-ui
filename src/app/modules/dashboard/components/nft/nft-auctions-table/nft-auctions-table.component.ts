@@ -6,11 +6,12 @@ import { Product } from 'src/app/core/models/product.model';
 import { ProductService } from 'src/app/core/services/product.service';
 import { Organization } from 'src/app/core/models/organization.model';
 import { OrganizationService } from 'src/app/core/services/organization.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: '[nft-auctions-table]',
     templateUrl: './nft-auctions-table.component.html',
-    imports: [NgFor, NftAuctionsTableItemComponent]
+    imports: [NgFor, NftAuctionsTableItemComponent, TranslateModule]
 })
 export class NftAuctionsTableComponent implements OnInit {
   public organization:Organization | null = null;

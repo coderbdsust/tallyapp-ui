@@ -1,12 +1,12 @@
 <div class="flex-col rounded-lg bg-background px-8 py-8 sm:flex-row">
   <div class="mb-4 flex items-center justify-between">
     <div class="flex-col items-center">
-      <h3 class="text-md font-bold text-foreground">Current Products</h3>
+      <h3 class="text-md font-bold text-foreground">{{ 'DASHBOARD.CURRENT_PRODUCTS' | translate }}</h3>
       <!-- <span class="text-xs text-muted-foreground">Updated 30 minutes ago</span> -->
     </div>
     <button
       class="flex-none rounded-md bg-card px-4 py-2.5 text-xs font-semibold text-muted-foreground hover:bg-muted hover:text-foreground">
-      History
+      {{ 'DASHBOARD.HISTORY' | translate }}
     </button>
   </div>
 
@@ -15,13 +15,13 @@
       <!--Table head-->
       <thead class="text-xs uppercase text-muted-foreground">
         <tr>
-          <th class="py-3 text-left">Item</th>
-           <th class="py-3 text-left">Code</th>
-          <th class="py-3 text-right">Unit Price</th>
-          <th class="py-3 text-right">Discount %</th>
-          <th class="py-3 text-right">Available Units</th>
-          <th class="py-3 text-right">Created</th>
-          <th class="py-3 text-right">Made By</th>
+          <th class="py-3 text-left">{{ 'DASHBOARD.ITEM' | translate }}</th>
+           <th class="py-3 text-left">{{ 'DASHBOARD.CODE' | translate }}</th>
+          <th class="py-3 text-right">{{ 'DASHBOARD.UNIT_PRICE' | translate }}</th>
+          <th class="py-3 text-right">{{ 'DASHBOARD.DISCOUNT_PERCENT' | translate }}</th>
+          <th class="py-3 text-right">{{ 'DASHBOARD.AVAILABLE_UNITS' | translate }}</th>
+          <th class="py-3 text-right">{{ 'DASHBOARD.CREATED' | translate }}</th>
+          <th class="py-3 text-right">{{ 'DASHBOARD.MADE_BY' | translate }}</th>
         </tr>
       </thead>
       <!--end Table head-->

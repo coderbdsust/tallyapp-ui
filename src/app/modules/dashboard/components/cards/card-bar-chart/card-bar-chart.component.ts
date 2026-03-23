@@ -1,11 +1,13 @@
 import { Component, OnInit, AfterViewInit } from "@angular/core";
 import {ChartConfiguration } from "chart.js";
 import Chart from 'chart.js/auto';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: "app-card-bar-chart",
   templateUrl: "./card-bar-chart.component.html",
-  standalone: true
+  standalone: true,
+  imports: [TranslateModule],
 })
 export class CardBarChartComponent implements OnInit, AfterViewInit {
   constructor() {}

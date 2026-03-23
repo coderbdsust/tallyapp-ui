@@ -1,60 +1,60 @@
-<h2 mat-dialog-title class="flex items-center justify-center">2FA Authenticator App</h2>
+<h2 mat-dialog-title class="flex items-center justify-center">{{ 'USER.TWO_FA.AUTH_APP' | translate }}</h2>
 <mat-dialog-content>
   <div *ngIf="step === 'qr'" class="flex flex-col justify-center items-center">
-    <h2>Scan the QR Code</h2>
+    <h2>{{ 'USER.TWO_FA.SCAN_QR' | translate }}</h2>
     <img [src]="base64Image" alt="QR Code" />
     <mat-dialog-actions class="flex items-center justify-center gap-1">
-        <app-button full 
-            impact="bold" 
-            tone="danger" 
-            shape="rounded" 
+        <app-button full
+            impact="bold"
+            tone="danger"
+            shape="rounded"
             size="medium"
             (click)="close()"
             >
-            Close
+            {{ 'COMMON.CLOSE' | translate }}
         </app-button>
-        
-        <app-button full 
-            impact="bold" 
-            tone="primary" 
-            shape="rounded" 
+
+        <app-button full
+            impact="bold"
+            tone="primary"
+            shape="rounded"
             size="medium"
             (click)="next()"
             >
-            Validate
+            {{ 'USER.TWO_FA.VALIDATE' | translate }}
         </app-button>
     </mat-dialog-actions>
   </div>
 
   <ng-container *ngIf="step === 'otp'">
     <div>
-      <app-otp [length]="6" (otpChange)="onOtpInput($event)"></app-otp> 
+      <app-otp [length]="6" (otpChange)="onOtpInput($event)"></app-otp>
     </div>
 
     <mat-dialog-actions class="flex float-right gap-1">
-            <app-button full 
-                impact="bold" 
-                tone="danger" 
-                shape="rounded" 
+            <app-button full
+                impact="bold"
+                tone="danger"
+                shape="rounded"
                 size="medium"
                 (click)="close()"
                 >
-                Close
+                {{ 'COMMON.CLOSE' | translate }}
             </app-button>
-            
-            <app-button full 
-                impact="bold" 
-                tone="primary" 
-                shape="rounded" 
+
+            <app-button full
+                impact="bold"
+                tone="primary"
+                shape="rounded"
                 size="medium"
                 (click)="submitOtp()"
                 >
-                <span *ngIf="authStatus">Enable 2FA</span>
-                <span *ngIf="!authStatus">Disable 2FA</span>
+                <span *ngIf="authStatus">{{ 'USER.TWO_FA.ENABLE_2FA' | translate }}</span>
+                <span *ngIf="!authStatus">{{ 'USER.TWO_FA.DISABLE_2FA' | translate }}</span>
             </app-button>
         </mat-dialog-actions>
 
   </ng-container>
 
-  
+
 </mat-dialog-content>

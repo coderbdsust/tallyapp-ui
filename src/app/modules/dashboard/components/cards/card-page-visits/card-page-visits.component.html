@@ -8,7 +8,7 @@
         [value]="transactionType"
         (change)="onSelectTxnTypeChange($event)"
         class="py-2 px-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-        <option value="">All Transaction Types</option>
+        <option value="">{{ 'DASHBOARD.ALL_TXN_TYPES' | translate }}</option>
         <option *ngFor="let txn of allTransactionTypes" [value]="txn">
           {{ txn | word }}
         </option>
@@ -16,7 +16,7 @@
 
       <!-- Date Filters -->
       <div class="flex items-center gap-2">
-        <label class="text-sm font-medium">From:</label>
+        <label class="text-sm font-medium">{{ 'DASHBOARD.FROM' | translate }}:</label>
         <input 
           name="startDate" 
           class="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
@@ -26,7 +26,7 @@
       </div>
       
       <div class="flex items-center gap-2">
-        <label class="text-sm font-medium">To:</label>
+        <label class="text-sm font-medium">{{ 'DASHBOARD.TO' | translate }}:</label>
         <input 
           name="endDate" 
           class="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
@@ -42,7 +42,7 @@
         class="px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
         title="Clear all filters">
         <svg-icon src="./assets/icons/heroicons/outline/x-mark.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-        Clear
+        {{ 'COMMON.CLEAR' | translate }}
       </button>
     </div>
 
@@ -50,15 +50,15 @@
     <div class="flex flex-wrap gap-2">
       <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
         <div class="flex items-center gap-2">
-          Show
+          {{ 'COMMON.SHOW' | translate }}
           <select class="w-16 p-2 border border-gray-300 rounded-md" name="rowSize" (change)="onSelectChange($event)">
-            <option *ngFor="let option of getPageSizeOptions()" 
-                    [value]="option.value" 
+            <option *ngFor="let option of getPageSizeOptions()"
+                    [value]="option.value"
                     [selected]="option.value === selectedRows">
               {{ option.label }}
             </option>
           </select>
-          per page
+          {{ 'COMMON.PER_PAGE' | translate }}
         </div>
       </div>
       <div class="flex">
@@ -70,7 +70,7 @@
           <input 
             name="search" 
             class="py-2 pl-8 pr-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-            placeholder="Search transactions..." 
+            [placeholder]="'DASHBOARD.SEARCH_TXN' | translate"
             type="text" 
             [value]="search"
             (keydown.enter)="onSearchChange($event)" 
@@ -84,7 +84,7 @@
   <div *ngIf="hasActiveFilters()" class="px-5 pb-3">
     <div class="flex items-center gap-2 text-xs text-blue-600 bg-blue-50 px-3 py-2 rounded-md">
       <svg-icon src="./assets/icons/heroicons/outline/funnel.svg" [svgClass]="'h-4 w-4'"></svg-icon>
-      <span>Active filters: {{ getFilterSummary() }}</span>
+      <span>{{ 'COMMON.ACTIVE_FILTERS' | translate }}: {{ getFilterSummary() }}</span>
     </div>
   </div>
 
@@ -98,12 +98,12 @@
     <table class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
       <thead class="border border-muted/20 text-xs text-muted-foreground bg-black-100 text-white">
         <tr>
-          <th class="min-w-[150px] px-4 py-3">Transaction Type</th>
-          <th class="min-w-[120px] px-4 py-3 text-right">Amount</th>
-          <th class="min-w-[140px] px-4 py-3">Date & Time</th>
-          <th class="min-w-[120px] px-4 py-3">Account</th>
-          <th class="min-w-[140px] px-4 py-3">Party</th>
-          <th class="min-w-[200px] px-4 py-3">Description</th>
+          <th class="min-w-[150px] px-4 py-3">{{ 'DASHBOARD.TXN_TYPE' | translate }}</th>
+          <th class="min-w-[120px] px-4 py-3 text-right">{{ 'COMMON.AMOUNT' | translate }}</th>
+          <th class="min-w-[140px] px-4 py-3">{{ 'DASHBOARD.DATE_TIME' | translate }}</th>
+          <th class="min-w-[120px] px-4 py-3">{{ 'DASHBOARD.ACCOUNT' | translate }}</th>
+          <th class="min-w-[140px] px-4 py-3">{{ 'DASHBOARD.PARTY' | translate }}</th>
+          <th class="min-w-[200px] px-4 py-3">{{ 'COMMON.DESCRIPTION' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -154,7 +154,7 @@
           <!-- Description -->
           <td class="px-4 py-3">
             <span class="text-sm" [title]="txn.description">
-              {{ txn.description || 'No description' }}
+              {{ txn.description || ('DASHBOARD.NO_DESCRIPTION' | translate) }}
             </span>
           </td>
         </tr>
@@ -165,9 +165,9 @@
             <div class="flex flex-col items-center gap-2">
               <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
               </svg-icon>
-              <span>No transactions found</span>
+              <span>{{ 'DASHBOARD.NO_TXN_FOUND' | translate }}</span>
               <span *ngIf="hasActiveFilters()" class="text-xs text-muted-foreground">
-                Try adjusting your search criteria or date range
+                {{ 'DASHBOARD.ADJUST_SEARCH' | translate }}
               </span>
             </div>
           </td>
@@ -181,8 +181,8 @@
        class="flex flex-wrap items-center justify-between gap-2 py-3 px-5 text-xs text-muted-foreground">
     <!-- Page Info -->
     <div class="flex items-center gap-2">
-      <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalRows }} entries</span>
-      <span *ngIf="hasActiveFilters()" class="text-blue-600">(filtered)</span>
+      <span>{{ 'COMMON.SHOWING' | translate }} {{ startIndex }} {{ 'COMMON.TO' | translate }} {{ endIndex }} {{ 'COMMON.OF' | translate }} {{ totalRows }} {{ 'COMMON.ENTRIES' | translate }}</span>
+      <span *ngIf="hasActiveFilters()" class="text-blue-600">({{ 'DASHBOARD.FILTERED' | translate }})</span>
     </div>
     
     <!-- Pagination Controls -->

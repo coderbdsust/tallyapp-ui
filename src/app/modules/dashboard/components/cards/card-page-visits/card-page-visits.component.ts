@@ -8,13 +8,14 @@ import { AccountingService } from '../../../../../core/services/accounting.servi
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { Subject, takeUntil } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-card-page-visits',
   templateUrl: './card-page-visits.component.html',
   styleUrl: './card-page-visits.component.scss',
   standalone: true,
-  imports: [CommonModule, AngularSvgIconModule, WordPipe],
+  imports: [CommonModule, AngularSvgIconModule, WordPipe, TranslateModule],
 })
 export class CardPageVisitsComponent extends PaginatedComponent<Transaction> implements OnInit, OnDestroy {
   organization: Organization | null = null;

@@ -11,6 +11,7 @@ import { FileUploaderService } from 'src/app/core/services/file-uploader.service
 import { Router } from '@angular/router';
 import { Address, ShortProfile, UserProfile } from 'src/app/core/models/profile.model';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile',
@@ -21,7 +22,7 @@ import { FormError } from 'src/app/common/components/form-error/form-error.compo
     NgIf,
     NgFor,
     WordPipe,
-    // FileUploaderComponent removed — avatar handled inline
+    TranslateModule,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
