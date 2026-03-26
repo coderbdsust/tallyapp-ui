@@ -26,6 +26,7 @@ export interface Organization {
     totalOwners: number | 0;
     tax:number|0;
     vat:number|0;
+    paymentOnInvoice: boolean;
     ownerImage: FileUploadResponse;
     bannerImage: FileUploadResponse;
     logoImage: FileUploadResponse;

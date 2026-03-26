@@ -74,7 +74,8 @@
     "REQUIRED": "প্রয়োজনীয়",
     "INVALID_EMAIL": "অবৈধ ইমেইল",
     "INVALID_NUMBER": "অবৈধ নম্বর",
-    "SEARCH_MIN_CHARS": "সার্চ টার্ম কমপক্ষে ৪ অক্ষর হতে হবে।"
+    "SEARCH_MIN_CHARS": "সার্চ টার্ম কমপক্ষে ৪ অক্ষর হতে হবে।",
+    "ACTION":"অ্যাকশন"
   },
   "TOAST": {
     "ERROR": "ত্রুটি",
@@ -149,6 +150,7 @@
     "DELIVERY_CHARGE": "ডেলিভারি চার্জ",
     "GRAND_TOTAL": "সর্বমোট",
     "MARK_AS_PAID": "পরিশোধিত হিসেবে চিহ্নিত",
+    "ENOUGH_BALANCE": "এই ইনভয়েস পরিশোধিত করতে গ্রাহকের পর্যাপ্ত ব্যালেন্স আছে",
     "PREVIEW": "প্রিভিউ",
     "DOWNLOAD_INVOICE": "চালান ডাউনলোড",
     "DOWNLOAD_RECEIPT": "রসিদ ডাউনলোড",
@@ -206,6 +208,14 @@
     "SALE_DISCOUNT_PERCENT": "ছাড় %",
     "QTY_TO_SELL": "বিক্রয়ের পরিমাণ",
     "SALE_AMOUNT": "বিক্রয় পরিমাণ",
+    "NO_INVOICES_FOUND": "কোনো চালান পাওয়া যায়নি",
+    "CREATE_FIRST_INVOICE": "শুরু করতে আপনার প্রথম চালান তৈরি করুন।",
+    "PAYMENT": {
+      "PAYMENT_DATE":"পেমেন্টের তারিখ",
+      "PAYMENT_METHOD":"পেমেন্টের মাধ্যম",
+      "REFERENCE":"রেফারেন্স",
+      "AMOUNT":"পরিমাণ"
+    },
     "TOAST": {
       "DELETED": "চালান সফলভাবে মুছে ফেলা হয়েছে",
       "DOWNLOADED": "সফলভাবে ডাউনলোড হয়েছে",
@@ -235,10 +245,17 @@
       "INVOICE_HISTORY": "চালান ইতিহাস",
       "PAYMENT_HISTORY": "পেমেন্ট ইতিহাস",
       "DOWNLOAD_REPORT": "প্রতিবেদন ডাউনলোড",
+      "BALANCE": "ব্যালেন্স",
+      "CUSTOMER_PAYMENTS": "গ্রাহক পেমেন্ট",
+      "RECEIVE_PAYMENT": "পেমেন্ট গ্রহণ",
+      "PAYMENT_NOTES": "নোট",
+      "NO_CUSTOMER_PAYMENTS": "এখনো কোনো পেমেন্ট গ্রহণ করা হয়নি",
+      "MARK_PAID_CUSTOMER_MODE": "এই চালানটি পরিশোধিত হিসেবে চিহ্নিত করবেন? গ্রাহকের ব্যালেন্স থেকে পরিমাণ কেটে নেওয়া হবে।",
       "EMPTY_STATE": "কোনো গ্রাহক পাওয়া যায়নি",
       "EMPTY_STATE_DESC": "আপনার প্রথম গ্রাহক যোগ করুন",
       "NAME_REQUIRED": "নাম আবশ্যক",
       "MOBILE_REQUIRED": "মোবাইল আবশ্যক",
+      "CUSTOMER_BALANCE": "গ্রাহকের ব্যালেন্স",
       "TOAST": {
         "UPDATED": "গ্রাহক সফলভাবে আপডেট হয়েছে",
         "CREATED": "গ্রাহক সফলভাবে তৈরি হয়েছে"
@@ -1056,6 +1073,13 @@
     "TAX_AND_RATES": "কর ও হার",
     "VAT_RATE": "ভ্যাট হার",
     "TAX_RATE": "কর হার",
+    "PAYMENT_MODE": "পেমেন্ট মোড",
+    "PAYMENT_LEVEL": "পেমেন্ট লেভেল",
+    "PAYMENT_ON_INVOICE": "চালান-ভিত্তিক পেমেন্ট",
+    "PAYMENT_ON_CUSTOMER": "গ্রাহক-ভিত্তিক পেমেন্ট",
+    "PAYMENT_ON_INVOICE_DESC": "প্রতিটি চালানের বিপরীতে পেমেন্ট রেকর্ড করা হয়।",
+    "PAYMENT_ON_CUSTOMER_DESC": "গ্রাহকের ব্যালেন্সের বিপরীতে পেমেন্ট রেকর্ড করা হয়।",
+    "PAYMENT_MODE_IMMUTABLE": "তৈরির পর পেমেন্ট মোড পরিবর্তন করা যাবে না।",
     "SAVE_ORGANIZATION": "প্রতিষ্ঠান সংরক্ষণ করুন",
     "NOTE": "নোট",
     "NOTE_TEXT": "আপনি নিজের প্রতিষ্ঠান তৈরি করতে পারেন বা অ্যাডমিনের আমন্ত্রণে অন্য প্রতিষ্ঠানে যোগ দিতে পারেন।",

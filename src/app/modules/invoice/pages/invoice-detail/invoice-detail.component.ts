@@ -25,6 +25,10 @@ export class InvoiceDetailComponent implements OnInit, OnDestroy {
   downloadingBackend: boolean = false;
   formatCurrency = formatCurrency;
 
+  get isPaymentOnInvoice(): boolean {
+    return this.invoice?.ownerOrganization?.paymentOnInvoice !== false;
+  }
+
   private destroy$ = new Subject<void>();
 
   readonly toWords = new ToWords({

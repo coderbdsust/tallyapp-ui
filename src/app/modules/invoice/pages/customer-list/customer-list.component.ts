@@ -4,13 +4,16 @@ import { PaginatedComponent } from 'src/app/common/components/pagination/paginat
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
-import { Customer, CustomerDetail } from '../../invoice.model';
+import { Customer, CustomerDetail, CustomerPayment } from '../../invoice.model';
 import { Organization } from 'src/app/core/models/organization.model';
 import { CustomerService } from 'src/app/core/services/customer.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
 import { WordPipe } from 'src/app/common/pipes/word.pipe';
 import { TranslateModule } from '@ngx-translate/core';
 import { formatCurrency } from 'src/app/common/utils/common';
+import { CustomerPaymentService } from 'src/app/core/services/customer-payment.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ReasonModalComponent } from 'src/app/common/components/reason-modal/reason-modal.component';
 
 @Component({
   selector: 'app-customer-list',
@@ -29,16 +32,34 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
   customerDetail: CustomerDetail | null = null;
   detailLoading = false;
   formatCurrency = formatCurrency;
+  customerPaymentForm!: FormGroup;
+  showCustomerPaymentForm = false;
+
+  readonly allPaymentMethods = [
+    'Cash',
+    'Bank Transfer',
+    'Mobile Banking',
+    'Card',
+    'Cheque',
+    'Other'
+  ];
+
+  get isPaymentOnInvoice(): boolean {
+    return this.organization?.paymentOnInvoice !== false;
+  }
 
   private destroy$ = new Subject<void>();
 
   constructor(
     private customerService: CustomerService,
     private orgService: OrganizationService,
-    private fb: FormBuilder
+    private customerPaymentService: CustomerPaymentService,
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
     super();
     this.initForm();
+    this.initCustomerPaymentForm();
   }
 
   ngOnInit(): void {
@@ -219,5 +240,75 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
       'DRAFT': { bg: 'bg-blue-100', text: 'text-blue-800' }
     };
     return statusMap[status] || { bg: 'bg-gray-100', text: 'text-gray-800' };
+  }
+
+  private initCustomerPaymentForm(): void {
+    this.customerPaymentForm = this.fb.group({
+      amount: ['', [Validators.required, Validators.min(1)]],
+      paymentDate: ['', Validators.required],
+      paymentMethod: ['', Validators.required],
+      reference: [''],
+      notes: ['']
+    });
+  }
+
+  toggleCustomerPaymentForm(): void {
+    this.showCustomerPaymentForm = !this.showCustomerPaymentForm;
+    if (this.showCustomerPaymentForm) {
+      this.initCustomerPaymentForm();
+    }
+  }
+
+  submitCustomerPayment(customerId: string): void {
+    if (this.customerPaymentForm.invalid || !this.organization) return;
+
+    const payment = this.customerPaymentForm.value;
+    this.customerPaymentService
+      .receivePayment(this.organization.id, customerId, payment)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.customerPaymentService.showToastSuccessKey('INVOICE.TOAST.PAYMENT_ADDED');
+          this.initCustomerPaymentForm();
+          this.showCustomerPaymentForm = false;
+          this.refreshCustomerDetail(customerId);
+        },
+        error: (err) => this.customerPaymentService.showToastErrorResponse(err)
+      });
+  }
+
+  deleteCustomerPayment(paymentId: string, customerId: string): void {
+    const dialogRef = this.dialog.open(ReasonModalComponent, {
+      width: '400px',
+      data: { message: 'Are you sure you want to delete this payment?' }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.confirmed) {
+        this.customerPaymentService
+          .deletePayment(this.organization.id, paymentId, result.reason)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: () => {
+              this.customerPaymentService.showToastSuccessKey('INVOICE.TOAST.PAYMENT_DELETED');
+              this.refreshCustomerDetail(customerId);
+            },
+            error: (err) => this.customerPaymentService.showToastErrorResponse(err)
+          });
+      }
+    });
+  }
+
+  private refreshCustomerDetail(customerId: string): void {
+    this.customerService
+      .getCustomerDetail(this.organization.id, customerId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (detail) => {
+          this.customerDetail = detail;
+        },
+        error: (err) => this.customerService.showToastErrorResponse(err)
+      });
+    this.loadData();
   }
 }

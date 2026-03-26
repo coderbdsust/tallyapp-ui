@@ -290,6 +290,27 @@
           <p class="org-error" *ngIf="submitted && f['tax'].errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
         </div>
       </div>
+
+      <!-- Payment Mode Toggle -->
+      <div class="org-field">
+        <label class="org-label">{{ 'ORG.PAYMENT_MODE' | translate }}</label>
+        <div class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700"
+             [ngClass]="{ 'bg-gray-50 dark:bg-gray-800/50': isEditMode }">
+          <label class="relative inline-flex items-center cursor-pointer" [class.pointer-events-none]="isEditMode" [class.opacity-60]="isEditMode">
+            <input type="checkbox" formControlName="paymentOnInvoice" class="sr-only peer" />
+            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+          </label>
+          <div class="flex-1">
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {{ f['paymentOnInvoice'].value ? ('ORG.PAYMENT_ON_INVOICE' | translate) : ('ORG.PAYMENT_ON_CUSTOMER' | translate) }}
+            </span>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+              {{ f['paymentOnInvoice'].value ? ('ORG.PAYMENT_ON_INVOICE_DESC' | translate) : ('ORG.PAYMENT_ON_CUSTOMER_DESC' | translate) }}
+            </p>
+            <p *ngIf="isEditMode" class="text-xs text-amber-500 mt-1">{{ 'ORG.PAYMENT_MODE_IMMUTABLE' | translate }}</p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Error Banner -->

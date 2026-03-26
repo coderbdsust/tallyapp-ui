@@ -75,8 +75,8 @@
           <th class="min-w-[110px]">{{ 'INVOICE.INVOICE_DATE' | translate }}</th>
           <th class="min-w-[150px]">{{ 'INVOICE.CUSTOMER' | translate }}</th>
           <th class="min-w-[120px]">{{ 'INVOICE.TOTAL_AMOUNT' | translate }}</th>
-          <th class="min-w-[110px]">{{ 'INVOICE.PAID_AMOUNT' | translate }}</th>
-          <th class="min-w-[110px]">{{ 'INVOICE.DUE_AMOUNT' | translate }}</th>
+          <th *ngIf="isPaymentOnInvoice" class="min-w-[110px]">{{ 'INVOICE.PAID_AMOUNT' | translate }}</th>
+          <th *ngIf="isPaymentOnInvoice" class="min-w-[110px]">{{ 'INVOICE.DUE_AMOUNT' | translate }}</th>
           <th class="min-w-[100px]">{{ 'COMMON.STATUS' | translate }}</th>
           <th class="min-w-[140px]">{{ 'COMMON.ACTIONS' | translate }}</th>
         </tr>
@@ -117,14 +117,14 @@
           </td>
 
           <!-- Total Paid -->
-          <td>
+          <td *ngIf="isPaymentOnInvoice">
             <span [ngClass]="getAmountColor(invoice.totalPaid, 'paid')">
               {{ formatCurrency(invoice.totalPaid ) }}
             </span>
           </td>
 
           <!-- Amount Due -->
-          <td>
+          <td *ngIf="isPaymentOnInvoice">
             <span [ngClass]="getAmountColor(invoice.remainingAmount, 'due')">
               {{ formatCurrency(invoice.remainingAmount) }}
             </span>

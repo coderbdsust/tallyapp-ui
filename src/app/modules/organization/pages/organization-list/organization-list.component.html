@@ -85,6 +85,7 @@
           <th class="min-w-[150px]">{{ 'ORG.PRIMARY_OWNER' | translate }}</th>
           <th class="min-w-[120px]">{{ 'ORG.TIN_NUMBER' | translate }}</th>
           <th class="min-w-[120px]">{{ 'ORG.VAT_NUMBER' | translate }}</th>
+          <th class="min-w-[120px]">{{ 'ORG.PAYMENT_LEVEL' | translate }}</th>
           <th class="min-w-[120px]">{{ 'ORG.MOBILE_NO' | translate }}</th>
           <th class="min-w-[100px]">{{ 'ORG.PRODUCTS' | translate }}</th>
           <th class="min-w-[100px]">{{ 'ORG.EMPLOYEES' | translate }}</th>
@@ -135,6 +136,15 @@
             <span *ngIf="!org.orgVatNumber" class="text-muted-foreground text-xs">N/A</span>
           </td>
 
+         <!-- Payment Level -->
+          <td>
+            <span
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+              [ngClass]="org.paymentOnInvoice !== false ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'">
+              {{ (org.paymentOnInvoice !== false ? 'ORG.PAYMENT_ON_INVOICE' : 'ORG.PAYMENT_ON_CUSTOMER') | translate }}
+            </span>
+          </td>
+
           <!-- Mobile Number -->
           <td>
             <span class="text-sm">{{ org.orgMobileNo || 'N/A' }}</span>
@@ -181,7 +191,6 @@
               {{ org.status | word }}
             </span>
           </td>
-
           <!-- Actions -->
           <td class="text-center">
             <div class="flex items-center justify-center gap-4">
@@ -198,7 +207,7 @@
 
         <!-- Empty State -->
         <tr *ngIf="!hasData">
-          <td class="py-8 text-center text-sm" colspan="10">
+          <td class="py-8 text-center text-sm" colspan="11">
             <div class="flex flex-col items-center gap-2">
               <svg-icon src="./assets/icons/heroicons/outline/building-office.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
               </svg-icon>

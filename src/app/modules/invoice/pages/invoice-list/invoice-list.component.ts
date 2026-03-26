@@ -28,6 +28,10 @@ export class InvoiceListComponent extends PaginatedComponent<Invoice> implements
   organization!: Organization;
   formatCurrency = formatCurrency;
 
+  get isPaymentOnInvoice(): boolean {
+    return this.organization?.paymentOnInvoice !== false;
+  }
+
 
   private destroy$ = new Subject<void>();
 

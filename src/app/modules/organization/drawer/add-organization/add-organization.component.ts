@@ -89,6 +89,7 @@ export class AddOrganizationComponent implements OnInit {
   // ── Helpers ───────────────────────────────────────────────────────────
 
   get f() { return this.orgForm.controls; }
+  get isEditMode(): boolean { return !!this.orgForm?.get('id')?.value; }
 
   private buildForm(org: Organization | null = null) {
     this.orgForm = this._formBuilder.group({
@@ -119,6 +120,7 @@ export class AddOrganizationComponent implements OnInit {
       status:             [org?.status ?? '',           Validators.required],
       vat:                [org?.vat ?? '',              Validators.required],
       tax:                [org?.tax ?? '',              Validators.required],
+      paymentOnInvoice:   [org?.paymentOnInvoice ?? true],
     });
   }
 

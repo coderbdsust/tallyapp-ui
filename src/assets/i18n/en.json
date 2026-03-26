@@ -74,7 +74,8 @@
     "REQUIRED": "Required",
     "INVALID_EMAIL": "Invalid email",
     "INVALID_NUMBER": "Invalid number",
-    "SEARCH_MIN_CHARS": "Search term must be at least 4 characters long."
+    "SEARCH_MIN_CHARS": "Search term must be at least 4 characters long.",
+    "ACTION":"Action"
   },
   "TOAST": {
     "ERROR": "Error",
@@ -149,6 +150,7 @@
     "DELIVERY_CHARGE": "Delivery Charge",
     "GRAND_TOTAL": "Grand Total",
     "MARK_AS_PAID": "Mark as Paid",
+    "ENOUGH_BALANCE": "Customer has enough balance to mark this invoice as paid",
     "PREVIEW": "Preview",
     "DOWNLOAD_INVOICE": "Download Invoice",
     "DOWNLOAD_RECEIPT": "Download Receipt",
@@ -206,6 +208,14 @@
     "SALE_DISCOUNT_PERCENT": "Sale Discount %",
     "QTY_TO_SELL": "Qty to Sell",
     "SALE_AMOUNT": "Sale Amount",
+    "NO_INVOICES_FOUND": "No invoices found",
+    "CREATE_FIRST_INVOICE": "Create your first invoice to get started.",
+    "PAYMENT": {
+      "PAYMENT_DATE":"Payment Date",
+      "PAYMENT_METHOD":"Payment Method",
+      "REFERENCE":"Reference",
+      "AMOUNT":"Amount"
+    },
     "TOAST": {
       "DELETED": "Invoice deleted successfully",
       "DOWNLOADED": "Downloaded successfully",
@@ -235,10 +245,17 @@
       "INVOICE_HISTORY": "Invoice History",
       "PAYMENT_HISTORY": "Payment History",
       "DOWNLOAD_REPORT": "Download Report",
+      "BALANCE": "Balance",
+      "CUSTOMER_PAYMENTS": "Customer Payments",
+      "RECEIVE_PAYMENT": "Receive Payment",
+      "PAYMENT_NOTES": "Notes",
+      "NO_CUSTOMER_PAYMENTS": "No payments received yet",
+      "MARK_PAID_CUSTOMER_MODE": "Mark this invoice as PAID? The amount will be deducted from the customer's balance.",
       "EMPTY_STATE": "No customers found",
       "EMPTY_STATE_DESC": "Add your first customer",
       "NAME_REQUIRED": "Name is required",
       "MOBILE_REQUIRED": "Mobile is required",
+      "CUSTOMER_BALANCE": "Customer Balance",
       "TOAST": {
         "UPDATED": "Customer updated successfully",
         "CREATED": "Customer created successfully"
@@ -1056,6 +1073,13 @@
     "TAX_AND_RATES": "Tax & Rates",
     "VAT_RATE": "VAT Rate",
     "TAX_RATE": "TAX Rate",
+    "PAYMENT_MODE": "Payment Mode",
+    "PAYMENT_LEVEL": "Payment Level",
+    "PAYMENT_ON_INVOICE": "Invoice-level Payments",
+    "PAYMENT_ON_CUSTOMER": "Customer-level Payments",
+    "PAYMENT_ON_INVOICE_DESC": "Payments are recorded per invoice.",
+    "PAYMENT_ON_CUSTOMER_DESC": "Payments are recorded against customer balance.",
+    "PAYMENT_MODE_IMMUTABLE": "Payment mode cannot be changed after creation.",
     "SAVE_ORGANIZATION": "Save Organization",
     "NOTE": "Note",
     "NOTE_TEXT": "You can create your own organization or join another via an admin invite.",

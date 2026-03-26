@@ -34,6 +34,7 @@ export interface Customer {
     totalAmount: number;
     totalDueAmount: number;
     totalPaidAmount: number;
+    balance?: number;
 }
 
 export interface CustomerDetail {
@@ -49,6 +50,8 @@ export interface CustomerDetail {
     totalAmount: number;
     totalDueAmount: number;
     totalPaidAmount: number;
+    balance?: number;
+    customerPayments?: CustomerPayment[];
     invoices: CustomerInvoice[];
 }
 
@@ -58,9 +61,19 @@ export interface CustomerInvoice {
     invoiceDate: string;
     invoiceStatus: string;
     totalAmount: number;
-    totalPaid: number;
-    remainingAmount: number;
-    payments: Payment[];
+    totalPaid?: number;
+    remainingAmount?: number;
+    payments?: Payment[];
+}
+
+export interface CustomerPayment {
+    id: string;
+    amount: number;
+    paymentDate: string;
+    paymentMethod: string;
+    reference: string;
+    notes: string;
+    status: string;
 }
 
 export interface ProductSale {

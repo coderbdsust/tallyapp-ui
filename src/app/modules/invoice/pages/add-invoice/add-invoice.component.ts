@@ -17,11 +17,12 @@ import { CustomerService } from 'src/app/core/services/customer.service';
 import { EmployeeService } from 'src/app/core/services/employee.service';
 import { ProductCategoryService } from 'src/app/core/services/product-category.service';
 import { generateRandomLuhnCode } from 'src/app/common/utils/LuhnCode';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { combineLatest, startWith, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ReasonModalComponent } from 'src/app/common/components/reason-modal/reason-modal.component';
 import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
+import { formatCurrency } from 'src/app/common/utils/common';
 
 
 @Component({
@@ -62,6 +63,9 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   allProductCategories: ProductCategory[] = [];
   unitTypes: UnitType[] = [];
   isCreatingNewProduct = false;
+  customerBalance: number = 0;
+  formatCurrency = formatCurrency;
+
   readonly allPaymentMethods = [
     'Cash',
     'Bank Transfer',
@@ -70,6 +74,12 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     'Cheque',
     'Other'
   ];
+
+  // Discount mode toggles
+  productDiscountMode: 'percent' | 'value' = 'percent';
+  productDiscountValue: number = 0;
+  totalDiscountMode: 'percent' | 'value' = 'value';
+  totalDiscountPercentInput: number = 0;
 
   readonly invoiceStatus = [
     'DRAFT',
@@ -80,6 +90,15 @@ export class AddInvoiceComponent extends FormError implements OnInit {
 
   get isPaid(): boolean {
     return this.invoice?.invoiceStatus === 'PAID';
+  }
+
+  get invoiceDueFromBalance(): number {
+    const due = (this.invoice?.totalAmount ?? 0) - this.customerBalance;
+    return due > 0 ? due : 0;
+  }
+
+  get isPaymentOnInvoice(): boolean {
+    return this.invoice?.ownerOrganization?.paymentOnInvoice !== false;
   }
 
   private productFormSubscription?: Subscription;
@@ -100,7 +119,8 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly fb: FormBuilder,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly translate: TranslateService
   ) { super(); }
 
   ngOnInit(): void {
@@ -135,6 +155,9 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       next: invoice => {
         this.invoice = invoice;
         this.initiateInvoiceForm(invoice);
+        if (invoice.ownerOrganization?.paymentOnInvoice === false && invoice.customer?.id) {
+          this.loadCustomerPaymentData(invoice.customer.id);
+        }
       },
       error: err => {
         this.router.navigate(['/invoice/list']);
@@ -239,6 +262,9 @@ export class AddInvoiceComponent extends FormError implements OnInit {
           this.customerService.showToastSuccessKey(
             customerId ? 'INVOICE.TOAST.CUSTOMER_UPDATED_ASSIGNED' : 'INVOICE.TOAST.CUSTOMER_CREATED_ASSIGNED'
           );
+          if (!this.isPaymentOnInvoice && customer.id) {
+            this.loadCustomerPaymentData(customer.id);
+          }
         },
         error: (err) => this.invoiceService.showToastErrorResponse(err)
       });
@@ -270,6 +296,10 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       customerAddressLine: customer.address,
       customerPostcode: customer.postcode
     });
+
+    if (!this.isPaymentOnInvoice && customer.id) {
+      this.loadCustomerPaymentData(customer.id);
+    }
   }
 
   onCustomerSearchKeyType(event: Event): void {
@@ -326,10 +356,97 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   calculateProductAmount(): void {
     const rate = +this.productForm.get('productUnitRate')?.value || 0;
     const quantity = +this.productForm.get('productQuantity')?.value || 0;
-    const discountPercent = +this.productForm.get("productDiscountPercent")?.value || 0;
-    const discount = (rate * quantity * discountPercent) / 100.0;
-    const price = rate * quantity;
-    this.productForm.patchValue({ productAmount: price - discount }, { emitEvent: false });
+    const subtotal = rate * quantity;
+
+    // When in value mode, re-derive percent from the fixed value
+    if (this.productDiscountMode === 'value' && subtotal > 0) {
+      const pct = (this.productDiscountValue / subtotal) * 100;
+      this.productForm.patchValue({ productDiscountPercent: +pct.toFixed(4) }, { emitEvent: false });
+    }
+
+    const discountPercent = +this.productForm.get('productDiscountPercent')?.value || 0;
+    const discount = (subtotal * discountPercent) / 100.0;
+    this.productForm.patchValue({ productAmount: subtotal - discount }, { emitEvent: false });
+  }
+
+  // ── Product discount dual-mode helpers ──────────────────────────────
+
+  /** Discount amount for the new-product row (computed from percent) */
+  get newProductDiscountAmount(): number {
+    const rate = +this.productForm.get('productUnitRate')?.value || 0;
+    const quantity = +this.productForm.get('productQuantity')?.value || 0;
+    const discountPercent = +this.productForm.get('productDiscountPercent')?.value || 0;
+    return (rate * quantity * discountPercent) / 100.0;
+  }
+
+  /** Current percent value for display when in value mode */
+  get newProductDiscountPercent(): number {
+    return +this.productForm.get('productDiscountPercent')?.value || 0;
+  }
+
+  /** Discount amount for an existing product row */
+  getProductDiscountAmount(prod: ProductSale): number {
+    return (prod.pricePerUnit * prod.quantitySold * prod.discountPercent) / 100.0;
+  }
+
+  toggleProductDiscountMode(): void {
+    const rate = +this.productForm.get('productUnitRate')?.value || 0;
+    const qty = +this.productForm.get('productQuantity')?.value || 0;
+    const subtotal = rate * qty;
+
+    if (this.productDiscountMode === 'percent') {
+      this.productDiscountMode = 'value';
+      const pct = +this.productForm.get('productDiscountPercent')?.value || 0;
+      this.productDiscountValue = +(subtotal * pct / 100).toFixed(2);
+    } else {
+      this.productDiscountMode = 'percent';
+      // percent is already synced in the form control
+    }
+  }
+
+  onProductDiscountValueInput(event: Event): void {
+    const val = +(event.target as HTMLInputElement).value || 0;
+    this.productDiscountValue = val;
+    const rate = +this.productForm.get('productUnitRate')?.value || 0;
+    const qty = +this.productForm.get('productQuantity')?.value || 0;
+    const subtotal = rate * qty;
+    const pct = subtotal > 0 ? (val / subtotal * 100) : 0;
+    this.productForm.patchValue({ productDiscountPercent: +pct.toFixed(4) });
+  }
+
+  // ── Invoice total discount dual-mode helpers ────────────────────────
+
+  /** Total discount as a percent of subtotal */
+  get totalDiscountPercent(): number {
+    const subtotal = this.invoice?.productSubTotal || 0;
+    const discount = +this.invForm?.get('totalDiscount')?.value || 0;
+    return subtotal > 0 ? (discount / subtotal) * 100 : 0;
+  }
+
+  /** Total discount value for display when in percent mode */
+  get totalDiscountValue(): number {
+    return +this.invForm?.get('totalDiscount')?.value || 0;
+  }
+
+  toggleTotalDiscountMode(): void {
+    const subtotal = this.invoice?.productSubTotal || 0;
+
+    if (this.totalDiscountMode === 'value') {
+      this.totalDiscountMode = 'percent';
+      const val = +this.invForm.get('totalDiscount')?.value || 0;
+      this.totalDiscountPercentInput = subtotal > 0 ? +((val / subtotal) * 100).toFixed(2) : 0;
+    } else {
+      this.totalDiscountMode = 'value';
+      // totalDiscount form control is already synced
+    }
+  }
+
+  onTotalDiscountPercentInput(event: Event): void {
+    const pct = +(event.target as HTMLInputElement).value || 0;
+    this.totalDiscountPercentInput = pct;
+    const subtotal = this.invoice?.productSubTotal || 0;
+    const val = +(subtotal * pct / 100).toFixed(2);
+    this.invForm.patchValue({ totalDiscount: val });
   }
 
   onSearchKeyType(event: Event): void {
@@ -452,7 +569,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   }
 
   markAsPaid(): void {
-    if (this.invoice && this.invoice.remainingAmount > 0) {
+    if (this.isPaymentOnInvoice && this.invoice && this.invoice.remainingAmount > 0) {
       this.dialog.open(ConfirmationModalComponent, {
         width: '400px',
         data: { message: `Full payment not received yet. Remaining amount: ${this.invoice.remainingAmount.toFixed(2)} BDT. Please collect the full payment before marking as paid.` }
@@ -460,9 +577,13 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       return;
     }
 
+    const confirmMessage = this.isPaymentOnInvoice
+      ? 'Are you sure you want to mark this invoice as PAID? Once marked as paid, you will not be able to modify this invoice.'
+      : this.translate.instant('INVOICE.CUSTOMER_LIST.MARK_PAID_CUSTOMER_MODE');
+
     const dialogRef = this.dialog.open(ConfirmationModalComponent, {
       width: '400px',
-      data: { message: 'Are you sure you want to mark this invoice as PAID? Once marked as paid, you will not be able to modify this invoice.' }
+      data: { message: confirmMessage }
     });
 
     dialogRef.afterClosed().subscribe((confirmed) => {
@@ -473,6 +594,9 @@ export class AddInvoiceComponent extends FormError implements OnInit {
             this.invoice = updated;
             this.initiateInvoiceForm(updated);
             this.invoiceService.showToastSuccessKey('INVOICE.TOAST.MARKED_PAID');
+            if (!this.isPaymentOnInvoice && updated.customer?.id) {
+              this.loadCustomerPaymentData(updated.customer.id);
+            }
           },
           error: (err) => {
             this.refreshInvoice();
@@ -667,6 +791,19 @@ export class AddInvoiceComponent extends FormError implements OnInit {
         this.refreshInvoice();
       },
       error: err => this.invoiceService.showToastErrorResponse(err)
+    });
+  }
+
+  // ── Customer Balance (customer-level mode) ────────────────────────────
+
+  private loadCustomerPaymentData(customerId: string): void {
+    this.customerService.getCustomerById(this.orgId, customerId).subscribe({
+      next: (customer) => {
+        this.customerBalance = customer.balance ?? 0;
+      },
+      error: () => {
+        this.customerBalance = 0;
+      }
     });
   }
 
