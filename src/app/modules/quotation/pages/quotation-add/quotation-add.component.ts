@@ -180,8 +180,8 @@ export class QuotationAddComponent extends FormError implements OnInit, OnDestro
       customerName: [invoice?.customer?.name, Validators.required],
       customerMobile: [invoice?.customer?.mobile, Validators.required],
       customerEmail: [invoice?.customer?.email],
-      customerAddressLine: [invoice?.customer?.address],
-      customerPostcode: [invoice?.customer?.postcode],
+      customerAddressLine: [invoice?.customer?.billingAddressLine],
+      customerPostcode: [invoice?.customer?.billingPostcode],
 
       totalDiscount: [invoice?.pricing?.discount || 0],
       deliveryCharge: [invoice?.pricing?.deliveryCharge || 0]
@@ -192,7 +192,7 @@ export class QuotationAddComponent extends FormError implements OnInit, OnDestro
     this.productForm = this.fb.group({
       productId: [''],
       productName: ['', Validators.required],
-      productCode: [''],
+      productCode: ['', Validators.required],
       productDescription: [''],
       productUnitType: ['', Validators.required],
       productUnitRate: ['', [Validators.required, Validators.min(0)]],
@@ -224,8 +224,8 @@ export class QuotationAddComponent extends FormError implements OnInit, OnDestro
       customerName: customer.name,
       customerMobile: customer.mobile,
       customerEmail: customer.email,
-      customerAddressLine: customer.address,
-      customerPostcode: customer.postcode
+      customerAddressLine: customer.billingAddressLine,
+      customerPostcode: customer.billingPostcode
     });
   }
 
@@ -365,8 +365,8 @@ export class QuotationAddComponent extends FormError implements OnInit, OnDestro
       name: this.invForm.get('customerName')?.value,
       mobile: this.invForm.get('customerMobile')?.value,
       email: this.invForm.get('customerEmail')?.value || undefined,
-      address: this.invForm.get('customerAddressLine')?.value,
-      postcode: this.invForm.get('customerPostcode')?.value || undefined
+      billingAddressLine: this.invForm.get('customerAddressLine')?.value,
+      billingPostcode: this.invForm.get('customerPostcode')?.value || undefined
     };
 
     this.quotationService.updateCustomer(this.invoiceId, customerRequest)

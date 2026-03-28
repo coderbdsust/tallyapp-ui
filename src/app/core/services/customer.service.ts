@@ -51,4 +51,19 @@ export class CustomerService extends CommonService {
       .get(`${environment.tallyURL}/pdf/v1/customer/${organizationId}/${customerId}/download`, { responseType: 'blob' })
       .pipe(catchError(this.mapErrorResponse));
   }
+
+  public downloadAllCustomerReport(organizationId: string): Observable<Blob> {
+    return this.http
+      .get(`${environment.tallyURL}/pdf/v1/customer/${organizationId}/all/download`, { responseType: 'blob' })
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public checkCustomerExists(organizationId: string, email: string, mobile: string): Observable<Customer> {
+    const params: string[] = [];
+    if (email) params.push(`email=${encodeURIComponent(email)}`);
+    if (mobile) params.push(`mobile=${encodeURIComponent(mobile)}`);
+    return this.http
+      .get<Customer>(`${environment.tallyURL}/customer/v1/${organizationId}/exists?${params.join('&')}`)
+      .pipe(catchError(this.mapErrorResponse));
+  }
 }

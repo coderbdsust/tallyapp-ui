@@ -9,6 +9,12 @@
     <div class="flex items-center justify-center gap-4">
       <button
         class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+        (click)="downloadAllCustomerReport()">
+        <svg-icon src="./assets/icons/heroicons/outline/download.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
+        <p>{{ 'INVOICE.CUSTOMER_LIST.DOWNLOAD_ALL_CUSTOMER_REPORT' | translate }}</p>
+      </button>
+      <button
+        class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
         (click)="openCreateDrawer()">
         <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
         <p>{{ 'INVOICE.CUSTOMER_LIST.ADD_CUSTOMER' | translate }}</p>
@@ -75,12 +81,18 @@
           <th class="min-w-[150px]">{{ 'COMMON.NAME' | translate }}</th>
           <th class="min-w-[120px]">{{ 'COMMON.PHONE' | translate }}</th>
           <th class="min-w-[150px]">{{ 'COMMON.EMAIL' | translate }}</th>
-          <th class="min-w-[200px]">{{ 'COMMON.ADDRESS' | translate }}</th>
-          <th class="min-w-[80px]">{{ 'INVOICE.POSTCODE' | translate }}</th>
+          <th class="min-w-[200px]">{{ 'CUSTOMER.BILLING_ADDRESS' | translate }}</th>
           <th class="min-w-[80px]">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_INVOICES' | translate }}</th>
           <th class="min-w-[80px]">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_AMOUNT' | translate }}</th>
           <th class="min-w-[80px]">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_PAID' | translate }}</th>
-          <th class="min-w-[80px]">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_DUE' | translate }}</th>
+          <th *ngIf="!isPaymentOnInvoice" class="min-w-[80px]">{{ 'INVOICE.CUSTOMER_LIST.OPENING_DUE' | translate }}</th>
+          <th class="min-w-[180px]">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_DUE' | translate }}
+            <br/>
+            <br/>
+            <ng-container *ngIf="!isPaymentOnInvoice">
+              ({{ 'INVOICE.CUSTOMER_LIST.TOTAL_AMOUNT' | translate }} + {{ 'INVOICE.CUSTOMER_LIST.OPENING_DUE' | translate }} - {{ 'INVOICE.CUSTOMER_LIST.TOTAL_PAID' | translate }})
+            </ng-container>
+          </th>
           <th *ngIf="!isPaymentOnInvoice" class="min-w-[80px]">{{ 'INVOICE.CUSTOMER_LIST.BALANCE' | translate }}</th>
           <th class="min-w-[80px]">{{ 'COMMON.ACTIONS' | translate }}</th>
         </tr>
@@ -112,11 +124,7 @@
             </td>
 
             <td>
-              <span class="text-sm">{{ customer.address || '-' }}</span>
-            </td>
-
-            <td>
-              <span class="text-sm">{{ customer.postcode || '-' }}</span>
+              <span class="text-sm">{{ customer.billingAddressLine || '-' }}</span>
             </td>
             <td>
               <span class="text-sm">{{ customer.totalInvoice || '-' }}</span>
@@ -130,12 +138,16 @@
               <span class="text-sm">{{ customer.totalPaidAmount || '-' }}</span>
             </td>
 
+            <td *ngIf="!isPaymentOnInvoice">
+              <span class="text-sm">{{ customer.openingDue || '-' }}</span>
+            </td>
+
             <td>
               <span class="text-sm">{{ customer.totalDueAmount || '-' }}</span>
             </td>
 
             <td *ngIf="!isPaymentOnInvoice">
-              <span class="text-sm">{{ customer.balance != null ? formatCurrency(customer.balance) : '-' }}</span>
+              <span class="text-sm">{{ customer.balance != null ? customer.balance : '-' }}</span>
             </td>
 
             <td>
@@ -160,7 +172,7 @@
 
           <!-- Expanded Detail Row -->
           <tr *ngIf="expandedCustomerId === customer.id">
-            <td colspan="11" class="p-0">
+            <td colspan="10" class="p-0">
               <div class="bg-gray-50 border-t border-b border-gray-200 px-6 py-4">
                 <!-- Loading -->
                 <div *ngIf="detailLoading" class="flex justify-center items-center py-6">
@@ -170,44 +182,61 @@
                 <!-- Detail Content -->
                 <div *ngIf="!detailLoading && customerDetail">
                   <!-- Customer Info + Summary Row (invoice-level mode) -->
-                  <div *ngIf="isPaymentOnInvoice" class="grid grid-cols-4 gap-3 mb-4">
-                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
+                  <div *ngIf="isPaymentOnInvoice" class="flex items-center gap-2 mb-4">
+                    <div class="flex-1 p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
                       <div class="text-2xl font-bold text-blue-700">{{ customerDetail.totalInvoice }}</div>
                       <div class="text-xs text-blue-600 mt-1">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_INVOICES' | translate }}</div>
                       <div class="text-xs text-gray-500 mt-1">
                         {{ customerDetail.paidInvoiceCount }} paid / {{ customerDetail.unpaidInvoiceCount }} unpaid
                       </div>
                     </div>
-                    <div class="p-3 bg-green-50 border border-green-200 rounded-lg text-center">
+                    <span class="text-xl font-bold text-gray-400">|</span>
+                    <div class="flex-1 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
                       <div class="text-lg font-bold text-green-700">{{ formatCurrency(customerDetail.totalAmount) }}</div>
                       <div class="text-xs text-green-600 mt-1">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_AMOUNT' | translate }}</div>
                     </div>
-                    <div class="p-3 bg-green-50 border border-green-200 rounded-lg text-center">
+                    <span class="text-xl font-bold text-gray-400">-</span>
+                    <div class="flex-1 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
                       <div class="text-lg font-bold text-green-700">{{ formatCurrency(customerDetail.totalPaidAmount) }}</div>
                       <div class="text-xs text-green-600 mt-1">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_PAID' | translate }}</div>
                     </div>
-                    <div class="p-3 bg-red-50 border border-red-200 rounded-lg text-center">
+                    <span class="text-xl font-bold text-gray-400">=</span>
+                    <div class="flex-1 p-3 bg-red-50 border border-red-200 rounded-lg text-center">
                       <div class="text-lg font-bold text-red-700">{{ formatCurrency(customerDetail.totalDueAmount) }}</div>
                       <div class="text-xs text-red-600 mt-1">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_DUE' | translate }}</div>
                     </div>
                   </div>
 
                   <!-- Customer Info + Summary Row (customer-level mode) -->
-                  <div *ngIf="!isPaymentOnInvoice" class="grid grid-cols-3 gap-3 mb-4">
-                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
+                  <div *ngIf="!isPaymentOnInvoice" class="flex items-center gap-2 mb-4">
+                    <div class="flex-1 p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
                       <div class="text-2xl font-bold text-blue-700">{{ customerDetail.totalInvoice }}</div>
                       <div class="text-xs text-blue-600 mt-1">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_INVOICES' | translate }}</div>
                       <div class="text-xs text-gray-500 mt-1">
                         {{ customerDetail.paidInvoiceCount }} paid / {{ customerDetail.unpaidInvoiceCount }} unpaid
                       </div>
                     </div>
-                    <div class="p-3 bg-green-50 border border-green-200 rounded-lg text-center">
+                    <span class="text-xl font-bold text-gray-400">|</span>
+                    <div class="flex-1 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
                       <div class="text-lg font-bold text-green-700">{{ formatCurrency(customerDetail.totalAmount) }}</div>
                       <div class="text-xs text-green-600 mt-1">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_AMOUNT' | translate }}</div>
                     </div>
-                    <div class="p-3 bg-purple-50 border border-purple-200 rounded-lg text-center">
-                      <div class="text-lg font-bold text-purple-700">{{ formatCurrency(customerDetail.balance ?? 0) }}</div>
-                      <div class="text-xs text-purple-600 mt-1">{{ 'INVOICE.CUSTOMER_LIST.BALANCE' | translate }}</div>
+                    <ng-container *ngIf="(customerDetail.openingDue ?? 0) > 0">
+                      <span class="text-xl font-bold text-gray-400">+</span>
+                      <div class="flex-1 p-3 bg-orange-50 border border-orange-200 rounded-lg text-center">
+                        <div class="text-lg font-bold text-orange-700">{{ formatCurrency(customerDetail.openingDue ?? 0) }}</div>
+                        <div class="text-xs text-orange-600 mt-1">{{ 'CUSTOMER.OPENING_DUE' | translate }}</div>
+                      </div>
+                    </ng-container>
+                    <span class="text-xl font-bold text-gray-400">-</span>
+                    <div class="flex-1 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
+                      <div class="text-lg font-bold text-green-700">{{ formatCurrency(customerDetail.totalPaidAmount) }}</div>
+                      <div class="text-xs text-green-600 mt-1">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_PAID' | translate }}</div>
+                    </div>
+                    <span class="text-xl font-bold text-gray-400">=</span>
+                    <div class="flex-1 p-3 bg-red-50 border border-red-200 rounded-lg text-center">
+                      <div class="text-lg font-bold text-red-700">{{ formatCurrency(customerDetail.totalDueAmount) }}</div>
+                      <div class="text-xs text-red-600 mt-1">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_DUE' | translate }}</div>
                     </div>
                   </div>
 
@@ -356,7 +385,7 @@
 
         <!-- Empty State -->
         <tr *ngIf="!hasData">
-          <td class="py-8 text-center text-sm" colspan="11">
+          <td class="py-8 text-center text-sm" colspan="10">
             <div class="flex flex-col items-center gap-2">
               <svg-icon src="./assets/icons/heroicons/outline/user.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
               </svg-icon>
@@ -441,88 +470,190 @@
   </div>
 </div>
 
-<!-- Customer Drawer -->
+<!-- Customer Drawer (org drawer style) -->
 <div *ngIf="showDrawer" class="fixed inset-0 z-50 flex justify-end">
   <!-- Backdrop -->
   <div class="absolute inset-0 bg-black/50" (click)="closeDrawer()"></div>
 
   <!-- Drawer Panel -->
-  <div class="relative w-full max-w-md bg-white shadow-xl">
+  <div class="relative w-full max-w-lg bg-white shadow-xl dark:bg-gray-900">
     <div class="flex flex-col h-full">
-      <!-- Header -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900">
-          {{ isEditMode ? ('INVOICE.CUSTOMER_LIST.EDIT_CUSTOMER' | translate) : ('INVOICE.CUSTOMER_LIST.ADD_CUSTOMER' | translate) }}
-        </h3>
-        <button (click)="closeDrawer()" class="p-1 text-gray-400 hover:text-gray-600 transition-colors">
+      <!-- Sticky Header -->
+      <div class="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900/30">
+            <svg-icon src="./assets/icons/heroicons/outline/user.svg" [svgClass]="'h-5 w-5 text-indigo-600 dark:text-indigo-400'"></svg-icon>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+              {{ isEditMode ? ('INVOICE.CUSTOMER_LIST.EDIT_CUSTOMER' | translate) : ('INVOICE.CUSTOMER_LIST.ADD_CUSTOMER' | translate) }}
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ 'CUSTOMER.MANAGE_DETAILS' | translate }}</p>
+          </div>
+        </div>
+        <button (click)="closeDrawer()" class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors dark:hover:bg-gray-800 dark:hover:text-gray-300">
           <svg-icon src="./assets/icons/heroicons/outline/x-mark.svg" [svgClass]="'h-5 w-5'"></svg-icon>
         </button>
       </div>
 
-      <!-- Form -->
-      <div class="flex-1 overflow-y-auto px-6 py-4">
-        <form [formGroup]="customerForm" class="space-y-4">
+      <!-- Form Body -->
+      <div class="flex-1 overflow-y-auto px-6 py-5">
+        <form [formGroup]="customerForm" class="space-y-6">
           <input type="hidden" formControlName="id" />
 
+          <!-- Basic Info Section -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'COMMON.NAME' | translate }} *</label>
-            <input type="text"
-                   formControlName="name"
-                   [placeholder]="'INVOICE.CUSTOMER_NAME' | translate"
-                   class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                   [class.border-red-500]="isFieldInvalid('name')">
-            <div *ngIf="isFieldInvalid('name')" class="text-red-500 text-xs mt-1">{{ 'INVOICE.CUSTOMER_LIST.NAME_REQUIRED' | translate }}</div>
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">{{ 'CUSTOMER.BASIC_INFO' | translate }}</h4>
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="org-field">
+                  <label class="org-label">{{ 'COMMON.NAME' | translate }} *</label>
+                  <input type="text"
+                         formControlName="name"
+                         [placeholder]="'INVOICE.CUSTOMER_NAME' | translate"
+                         class="org-input"
+                         [class.org-input--error]="isFieldInvalid('name')">
+                  <div *ngIf="isFieldInvalid('name')" class="org-error">{{ 'INVOICE.CUSTOMER_LIST.NAME_REQUIRED' | translate }}</div>
+                </div>
+                <div class="org-field">
+                  <label class="org-label">{{ 'COMMON.PHONE' | translate }} *</label>
+                  <input type="text"
+                         formControlName="mobile"
+                         [placeholder]="'COMMON.PHONE' | translate"
+                         class="org-input"
+                         [class.org-input--error]="isFieldInvalid('mobile')"
+                         (blur)="checkExistingCustomer()">
+                  <div *ngIf="isFieldInvalid('mobile')" class="org-error">{{ 'INVOICE.CUSTOMER_LIST.MOBILE_REQUIRED' | translate }}</div>
+                </div>
+              </div>
+              <div class="org-field">
+                <label class="org-label">{{ 'COMMON.EMAIL' | translate }}</label>
+                <input type="email"
+                       formControlName="email"
+                       [placeholder]="'COMMON.EMAIL' | translate"
+                       class="org-input"
+                       (blur)="checkExistingCustomer()">
+              </div>
+              <!-- Existing Customer Warning -->
+              <div *ngIf="existingCustomer && !isEditMode" class="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                <svg-icon src="./assets/icons/heroicons/outline/exclamation-triangle.svg" [svgClass]="'h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5'"></svg-icon>
+                <div class="text-sm">
+                  <p class="font-medium text-amber-800">{{ 'CUSTOMER.ALREADY_EXISTS' | translate }}</p>
+                  <p class="text-amber-700 mt-1">{{ existingCustomer.name }} — {{ existingCustomer.mobile }}</p>
+                </div>
+              </div>
+            </div>
           </div>
 
+          <!-- Billing Address Section -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'COMMON.PHONE' | translate }} *</label>
-            <input type="text"
-                   formControlName="mobile"
-                   [placeholder]="'COMMON.PHONE' | translate"
-                   class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                   [class.border-red-500]="isFieldInvalid('mobile')">
-            <div *ngIf="isFieldInvalid('mobile')" class="text-red-500 text-xs mt-1">{{ 'INVOICE.CUSTOMER_LIST.MOBILE_REQUIRED' | translate }}</div>
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">{{ 'CUSTOMER.BILLING_ADDRESS' | translate }}</h4>
+            <div class="space-y-4">
+              <div class="org-field">
+                <label class="org-label">{{ 'CUSTOMER.STREET_ADDRESS' | translate }}</label>
+                <input type="text"
+                       formControlName="billingAddressLine"
+                       [placeholder]="'CUSTOMER.STREET_ADDRESS' | translate"
+                       class="org-input">
+              </div>
+              <div class="grid grid-cols-3 gap-4">
+                <div class="org-field">
+                  <label class="org-label">{{ 'CUSTOMER.CITY' | translate }}</label>
+                  <input type="text"
+                         formControlName="billingCity"
+                         [placeholder]="'CUSTOMER.CITY' | translate"
+                         class="org-input">
+                </div>
+                <div class="org-field">
+                  <label class="org-label">{{ 'CUSTOMER.POSTCODE' | translate }}</label>
+                  <input type="text"
+                         formControlName="billingPostcode"
+                         [placeholder]="'CUSTOMER.POSTCODE' | translate"
+                         class="org-input">
+                </div>
+                <div class="org-field">
+                  <label class="org-label">{{ 'CUSTOMER.COUNTRY' | translate }}</label>
+                  <input type="text"
+                         formControlName="billingCountry"
+                         [placeholder]="'CUSTOMER.COUNTRY' | translate"
+                         class="org-input">
+                </div>
+              </div>
+            </div>
           </div>
 
+          <!-- Delivery Address Section -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'COMMON.EMAIL' | translate }}</label>
-            <input type="email"
-                   formControlName="email"
-                   [placeholder]="'COMMON.EMAIL' | translate"
-                   class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">{{ 'CUSTOMER.DELIVERY_ADDRESS' | translate }}</h4>
+            <div class="space-y-4">
+              <div class="org-field">
+                <label class="org-label">{{ 'CUSTOMER.STREET_ADDRESS' | translate }}</label>
+                <input type="text"
+                       formControlName="deliveryAddressLine"
+                       [placeholder]="'CUSTOMER.STREET_ADDRESS' | translate"
+                       class="org-input">
+              </div>
+              <div class="grid grid-cols-3 gap-4">
+                <div class="org-field">
+                  <label class="org-label">{{ 'CUSTOMER.CITY' | translate }}</label>
+                  <input type="text"
+                         formControlName="deliveryCity"
+                         [placeholder]="'CUSTOMER.CITY' | translate"
+                         class="org-input">
+                </div>
+                <div class="org-field">
+                  <label class="org-label">{{ 'CUSTOMER.POSTCODE' | translate }}</label>
+                  <input type="text"
+                         formControlName="deliveryPostcode"
+                         [placeholder]="'CUSTOMER.POSTCODE' | translate"
+                         class="org-input">
+                </div>
+                <div class="org-field">
+                  <label class="org-label">{{ 'CUSTOMER.COUNTRY' | translate }}</label>
+                  <input type="text"
+                         formControlName="deliveryCountry"
+                         [placeholder]="'CUSTOMER.COUNTRY' | translate"
+                         class="org-input">
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'COMMON.ADDRESS' | translate }}</label>
-            <textarea formControlName="address"
-                      [placeholder]="'COMMON.ADDRESS' | translate"
-                      rows="3"
-                      class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm resize-none"></textarea>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INVOICE.POSTCODE' | translate }}</label>
-            <input type="text"
-                   formControlName="postcode"
-                   [placeholder]="'INVOICE.POSTCODE' | translate"
-                   class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+          <!-- Opening Due Section (customer-level mode only) -->
+          <div *ngIf="!isPaymentOnInvoice">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">{{ 'CUSTOMER.OPENING_DUE' | translate }}</h4>
+            <div class="org-field">
+              <label class="org-label">{{ 'CUSTOMER.OPENING_DUE' | translate }}</label>
+              <input type="number"
+                     step="0.01"
+                     min="0"
+                     formControlName="openingDue"
+                     placeholder="0.00"
+                     class="org-input"
+                     [attr.disabled]="isEditMode ? '' : null"
+                     [class.bg-gray-100]="isEditMode"
+                     [class.cursor-not-allowed]="isEditMode">
+              <div *ngIf="isEditMode" class="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                {{ 'CUSTOMER.OPENING_DUE_HINT' | translate }}
+              </div>
+            </div>
           </div>
         </form>
       </div>
 
-      <!-- Footer -->
-      <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200">
+      <!-- Sticky Footer -->
+      <div class="sticky bottom-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700">
         <button type="button"
                 (click)="closeDrawer()"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+                class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors dark:text-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700">
           {{ 'COMMON.CANCEL' | translate }}
         </button>
         <button type="button"
                 (click)="saveCustomer()"
                 [disabled]="customerForm.invalid"
-                class="px-4 py-2 text-sm font-medium text-white rounded transition-colors"
+                class="px-4 py-2.5 text-sm font-medium text-white rounded-lg transition-colors"
                 [ngClass]="{
-                  'bg-blue-600 hover:bg-blue-700': !customerForm.invalid,
+                  'bg-indigo-600 hover:bg-indigo-700': !customerForm.invalid,
                   'bg-gray-400 cursor-not-allowed': customerForm.invalid
                 }">
           {{ isEditMode ? ('COMMON.UPDATE' | translate) : ('COMMON.CREATE' | translate) }}

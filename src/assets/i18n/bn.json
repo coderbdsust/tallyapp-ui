@@ -202,6 +202,9 @@
     "NOT_FOUND": "চালান পাওয়া যায়নি",
     "NOT_FOUND_DESC": "অনুরোধকৃত চালান লোড করা যায়নি।",
     "BACK_TO_LIST": "চালান তালিকায় ফিরুন",
+    "DELIVERY_ADDRESS": "ডেলিভারি ঠিকানা",
+    "NO_ADDRESS": "কোনো ঠিকানা দেওয়া হয়নি",
+    "CUSTOMER_CANNOT_REMOVE": "পণ্য থাকলে গ্রাহক মুছে ফেলা যাবে না",
     "NOTES_TEXT": "আপনার ব্যবসার জন্য ধন্যবাদ! এই চালান সম্পর্কে কোনো প্রশ্ন থাকলে, আমাদের সাথে যোগাযোগ করুন",
     "SALE_DETAILS": "বিক্রয় বিবরণ",
     "SELLING_RATE": "বিক্রয় মূল্য",
@@ -234,6 +237,8 @@
       "PRODUCT_CREATED_ADDED": "পণ্য তৈরি এবং চালানে যোগ করা হয়েছে"
     },
     "CUSTOMER_LIST": {
+      "OPENING_DUE": "প্রারম্ভিক বকেয়া",
+      "DOWNLOAD_ALL_CUSTOMER_REPORT":"সকল গ্রাহকের রিপোর্ট ডাউনলোড করুন",
       "TITLE": "সকল গ্রাহক",
       "ADD_CUSTOMER": "গ্রাহক যোগ করুন",
       "EDIT_CUSTOMER": "গ্রাহক সম্পাদনা",
@@ -614,7 +619,7 @@
     "QTY": "পরিমাণ",
     "SEARCH_PRODUCT": "নাম বা কোড দিয়ে পণ্য খুঁজুন",
     "PRODUCT_NAME": "পণ্যের নাম *",
-    "PRODUCT_CODE": "পণ্য কোড (ঐচ্ছিক)",
+    "PRODUCT_CODE": "পণ্য কোড *",
     "PRODUCT_DESC": "পণ্যের বিবরণ (ঐচ্ছিক)...",
     "SELECT_UNIT_TYPE": "একক ধরন নির্বাচন করুন",
     "REMOVE_PRODUCT": "পণ্য সরান",
@@ -1086,6 +1091,20 @@
     "TOAST": {
       "TYPE_5_CHARS": "অনুগ্রহ করে কমপক্ষে পাঁচ (৫) অক্ষর টাইপ করুন"
     }
+  },
+  "CUSTOMER": {
+    "BASIC_INFO": "প্রাথমিক তথ্য",
+    "BILLING_ADDRESS": "বিলিং ঠিকানা",
+    "DELIVERY_ADDRESS": "ডেলিভারি ঠিকানা",
+    "STREET_ADDRESS": "রাস্তার ঠিকানা",
+    "CITY": "শহর",
+    "POSTCODE": "পোস্টকোড",
+    "COUNTRY": "দেশ",
+    "OPENING_DUE": "প্রারম্ভিক বকেয়া",
+    "OPENING_DUE_HINT": "শুধুমাত্র গ্রাহক তৈরির সময় সেট করা যায়",
+    "EFFECTIVE_BALANCE": "কার্যকর ব্যালেন্স",
+    "MANAGE_DETAILS": "গ্রাহকের বিবরণ পরিচালনা করুন",
+    "ALREADY_EXISTS": "এই ইমেইল বা মোবাইল নম্বরে একজন গ্রাহক ইতিমধ্যে আছে।"
   },
   "LAYOUT": {
     "OPEN_MENU": "মেনু খুলুন",

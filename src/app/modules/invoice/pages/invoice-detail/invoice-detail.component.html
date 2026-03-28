@@ -95,9 +95,10 @@
       </div>
     </div>
 
-    <!-- Billing Address -->
-    <div class="flex flex-row pt-4">
-      <div class="w-1/2 pr-4">
+    <!-- Customer Addresses -->
+    <div class="flex flex-row gap-6 pt-4">
+      <!-- Billing Address -->
+      <div class="w-1/2">
         <h2 class="text-lg font-semibold text-muted-foreground mb-4">{{ 'INVOICE.BILLING_ADDRESS' | translate }}</h2>
 
         <div class="grid grid-cols-1 gap-3">
@@ -108,12 +109,22 @@
 
           <div class="flex justify-between text-sm text-muted-foreground">
             <span class="font-medium">{{ 'COMMON.ADDRESS' | translate }}:</span>
-            <span class="text-right max-w-xs">{{ getCustomerInfo('address') }}</span>
+            <span class="text-right max-w-xs">{{ getCustomerInfo('billingAddressLine') }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">{{ 'CUSTOMER.CITY' | translate }}:</span>
+            <span>{{ getCustomerInfo('billingCity') }}</span>
           </div>
 
           <div class="flex justify-between text-sm text-muted-foreground">
             <span class="font-medium">{{ 'INVOICE.POSTCODE' | translate }}:</span>
-            <span>{{ getCustomerInfo('postcode') }}</span>
+            <span>{{ getCustomerInfo('billingPostcode') }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">{{ 'CUSTOMER.COUNTRY' | translate }}:</span>
+            <span>{{ getCustomerInfo('billingCountry') }}</span>
           </div>
 
           <div class="flex justify-between text-sm text-muted-foreground">
@@ -123,7 +134,34 @@
 
           <div class="flex justify-between text-sm text-muted-foreground">
             <span class="font-medium">{{ 'COMMON.EMAIL' | translate }}:</span>
-            <span >{{ getCustomerInfo('email') }}</span>
+            <span>{{ getCustomerInfo('email') }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivery Address -->
+      <div class="w-1/2">
+        <h2 class="text-lg font-semibold text-muted-foreground mb-4">{{ 'INVOICE.DELIVERY_ADDRESS' | translate }}</h2>
+
+        <div class="grid grid-cols-1 gap-3">
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">{{ 'COMMON.ADDRESS' | translate }}:</span>
+            <span class="text-right max-w-xs">{{ getCustomerInfo('deliveryAddressLine') }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">{{ 'CUSTOMER.CITY' | translate }}:</span>
+            <span>{{ getCustomerInfo('deliveryCity') }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">{{ 'INVOICE.POSTCODE' | translate }}:</span>
+            <span>{{ getCustomerInfo('deliveryPostcode') }}</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium">{{ 'CUSTOMER.COUNTRY' | translate }}:</span>
+            <span>{{ getCustomerInfo('deliveryCountry') }}</span>
           </div>
         </div>
       </div>

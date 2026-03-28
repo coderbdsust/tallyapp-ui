@@ -34,6 +34,8 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
   formatCurrency = formatCurrency;
   customerPaymentForm!: FormGroup;
   showCustomerPaymentForm = false;
+  existingCustomer: Customer | null = null;
+  checkingCustomer = false;
 
   readonly allPaymentMethods = [
     'Cash',
@@ -107,14 +109,26 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
   }
 
   private initForm(customer: Customer | null = null): void {
-    this.customerForm = this.fb.group({
+    const formConfig: any = {
       id: [customer?.id || ''],
       name: [customer?.name || '', Validators.required],
       mobile: [customer?.mobile || '', Validators.required],
       email: [customer?.email || ''],
-      address: [customer?.address || ''],
-      postcode: [customer?.postcode || '']
-    });
+      billingAddressLine: [customer?.billingAddressLine || ''],
+      billingCity: [customer?.billingCity || ''],
+      billingPostcode: [customer?.billingPostcode || ''],
+      billingCountry: [customer?.billingCountry || ''],
+      deliveryAddressLine: [customer?.deliveryAddressLine || ''],
+      deliveryCity: [customer?.deliveryCity || ''],
+      deliveryPostcode: [customer?.deliveryPostcode || ''],
+      deliveryCountry: [customer?.deliveryCountry || '']
+    };
+
+    if (!this.isPaymentOnInvoice) {
+      formConfig.openingDue = [customer?.openingDue ?? 0];
+    }
+
+    this.customerForm = this.fb.group(formConfig);
   }
 
   onSearchChange(event: Event): void {
@@ -131,18 +145,48 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
   openCreateDrawer(): void {
     this.isEditMode = false;
     this.initForm();
+    this.existingCustomer = null;
     this.showDrawer = true;
   }
 
   openEditDrawer(customer: Customer): void {
     this.isEditMode = true;
     this.initForm(customer);
+    this.existingCustomer = null;
     this.showDrawer = true;
   }
 
   closeDrawer(): void {
     this.showDrawer = false;
+    this.existingCustomer = null;
     this.initForm();
+  }
+
+  checkExistingCustomer(): void {
+    if (!this.organization || this.isEditMode) return;
+
+    const email = this.customerForm.get('email')?.value?.trim() || '';
+    const mobile = this.customerForm.get('mobile')?.value?.trim() || '';
+
+    if (!email && !mobile) {
+      this.existingCustomer = null;
+      return;
+    }
+
+    this.checkingCustomer = true;
+    this.customerService
+      .checkCustomerExists(this.organization.id, email, mobile)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (customer) => {
+          this.existingCustomer = customer ?? null;
+          this.checkingCustomer = false;
+        },
+        error: () => {
+          this.existingCustomer = null;
+          this.checkingCustomer = false;
+        }
+      });
   }
 
   saveCustomer(): void {
@@ -310,5 +354,20 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
         error: (err) => this.customerService.showToastErrorResponse(err)
       });
     this.loadData();
+  }
+
+  downloadAllCustomerReport(){
+    this.customerService.downloadAllCustomerReport(this.organization.id).subscribe({
+      next: (response) => {
+        const blob = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'all-customer-report.pdf';
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => this.customerService.showToastErrorResponse(err)
+    });
   }
 }

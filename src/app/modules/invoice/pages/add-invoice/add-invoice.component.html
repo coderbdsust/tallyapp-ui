@@ -67,16 +67,12 @@
                 </div>
             </div>
 
-            <!-- REFACTORED CUSTOMER SECTION -->
-            <div class="flex flex-row pt-6">
-                <div class="w-5/12 pr-4">
-                    <div class="bg-white  border-gray-200 p-4">
-                        <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-lg font-semibold text-gray-800">{{ 'INVOICE.BILLING_ADDRESS' | translate }}</h2>
-                        </div>
-
-                        <!-- Customer Search -->
-                        <div class="mb-4">
+            <!-- CUSTOMER SECTION -->
+            <div class="flex flex-col pt-6">
+                <div class="w-full bg-white border-gray-200 p-4">
+                    <!-- Top Row: Search + Action Buttons -->
+                    <div class="flex items-end gap-3 mb-4">
+                        <div class="flex-1">
                             <label class="block text-sm font-medium text-gray-700 mb-2">{{ 'INVOICE.SEARCH_CUSTOMER' | translate }}</label>
                             <ng-select [items]="allCustomers"
                                       bindValue="id"
@@ -88,93 +84,64 @@
                                       class="min-h-[38px]">
                             </ng-select>
                         </div>
-
-                        <!-- Customer Details Grid -->
-                        <div class="space-y-4">
-                            <!-- Customer Name -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INVOICE.CUSTOMER_NAME' | translate }} *</label>
-                                <input type="text"
-                                       [placeholder]="'INVOICE.CUSTOMER_NAME' | translate"
-                                       [value]="invoice?.customer?.name"
-                                       formControlName="customerName"
-                                       class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
-                                <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerName')">
-                                    {{ getErrorMessage(invForm, 'customerName') }}
-                                </div>
-                            </div>
-
-                            <!-- Phone and Email Row -->
-                            <div class="flex flex-row gap-3">
-                                <div class="w-5/12">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INVOICE.CUSTOMER_PHONE' | translate }} *</label>
-                                    <input type="text"
-                                           [placeholder]="'INVOICE.CUSTOMER_PHONE' | translate"
-                                           [value]="invoice?.customer?.mobile"
-                                           formControlName="customerMobile"
-                                           class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
-                                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerMobile')">
-                                        {{ getErrorMessage(invForm, 'customerMobile') }}
-                                    </div>
-                                </div>
-                                <div class="w-7/12">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INVOICE.CUSTOMER_EMAIL' | translate }}</label>
-                                    <input type="email"
-                                           [placeholder]="'INVOICE.CUSTOMER_EMAIL' | translate"
-                                           [value]="invoice?.customer?.email"
-                                           formControlName="customerEmail"
-                                           class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
-                                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerEmail')">
-                                        {{ getErrorMessage(invForm, 'customerEmail') }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Address -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INVOICE.CUSTOMER_ADDRESS' | translate }}</label>
-                                <textarea [placeholder]="'INVOICE.CUSTOMER_ADDRESS' | translate"
-                                          [value]="invoice?.customer?.address"
-                                          formControlName="customerAddressLine"
-                                          rows="3"
-                                          class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm resize-none"></textarea>
-                                <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerAddressLine')">
-                                    {{ getErrorMessage(invForm, 'customerAddressLine') }}
-                                </div>
-                            </div>
-
-                            <!-- Postcode -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INVOICE.POSTCODE' | translate }}</label>
-                                <input type="text"
-                                       [placeholder]="'INVOICE.POSTCODE' | translate"
-                                       [value]="invoice?.customer?.postcode"
-                                       formControlName="customerPostcode"
-                                       class="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
-                                <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(invForm, 'customerPostcode')">
-                                    {{ getErrorMessage(invForm, 'customerPostcode') }}
-                                </div>
-                            </div>
-                             <div *ngIf="!isPaid" class="flex items-center justify-end mb-4 gap-1">
-                                <button type="button"
-                                        (click)="saveCustomer()"
-                                        class="inline-flex items-center px-3 py-1.5 text-xs rounded-lg  font-medium text-green-600 bg-green-50 border border-green-200 transition-colors"
-                                        [title]="'INVOICE.SAVE_CUSTOMER' | translate"
-                                        [ngClass]="{
-                                            'hover:bg-green-200': invForm.get('customerName')?.value && invForm.get('customerMobile')?.value,
-                                            'hover:bg-red-200 cursor-not-allowed': !invForm.get('customerName')?.value || !invForm.get('customerMobile')?.value
-                                        }">
-                                    <svg-icon src="./assets/icons/heroicons/outline/folder.svg" [svgClass]="'h-3 w-3 mr-1'"></svg-icon>
-                                    {{ 'INVOICE.SAVE_CUSTOMER' | translate }}
-                                </button>
-
-                                <button type="button"
+                        <div *ngIf="!isPaid" class="flex items-center gap-1">
+                            <button type="button"
                                     (click)="createNewCustomer()"
-                                    class="inline-flex items-center px-3 py-1.5 text-xs rounded-lg font-medium text-red-600 bg-red-50 border border-red-200  hover:bg-red-100 transition-colors"
-                                    [title]="'INVOICE.CLEAR_CUSTOMER' | translate">
-                                    <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-3 w-3 mr-1'"></svg-icon>
-                                    {{ 'INVOICE.CLEAR_CUSTOMER' | translate }}
-                                </button>
+                                    [disabled]="hasProducts"
+                                    class="inline-flex items-center px-3 py-2 text-xs rounded-lg font-medium transition-colors"
+                                    [ngClass]="{
+                                        'text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 cursor-pointer': !hasProducts,
+                                        'text-gray-400 bg-gray-100 border border-gray-200 cursor-not-allowed': hasProducts
+                                    }"
+                                    [title]="hasProducts ? ('INVOICE.CUSTOMER_CANNOT_REMOVE' | translate) : ('INVOICE.CLEAR_CUSTOMER' | translate)">
+                                <svg-icon src="./assets/icons/heroicons/outline/minus.svg" [svgClass]="'h-3 w-3 mr-1'"></svg-icon>
+                                {{ 'INVOICE.CLEAR_CUSTOMER' | translate }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Customer Info (read-only) -->
+                    <div *ngIf="invoice?.customer?.id" class="mb-4">
+                        <div class="flex flex-wrap gap-x-6 gap-y-1 text-sm text-gray-700">
+                            <span><span class="font-medium">{{ 'INVOICE.CUSTOMER_NAME' | translate }}:</span> {{ invoice?.customer?.name }}</span>
+                            <span><span class="font-medium">{{ 'INVOICE.CUSTOMER_PHONE' | translate }}:</span> {{ invoice?.customer?.mobile }}</span>
+                            <span *ngIf="invoice?.customer?.email"><span class="font-medium">{{ 'INVOICE.CUSTOMER_EMAIL' | translate }}:</span> {{ invoice?.customer?.email }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Address Cards Row (side-by-side) -->
+                    <div *ngIf="invoice?.customer?.id" class="flex flex-row gap-4">
+                        <!-- Billing Address -->
+                        <div class="w-1/2">
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                                <h3 class="text-sm font-semibold text-gray-800 mb-3">{{ 'INVOICE.BILLING_ADDRESS' | translate }}</h3>
+                                <div *ngIf="invoice?.customer?.billingAddressLine || invoice?.customer?.billingCity || invoice?.customer?.billingPostcode || invoice?.customer?.billingCountry; else noBillingAddress"
+                                     class="space-y-1 text-sm text-gray-600">
+                                    <p *ngIf="invoice?.customer?.billingAddressLine">{{ invoice?.customer?.billingAddressLine }}</p>
+                                    <p *ngIf="invoice?.customer?.billingCity">{{ invoice?.customer?.billingCity }}</p>
+                                    <p *ngIf="invoice?.customer?.billingPostcode">{{ invoice?.customer?.billingPostcode }}</p>
+                                    <p *ngIf="invoice?.customer?.billingCountry">{{ invoice?.customer?.billingCountry }}</p>
+                                </div>
+                                <ng-template #noBillingAddress>
+                                    <p class="text-sm text-gray-400 italic">{{ 'INVOICE.NO_ADDRESS' | translate }}</p>
+                                </ng-template>
+                            </div>
+                        </div>
+
+                        <!-- Delivery Address -->
+                        <div class="w-1/2">
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                                <h3 class="text-sm font-semibold text-gray-800 mb-3">{{ 'INVOICE.DELIVERY_ADDRESS' | translate }}</h3>
+                                <div *ngIf="invoice?.customer?.deliveryAddressLine || invoice?.customer?.deliveryCity || invoice?.customer?.deliveryPostcode || invoice?.customer?.deliveryCountry; else noDeliveryAddress"
+                                     class="space-y-1 text-sm text-gray-600">
+                                    <p *ngIf="invoice?.customer?.deliveryAddressLine">{{ invoice?.customer?.deliveryAddressLine }}</p>
+                                    <p *ngIf="invoice?.customer?.deliveryCity">{{ invoice?.customer?.deliveryCity }}</p>
+                                    <p *ngIf="invoice?.customer?.deliveryPostcode">{{ invoice?.customer?.deliveryPostcode }}</p>
+                                    <p *ngIf="invoice?.customer?.deliveryCountry">{{ invoice?.customer?.deliveryCountry }}</p>
+                                </div>
+                                <ng-template #noDeliveryAddress>
+                                    <p class="text-sm text-gray-400 italic">{{ 'INVOICE.NO_ADDRESS' | translate }}</p>
+                                </ng-template>
                             </div>
                         </div>
                     </div>

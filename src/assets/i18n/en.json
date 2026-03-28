@@ -202,6 +202,9 @@
     "NOT_FOUND": "Invoice Not Found",
     "NOT_FOUND_DESC": "The requested invoice could not be loaded.",
     "BACK_TO_LIST": "Back to Invoice List",
+    "DELIVERY_ADDRESS": "Delivery Address",
+    "NO_ADDRESS": "No address provided",
+    "CUSTOMER_CANNOT_REMOVE": "Cannot remove customer when products exist",
     "NOTES_TEXT": "Thank you for your business! If you have any questions about this invoice, please contact us at",
     "SALE_DETAILS": "Sale Details",
     "SELLING_RATE": "Selling Rate",
@@ -234,6 +237,8 @@
       "PRODUCT_CREATED_ADDED": "Product created and added to invoice"
     },
     "CUSTOMER_LIST": {
+      "OPENING_DUE": "Opening Due",
+      "DOWNLOAD_ALL_CUSTOMER_REPORT": "Download All Customer Report",
       "TITLE": "All Customers",
       "ADD_CUSTOMER": "Add Customer",
       "EDIT_CUSTOMER": "Edit Customer",
@@ -614,7 +619,7 @@
     "QTY": "Qty",
     "SEARCH_PRODUCT": "Search product by name or code",
     "PRODUCT_NAME": "Product Name *",
-    "PRODUCT_CODE": "Product Code (optional)",
+    "PRODUCT_CODE": "Product Code *",
     "PRODUCT_DESC": "Product description (optional)...",
     "SELECT_UNIT_TYPE": "Select Unit Type",
     "REMOVE_PRODUCT": "Remove product",
@@ -1086,6 +1091,20 @@
     "TOAST": {
       "TYPE_5_CHARS": "Please type at least five (5) characters"
     }
+  },
+  "CUSTOMER": {
+    "BASIC_INFO": "Basic Information",
+    "BILLING_ADDRESS": "Billing Address",
+    "DELIVERY_ADDRESS": "Delivery Address",
+    "STREET_ADDRESS": "Street Address",
+    "CITY": "City",
+    "POSTCODE": "Postcode",
+    "COUNTRY": "Country",
+    "OPENING_DUE": "Opening Due",
+    "OPENING_DUE_HINT": "Can only be set when creating a customer",
+    "EFFECTIVE_BALANCE": "Effective Balance",
+    "MANAGE_DETAILS": "Manage customer details",
+    "ALREADY_EXISTS": "A customer with this email or mobile already exists."
   },
   "LAYOUT": {
     "OPEN_MENU": "Open menu",

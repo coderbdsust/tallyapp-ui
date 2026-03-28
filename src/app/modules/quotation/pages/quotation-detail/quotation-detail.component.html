@@ -117,12 +117,12 @@
 
           <div class="flex justify-between text-sm text-muted-foreground">
             <span class="font-medium">{{ 'COMMON.ADDRESS' | translate }}:</span>
-            <span class="text-right max-w-xs">{{ invoice.customer.address }}</span>
+            <span class="text-right max-w-xs">{{ invoice.customer.billingAddressLine }}</span>
           </div>
 
-          <div class="flex justify-between text-sm text-muted-foreground" *ngIf="invoice.customer.postcode">
+          <div class="flex justify-between text-sm text-muted-foreground" *ngIf="invoice.customer.billingPostcode">
             <span class="font-medium">{{ 'QUOTATION.POSTCODE' | translate }}:</span>
-            <span>{{ invoice.customer.postcode }}</span>
+            <span>{{ invoice.customer.billingPostcode }}</span>
           </div>
 
           <div class="flex justify-between text-sm text-muted-foreground">

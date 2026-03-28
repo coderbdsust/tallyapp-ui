@@ -92,6 +92,10 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     return this.invoice?.invoiceStatus === 'PAID';
   }
 
+  get hasProducts(): boolean {
+    return (this.invoice?.productSales?.length ?? 0) > 0;
+  }
+
   get invoiceDueFromBalance(): number {
     const due = (this.invoice?.totalAmount ?? 0) - this.customerBalance;
     return due > 0 ? due : 0;
@@ -178,8 +182,6 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       customerName: [invoice?.customer?.name, Validators.required],
       customerMobile: [invoice?.customer?.mobile, Validators.required],
       customerEmail: [invoice?.customer?.email],
-      customerAddressLine: [invoice?.customer?.address],
-      customerPostcode: [invoice?.customer?.postcode],
 
       totalDiscount: [invoice?.totalDiscount],
       deliveryCharge: [invoice?.deliveryCharge],
@@ -227,59 +229,10 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       customerId: '',
       customerName: '',
       customerMobile: '',
-      customerEmail: '',
-      customerAddressLine: '',
-      customerPostcode: ''
+      customerEmail: ''
     });
-  }
-
-  saveCustomer(): void {
-    const orgId = this.invoice?.ownerOrganization?.id;
-    if (!orgId) return;
-
-    const customerData = {
-      name: this.invForm.get('customerName')?.value,
-      mobile: this.invForm.get('customerMobile')?.value,
-      email: this.invForm.get('customerEmail')?.value,
-      address: this.invForm.get('customerAddressLine')?.value,
-      postcode: this.invForm.get('customerPostcode')?.value
-    };
-
-    if (!customerData.name || !customerData.mobile) {
-      this.invoiceService.showToastInfoKey('INVOICE.TOAST.CUSTOMER_NAME_REQUIRED');
-      return;
-    }
-
-    const customerId = this.invForm.get('customerId')?.value;
-
-    const assignCustomerToInvoice = (customer: Customer) => {
-      this.onSelectCustomer(customer);
-      const invoiceUpdate = { ...this.invForm.value, customerId: customer.id };
-      this.invoiceService.updateInvoice(this.invoiceId, invoiceUpdate).subscribe({
-        next: (updated) => {
-          this.invoice = updated;
-          this.initiateInvoiceForm(updated);
-          this.customerService.showToastSuccessKey(
-            customerId ? 'INVOICE.TOAST.CUSTOMER_UPDATED_ASSIGNED' : 'INVOICE.TOAST.CUSTOMER_CREATED_ASSIGNED'
-          );
-          if (!this.isPaymentOnInvoice && customer.id) {
-            this.loadCustomerPaymentData(customer.id);
-          }
-        },
-        error: (err) => this.invoiceService.showToastErrorResponse(err)
-      });
-    };
-
-    if (customerId) {
-      this.customerService.editCustomer(orgId, customerId, customerData).subscribe({
-        next: (customer) => assignCustomerToInvoice(customer),
-        error: (err) => this.customerService.showToastErrorResponse(err)
-      });
-    } else {
-      this.customerService.createCustomer(orgId, customerData).subscribe({
-        next: (customer) => assignCustomerToInvoice(customer),
-        error: (err) => this.customerService.showToastErrorResponse(err)
-      });
+    if (this.invoice) {
+      this.invoice = { ...this.invoice, customer: null };
     }
   }
 
@@ -292,10 +245,13 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       customerId: customer.id,
       customerName: customer.name,
       customerMobile: customer.mobile,
-      customerEmail: customer.email,
-      customerAddressLine: customer.address,
-      customerPostcode: customer.postcode
+      customerEmail: customer.email
     });
+
+    // Update the invoice object so the template displays customer info
+    if (this.invoice) {
+      this.invoice = { ...this.invoice, customer };
+    }
 
     if (!this.isPaymentOnInvoice && customer.id) {
       this.loadCustomerPaymentData(customer.id);
@@ -799,7 +755,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   private loadCustomerPaymentData(customerId: string): void {
     this.customerService.getCustomerById(this.orgId, customerId).subscribe({
       next: (customer) => {
-        this.customerBalance = customer.balance ?? 0;
+        this.customerBalance = customer.effectiveBalance ?? customer.balance ?? 0;
       },
       error: () => {
         this.customerBalance = 0;

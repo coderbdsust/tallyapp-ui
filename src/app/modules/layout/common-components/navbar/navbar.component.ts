@@ -26,7 +26,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isOrganizationRoute = false;
 
   private subscriptions: Subscription[] = [];
-  private readonly targetPaths = ['/dashboard', '/employee', '/product', '/invoice','/quotation', '/cash-management', '/supplier', '/report'];
+  private readonly targetPaths = ['/dashboard', '/employee', '/product','/quotation', '/cash-management', '/supplier', '/report', '/invoice'];
+  private readonly exludePaths = ['/invoice/add', '/invoice/detail','/quotation/add', '/quotation/detail'];
 
   constructor(public menuService: MenuService, public orgService: OrganizationService, private router: Router) { }
 
@@ -46,13 +47,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   // Helper method to check URL and load orgs if needed
   private checkAndLoadOrganizations(url: string): void {
-    const match = this.targetPaths.some(path => url.includes(path));
-    if (match && !this.isOrganizationRoute) {
+    const isTarget = this.targetPaths.some(path => url.includes(path));
+    const isExcluded = this.exludePaths.some(path => url.includes(path));
+    const shouldShow = isTarget && !isExcluded;
+
+    if (shouldShow && !this.isOrganizationRoute) {
       this.isOrganizationRoute = true;
       this.loadOrganizationsAndSubscribe();
-    } else if (!match && this.isOrganizationRoute) {
+    } else if (!shouldShow && this.isOrganizationRoute) {
       this.isOrganizationRoute = false;
-      // Optionally handle clearing orgs or subscriptions if needed here
     }
   }
 

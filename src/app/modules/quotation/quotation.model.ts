@@ -37,8 +37,8 @@ export interface CustomerData {
   name: string;
   mobile: string;
   email?: string;
-  address: string;
-  postcode?: string;
+  billingAddressLine?: string;
+  billingPostcode?: string;
   additionalInfo?: string;
 }
 
@@ -133,8 +133,8 @@ export interface UpdateCustomerRequest {
   name: string;
   mobile: string;
   email?: string;
-  address: string;
-  postcode?: string;
+  billingAddressLine?: string;
+  billingPostcode?: string;
   additionalInfo?: string;
 }
 
