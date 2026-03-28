@@ -4,7 +4,7 @@ import { PaginatedComponent } from 'src/app/common/components/pagination/paginat
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
-import { Customer, CustomerDetail, CustomerPayment } from '../../invoice.model';
+import { Customer, CustomerDetail, CustomerInvoice, CustomerPayment } from '../../invoice.model';
 import { Organization } from 'src/app/core/models/organization.model';
 import { CustomerService } from 'src/app/core/services/customer.service';
 import { OrganizationService } from 'src/app/core/services/organization.service';
@@ -14,10 +14,12 @@ import { formatCurrency } from 'src/app/common/utils/common';
 import { CustomerPaymentService } from 'src/app/core/services/customer-payment.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ReasonModalComponent } from 'src/app/common/components/reason-modal/reason-modal.component';
+import { PaymentService } from 'src/app/core/services/payment.service';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-customer-list',
-  imports: [AngularSvgIconModule, CommonModule, FormsModule, ReactiveFormsModule, WordPipe, TranslateModule],
+  imports: [AngularSvgIconModule, CommonModule, FormsModule, ReactiveFormsModule, WordPipe, TranslateModule, NgSelectComponent],
   templateUrl: './customer-list.component.html',
   styleUrl: './customer-list.component.scss'
 })
@@ -36,6 +38,19 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
   showCustomerPaymentForm = false;
   existingCustomer: Customer | null = null;
   checkingCustomer = false;
+
+  // Payment drawer state
+  showPaymentDrawer = false;
+  paymentDrawerForm!: FormGroup;
+  paymentCustomers: any[] = [];
+  paymentCustomerPage = 0;
+  paymentCustomerHasMore = true;
+  selectedPaymentCustomer: Customer | null = null;
+  unpaidInvoices: any[] = [];
+  unpaidInvoicePage = 0;
+  unpaidInvoiceHasMore = true;
+  selectedUnpaidInvoice: CustomerInvoice | null = null;
+  submittingPayment = false;
 
   readonly allPaymentMethods = [
     'Cash',
@@ -56,12 +71,14 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
     private customerService: CustomerService,
     private orgService: OrganizationService,
     private customerPaymentService: CustomerPaymentService,
+    private paymentService: PaymentService,
     private fb: FormBuilder,
     private dialog: MatDialog
   ) {
     super();
     this.initForm();
     this.initCustomerPaymentForm();
+    this.initPaymentDrawerForm();
   }
 
   ngOnInit(): void {
@@ -369,5 +386,182 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
       },
       error: (err) => this.customerService.showToastErrorResponse(err)
     });
+  }
+
+  // ── Payment Drawer ──────────────────────────────────────────────────
+
+  private initPaymentDrawerForm(): void {
+    this.paymentDrawerForm = this.fb.group({
+      paymentAmount: ['', [Validators.required, Validators.min(1)]],
+      paymentDate: ['', Validators.required],
+      paymentMethod: ['', Validators.required],
+      paymentRef: [''],
+      notes: ['']
+    });
+  }
+
+  openPaymentDrawer(): void {
+    this.showPaymentDrawer = true;
+    this.initPaymentDrawerForm();
+    this.selectedPaymentCustomer = null;
+    this.selectedUnpaidInvoice = null;
+    this.paymentCustomers = [];
+    this.paymentCustomerPage = 0;
+    this.paymentCustomerHasMore = true;
+    this.unpaidInvoices = [];
+    this.unpaidInvoicePage = 0;
+    this.unpaidInvoiceHasMore = true;
+    this.loadPaymentCustomers();
+  }
+
+  closePaymentDrawer(): void {
+    this.showPaymentDrawer = false;
+    this.selectedPaymentCustomer = null;
+    this.selectedUnpaidInvoice = null;
+    this.paymentCustomers = [];
+    this.unpaidInvoices = [];
+  }
+
+  loadPaymentCustomers(search: string = ''): void {
+    if (!this.organization) return;
+    this.customerService
+      .getCustomerByOrganization(this.organization.id, this.paymentCustomerPage, 5, search)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const mapped = response.content.map(c => ({
+            ...c,
+            label: `${c.name} — ${c.mobile}`
+          }));
+          if (this.paymentCustomerPage === 0) {
+            this.paymentCustomers = mapped;
+          } else {
+            this.paymentCustomers = [...this.paymentCustomers, ...mapped];
+          }
+          this.paymentCustomerHasMore = !response.last;
+        },
+        error: () => this.paymentCustomerHasMore = false
+      });
+  }
+
+  onPaymentCustomerSearch(event: { term: string }): void {
+    this.paymentCustomerPage = 0;
+    this.paymentCustomerHasMore = true;
+    this.loadPaymentCustomers(event.term);
+  }
+
+  onPaymentCustomerScrollEnd(): void {
+    if (!this.paymentCustomerHasMore) return;
+    this.paymentCustomerPage++;
+    this.loadPaymentCustomers();
+  }
+
+  onPaymentCustomerSelect(customer: Customer | null): void {
+    this.selectedPaymentCustomer = customer || null;
+    this.selectedUnpaidInvoice = null;
+    this.unpaidInvoices = [];
+    this.unpaidInvoicePage = 0;
+    this.unpaidInvoiceHasMore = true;
+
+    if (customer && this.isPaymentOnInvoice) {
+      this.loadUnpaidInvoices(customer.id);
+    }
+  }
+
+  loadUnpaidInvoices(customerId: string): void {
+    if (!this.organization) return;
+    this.customerService
+      .getUnpaidInvoices(this.organization.id, customerId, this.unpaidInvoicePage, 5)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const mapped = response.content.map(inv => ({
+            ...inv,
+            label: `${inv.invoiceNumber} — ${formatCurrency(inv.remainingAmount ?? 0)} due`
+          }));
+          if (this.unpaidInvoicePage === 0) {
+            this.unpaidInvoices = mapped;
+          } else {
+            this.unpaidInvoices = [...this.unpaidInvoices, ...mapped];
+          }
+          this.unpaidInvoiceHasMore = !response.last;
+        },
+        error: () => this.unpaidInvoiceHasMore = false
+      });
+  }
+
+  onUnpaidInvoiceScrollEnd(): void {
+    if (!this.unpaidInvoiceHasMore || !this.selectedPaymentCustomer) return;
+    this.unpaidInvoicePage++;
+    this.loadUnpaidInvoices(this.selectedPaymentCustomer.id);
+  }
+
+  onUnpaidInvoiceSelect(invoice: any): void {
+    this.selectedUnpaidInvoice = invoice || null;
+    if (invoice?.remainingAmount) {
+      this.paymentDrawerForm.patchValue({ paymentAmount: invoice.remainingAmount });
+    }
+  }
+
+  get isPaymentDrawerValid(): boolean {
+    if (this.paymentDrawerForm.invalid || !this.selectedPaymentCustomer) return false;
+    if (this.isPaymentOnInvoice && !this.selectedUnpaidInvoice) return false;
+    return true;
+  }
+
+  submitPaymentDrawer(): void {
+    if (!this.isPaymentDrawerValid) return;
+    this.submittingPayment = true;
+
+    const formVal = this.paymentDrawerForm.value;
+
+    if (this.isPaymentOnInvoice) {
+      // Invoice-level: add payment to selected invoice
+      const payment: any = {
+        paymentDate: formVal.paymentDate,
+        paymentMethod: formVal.paymentMethod,
+        paymentRef: formVal.paymentRef,
+        paymentAmount: formVal.paymentAmount
+      };
+      this.paymentService
+        .addPayment(this.selectedUnpaidInvoice!.id, payment)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.paymentService.showToastSuccessKey('INVOICE.TOAST.PAYMENT_ADDED');
+            this.submittingPayment = false;
+            this.closePaymentDrawer();
+            this.loadData();
+          },
+          error: (err) => {
+            this.submittingPayment = false;
+            this.paymentService.showToastErrorResponse(err);
+          }
+        });
+    } else {
+      // Customer-level: receive payment against customer
+      const payment = {
+        amount: formVal.paymentAmount,
+        paymentDate: formVal.paymentDate,
+        paymentMethod: formVal.paymentMethod,
+        reference: formVal.paymentRef,
+        notes: formVal.notes
+      };
+      this.customerPaymentService
+        .receivePayment(this.organization.id, this.selectedPaymentCustomer!.id, payment)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.customerPaymentService.showToastSuccessKey('INVOICE.TOAST.PAYMENT_ADDED');
+            this.submittingPayment = false;
+            this.closePaymentDrawer();
+            this.loadData();
+          },
+          error: (err) => {
+            this.submittingPayment = false;
+            this.customerPaymentService.showToastErrorResponse(err);
+          }
+        });
+    }
   }
 }

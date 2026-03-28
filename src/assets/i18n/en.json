@@ -75,7 +75,9 @@
     "INVALID_EMAIL": "Invalid email",
     "INVALID_NUMBER": "Invalid number",
     "SEARCH_MIN_CHARS": "Search term must be at least 4 characters long.",
-    "ACTION":"Action"
+    "ACTION":"Action",
+    "CUSTOMER": "Customer",
+    "SUBMITTING": "Submitting..."
   },
   "TOAST": {
     "ERROR": "Error",
@@ -261,6 +263,12 @@
       "NAME_REQUIRED": "Name is required",
       "MOBILE_REQUIRED": "Mobile is required",
       "CUSTOMER_BALANCE": "Customer Balance",
+      "RECEIVE_PAYMENT_DESC": "Record a payment from a customer",
+      "SELECT_CUSTOMER": "Select Customer",
+      "SELECT_INVOICE": "Select Invoice",
+      "UNPAID_INVOICE": "Unpaid Invoice",
+      "SELECT_UNPAID_INVOICE": "Select an unpaid invoice",
+      "PAYMENT_DETAILS": "Payment Details",
       "TOAST": {
         "UPDATED": "Customer updated successfully",
         "CREATED": "Customer created successfully"

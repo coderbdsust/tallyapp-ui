@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CommonService } from './common.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Customer, CustomerDetail } from '../../modules/invoice/invoice.model';
+import { Customer, CustomerDetail, CustomerInvoice } from '../../modules/invoice/invoice.model';
 import { PageResponse } from 'src/app/common/models/page-response';
 import { environment } from 'src/environments/environment';
 import { catchError, Observable } from 'rxjs';
@@ -55,6 +55,12 @@ export class CustomerService extends CommonService {
   public downloadAllCustomerReport(organizationId: string): Observable<Blob> {
     return this.http
       .get(`${environment.tallyURL}/pdf/v1/customer/${organizationId}/all/download`, { responseType: 'blob' })
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
+  public getUnpaidInvoices(organizationId: string, customerId: string, page: number, size: number) {
+    return this.http
+      .get<PageResponse<CustomerInvoice>>(`${environment.tallyURL}/customer/v1/${organizationId}/${customerId}/unpaid-invoices?page=${page}&size=${size}`)
       .pipe(catchError(this.mapErrorResponse));
   }
 

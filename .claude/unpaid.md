@@ -42,6 +42,6 @@ GET /customer/v1/{orgId}/{customerId}/unpaid-invoices?page=0&size=10
 
 1. add payment recive button on customer list page top right, before add customer button.
 2. button is clicked , payment drawer open, design will be like add customer drawer
-3. customer will be selected from dropdown with infinit scroll. use existing getCustomerByOrganization api with search.
-4. if paymentOnInvoice true , unpaid invoice list (using above api) will be available can be selected.
+3. customer will be selected from dropdown with infinit scroll. use existing getCustomerByOrganization api with search, defualt 5 row.
+4. if paymentOnInvoice true , unpaid invoice list (using above api) will be available can be selected infinit scroll default 5 row.
 5. if paymentOnInvoice false, customer will be selected and payment will be recorded against customer receivePayment api.

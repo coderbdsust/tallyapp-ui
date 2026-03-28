@@ -14,6 +14,12 @@
         <p>{{ 'INVOICE.CUSTOMER_LIST.DOWNLOAD_ALL_CUSTOMER_REPORT' | translate }}</p>
       </button>
       <button
+        class="flex rounded-md bg-green-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-green-700 transition-colors"
+        (click)="openPaymentDrawer()">
+        <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
+        <p>{{ 'INVOICE.CUSTOMER_LIST.RECEIVE_PAYMENT' | translate }}</p>
+      </button>
+      <button
         class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
         (click)="openCreateDrawer()">
         <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
@@ -657,6 +663,214 @@
                   'bg-gray-400 cursor-not-allowed': customerForm.invalid
                 }">
           {{ isEditMode ? ('COMMON.UPDATE' | translate) : ('COMMON.CREATE' | translate) }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Drawer -->
+<div *ngIf="showPaymentDrawer" class="fixed inset-0 z-50 flex justify-end">
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-black/50" (click)="closePaymentDrawer()"></div>
+
+  <!-- Drawer Panel -->
+  <div class="relative w-full max-w-lg bg-white shadow-xl dark:bg-gray-900">
+    <div class="flex flex-col h-full">
+      <!-- Sticky Header -->
+      <div class="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/30">
+            <svg-icon src="./assets/icons/heroicons/outline/banknotes.svg" [svgClass]="'h-5 w-5 text-green-600 dark:text-green-400'"></svg-icon>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+              {{ 'INVOICE.CUSTOMER_LIST.RECEIVE_PAYMENT' | translate }}
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ 'INVOICE.CUSTOMER_LIST.RECEIVE_PAYMENT_DESC' | translate }}</p>
+          </div>
+        </div>
+        <button (click)="closePaymentDrawer()" class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors dark:hover:bg-gray-800 dark:hover:text-gray-300">
+          <svg-icon src="./assets/icons/heroicons/outline/x-mark.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        </button>
+      </div>
+
+      <!-- Form Body -->
+      <div class="flex-1 overflow-y-auto px-6 py-5">
+        <form [formGroup]="paymentDrawerForm" class="space-y-6">
+
+          <!-- Organization Info -->
+          <div *ngIf="organization" class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+            <img [src]="organization.logoB64 || 'https://placehold.co/400'" alt="Org Logo"
+                 class="w-10 h-10 rounded-md border border-gray-200 object-cover">
+            <div>
+              <div class="text-sm font-semibold text-gray-900">{{ organization.orgName }}</div>
+              <div class="text-xs text-gray-500">{{ organization.orgEmail || organization.orgMobileNo }}</div>
+            </div>
+          </div>
+
+          <!-- Customer Selection -->
+          <div>
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">{{ 'INVOICE.CUSTOMER_LIST.SELECT_CUSTOMER' | translate }}</h4>
+            <div class="org-field">
+              <label class="org-label">{{ 'COMMON.CUSTOMER' | translate }} *</label>
+              <ng-select [items]="paymentCustomers"
+                         bindLabel="label"
+                         [placeholder]="'INVOICE.SEARCH_CUSTOMER' | translate"
+                         [virtualScroll]="true"
+                         (scrollToEnd)="onPaymentCustomerScrollEnd()"
+                         (search)="onPaymentCustomerSearch($event)"
+                         (change)="onPaymentCustomerSelect($event)"
+                         (clear)="onPaymentCustomerSelect(null)"
+                         class="text-sm">
+              </ng-select>
+            </div>
+
+            <!-- Selected Customer Info -->
+            <div *ngIf="selectedPaymentCustomer" class="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+              <div class="space-y-1.5 text-sm mb-3">
+                <div class="flex justify-between">
+                  <span class="text-gray-500">{{ 'COMMON.NAME' | translate }}</span>
+                  <span class="font-medium text-gray-800">{{ selectedPaymentCustomer.name }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-500">{{ 'COMMON.PHONE' | translate }}</span>
+                  <span class="font-medium text-gray-800">{{ selectedPaymentCustomer.mobile }}</span>
+                </div>
+                <div *ngIf="selectedPaymentCustomer.email" class="flex justify-between">
+                  <span class="text-gray-500">{{ 'COMMON.EMAIL' | translate }}</span>
+                  <span class="font-medium text-gray-800">{{ selectedPaymentCustomer.email }}</span>
+                </div>
+              </div>
+              <hr class="border-gray-200 mb-3">
+              <div class="space-y-1.5 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-gray-500">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_INVOICES' | translate }}</span>
+                  <span class="font-semibold text-blue-700">{{ selectedPaymentCustomer.totalInvoice ?? 0 }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-500">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_AMOUNT' | translate }}</span>
+                  <span class="font-semibold text-green-700">{{ formatCurrency(selectedPaymentCustomer.totalAmount) }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-500">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_PAID' | translate }}</span>
+                  <span class="font-semibold text-green-700">{{ formatCurrency(selectedPaymentCustomer.totalPaidAmount) }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-500">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_DUE' | translate }}</span>
+                  <span class="font-semibold" [ngClass]="(selectedPaymentCustomer.totalDueAmount ?? 0) > 0 ? 'text-red-700' : 'text-green-700'">
+                    {{ formatCurrency(selectedPaymentCustomer.totalDueAmount) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Invoice Selection (invoice-level mode only) -->
+          <div *ngIf="isPaymentOnInvoice && selectedPaymentCustomer">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">{{ 'INVOICE.CUSTOMER_LIST.SELECT_INVOICE' | translate }}</h4>
+            <div class="org-field">
+              <label class="org-label">{{ 'INVOICE.CUSTOMER_LIST.UNPAID_INVOICE' | translate }} *</label>
+              <ng-select [items]="unpaidInvoices"
+                         bindLabel="label"
+                         [placeholder]="'INVOICE.CUSTOMER_LIST.SELECT_UNPAID_INVOICE' | translate"
+                         [virtualScroll]="true"
+                         (scrollToEnd)="onUnpaidInvoiceScrollEnd()"
+                         (change)="onUnpaidInvoiceSelect($event)"
+                         (clear)="onUnpaidInvoiceSelect(null)"
+                         class="text-sm">
+              </ng-select>
+            </div>
+
+            <!-- Selected Invoice Info -->
+            <div *ngIf="selectedUnpaidInvoice" class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-mono text-sm font-semibold text-gray-900">{{ selectedUnpaidInvoice.invoiceNumber }}</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                      [ngClass]="[getStatusColor(selectedUnpaidInvoice.invoiceStatus).bg, getStatusColor(selectedUnpaidInvoice.invoiceStatus).text]">
+                  {{ selectedUnpaidInvoice.invoiceStatus | word }}
+                </span>
+              </div>
+              <div class="space-y-1 text-sm mt-2">
+                <div class="flex justify-between">
+                  <span class="text-gray-500">{{ 'INVOICE.TOTAL_AMOUNT' | translate }}</span>
+                  <span class="font-medium">{{ formatCurrency(selectedUnpaidInvoice.totalAmount) }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-500">{{ 'INVOICE.PAID_AMOUNT' | translate }}</span>
+                  <span class="font-medium text-green-700">{{ formatCurrency(selectedUnpaidInvoice.totalPaid ?? 0) }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-500">{{ 'INVOICE.DUE_AMOUNT' | translate }}</span>
+                  <span class="font-medium text-red-700">{{ formatCurrency(selectedUnpaidInvoice.remainingAmount ?? 0) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Details -->
+          <div *ngIf="selectedPaymentCustomer && (!isPaymentOnInvoice || selectedUnpaidInvoice)">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">{{ 'INVOICE.CUSTOMER_LIST.PAYMENT_DETAILS' | translate }}</h4>
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="org-field">
+                  <label class="org-label">{{ 'COMMON.AMOUNT' | translate }} *</label>
+                  <input type="number"
+                         step="0.01"
+                         min="1"
+                         formControlName="paymentAmount"
+                         placeholder="0.00"
+                         class="org-input">
+                </div>
+                <div class="org-field">
+                  <label class="org-label">{{ 'COMMON.DATE' | translate }} *</label>
+                  <input type="date"
+                         formControlName="paymentDate"
+                         class="org-input">
+                </div>
+              </div>
+              <div class="org-field">
+                <label class="org-label">{{ 'COMMON.PAYMENT_METHOD' | translate }} *</label>
+                <select formControlName="paymentMethod" class="org-input">
+                  <option value="" disabled>{{ 'COMMON.SELECT' | translate }}</option>
+                  <option *ngFor="let method of allPaymentMethods" [value]="method">{{ method }}</option>
+                </select>
+              </div>
+              <div class="org-field">
+                <label class="org-label">{{ 'COMMON.REFERENCE' | translate }}</label>
+                <input type="text"
+                       formControlName="paymentRef"
+                       [placeholder]="'COMMON.REFERENCE' | translate"
+                       class="org-input">
+              </div>
+              <div *ngIf="!isPaymentOnInvoice" class="org-field">
+                <label class="org-label">{{ 'INVOICE.CUSTOMER_LIST.PAYMENT_NOTES' | translate }}</label>
+                <input type="text"
+                       formControlName="notes"
+                       [placeholder]="'INVOICE.CUSTOMER_LIST.PAYMENT_NOTES' | translate"
+                       class="org-input">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Sticky Footer -->
+      <div class="sticky bottom-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700">
+        <button type="button"
+                (click)="closePaymentDrawer()"
+                class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors dark:text-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button type="button"
+                (click)="submitPaymentDrawer()"
+                [disabled]="!isPaymentDrawerValid || submittingPayment"
+                class="px-4 py-2.5 text-sm font-medium text-white rounded-lg transition-colors"
+                [ngClass]="{
+                  'bg-green-600 hover:bg-green-700': isPaymentDrawerValid && !submittingPayment,
+                  'bg-gray-400 cursor-not-allowed': !isPaymentDrawerValid || submittingPayment
+                }">
+          {{ submittingPayment ? ('COMMON.SUBMITTING' | translate) : ('INVOICE.CUSTOMER_LIST.RECEIVE_PAYMENT' | translate) }}
         </button>
       </div>
     </div>

@@ -75,7 +75,9 @@
     "INVALID_EMAIL": "অবৈধ ইমেইল",
     "INVALID_NUMBER": "অবৈধ নম্বর",
     "SEARCH_MIN_CHARS": "সার্চ টার্ম কমপক্ষে ৪ অক্ষর হতে হবে।",
-    "ACTION":"অ্যাকশন"
+    "ACTION":"অ্যাকশন",
+    "CUSTOMER": "গ্রাহক",
+    "SUBMITTING": "জমা হচ্ছে..."
   },
   "TOAST": {
     "ERROR": "ত্রুটি",
@@ -261,6 +263,12 @@
       "NAME_REQUIRED": "নাম আবশ্যক",
       "MOBILE_REQUIRED": "মোবাইল আবশ্যক",
       "CUSTOMER_BALANCE": "গ্রাহকের ব্যালেন্স",
+      "RECEIVE_PAYMENT_DESC": "গ্রাহকের কাছ থেকে পেমেন্ট রেকর্ড করুন",
+      "SELECT_CUSTOMER": "গ্রাহক নির্বাচন",
+      "SELECT_INVOICE": "চালান নির্বাচন",
+      "UNPAID_INVOICE": "অপরিশোধিত চালান",
+      "SELECT_UNPAID_INVOICE": "একটি অপরিশোধিত চালান নির্বাচন করুন",
+      "PAYMENT_DETAILS": "পেমেন্ট বিবরণ",
       "TOAST": {
         "UPDATED": "গ্রাহক সফলভাবে আপডেট হয়েছে",
         "CREATED": "গ্রাহক সফলভাবে তৈরি হয়েছে"
