@@ -86,6 +86,13 @@
                         </div>
                         <div *ngIf="!isPaid" class="flex items-center gap-1">
                             <button type="button"
+                                    (click)="openNewCustomerDrawer()"
+                                    class="inline-flex items-center px-3 py-2 text-xs rounded-lg font-medium transition-colors text-indigo-600 bg-indigo-50 hover:bg-indigo-100 cursor-pointer"
+                                    [title]="'INVOICE.CUSTOMER_LIST.NEW_CUSTOMER' | translate">
+                                <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-3 w-3 mr-1'"></svg-icon>
+                                {{ 'INVOICE.CUSTOMER_LIST.NEW_CUSTOMER' | translate }}
+                            </button>
+                            <button type="button"
                                     (click)="createNewCustomer()"
                                     [disabled]="hasProducts"
                                     class="inline-flex items-center px-3 py-2 text-xs rounded-lg font-medium transition-colors"
@@ -100,20 +107,29 @@
                         </div>
                     </div>
 
-                    <!-- Customer Info (read-only) -->
+                    <!-- Customer Info (label view) -->
                     <div *ngIf="invoice?.customer?.id" class="mb-4">
-                        <div class="flex flex-wrap gap-x-6 gap-y-1 text-sm text-gray-700">
-                            <span><span class="font-medium">{{ 'INVOICE.CUSTOMER_NAME' | translate }}:</span> {{ invoice?.customer?.name }}</span>
-                            <span><span class="font-medium">{{ 'INVOICE.CUSTOMER_PHONE' | translate }}:</span> {{ invoice?.customer?.mobile }}</span>
-                            <span *ngIf="invoice?.customer?.email"><span class="font-medium">{{ 'INVOICE.CUSTOMER_EMAIL' | translate }}:</span> {{ invoice?.customer?.email }}</span>
+                        <div class="flex flex-col gap-2 text-sm text-gray-700">
+                            <div class="flex items-center gap-2">
+                                <label class="font-medium text-gray-500 w-36">{{ 'INVOICE.CUSTOMER_NAME' | translate }}:</label>
+                                <span class="text-gray-900">{{ invoice?.customer?.name }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="font-medium text-gray-500 w-36">{{ 'INVOICE.CUSTOMER_PHONE' | translate }}:</label>
+                                <span class="text-gray-900">{{ invoice?.customer?.mobile }}</span>
+                            </div>
+                            <div *ngIf="invoice?.customer?.email" class="flex items-center gap-2">
+                                <label class="font-medium text-gray-500 w-36">{{ 'INVOICE.CUSTOMER_EMAIL' | translate }}:</label>
+                                <span class="text-gray-900">{{ invoice?.customer?.email }}</span>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Address Cards Row (side-by-side) -->
-                    <div *ngIf="invoice?.customer?.id" class="flex flex-row gap-4">
+                    <div *ngIf="invoice?.customer?.id" class="flex flex-row gap-4 mb-4">
                         <!-- Billing Address -->
                         <div class="w-1/2">
-                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                            <div class="bg-gray-50 border border-gray-200 rounded p-4">
                                 <h3 class="text-sm font-semibold text-gray-800 mb-3">{{ 'INVOICE.BILLING_ADDRESS' | translate }}</h3>
                                 <div *ngIf="invoice?.customer?.billingAddressLine || invoice?.customer?.billingCity || invoice?.customer?.billingPostcode || invoice?.customer?.billingCountry; else noBillingAddress"
                                      class="space-y-1 text-sm text-gray-600">
@@ -130,7 +146,7 @@
 
                         <!-- Delivery Address -->
                         <div class="w-1/2">
-                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                            <div class="bg-gray-50 border border-gray-200 rounded p-4">
                                 <h3 class="text-sm font-semibold text-gray-800 mb-3">{{ 'INVOICE.DELIVERY_ADDRESS' | translate }}</h3>
                                 <div *ngIf="invoice?.customer?.deliveryAddressLine || invoice?.customer?.deliveryCity || invoice?.customer?.deliveryPostcode || invoice?.customer?.deliveryCountry; else noDeliveryAddress"
                                      class="space-y-1 text-sm text-gray-600">
@@ -144,6 +160,21 @@
                                 </ng-template>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Assign Customer Button -->
+                    <div *ngIf="invoice?.customer?.id && !isPaid">
+                        <button type="button"
+                            (click)="saveCustomerToInvoice()"
+                            [disabled]="customerAssigned"
+                            class="inline-flex items-center px-3 py-2 text-xs rounded-lg font-medium transition-colors"
+                            [ngClass]="{
+                                'bg-green-600 text-white hover:bg-green-700 cursor-pointer': !customerAssigned,
+                                'bg-gray-200 text-gray-400 border border-gray-300 cursor-not-allowed': customerAssigned
+                            }">
+                            <svg-icon [src]="customerAssigned ? './assets/icons/heroicons/outline/check-circle.svg' : './assets/icons/heroicons/outline/check.svg'" [svgClass]="'h-4 w-4 mr-1.5'"></svg-icon>
+                            {{ customerAssigned ? ('INVOICE.CUSTOMER_ASSIGNED' | translate) : ('COMMON.ASSIGN' | translate) }}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -207,8 +238,18 @@
                             </td>
                         </tr>
 
+                        <!-- No Customer Warning -->
+                        <tr *ngIf="!hasCustomer && !isPaid">
+                            <td colspan="7" class="px-3 py-4">
+                                <div class="flex items-center gap-2 px-4 py-3 bg-amber-50 border border-amber-200 rounded-lg">
+                                    <svg-icon src="./assets/icons/heroicons/outline/exclamation-triangle.svg" [svgClass]="'h-5 w-5 text-amber-500'"></svg-icon>
+                                    <span class="text-sm text-amber-700 font-medium">{{ 'INVOICE.ASSIGN_CUSTOMER_FIRST' | translate }}</span>
+                                </div>
+                            </td>
+                        </tr>
+
                         <!-- Add New Product Row -->
-                        <tr class="bg-gray-50 border-t-2 border-gray-300" *ngIf="!isCreatingNewProduct && !isPaid">
+                        <tr class="bg-gray-50 border-t-2 border-gray-300" *ngIf="!isCreatingNewProduct && !isPaid && hasCustomer">
                             <td class="px-3 py-4 text-gray-700 font-medium align-top">
                             </td>
                             <td class="px-3 py-4">
@@ -312,7 +353,7 @@
                         </tr>
 
                         <!-- Create New Product Row -->
-                        <tr class="bg-blue-50 border-t-2 border-blue-300" *ngIf="isCreatingNewProduct && !isPaid" [formGroup]="createProductForm">
+                        <tr class="bg-blue-50 border-t-2 border-blue-300" *ngIf="isCreatingNewProduct && !isPaid && hasCustomer" [formGroup]="createProductForm">
                             <td class="px-3 py-4 text-gray-700 font-medium align-top">
                             </td>
                             <td class="px-3 py-4" colspan="4">
@@ -787,3 +828,10 @@
         </div>
     </form>
 </div>
+
+<app-add-customer
+  #customerDrawer
+  [orgId]="invoice?.ownerOrganization?.id ?? null"
+  [paymentOnInvoice]="isPaymentOnInvoice"
+  (customerSaved)="onNewCustomerSaved($event)">
+</app-add-customer>

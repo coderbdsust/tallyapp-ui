@@ -1,5 +1,6 @@
 {
   "COMMON": {
+    "ASSIGN":"নির্ধারিত",
     "SHOW": "দেখান",
     "PER_PAGE": "প্রতি পৃষ্ঠায়",
     "SEARCH": "অনুসন্ধান",
@@ -160,6 +161,7 @@
     "BILL_TO": "বিল প্রাপক",
     "BILLING_ADDRESS": "বিলিং ঠিকানা",
     "PURCHASE_HISTORY": "ক্রয়ের ইতিহাস",
+    "ASSIGN_CUSTOMER_FIRST": "ইনভয়েসে পণ্য যোগ করার আগে একজন গ্রাহক নির্বাচন করুন।",
     "PAYMENT_HISTORY": "পেমেন্ট ইতিহাস",
     "INVOICE_SUMMARY": "চালান সারসংক্ষেপ",
     "PRODUCT_NAME": "পণ্যের নাম",
@@ -178,6 +180,7 @@
     "CUSTOMER_EMAIL": "গ্রাহকের ইমেইল",
     "CUSTOMER_ADDRESS": "গ্রাহকের ঠিকানা",
     "SAVE_CUSTOMER": "গ্রাহক সংরক্ষণ",
+    "CUSTOMER_ASSIGNED": "নির্ধারিত",
     "CLEAR_CUSTOMER": "পরিষ্কার",
     "SEARCH_CUSTOMER": "নাম, ফোন বা ইমেইল দিয়ে গ্রাহক অনুসন্ধান...",
     "SEARCH_PRODUCT": "নাম বা কোড দিয়ে পণ্য অনুসন্ধান...",
@@ -236,9 +239,11 @@
       "INVALID_PARAMS": "অবৈধ চালান প্যারামিটার",
       "INVOICE_DOWNLOADED": "চালান ডাউনলোড হয়েছে",
       "CATEGORY_CREATED": "ক্যাটাগরি তৈরি হয়েছে",
-      "PRODUCT_CREATED_ADDED": "পণ্য তৈরি এবং চালানে যোগ করা হয়েছে"
+      "PRODUCT_CREATED_ADDED": "পণ্য তৈরি এবং চালানে যোগ করা হয়েছে",
+      "CUSTOMER_SAVED": "গ্রাহক চালানে নির্ধারিত হয়েছে"
     },
     "CUSTOMER_LIST": {
+      "NEW_CUSTOMER":"নতুন গ্রাহক",
       "OPENING_DUE": "প্রারম্ভিক বকেয়া",
       "DOWNLOAD_ALL_CUSTOMER_REPORT":"সকল গ্রাহকের রিপোর্ট ডাউনলোড করুন",
       "TITLE": "সকল গ্রাহক",
@@ -1113,7 +1118,8 @@
     "OPENING_DUE_HINT": "শুধুমাত্র গ্রাহক তৈরির সময় সেট করা যায়",
     "EFFECTIVE_BALANCE": "কার্যকর ব্যালেন্স",
     "MANAGE_DETAILS": "গ্রাহকের বিবরণ পরিচালনা করুন",
-    "ALREADY_EXISTS": "এই ইমেইল বা মোবাইল নম্বরে একজন গ্রাহক ইতিমধ্যে আছে।"
+    "ALREADY_EXISTS": "এই ইমেইল বা মোবাইল নম্বরে একজন গ্রাহক ইতিমধ্যে আছে।",
+    "DUPLICATE_NOT_ALLOWED": "ডুপ্লিকেট তৈরি না করে বিদ্যমান গ্রাহক ব্যবহার করুন।"
   },
   "LAYOUT": {
     "OPEN_MENU": "মেনু খুলুন",

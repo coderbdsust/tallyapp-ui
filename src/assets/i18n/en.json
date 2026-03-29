@@ -1,5 +1,6 @@
 {
   "COMMON": {
+    "ASSIGN": "Assign",
     "SHOW": "Show",
     "PER_PAGE": "per page",
     "SEARCH": "Search",
@@ -160,6 +161,7 @@
     "BILL_TO": "Bill To",
     "BILLING_ADDRESS": "Billing Address",
     "PURCHASE_HISTORY": "Purchase History",
+    "ASSIGN_CUSTOMER_FIRST": "Please assign a customer before adding products to the invoice.",
     "PAYMENT_HISTORY": "Payment History",
     "INVOICE_SUMMARY": "Invoice Summary",
     "PRODUCT_NAME": "Product Name",
@@ -178,6 +180,7 @@
     "CUSTOMER_EMAIL": "Customer Email",
     "CUSTOMER_ADDRESS": "Customer Address",
     "SAVE_CUSTOMER": "Save Customer",
+    "CUSTOMER_ASSIGNED": "Assigned",
     "CLEAR_CUSTOMER": "Clear",
     "SEARCH_CUSTOMER": "Search customer by name, phone or email...",
     "SEARCH_PRODUCT": "Search product by name or code...",
@@ -236,9 +239,11 @@
       "INVALID_PARAMS": "Invalid invoice parameters",
       "INVOICE_DOWNLOADED": "Invoice Downloaded",
       "CATEGORY_CREATED": "Category created",
-      "PRODUCT_CREATED_ADDED": "Product created and added to invoice"
+      "PRODUCT_CREATED_ADDED": "Product created and added to invoice",
+      "CUSTOMER_SAVED": "Customer assigned to invoice"
     },
     "CUSTOMER_LIST": {
+      "NEW_CUSTOMER": "New Customer",
       "OPENING_DUE": "Opening Due",
       "DOWNLOAD_ALL_CUSTOMER_REPORT": "Download All Customer Report",
       "TITLE": "All Customers",
@@ -1113,7 +1118,8 @@
     "OPENING_DUE_HINT": "Can only be set when creating a customer",
     "EFFECTIVE_BALANCE": "Effective Balance",
     "MANAGE_DETAILS": "Manage customer details",
-    "ALREADY_EXISTS": "A customer with this email or mobile already exists."
+    "ALREADY_EXISTS": "A customer with this email or mobile already exists.",
+    "DUPLICATE_NOT_ALLOWED": "Please use the existing customer instead of creating a duplicate."
   },
   "LAYOUT": {
     "OPEN_MENU": "Open menu",

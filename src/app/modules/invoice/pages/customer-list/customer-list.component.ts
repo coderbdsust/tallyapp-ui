@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PaginatedComponent } from 'src/app/common/components/pagination/paginated.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -16,28 +16,26 @@ import { MatDialog } from '@angular/material/dialog';
 import { ReasonModalComponent } from 'src/app/common/components/reason-modal/reason-modal.component';
 import { PaymentService } from 'src/app/core/services/payment.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { AddCustomerComponent } from '../../drawer/add-customer/add-customer.component';
 
 @Component({
   selector: 'app-customer-list',
-  imports: [AngularSvgIconModule, CommonModule, FormsModule, ReactiveFormsModule, WordPipe, TranslateModule, NgSelectComponent],
+  imports: [AngularSvgIconModule, CommonModule, FormsModule, ReactiveFormsModule, WordPipe, TranslateModule, NgSelectComponent, AddCustomerComponent],
   templateUrl: './customer-list.component.html',
   styleUrl: './customer-list.component.scss'
 })
 export class CustomerListComponent extends PaginatedComponent<Customer> implements OnInit, OnDestroy {
+  @ViewChild('customerDrawer') customerDrawer!: AddCustomerComponent;
+
   search: string = '';
   loading: boolean = false;
   organization!: Organization;
-  showDrawer = false;
-  isEditMode = false;
-  customerForm!: FormGroup;
   expandedCustomerId: string | null = null;
   customerDetail: CustomerDetail | null = null;
   detailLoading = false;
   formatCurrency = formatCurrency;
   customerPaymentForm!: FormGroup;
   showCustomerPaymentForm = false;
-  existingCustomer: Customer | null = null;
-  checkingCustomer = false;
 
   // Payment drawer state
   showPaymentDrawer = false;
@@ -78,7 +76,6 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
     private dialog: MatDialog
   ) {
     super();
-    this.initForm();
     this.initCustomerPaymentForm();
     this.initPaymentDrawerForm();
   }
@@ -127,32 +124,6 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
       });
   }
 
-  private initForm(customer: Customer | null = null): void {
-    const formConfig: any = {
-      id: [customer?.id || ''],
-      name: [customer?.name || '', Validators.required],
-      mobile: [customer?.mobile || '', [Validators.required,
-                            Validators.pattern(/^01[3-9]\d{8}$/),
-                            Validators.minLength(11),
-                            Validators.maxLength(11)]],
-      email: [customer?.email || ''],
-      billingAddressLine: [customer?.billingAddressLine || ''],
-      billingCity: [customer?.billingCity || ''],
-      billingPostcode: [customer?.billingPostcode || ''],
-      billingCountry: [customer?.billingCountry || ''],
-      deliveryAddressLine: [customer?.deliveryAddressLine || ''],
-      deliveryCity: [customer?.deliveryCity || ''],
-      deliveryPostcode: [customer?.deliveryPostcode || ''],
-      deliveryCountry: [customer?.deliveryCountry || '']
-    };
-
-    if (!this.isPaymentOnInvoice) {
-      formConfig.openingDue = [customer?.openingDue ?? 0];
-    }
-
-    this.customerForm = this.fb.group(formConfig);
-  }
-
   onSearchChange(event: Event): void {
     const input = (event.target as HTMLInputElement).value;
     this.search = input;
@@ -165,91 +136,19 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
   }
 
   openCreateDrawer(): void {
-    this.isEditMode = false;
-    this.initForm();
-    this.existingCustomer = null;
-    this.showDrawer = true;
+    this.customerDrawer.openDrawer(null);
   }
 
   openEditDrawer(customer: Customer): void {
-    this.isEditMode = true;
-    this.initForm(customer);
-    this.existingCustomer = null;
-    this.showDrawer = true;
+    this.customerDrawer.openDrawer(customer);
   }
 
-  closeDrawer(): void {
-    this.showDrawer = false;
-    this.existingCustomer = null;
-    this.initForm();
-  }
-
-  checkExistingCustomer(): void {
-    if (!this.organization || this.isEditMode) return;
-
-    const email = this.customerForm.get('email')?.value?.trim() || '';
-    const mobile = this.customerForm.get('mobile')?.value?.trim() || '';
-
-    if (!email && !mobile) {
-      this.existingCustomer = null;
-      return;
-    }
-
-    this.checkingCustomer = true;
-    this.customerService
-      .checkCustomerExists(this.organization.id, email, mobile)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (customer) => {
-          this.existingCustomer = customer ?? null;
-          this.checkingCustomer = false;
-        },
-        error: () => {
-          this.existingCustomer = null;
-          this.checkingCustomer = false;
-        }
-      });
-  }
-
-  saveCustomer(): void {
-    if (this.customerForm.invalid) return;
-
-    const formData = this.customerForm.value;
-
-    if (this.isEditMode && formData.id) {
-      this.customerService
-        .editCustomer(this.organization.id, formData.id, formData)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: () => {
-            this.customerService.showToastSuccessKey('INVOICE.CUSTOMER_LIST.TOAST.UPDATED');
-            this.closeDrawer();
-            this.loadData();
-          },
-          error: (err) => this.customerService.showToastErrorResponse(err)
-        });
-    } else {
-      this.customerService
-        .createCustomer(this.organization.id, formData)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: () => {
-            this.customerService.showToastSuccessKey('INVOICE.CUSTOMER_LIST.TOAST.CREATED');
-            this.closeDrawer();
-            this.loadData();
-          },
-          error: (err) => this.customerService.showToastErrorResponse(err)
-        });
-    }
+  onCustomerSaved(_customer: Customer): void {
+    this.loadData();
   }
 
   getCustomerIndex(index: number): number {
     return index + this.startIndex;
-  }
-
-  isFieldInvalid(controlName: string): boolean {
-    const control = this.customerForm.get(controlName);
-    return !!(control && control.invalid && control.touched);
   }
 
   viewCustomerDetail(customer: Customer): void {

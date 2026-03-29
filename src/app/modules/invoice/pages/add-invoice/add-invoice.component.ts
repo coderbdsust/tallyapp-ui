@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -23,6 +23,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ReasonModalComponent } from 'src/app/common/components/reason-modal/reason-modal.component';
 import { ConfirmationModalComponent } from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
 import { formatCurrency } from 'src/app/common/utils/common';
+import { AddCustomerComponent } from '../../drawer/add-customer/add-customer.component';
 
 
 @Component({
@@ -35,13 +36,16 @@ import { formatCurrency } from 'src/app/common/utils/common';
     CommonModule,
     WordPipe,
     NgSelectComponent,
-    TranslateModule
+    TranslateModule,
+    AddCustomerComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './add-invoice.component.html',
   styleUrl: './add-invoice.component.scss'
 })
 export class AddInvoiceComponent extends FormError implements OnInit {
+  @ViewChild('customerDrawer') customerDrawer!: AddCustomerComponent;
+
   invoice: Invoice | null = null;
   invForm!: FormGroup;
   paymentForm!: FormGroup;
@@ -63,6 +67,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
   allProductCategories: ProductCategory[] = [];
   unitTypes: UnitType[] = [];
   isCreatingNewProduct = false;
+  customerAssigned = false;
   customerBalance: number = 0;
   formatCurrency = formatCurrency;
 
@@ -94,6 +99,10 @@ export class AddInvoiceComponent extends FormError implements OnInit {
 
   get hasProducts(): boolean {
     return (this.invoice?.productSales?.length ?? 0) > 0;
+  }
+
+  get hasCustomer(): boolean {
+    return !!this.invoice?.customer?.id;
   }
 
   get invoiceDueFromBalance(): number {
@@ -158,6 +167,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     this.invoiceService.getInvoiceById(this.orgId, this.invoiceId).subscribe({
       next: invoice => {
         this.invoice = invoice;
+        this.customerAssigned = !!invoice.customer?.id;
         this.initiateInvoiceForm(invoice);
         if (invoice.ownerOrganization?.paymentOnInvoice === false && invoice.customer?.id) {
           this.loadCustomerPaymentData(invoice.customer.id);
@@ -224,6 +234,34 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     ]).subscribe(() => this.calculateProductAmount());
   }
 
+  openNewCustomerDrawer(): void {
+    this.customerDrawer.openDrawer(null);
+  }
+
+  onNewCustomerSaved(customer: Customer): void {
+    this.onSelectCustomer(customer);
+  }
+
+  saveCustomerToInvoice(): void {
+    const nameCtrl = this.invForm.get('customerName');
+    const mobileCtrl = this.invForm.get('customerMobile');
+    if (nameCtrl?.invalid || mobileCtrl?.invalid || !this.invoice?.id) return;
+
+    const invoice = this.invForm.value;
+    this.invoiceService.updateInvoice(invoice.id, invoice).subscribe({
+      next: updated => {
+        this.invoice = updated;
+        this.customerAssigned = true;
+        this.initiateInvoiceForm(updated);
+        this.invoiceService.showToastSuccessKey('INVOICE.TOAST.CUSTOMER_SAVED');
+      },
+      error: (err) => {
+        this.refreshInvoice();
+        this.invoiceService.showToastErrorResponse(err);
+      }
+    });
+  }
+
   createNewCustomer() {
     this.invForm.patchValue({
       customerId: '',
@@ -231,6 +269,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
       customerMobile: '',
       customerEmail: ''
     });
+    this.customerAssigned = false;
     if (this.invoice) {
       this.invoice = { ...this.invoice, customer: null };
     }
@@ -240,6 +279,7 @@ export class AddInvoiceComponent extends FormError implements OnInit {
     if (!customer) {
       return;
     }
+    this.customerAssigned = false;
 
     this.invForm.patchValue({
       customerId: customer.id,
