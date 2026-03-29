@@ -1,424 +1,303 @@
-<div [ngClass]="isModalOpen ? 'flex' : 'hidden'" id="crud-modal" tabindex="-1" aria-hidden="true"
-  class="fixed inset-0 z-50 h-full w-full items-center justify-center bg-black bg-opacity-50">
-  <div class="relative w-full max-w-screen-2xl p-4 mx-4">
-    <!-- Modal content -->
-    <div class="relative rounded bg-white shadow dark:bg-gray-700">
-      <!-- Modal header -->
-      <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ 'PRODUCT.PRODUCT_SERVICE' | translate }}</h3>
+<div id="drawer-product"
+  class="hidden fixed right-0 top-0 z-40 h-screen w-[640px] overflow-y-auto bg-white shadow-2xl dark:bg-gray-900"
+  tabindex="-1">
+
+  <!-- Header -->
+  <div class="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 px-6 py-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-900/30">
+          <svg-icon src="./assets/icons/heroicons/outline/cube.svg" [svgClass]="'h-5 w-5 text-indigo-600 dark:text-indigo-400'"></svg-icon>
+        </div>
+        <div>
+          <h5 class="text-sm font-semibold text-gray-900 dark:text-white">
+            {{ isEdit ? ('PRODUCT.EDIT_PRODUCT' | translate) : ('PRODUCT.NEW_PRODUCT' | translate) }}
+          </h5>
+          <p class="text-xs text-gray-400 dark:text-gray-500">{{ 'PRODUCT.PRODUCT_SERVICE' | translate }}</p>
+        </div>
+      </div>
+      <button type="button" (click)="closeDrawer()"
+        class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Form Body -->
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="px-6 py-5 space-y-6">
+    <input formControlName="id" type="hidden" />
+
+    <!-- Section: Product Info -->
+    <div class="space-y-3">
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">{{ 'PRODUCT.PRODUCT_SERVICE' | translate }}</p>
+
+      <!-- Name + Code -->
+      <div class="grid grid-cols-3 gap-3">
+        <div class="org-field col-span-2">
+          <label class="org-label">{{ 'PRODUCT.PRODUCT_SERVICE_NAME' | translate }} <span class="text-red-400">*</span></label>
+          <input type="text" formControlName="name" class="org-input"
+            [class.org-input--error]="submitted && f['name'].errors"
+            [placeholder]="'PRODUCT.PRODUCT_SERVICE_NAME' | translate" />
+          <p class="org-error" *ngIf="submitted && f['name'].errors?.['required']">{{ 'COMMON.REQUIRED_FIELD' | translate }}</p>
+          <p class="org-error" *ngIf="submitted && f['name'].errors?.['maxlength']">{{ 'COMMON.MAX_LENGTH' | translate:{ max: 70 } }}</p>
+        </div>
+        <div class="org-field">
+          <label class="org-label">{{ 'PRODUCT.PRODUCT_CODE' | translate }} <span class="text-red-400">*</span></label>
+          <div class="flex items-center gap-2">
+            <input type="text" formControlName="code" class="org-input flex-1"
+              [class.org-input--error]="submitted && f['code'].errors"
+              [placeholder]="'PRODUCT.PRODUCT_CODE' | translate" />
+            <button type="button" (click)="generateProductCode()"
+              class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-gray-500 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition-colors dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-indigo-900/30">
+              <svg-icon src="./assets/icons/heroicons/outline/arrow-path.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+            </button>
+          </div>
+          <p class="org-error" *ngIf="submitted && f['code'].errors?.['required']">{{ 'COMMON.REQUIRED_FIELD' | translate }}</p>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="org-field">
+        <label class="org-label">{{ 'COMMON.DESCRIPTION' | translate }}</label>
+        <textarea formControlName="description" class="org-input" rows="2"
+          [placeholder]="'COMMON.DESCRIPTION' | translate"></textarea>
+      </div>
+
+      <!-- Unit Type + Category -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="org-field">
+          <label class="org-label">{{ 'PRODUCT.UNIT_TYPE' | translate }} <span class="text-red-400">*</span></label>
+          <ng-select class="org-ng-select"
+            [items]="unitTypes" [multiple]="false" bindValue="value" bindLabel="displayName"
+            formControlName="unitType" [placeholder]="'PRODUCT.SELECT_UNIT_TYPE' | translate" [searchable]="true">
+          </ng-select>
+          <p class="org-error" *ngIf="submitted && f['unitType'].errors?.['required']">{{ 'COMMON.REQUIRED_FIELD' | translate }}</p>
+        </div>
+        <div class="org-field">
+          <label class="org-label">{{ 'PRODUCT.CATEGORY' | translate }} <span class="text-red-400">*</span></label>
+          <ng-select class="org-ng-select"
+            [items]="allProductCategories" [multiple]="false" [addTag]="addNewCategory.bind(this)"
+            bindValue="id" bindLabel="name" formControlName="categoryId"
+            [placeholder]="'PRODUCT.SELECT_CATEGORY' | translate" [searchable]="true">
+          </ng-select>
+          <p class="org-error" *ngIf="submitted && f['categoryId'].errors?.['required']">{{ 'COMMON.REQUIRED_FIELD' | translate }}</p>
+        </div>
+      </div>
+
+      <!-- Service Provider / Made By -->
+      <div class="org-field">
+        <label class="org-label">{{ 'PRODUCT.SERVICE_PROVIDER' | translate }} <span class="text-red-400">*</span></label>
+        <ng-select class="org-ng-select"
+          [items]="allEmployees" [multiple]="false" bindValue="id" bindLabel="fullName"
+          formControlName="madeBy" [placeholder]="'PRODUCT.SEARCH_EMPLOYEE' | translate"
+          [searchable]="true" [compareWith]="compareEmployee" (change)="onSelectEmployee($event)"
+          (keydown.enter)="onSearchEmployeeKeyType($event)">
+        </ng-select>
+        <p class="org-error" *ngIf="submitted && f['madeBy'].errors?.['required']">{{ 'COMMON.REQUIRED_FIELD' | translate }}</p>
+      </div>
+    </div>
+
+    <!-- Section: Photos -->
+    <div class="space-y-3">
+      <div class="flex items-center justify-between">
+        <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+          {{ 'COMMON.PHOTOS' | translate }} ({{ images.length }}/{{ MAX_IMAGES }})
+        </p>
         <button type="button"
-          class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
-          (click)="closeModal()">
-          <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-          </svg>
-          <span class="sr-only">{{ 'COMMON.CLOSE' | translate }}</span>
+          [disabled]="!canAddImage || isUploading"
+          (click)="triggerFileInput(fileInput)"
+          class="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 text-white text-sm leading-none
+                 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          [title]="'COMMON.ADD_PHOTO' | translate">
+          +
         </button>
       </div>
 
-      <!-- Modal body -->
-      <div class="m-4 grid gap-4 md:m-4">
-        <form [formGroup]="form" (ngSubmit)="onSubmit()">
-          <div class="space-y-3 text-left">
-            <div class="flex flex-row">
+      <!-- Hidden file input -->
+      <input #fileInput type="file" accept="image/*" multiple class="hidden" (change)="onFileChange($event)" />
 
-              <!-- ══════════════════════════════════════════
-                   LEFT: Product details + Inventory
-                   ══════════════════════════════════════════ -->
-              <div class="w-5/6 space-y-3 pr-6">
+      <!-- Thumbnail grid -->
+      <div class="grid grid-cols-4 gap-3">
+        <!-- Existing / pending thumbnails -->
+        <div *ngFor="let img of images"
+          class="group relative aspect-square overflow-hidden rounded-xl border border-gray-200 bg-gray-100 dark:border-gray-700 dark:bg-gray-800">
 
-                <div class="flex justify-between gap-2">
-                  <div class="form__group w-4/6">
-                    <div class="relative">
-                      <input name="id" formControlName="id" type="hidden" />
-                      <input type="text" id="name" class="peer block" placeholder=" "
-                        [ngClass]="{ 'is__invalid-input': submitted && f['name'].errors }" formControlName="name" />
-                      <label for="name"
-                        class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                        {{ 'PRODUCT.PRODUCT_SERVICE_NAME' | translate }}
-                      </label>
-                    </div>
-                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'name')">
-                      {{ getErrorMessage(form, 'name') }}
-                    </div>
-                  </div>
-                  <div class="form__group w-2/6">
-                    <div class="flex flex-row">
-                      <div class="relative">
-                        <input type="text" id="code" class="peer block" placeholder=" "
-                          [ngClass]="{ 'is__invalid-input': submitted && f['code'].errors }" formControlName="code" />
-                        <label for="code"
-                          class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                          {{ 'PRODUCT.PRODUCT_CODE' | translate }}
-                        </label>
-                      </div>
-                      <div class="pl-4 mt-2">
-                        <svg-icon (click)="generateProductCode()" src="./assets/icons/heroicons/outline/arrow-path.svg"
-                          [svgClass]="'h-5 w-5 text-primary hover:h-6 w-6'" />
-                      </div>
-                    </div>
-                    <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'code')">
-                      {{ getErrorMessage(form, 'code') }}
-                    </div>
-                  </div>
-                </div>
+          <!-- "Main" badge on first image -->
+          <span *ngIf="img === images[0]"
+            class="absolute top-1 left-1 z-10 rounded bg-indigo-600 px-1.5 py-0.5
+                   text-[10px] font-bold uppercase tracking-wide text-white pointer-events-none">
+            {{ 'COMMON.MAIN' | translate }}
+          </span>
 
-                <div class="form__group">
-                  <div class="relative">
-                    <textarea id="description" class="peer block" placeholder=" "
-                      [ngClass]="{ 'is__invalid-input': submitted && f['description'].errors }"
-                      formControlName="description">
-                    </textarea>
-                    <label for="description"
-                      class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                      {{ 'COMMON.DESCRIPTION' | translate }}
-                    </label>
-                  </div>
-                  <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'description')">
-                    {{ getErrorMessage(form, 'description') }}
-                  </div>
-                </div>
+          <!-- "Pending" indicator for files not yet uploaded -->
+          <span *ngIf="img.file !== null"
+            class="absolute bottom-1 left-1 z-10 rounded bg-yellow-500 px-1.5 py-0.5
+                   text-[10px] font-bold uppercase tracking-wide text-white pointer-events-none">
+            {{ 'COMMON.NEW' | translate }}
+          </span>
 
-                <div class="flex flex-row gap-2">
-                  <div class="w-1/2">
-                    <div class="form__group">
-                      <div class="relative">
-                        <ng-select class="block w-full rounded-lg border pl-2 pr-2 text-sm text-gray-900"
-                          [items]="unitTypes" [multiple]="false" bindValue="value" bindLabel="displayName"
-                          formControlName="unitType" [placeholder]="'PRODUCT.SELECT_UNIT_TYPE' | translate" [searchable]="true">
-                        </ng-select>
-                        <label for="unitType"
-                          class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                          {{ 'PRODUCT.UNIT_TYPE' | translate }}
-                        </label>
-                      </div>
-                      <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'unitType')">
-                        {{ getErrorMessage(form, 'unitType') }}
-                      </div>
-                    </div>
-                  </div>
-                  <div class="w-1/2">
-                    <div class="form__group">
-                      <div class="relative">
-                        <ng-select class="block w-full rounded-lg border p-2 text-sm text-gray-900"
-                          [items]="allProductCategories" [multiple]="false" [addTag]="addNewCategory.bind(this)"
-                          bindValue="id" bindLabel="name" formControlName="categoryId"
-                          [placeholder]="'PRODUCT.SELECT_CATEGORY' | translate" [searchable]="true">
-                        </ng-select>
-                        <label for="categoryId"
-                          class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                          {{ 'PRODUCT.CATEGORY' | translate }}
-                        </label>
-                      </div>
-                      <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'categoryId')">
-                        {{ getErrorMessage(form, 'categoryId') }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          <img [src]="img.previewUrl" alt="product photo" class="h-full w-full object-cover" />
 
-                <div class="form__group">
-                  <div class="relative">
-                    <ng-select
-                      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
-                      [items]="allEmployees" [multiple]="false" bindValue="id" bindLabel="fullName"
-                      formControlName="madeBy" [placeholder]="'PRODUCT.SEARCH_EMPLOYEE' | translate"
-                      [searchable]="true" [compareWith]="compareEmployee" (change)="onSelectEmployee($event)"
-                      (keydown.enter)="onSearchEmployeeKeyType($event)">
-                    </ng-select>
-                    <label for="madeBy"
-                      class="absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
-                      {{ 'PRODUCT.SERVICE_PROVIDER' | translate }}
-                    </label>
-                  </div>
-                  <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalid(form, 'madeBy')">
-                    {{ getErrorMessage(form, 'madeBy') }}
-                  </div>
-                </div>
+          <!-- Remove button — visible on hover -->
+          <button type="button" (click)="removeImage(img.id)" [disabled]="isUploading"
+            class="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full
+                   bg-red-500 text-white text-sm opacity-0 transition-opacity
+                   group-hover:opacity-100 hover:bg-red-600 disabled:cursor-not-allowed shadow">
+            &times;
+          </button>
+        </div>
 
-                <!-- ── Inventory (unchanged) ── -->
-                <div class="flex flex-col gap-2 mt-4">
-                  <div class="flex flex-row border-dashed border-y-2 justify-between">
-                    <h1 class="text-sm text-muted-foreground text-center font-bold mt-2">{{ 'PRODUCT.INVENTORY' | translate }}</h1>
-                    <svg-icon src="./assets/icons/heroicons/outline/plus-v2.svg" [svgClass]="'h-5 w-5 mb-2'"
-                      (click)="addStock()" class="text-primary mt-3"> </svg-icon>
-                  </div>
-                  <div formArrayName="productStockList"
-                    class="mt-8 mb-8 ml-4 mr-4 overflow-x-auto max-h-36 overflow-y-auto">
-                    <div *ngFor="let stockGroup of getProductStockList.controls; let i = index" [formGroupName]="i"
-                      class="flex flex-row gap-4 mt-12">
+        <!-- Empty "add" slot — shown while under the limit -->
+        <div *ngIf="canAddImage && !isUploading"
+          (click)="triggerFileInput(fileInput)"
+          class="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 rounded-xl
+                 border-2 border-dashed border-gray-300 bg-gray-50 text-gray-400 text-xs font-medium
+                 uppercase tracking-wide transition hover:border-indigo-400 hover:bg-indigo-50/50 hover:text-indigo-500
+                 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-indigo-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <path d="m21 15-5-5L5 21"/>
+          </svg>
+          {{ 'COMMON.ADD_PHOTO' | translate }}
+        </div>
 
-                      <input formControlName="id" type="hidden" />
-                      <input formControlName="batchNumber" type="hidden" />
+        <!-- Uploading spinner slot -->
+        <div *ngIf="isUploading"
+          class="flex aspect-square items-center justify-center rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
+          <svg class="h-6 w-6 animate-spin text-indigo-600" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+          </svg>
+        </div>
+      </div>
 
-                      <!-- Manufacture Date -->
-                      <div class="form__group w-2/12">
-                        <div class="relative">
-                          <label for="manufactureDate-{{ i }}"
-                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            {{ 'PRODUCT.MFG_DATE' | translate }}
-                          </label>
-                          <input type="date" id="manufactureDate-{{ i }}" class="peer block" placeholder=" "
-                            formControlName="manufactureDate" />
-                        </div>
-                      </div>
+      <!-- Hint text -->
+      <p class="text-xs text-gray-400 dark:text-gray-500">
+        <ng-container *ngIf="images.length === 0">{{ 'COMMON.UPLOAD_PHOTOS_HINT' | translate:{ max: MAX_IMAGES } }}</ng-container>
+        <ng-container *ngIf="images.length > 0 && canAddImage">
+          {{ MAX_IMAGES - images.length }} {{ 'COMMON.SLOTS_LEFT' | translate }} · {{ 'COMMON.FIRST_MAIN_PHOTO' | translate }}
+        </ng-container>
+        <ng-container *ngIf="!canAddImage">{{ 'COMMON.MAX_IMAGES_REACHED' | translate:{ max: MAX_IMAGES } }}</ng-container>
+      </p>
+    </div>
 
-                      <!-- Expiry Date -->
-                      <div class="form__group w-2/12">
-                        <div class="relative">
-                          <label for="expiryDate-{{ i }}"
-                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            {{ 'PRODUCT.EXPIRY_DATE' | translate }}
-                          </label>
-                          <input type="date" id="expiryDate-{{ i }}" class="peer block" placeholder=" "
-                            formControlName="expiryDate" />
-                        </div>
-                      </div>
+    <!-- Section: Inventory -->
+    <div class="space-y-3">
+      <div class="flex items-center justify-between">
+        <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">{{ 'PRODUCT.INVENTORY' | translate }}</p>
+        <button type="button" (click)="addStock()"
+          class="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 text-white text-sm leading-none
+                 hover:bg-indigo-700 transition-colors"
+          [title]="'PRODUCT.ADD_STOCK' | translate">
+          +
+        </button>
+      </div>
 
-                      <!-- Employee Cost -->
-                      <div class="form__group w-2/12">
-                        <div class="relative">
-                          <label for="perUnitEmployeeCost-{{ i }}"
-                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            {{ 'PRODUCT.EMPLOYEE_COST' | translate }} / {{ 'PRODUCT.UNIT_TYPE' | translate }}
-                          </label>
-                          <input type="text" id="perUnitEmployeeCost-{{ i }}" class="peer block" placeholder=" "
-                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('perUnitEmployeeCost')?.errors }"
-                            formControlName="perUnitEmployeeCost" />
-                        </div>
-                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'perUnitEmployeeCost')">
-                          {{ getErrorMessageFromControl(stockGroup, 'perUnitEmployeeCost') }}
-                        </div>
-                      </div>
+      <div formArrayName="productStockList" class="space-y-4">
+        <div *ngFor="let stockGroup of getProductStockList.controls; let i = index" [formGroupName]="i"
+          class="rounded-xl border border-gray-200 bg-gray-50/50 p-4 space-y-3 dark:border-gray-700 dark:bg-gray-800/50">
 
-                      <!-- Production Cost -->
-                      <div class="form__group w-2/12">
-                        <div class="relative">
-                          <label for="perUnitProductionCost-{{ i }}"
-                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            {{ 'PRODUCT.PRODUCTION_COST' | translate }} / {{ 'PRODUCT.UNIT_TYPE' | translate }}
-                          </label>
-                          <input type="text" id="perUnitProductionCost-{{ i }}" class="peer block" placeholder=" "
-                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('perUnitProductionCost')?.errors }"
-                            formControlName="perUnitProductionCost" />
-                        </div>
-                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'perUnitProductionCost')">
-                          {{ getErrorMessageFromControl(stockGroup, 'perUnitProductionCost') }}
-                        </div>
-                      </div>
+          <input formControlName="id" type="hidden" />
+          <input formControlName="batchNumber" type="hidden" />
 
-                      <!-- Unit Price -->
-                      <div class="form__group w-2/12">
-                        <div class="relative">
-                          <label for="unitPrice-{{ i }}"
-                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            {{ 'PRODUCT.UNIT_PRICE' | translate }}
-                          </label>
-                          <input type="text" id="unitPrice-{{ i }}" class="peer block" placeholder=" "
-                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('unitPrice')?.errors }"
-                            formControlName="unitPrice" />
-                        </div>
-                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'unitPrice')">
-                          {{ getErrorMessageFromControl(stockGroup, 'unitPrice') }}
-                        </div>
-                      </div>
+          <!-- Row header with remove button -->
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              {{ 'PRODUCT.BATCH' | translate }} #{{ i + 1 }}
+            </span>
+            <button *ngIf="getProductStockList.length > 1" type="button" (click)="removeStock(i)"
+              class="flex h-6 w-6 items-center justify-center rounded-full text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors dark:hover:bg-red-900/20">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
 
-                      <!-- Discount % -->
-                      <div class="form__group w-2/12">
-                        <div class="relative">
-                          <label for="discountPercent-{{ i }}"
-                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            {{ 'PRODUCT.DISCOUNT_PERCENT' | translate }}
-                          </label>
-                          <input type="text" id="discountPercent-{{ i }}" class="peer block" placeholder=" "
-                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('discountPercent')?.errors }"
-                            formControlName="discountPercent" />
-                        </div>
-                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'discountPercent')">
-                          {{ getErrorMessageFromControl(stockGroup, 'discountPercent') }}
-                        </div>
-                      </div>
-
-                      <!-- Initial Quantity -->
-                      <div class="form__group w-2/12">
-                        <div class="relative">
-                          <label for="initialQuantity-{{ i }}"
-                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            {{ 'PRODUCT.INITIAL_QTY' | translate }}
-                          </label>
-                          <input type="text" readonly id="initialQuantity-{{ i }}" class="peer block bg-gray-100"
-                            placeholder=" "
-                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('initialQuantity')?.errors }"
-                            formControlName="initialQuantity" />
-                        </div>
-                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'initialQuantity')">
-                          {{ getErrorMessageFromControl(stockGroup, 'initialQuantity') }}
-                        </div>
-                      </div>
-
-                      <!-- Available Quantity -->
-                      <div class="form__group w-2/12">
-                        <div class="relative">
-                          <label for="availableQuantity-{{ i }}"
-                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            {{ 'PRODUCT.AVAILABLE_STOCK' | translate }}
-                          </label>
-                          <input type="text" readonly id="availableQuantity-{{ i }}" class="peer block bg-gray-100"
-                            placeholder=" "
-                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('availableQuantity')?.errors }"
-                            formControlName="availableQuantity" />
-                        </div>
-                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'availableQuantity')">
-                          {{ getErrorMessageFromControl(stockGroup, 'availableQuantity') }}
-                        </div>
-                      </div>
-
-                      <!-- Add Quantity -->
-                      <div class="form__group w-2/12">
-                        <div class="relative">
-                          <label for="quantityToAdd-{{ i }}"
-                            class="absolute left-0 top-1 -translate-y-10 text-sm text-muted-foreground bg-background px-1 z-10">
-                            {{ 'PRODUCT.ADD_QUANTITY' | translate }}
-                          </label>
-                          <input type="text" id="quantityToAdd-{{ i }}" class="peer block" placeholder=" "
-                            [ngClass]="{ 'is__invalid-input': submitted && stockGroup.get('quantityToAdd')?.errors }"
-                            formControlName="quantityToAdd" />
-                        </div>
-                        <div class="text-red-500 text-xs mt-1" *ngIf="isFieldInvalidControl(stockGroup, 'quantityToAdd')">
-                          {{ getErrorMessageFromControl(stockGroup, 'quantityToAdd') }}
-                        </div>
-                      </div>
-
-                      <!-- Remove row -->
-                      <svg-icon *ngIf="getProductStockList.length > 1"
-                        src="./assets/icons/heroicons/outline/minus.svg"
-                        [svgClass]="'h-5 w-5 mb-2 cursor-pointer'" (click)="removeStock(i)" class="text-primary mt-3">
-                      </svg-icon>
-
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <!-- ── end left column ── -->
-
-              <!-- ══════════════════════════════════════════
-                   RIGHT: Image upload panel
-                   ══════════════════════════════════════════ -->
-              <div class="w-1/6 flex flex-col justify-start items-center px-4 gap-2 border-l border-gray-100">
-
-                <!-- Header: label + add button -->
-                <div class="flex w-full items-center justify-between">
-                  <span class="text-sm text-muted-foreground font-medium">
-                    {{ 'COMMON.PHOTOS' | translate }} ({{ images.length }}/{{ MAX_IMAGES }})
-                  </span>
-                  <button
-                    type="button"
-                    [disabled]="!canAddImage || isUploading"
-                    (click)="triggerFileInput(fileInput)"
-                    class="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-white text-lg leading-none
-                           hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
-                    [title]="'COMMON.ADD_PHOTO' | translate">
-                    +
-                  </button>
-                </div>
-
-                <!-- Hidden file input — multiple, images only -->
-                <input
-                  #fileInput
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  class="hidden"
-                  (change)="onFileChange($event)" />
-
-                <!-- 2-column thumbnail grid -->
-                <div class="grid grid-cols-1 gap-2 w-full">
-
-                  <!-- Existing / pending thumbnails -->
-                  <div
-                    *ngFor="let img of images"
-                    class="group relative aspect-square overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
-
-                    <!-- "Main" badge on first image -->
-                    <span *ngIf="img === images[0]"
-                      class="absolute top-1 left-1 z-10 rounded bg-primary px-1.5 py-0.5
-                             text-[10px] font-bold uppercase tracking-wide text-white pointer-events-none">
-                      {{ 'COMMON.MAIN' | translate }}
-                    </span>
-
-                    <!-- "Pending" indicator for files not yet uploaded -->
-                    <span *ngIf="img.file !== null"
-                      class="absolute bottom-1 left-1 z-10 rounded bg-yellow-500 px-1.5 py-0.5
-                             text-[10px] font-bold uppercase tracking-wide text-white pointer-events-none">
-                      {{ 'COMMON.NEW' | translate }}
-                    </span>
-
-                    <img [src]="img.previewUrl" alt="product photo" class="h-full w-full object-cover" />
-
-                    <!-- Remove button — visible on hover -->
-                    <button
-                      type="button"
-                      (click)="removeImage(img.id)"
-                      [disabled]="isUploading"
-                      class="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full
-                             bg-black/50 text-white text-sm opacity-0 transition-opacity
-                             group-hover:opacity-100 hover:bg-red-500 disabled:cursor-not-allowed"
-                      [title]="'COMMON.REMOVE' | translate">
-                      &times;
-                    </button>
-                  </div>
-
-                  <!-- Empty "add" slot — shown while under the limit -->
-                  <div *ngIf="canAddImage && !isUploading"
-                    (click)="triggerFileInput(fileInput)"
-                    class="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 rounded-lg
-                           border-2 border-dashed border-gray-300 bg-gray-50 text-gray-400 text-xs font-medium
-                           uppercase tracking-wide transition hover:border-primary hover:bg-primary/5 hover:text-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                      stroke="currentColor" stroke-width="1.5">
-                      <rect x="3" y="3" width="18" height="18" rx="2"/>
-                      <circle cx="8.5" cy="8.5" r="1.5"/>
-                      <path d="m21 15-5-5L5 21"/>
-                    </svg>
-                    {{ 'COMMON.ADD_PHOTO' | translate }}
-                  </div>
-
-                  <!-- Uploading spinner slot -->
-                  <div *ngIf="isUploading"
-                    class="flex aspect-square items-center justify-center rounded-lg border border-gray-200 bg-gray-50">
-                    <svg class="h-6 w-6 animate-spin text-primary" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
-                    </svg>
-                  </div>
-                </div>
-
-                <!-- Hint text -->
-                <p class="w-full text-center text-xs text-muted-foreground">
-                  <ng-container *ngIf="images.length === 0">{{ 'COMMON.UPLOAD_PHOTOS_HINT' | translate:{ max: MAX_IMAGES } }}</ng-container>
-                  <ng-container *ngIf="images.length > 0 && canAddImage">
-                    {{ MAX_IMAGES - images.length }} {{ 'COMMON.SLOTS_LEFT' | translate }} · {{ 'COMMON.FIRST_MAIN_PHOTO' | translate }}
-                  </ng-container>
-                  <ng-container *ngIf="!canAddImage">{{ 'COMMON.MAX_IMAGES_REACHED' | translate:{ max: MAX_IMAGES } }}</ng-container>
-                </p>
-
-              </div>
-              <!-- ── end image panel ── -->
-
+          <!-- Dates -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="org-field">
+              <label class="org-label">{{ 'PRODUCT.MFG_DATE' | translate }}</label>
+              <input type="date" formControlName="manufactureDate" class="org-input" />
             </div>
-
-            <div class="flex justify-between space-x-2 pb-4">
-              <div class="w-full">
-                <app-button full [disabled]="form.invalid || isUploading" impact="bold" tone="primary" shape="rounded" size="medium">
-                  {{ isUploading ? ('COMMON.UPLOADING' | translate) : ('COMMON.SAVE' | translate) }}
-                </app-button>
-              </div>
+            <div class="org-field">
+              <label class="org-label">{{ 'PRODUCT.EXPIRY_DATE' | translate }}</label>
+              <input type="date" formControlName="expiryDate" class="org-input" />
             </div>
           </div>
-        </form>
+
+          <!-- Costs -->
+          <div class="grid grid-cols-3 gap-3">
+            <div class="org-field">
+              <label class="org-label">{{ 'PRODUCT.EMPLOYEE_COST' | translate }}</label>
+              <input type="text" formControlName="perUnitEmployeeCost" class="org-input"
+                [class.org-input--error]="submitted && stockGroup.get('perUnitEmployeeCost')?.errors" placeholder="0" />
+              <p class="org-error" *ngIf="submitted && stockGroup.get('perUnitEmployeeCost')?.errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
+            </div>
+            <div class="org-field">
+              <label class="org-label">{{ 'PRODUCT.PRODUCTION_COST' | translate }}</label>
+              <input type="text" formControlName="perUnitProductionCost" class="org-input"
+                [class.org-input--error]="submitted && stockGroup.get('perUnitProductionCost')?.errors" placeholder="0" />
+              <p class="org-error" *ngIf="submitted && stockGroup.get('perUnitProductionCost')?.errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
+            </div>
+            <div class="org-field">
+              <label class="org-label">{{ 'PRODUCT.UNIT_PRICE' | translate }} <span class="text-red-400">*</span></label>
+              <input type="text" formControlName="unitPrice" class="org-input"
+                [class.org-input--error]="submitted && stockGroup.get('unitPrice')?.errors" placeholder="1" />
+              <p class="org-error" *ngIf="submitted && stockGroup.get('unitPrice')?.errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
+              <p class="org-error" *ngIf="submitted && stockGroup.get('unitPrice')?.errors?.['min']">{{ 'COMMON.MIN_VALUE' | translate:{ min: 1 } }}</p>
+            </div>
+          </div>
+
+          <!-- Discount + Quantities -->
+          <div class="grid grid-cols-4 gap-3">
+            <div class="org-field">
+              <label class="org-label">{{ 'PRODUCT.DISCOUNT_PERCENT' | translate }}</label>
+              <input type="text" formControlName="discountPercent" class="org-input"
+                [class.org-input--error]="submitted && stockGroup.get('discountPercent')?.errors" placeholder="0" />
+            </div>
+            <div class="org-field">
+              <label class="org-label">{{ 'PRODUCT.INITIAL_QTY' | translate }}</label>
+              <input type="text" readonly formControlName="initialQuantity" class="org-input bg-gray-100 dark:bg-gray-700 cursor-not-allowed" />
+            </div>
+            <div class="org-field">
+              <label class="org-label">{{ 'PRODUCT.AVAILABLE_STOCK' | translate }}</label>
+              <input type="text" readonly formControlName="availableQuantity" class="org-input bg-gray-100 dark:bg-gray-700 cursor-not-allowed" />
+            </div>
+            <div class="org-field">
+              <label class="org-label">{{ 'PRODUCT.ADD_QUANTITY' | translate }} <span class="text-red-400">*</span></label>
+              <input type="text" formControlName="quantityToAdd" class="org-input"
+                [class.org-input--error]="submitted && stockGroup.get('quantityToAdd')?.errors" placeholder="1" />
+              <p class="org-error" *ngIf="submitted && stockGroup.get('quantityToAdd')?.errors?.['required']">{{ 'COMMON.REQUIRED' | translate }}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+
+    <!-- Actions -->
+    <div class="flex gap-3 pb-6 pt-2">
+      <button type="submit"
+        class="flex-1 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        [disabled]="form.invalid || isUploading">
+        <span class="flex items-center justify-center gap-2">
+          <svg *ngIf="!isUploading" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <svg *ngIf="isUploading" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+          </svg>
+          {{ isUploading ? ('COMMON.UPLOADING' | translate) : ('COMMON.SAVE' | translate) }}
+        </span>
+      </button>
+      <button type="button" (click)="closeDrawer()"
+        class="flex-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+        {{ 'COMMON.CANCEL' | translate }}
+      </button>
+    </div>
+  </form>
 </div>

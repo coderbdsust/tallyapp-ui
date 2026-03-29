@@ -21,7 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './product-list.component.scss',
 })
 export class ProductListComponent extends PaginatedComponent<Product> implements OnInit, OnDestroy {
-  @ViewChild('addProductModal', { static: false }) addProductModal!: AddProductComponent;
+  @ViewChild('addProductDrawer', { static: false }) addProductDrawer!: AddProductComponent;
   
   search: string = '';
   searchCriteria: string = '';
@@ -124,7 +124,7 @@ export class ProductListComponent extends PaginatedComponent<Product> implements
 
   // Product actions
   editProduct(selectedProduct: Product): void {
-    this.addProductModal.openModal(selectedProduct, this.organization.id);
+    this.addProductDrawer.openDrawer(selectedProduct, this.organization.id);
   }
 
   deleteProduct(selectedProduct: Product): void {
@@ -152,7 +152,7 @@ export class ProductListComponent extends PaginatedComponent<Product> implements
   }
 
   addProduct(): void {
-    this.addProductModal.openModal(null, this.organization.id);
+    this.addProductDrawer.openDrawer(null, this.organization.id);
   }
 
   productListRefresh(status: Boolean): void {

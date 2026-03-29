@@ -1,7 +1,6 @@
-import { CommonModule, NgClass } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   Component,
-  computed,
   CUSTOM_ELEMENTS_SCHEMA,
   EventEmitter,
   Input,
@@ -41,8 +40,9 @@ import { generateRandomLuhnCode } from 'src/app/common/utils/LuhnCode';
 import { Employee } from '../../../../core/models/employee.model';
 import { ProductCategoryService } from '../../../../core/services/product-category.service';
 import { FormError } from 'src/app/common/components/form-error/form-error.component';
-import { ButtonComponent } from 'src/app/common/components/button/button.component';
+
 import { TranslateModule } from '@ngx-translate/core';
+import { DrawerInterface, DrawerOptions, InstanceOptions, Drawer } from 'flowbite';
 
 /** Local UI representation of one image slot */
 export interface ImageItem {
@@ -60,13 +60,11 @@ export interface ImageItem {
   selector: 'app-add-product',
   standalone: true,
   imports: [
-    NgClass,
     FormsModule,
     CommonModule,
     ReactiveFormsModule,
     NgSelectComponent,
     AngularSvgIconModule,
-    ButtonComponent,
     TranslateModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -79,10 +77,28 @@ export class AddProductComponent extends FormError implements OnInit, OnDestroy 
   @Input() orgId: string | null = null;
   @Output() modifiedEmitter = new EventEmitter<boolean>();
 
+  // ── Drawer ───────────────────────────────────────────────
+  private $drawerEl: HTMLElement | null = null;
+  drawer: DrawerInterface | undefined;
+
+  drawerOptions: DrawerOptions = {
+    placement: 'right',
+    backdrop: true,
+    bodyScrolling: true,
+    edge: false,
+    edgeOffset: '',
+    backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-30',
+    onHide: () => { /* state is reset on next openDrawer() */ }
+  };
+
+  drawerInstanceOptions: InstanceOptions = {
+    id: 'drawer-product',
+    override: true,
+  };
+
   // ── Form state ────────────────────────────────────────────
   form!: FormGroup;
   submitted = false;
-  isModalOpen = false;
   isEdit = false;
 
   // ── Reference data ────────────────────────────────────────
@@ -137,6 +153,10 @@ export class AddProductComponent extends FormError implements OnInit, OnDestroy 
   ngOnInit(): void {
     this.loadProductUnitTypes();
     this.initializeForm();
+    this.$drawerEl = document.getElementById('drawer-product') as HTMLElement;
+    this.$drawerEl.classList.remove('hidden');
+    this.drawer = new Drawer(this.$drawerEl, this.drawerOptions, this.drawerInstanceOptions);
+    this.drawer.hide();
   }
 
   ngOnDestroy(): void {
@@ -312,18 +332,19 @@ export class AddProductComponent extends FormError implements OnInit, OnDestroy 
     this.getProductStockList.removeAt(index);
   }
 
-  // ── Modal ─────────────────────────────────────────────────
-  openModal(product: Product | null = null, orgId: string | null = null): void {
+  // ── Drawer open / close ─────────────────────────────────────
+  openDrawer(product: Product | null = null, orgId: string | null = null): void {
     this.isEdit  = !!product;
     this.orgId   = orgId;
     this.submitted = false;
     this.initializeForm(product);
     this.loadProductCategories(orgId);
-    this.isModalOpen = true;
+    this.drawer?.show();
   }
 
-  closeModal(): void {
-    this.isModalOpen = false;
+  closeDrawer(): void {
+    this.drawer?.hide();
+    this.submitted = false;
   }
 
   get f() {
@@ -416,24 +437,24 @@ export class AddProductComponent extends FormError implements OnInit, OnDestroy 
           this.productService.editProduct(product.id, product).subscribe({
             next: () => {
               this.productService.showToastSuccessKey('PRODUCT.TOAST.UPDATED');
-              this.closeModal();
+              this.closeDrawer();
               this.modifiedEmitter.emit(true);
             },
             error: (err) => {
               this.productService.showToastErrorResponse(err);
-              this.closeModal();
+              this.closeDrawer();
             },
           });
         } else {
           this.productService.addProduct(product.madeBy, product).subscribe({
             next: () => {
               this.productService.showToastSuccessKey('PRODUCT.TOAST.ADDED');
-              this.closeModal();
+              this.closeDrawer();
               this.modifiedEmitter.emit(true);
             },
             error: (err) => {
               this.productService.showToastErrorResponse(err);
-              this.closeModal();
+              this.closeDrawer();
             },
           });
         }

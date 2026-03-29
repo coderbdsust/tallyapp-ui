@@ -470,6 +470,7 @@
   },
   "PRODUCT": {
     "TITLE": "পণ্যসমূহ",
+    "NEW_PRODUCT": "নতুন পণ্য",
     "ALL_PRODUCTS": "সকল পণ্য",
     "ADD_PRODUCT": "পণ্য যোগ করুন",
     "EDIT_PRODUCT": "পণ্য সম্পাদনা",

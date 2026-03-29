@@ -469,6 +469,7 @@
     }
   },
   "PRODUCT": {
+    "NEW_PRODUCT": "New Product",
     "TITLE": "Products",
     "ALL_PRODUCTS": "All Products",
     "ADD_PRODUCT": "Add Product",
