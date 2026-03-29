@@ -679,7 +679,7 @@
                                 </span>
                             </div>
 
-                            <div *ngIf="!isPaymentOnInvoice && customerBalance >= (invoice?.totalAmount ?? 0) && invoice?.invoiceStatus !== 'PAID'"
+                            <div *ngIf="!isPaymentOnInvoice && (invoice?.totalAmount ?? 0) > 0 && customerBalance >= (invoice?.totalAmount ?? 0) && invoice?.invoiceStatus !== 'PAID'"
                                  class="flex items-center gap-2 px-3 py-2 bg-green-50 border border-green-200 rounded-lg">
                                 <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-4 w-4 text-green-600'"></svg-icon>
                                 <span class="text-xs font-medium text-green-700">{{ 'INVOICE.ENOUGH_BALANCE' | translate }}</span>

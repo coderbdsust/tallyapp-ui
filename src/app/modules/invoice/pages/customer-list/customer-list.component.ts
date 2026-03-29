@@ -46,9 +46,11 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
   paymentCustomerPage = 0;
   paymentCustomerHasMore = true;
   selectedPaymentCustomer: Customer | null = null;
+  paymentCustomerLoading = false;
   unpaidInvoices: any[] = [];
   unpaidInvoicePage = 0;
   unpaidInvoiceHasMore = true;
+  unpaidInvoiceLoading = false;
   selectedUnpaidInvoice: CustomerInvoice | null = null;
   submittingPayment = false;
 
@@ -129,7 +131,10 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
     const formConfig: any = {
       id: [customer?.id || ''],
       name: [customer?.name || '', Validators.required],
-      mobile: [customer?.mobile || '', Validators.required],
+      mobile: [customer?.mobile || '', [Validators.required,
+                            Validators.pattern(/^01[3-9]\d{8}$/),
+                            Validators.minLength(11),
+                            Validators.maxLength(11)]],
       email: [customer?.email || ''],
       billingAddressLine: [customer?.billingAddressLine || ''],
       billingCity: [customer?.billingCity || ''],
@@ -424,6 +429,7 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
 
   loadPaymentCustomers(search: string = ''): void {
     if (!this.organization) return;
+    this.paymentCustomerLoading = true;
     this.customerService
       .getCustomerByOrganization(this.organization.id, this.paymentCustomerPage, 5, search)
       .pipe(takeUntil(this.destroy$))
@@ -439,8 +445,12 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
             this.paymentCustomers = [...this.paymentCustomers, ...mapped];
           }
           this.paymentCustomerHasMore = !response.last;
+          this.paymentCustomerLoading = false;
         },
-        error: () => this.paymentCustomerHasMore = false
+        error: () => {
+          this.paymentCustomerHasMore = false;
+          this.paymentCustomerLoading = false;
+        }
       });
   }
 
@@ -451,7 +461,7 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
   }
 
   onPaymentCustomerScrollEnd(): void {
-    if (!this.paymentCustomerHasMore) return;
+    if (!this.paymentCustomerHasMore || this.paymentCustomerLoading) return;
     this.paymentCustomerPage++;
     this.loadPaymentCustomers();
   }
@@ -470,8 +480,9 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
 
   loadUnpaidInvoices(customerId: string): void {
     if (!this.organization) return;
+    this.unpaidInvoiceLoading = true;
     this.customerService
-      .getUnpaidInvoices(this.organization.id, customerId, this.unpaidInvoicePage, 5)
+      .getUnpaidInvoices(this.organization.id, customerId, this.unpaidInvoicePage, 3)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -485,22 +496,27 @@ export class CustomerListComponent extends PaginatedComponent<Customer> implemen
             this.unpaidInvoices = [...this.unpaidInvoices, ...mapped];
           }
           this.unpaidInvoiceHasMore = !response.last;
+          this.unpaidInvoiceLoading = false;
         },
-        error: () => this.unpaidInvoiceHasMore = false
+        error: () => {
+          this.unpaidInvoiceHasMore = false;
+          this.unpaidInvoiceLoading = false;
+        }
       });
   }
 
   onUnpaidInvoiceScrollEnd(): void {
-    if (!this.unpaidInvoiceHasMore || !this.selectedPaymentCustomer) return;
+    console.log('unpaidInvoiceHasMore', this.unpaidInvoiceHasMore);
+    console.log('selectedPaymentCustomer', this.selectedPaymentCustomer);
+    console.log('unpaidInvoiceLoading', this.unpaidInvoiceLoading);
+    if (!this.unpaidInvoiceHasMore || !this.selectedPaymentCustomer || this.unpaidInvoiceLoading) return;
     this.unpaidInvoicePage++;
+    console.log('unpaidInvoicePage', this.unpaidInvoicePage);
     this.loadUnpaidInvoices(this.selectedPaymentCustomer.id);
   }
 
   onUnpaidInvoiceSelect(invoice: any): void {
     this.selectedUnpaidInvoice = invoice || null;
-    if (invoice?.remainingAmount) {
-      this.paymentDrawerForm.patchValue({ paymentAmount: invoice.remainingAmount });
-    }
   }
 
   get isPaymentDrawerValid(): boolean {

@@ -58,7 +58,10 @@ export class AddSupplierComponent  extends FormError implements OnInit {
     this.supplierForm = this.fb.group({
       id: [supplier?.id],
       name: [supplier?.name, Validators.required],
-      phone: [supplier?.phone, Validators.required],
+      phone: [supplier?.phone, [Validators.required,
+                            Validators.pattern(/^01[3-9]\d{8}$/),
+                            Validators.minLength(11),
+                            Validators.maxLength(11)]],
       email: [supplier?.email, Validators.email],
       addressLine: [supplier?.addressLine],
     });

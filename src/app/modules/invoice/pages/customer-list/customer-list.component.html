@@ -717,12 +717,12 @@
               <ng-select [items]="paymentCustomers"
                          bindLabel="label"
                          [placeholder]="'INVOICE.SEARCH_CUSTOMER' | translate"
-                         [virtualScroll]="true"
+                         [loading]="paymentCustomerLoading"
                          (scrollToEnd)="onPaymentCustomerScrollEnd()"
                          (search)="onPaymentCustomerSearch($event)"
                          (change)="onPaymentCustomerSelect($event)"
                          (clear)="onPaymentCustomerSelect(null)"
-                         class="text-sm">
+                         class="text-sm customer-select">
               </ng-select>
             </div>
 
@@ -746,7 +746,7 @@
               <div class="space-y-1.5 text-sm">
                 <div class="flex justify-between">
                   <span class="text-gray-500">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_INVOICES' | translate }}</span>
-                  <span class="font-semibold text-blue-700">{{ selectedPaymentCustomer.totalInvoice ?? 0 }}</span>
+                  <span class="font-semibold text-blue-700">{{ selectedPaymentCustomer.totalInvoice }}</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-gray-500">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_AMOUNT' | translate }}</span>
@@ -758,7 +758,7 @@
                 </div>
                 <div class="flex justify-between">
                   <span class="text-gray-500">{{ 'INVOICE.CUSTOMER_LIST.TOTAL_DUE' | translate }}</span>
-                  <span class="font-semibold" [ngClass]="(selectedPaymentCustomer.totalDueAmount ?? 0) > 0 ? 'text-red-700' : 'text-green-700'">
+                  <span class="font-semibold text-red-700">
                     {{ formatCurrency(selectedPaymentCustomer.totalDueAmount) }}
                   </span>
                 </div>
@@ -774,11 +774,11 @@
               <ng-select [items]="unpaidInvoices"
                          bindLabel="label"
                          [placeholder]="'INVOICE.CUSTOMER_LIST.SELECT_UNPAID_INVOICE' | translate"
-                         [virtualScroll]="true"
+                         [loading]="unpaidInvoiceLoading"
                          (scrollToEnd)="onUnpaidInvoiceScrollEnd()"
                          (change)="onUnpaidInvoiceSelect($event)"
                          (clear)="onUnpaidInvoiceSelect(null)"
-                         class="text-sm">
+                         class="text-sm unpaid-select">
               </ng-select>
             </div>
 

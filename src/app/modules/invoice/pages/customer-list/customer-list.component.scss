@@ -51,3 +51,9 @@ td {
 .org-error {
   @apply text-xs text-red-500 dark:text-red-400;
 }
+
+// Limit dropdown height so scrollToEnd fires with few items
+.customer-select ::ng-deep .ng-dropdown-panel .ng-dropdown-panel-items,
+.unpaid-select ::ng-deep .ng-dropdown-panel .ng-dropdown-panel-items {
+  max-height: 108px; // ~3 items × 36px
+}
