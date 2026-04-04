@@ -78,7 +78,8 @@
     "SEARCH_MIN_CHARS": "Search term must be at least 4 characters long.",
     "ACTION":"Action",
     "CUSTOMER": "Customer",
-    "SUBMITTING": "Submitting..."
+    "SUBMITTING": "Submitting...",
+    "OR": "or"
   },
   "TOAST": {
     "ERROR": "Error",
@@ -106,7 +107,8 @@
     "PURCHASE_ORDERS": "Purchase Orders",
     "REPORT": "Report",
     "SETTINGS": "Settings",
-    "USER_MANAGEMENT": "User Management"
+    "USER_MANAGEMENT": "User Management",
+    "SALES_RETURN": "Sales Return"
   },
   "PROFILE_MENU": {
     "MY_PROFILE": "My Profile",
@@ -224,7 +226,12 @@
       "REFERENCE":"Reference",
       "AMOUNT":"Amount"
     },
+    "CREATE_INVOICE_DESC": "Set up customer and tax details for a new invoice",
+    "SELECT_CUSTOMER": "Select Customer",
+    "CREATE_NEW_CUSTOMER": "Create New Customer",
+    "TAX_VAT_SETTINGS": "Tax & VAT Settings",
     "TOAST": {
+      "INVOICE_CREATED": "Invoice created successfully",
       "DELETED": "Invoice deleted successfully",
       "DOWNLOADED": "Downloaded successfully",
       "CUSTOMER_NAME_REQUIRED": "Customer name and mobile are required",
@@ -278,6 +285,48 @@
         "UPDATED": "Customer updated successfully",
         "CREATED": "Customer created successfully"
       }
+    }
+  },
+  "PRODUCT_RETURN": {
+    "TITLE": "Sales Returns",
+    "CREATE_RETURN": "Create Return",
+    "CREATE_DRAFT": "Create Draft",
+    "CREATE_RETURN_DESC": "Create a draft return, then add items and approve",
+    "RETURN_NUMBER": "Return #",
+    "RETURN_DATE": "Return Date",
+    "CUSTOMER_NAME": "Customer",
+    "ITEMS": "Items",
+    "PRODUCT_CODE": "Product Code",
+    "QUANTITY_RETURNED": "Qty",
+    "REFUND_AMOUNT": "Refund Amount",
+    "REFUND_TYPE": "Refund Type",
+    "PRODUCT_CONDITION": "Condition",
+    "REASON": "Reason",
+    "REASON_PLACEHOLDER": "Enter reason for return...",
+    "CASH_REFUND": "Cash Refund",
+    "CREDIT_TO_BALANCE": "Credit to Balance",
+    "RESTORABLE": "Restorable",
+    "BROKEN": "Broken",
+    "SELECT_CUSTOMER": "Select Customer",
+    "ENTER_PRODUCT_CODE": "Enter product code",
+    "EMPTY_STATE": "No sales returns found",
+    "NO_ITEMS": "No items added yet. Click 'Add Item' to add products.",
+    "TAX_PERCENT": "Tax %",
+    "VAT_PERCENT": "VAT %",
+    "SUB_TOTAL": "Sub Total",
+    "TAX": "Tax",
+    "VAT": "VAT",
+    "CREDIT_NOT_AVAILABLE": "Not available in invoice-level mode",
+    "RETURN_DETAILS": "Return Details",
+    "ADD_ITEM": "Add Item",
+    "PRICE_PER_UNIT": "Price/Unit",
+    "DISCOUNT_PERCENT": "Discount %",
+    "TOAST": {
+      "CREATED": "Draft return created successfully",
+      "DELETED": "Sales return deleted successfully",
+      "APPROVED": "Sales return approved successfully",
+      "ITEM_ADDED": "Item added to return",
+      "ITEM_REMOVED": "Item removed from return"
     }
   },
   "EMPLOYEE": {
@@ -493,6 +542,8 @@
     "INVENTORY": "Inventory",
     "INITIAL_QTY": "Initial Quantity",
     "AVAILABLE_STOCK": "Available Stock",
+    "RESTOREABLE_RETURN_QTY": "Restorable Return Qty",
+    "BROKEN_RETURN_QTY": "Broken Return Qty",
     "ADD_QUANTITY": "Add Quantity",
     "PRODUCT_SERVICE": "Product / Service",
     "PRODUCT_SERVICE_NAME": "Product or Service Name",

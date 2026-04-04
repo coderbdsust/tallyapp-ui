@@ -78,7 +78,8 @@
     "SEARCH_MIN_CHARS": "সার্চ টার্ম কমপক্ষে ৪ অক্ষর হতে হবে।",
     "ACTION":"অ্যাকশন",
     "CUSTOMER": "গ্রাহক",
-    "SUBMITTING": "জমা হচ্ছে..."
+    "SUBMITTING": "জমা হচ্ছে...",
+    "OR": "অথবা"
   },
   "TOAST": {
     "ERROR": "ত্রুটি",
@@ -106,7 +107,8 @@
     "PURCHASE_ORDERS": "ক্রয় আদেশ",
     "REPORT": "প্রতিবেদন",
     "SETTINGS": "সেটিংস",
-    "USER_MANAGEMENT": "ব্যবহারকারী ব্যবস্থাপনা"
+    "USER_MANAGEMENT": "ব্যবহারকারী ব্যবস্থাপনা",
+    "SALES_RETURN": "বিক্রয় ফেরত"
   },
   "PROFILE_MENU": {
     "MY_PROFILE": "আমার প্রোফাইল",
@@ -224,7 +226,12 @@
       "REFERENCE":"রেফারেন্স",
       "AMOUNT":"পরিমাণ"
     },
+    "CREATE_INVOICE_DESC": "নতুন চালানের জন্য গ্রাহক এবং কর বিবরণ সেট করুন",
+    "SELECT_CUSTOMER": "গ্রাহক নির্বাচন করুন",
+    "CREATE_NEW_CUSTOMER": "নতুন গ্রাহক তৈরি করুন",
+    "TAX_VAT_SETTINGS": "কর ও ভ্যাট সেটিংস",
     "TOAST": {
+      "INVOICE_CREATED": "চালান সফলভাবে তৈরি হয়েছে",
       "DELETED": "চালান সফলভাবে মুছে ফেলা হয়েছে",
       "DOWNLOADED": "সফলভাবে ডাউনলোড হয়েছে",
       "CUSTOMER_NAME_REQUIRED": "গ্রাহকের নাম এবং মোবাইল আবশ্যক",
@@ -278,6 +285,48 @@
         "UPDATED": "গ্রাহক সফলভাবে আপডেট হয়েছে",
         "CREATED": "গ্রাহক সফলভাবে তৈরি হয়েছে"
       }
+    }
+  },
+  "PRODUCT_RETURN": {
+    "TITLE": "বিক্রয় ফেরত",
+    "CREATE_RETURN": "ফেরত তৈরি করুন",
+    "CREATE_DRAFT": "খসড়া তৈরি করুন",
+    "CREATE_RETURN_DESC": "একটি খসড়া ফেরত তৈরি করুন, তারপর আইটেম যোগ করে অনুমোদন করুন",
+    "RETURN_NUMBER": "ফেরত #",
+    "RETURN_DATE": "ফেরতের তারিখ",
+    "CUSTOMER_NAME": "গ্রাহক",
+    "ITEMS": "আইটেম",
+    "PRODUCT_CODE": "পণ্য কোড",
+    "QUANTITY_RETURNED": "পরিমাণ",
+    "REFUND_AMOUNT": "ফেরতের পরিমাণ",
+    "REFUND_TYPE": "ফেরতের ধরন",
+    "PRODUCT_CONDITION": "অবস্থা",
+    "REASON": "কারণ",
+    "REASON_PLACEHOLDER": "ফেরতের কারণ লিখুন...",
+    "CASH_REFUND": "নগদ ফেরত",
+    "CREDIT_TO_BALANCE": "ব্যালেন্সে ক্রেডিট",
+    "RESTORABLE": "পুনরুদ্ধারযোগ্য",
+    "BROKEN": "ভাঙা",
+    "SELECT_CUSTOMER": "গ্রাহক নির্বাচন করুন",
+    "ENTER_PRODUCT_CODE": "পণ্য কোড লিখুন",
+    "EMPTY_STATE": "কোনো বিক্রয় ফেরত পাওয়া যায়নি",
+    "NO_ITEMS": "এখনো কোনো আইটেম যোগ করা হয়নি। পণ্য যোগ করতে 'আইটেম যোগ' ক্লিক করুন।",
+    "TAX_PERCENT": "ট্যাক্স %",
+    "VAT_PERCENT": "ভ্যাট %",
+    "SUB_TOTAL": "উপমোট",
+    "TAX": "ট্যাক্স",
+    "VAT": "ভ্যাট",
+    "CREDIT_NOT_AVAILABLE": "চালান-স্তর মোডে উপলব্ধ নয়",
+    "RETURN_DETAILS": "ফেরতের বিবরণ",
+    "ADD_ITEM": "আইটেম যোগ করুন",
+    "PRICE_PER_UNIT": "একক মূল্য",
+    "DISCOUNT_PERCENT": "ছাড় %",
+    "TOAST": {
+      "CREATED": "খসড়া ফেরত সফলভাবে তৈরি হয়েছে",
+      "DELETED": "বিক্রয় ফেরত সফলভাবে মুছে ফেলা হয়েছে",
+      "APPROVED": "বিক্রয় ফেরত সফলভাবে অনুমোদিত হয়েছে",
+      "ITEM_ADDED": "ফেরতে আইটেম যোগ করা হয়েছে",
+      "ITEM_REMOVED": "ফেরত থেকে আইটেম সরানো হয়েছে"
     }
   },
   "EMPLOYEE": {
@@ -493,6 +542,8 @@
     "INVENTORY": "ইনভেন্টরি",
     "INITIAL_QTY": "প্রাথমিক পরিমাণ",
     "AVAILABLE_STOCK": "উপলব্ধ স্টক",
+    "RESTOREABLE_RETURN_QTY": "ফেরতযোগ্য পরিমাণ",
+    "BROKEN_RETURN_QTY": "ভাঙা ফেরত পরিমাণ",
     "ADD_QUANTITY": "পরিমাণ যোগ করুন",
     "PRODUCT_SERVICE": "পণ্য / সেবা",
     "PRODUCT_SERVICE_NAME": "পণ্য বা সেবার নাম",

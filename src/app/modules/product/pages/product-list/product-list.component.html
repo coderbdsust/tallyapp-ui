@@ -234,7 +234,9 @@
                             <th class="px-3 py-2">{{ 'PRODUCT.MFG_DATE' | translate }}</th>
                             <th class="px-3 py-2">{{ 'PRODUCT.EXPIRY_DATE' | translate }}</th>
                             <th class="px-3 py-2">{{ 'PRODUCT.QTY_ADDED' | translate }}</th>
-                            <th class="px-3 py-2">{{ 'PRODUCT.AVAILABLE_QTY' | translate }}</th>
+                            <th class="px-3 py-2">{{ 'PRODUCT.RESTOREABLE_RETURN_QTY' | translate }}</th>
+                            <th class="px-3 py-2">{{ 'PRODUCT.BROKEN_RETURN_QTY' | translate }}</th>
+                            <th class="px-3 py-2">{{ 'PRODUCT.AVAILABLE_QTY' | translate }} <br> ({{ 'PRODUCT.QTY_ADDED' | translate }} + {{ 'PRODUCT.RESTOREABLE_RETURN_QTY' | translate }})</th>
                             <th class="px-3 py-2">{{ 'PRODUCT.BATCH_PRICE' | translate }}</th>
                             <th class="px-3 py-2">{{ 'PRODUCT.DISCOUNT_PERCENT' | translate }}</th>
                             <th class="px-3 py-2">{{ 'PRODUCT.PRODUCTION_COST' | translate }}</th>
@@ -247,7 +249,9 @@
                             <td class="px-3 py-2">{{ stock.manufactureDate | date: 'dd-MM-yyyy' }}</td>
                             <td class="px-3 py-2">{{ stock.expiryDate | date: 'dd-MM-yyyy' }}</td>
                             <td class="px-3 py-2">{{ stock.initialQuantity }}</td>
-                            <td class="px-3 py-2">{{ stock.availableQuantity }}</td>
+                            <td class="px-3 py-2">{{ stock.restorableReturnQuantity }}</td>
+                            <td class="px-3 py-2">{{ stock.brokenReturnQuantity }}</td>
+                             <td class="px-3 py-2">{{ stock.availableQuantity }}</td>
                             <td class="px-3 py-2">{{ formatCurrency(stock.unitPrice) }}</td>
                             <td class="px-3 py-2">{{ stock.discountPercent }}%</td>
                             <td class="px-3 py-2">{{ formatCurrency(stock.perUnitProductionCost) }}</td>

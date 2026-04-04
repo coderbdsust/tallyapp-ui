@@ -68,7 +68,8 @@ export class Menu {
           requiredModules: ['INVOICE_MANAGEMENT'],
           children: [
             { label: 'MENU.INVOICES', route: '/invoice/list' },
-            { label: 'MENU.CUSTOMERS', route: '/invoice/customer' }
+            { label: 'MENU.CUSTOMERS', route: '/invoice/customer' },
+            { label: 'MENU.SALES_RETURN', route: '/invoice/sales-return' }
           ]
         },
         {

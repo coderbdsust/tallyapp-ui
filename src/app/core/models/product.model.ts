@@ -24,8 +24,10 @@ export interface Product {
 export interface ProductStock {
   id: string;
   batchNumber: string;
-  initialQuantity: string;
-  availableQuantity: string;
+  initialQuantity: number;
+  availableQuantity: number;
+  restorableReturnQuantity: number;
+  brokenReturnQuantity: number;
   manufactureDate: string;
   expiryDate: string;
   unitPrice: number;

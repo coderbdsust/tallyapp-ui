@@ -36,6 +36,12 @@ export class InvoiceService extends CommonService {
         .pipe(catchError(this.mapErrorResponse));
   }
 
+  public createInvoiceWithDetails(organizationId: string, request: { customerId?: string; tax?: number; vat?: number }) {
+    return this.http
+      .post<Invoice>(`${environment.tallyURL}/invoice/v1/${organizationId}/create-with-details`, request)
+      .pipe(catchError(this.mapErrorResponse));
+  }
+
   public updateInvoice(invoiceId: string, invoice:any) {
       return this.http
         .put<Invoice>(`${environment.tallyURL}/invoice/v1/${invoiceId}`,invoice)

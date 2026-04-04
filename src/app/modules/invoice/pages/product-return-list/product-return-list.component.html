@@ -1,0 +1,527 @@
+<div class="mb-4 flex justify-between">
+  <div class="inline-block">
+    <h2 class="font-semibold text-foreground">{{ 'PRODUCT_RETURN.TITLE' | translate }}</h2>
+    <div class="space-x-1 text-xs font-medium text-muted-foreground">
+      <span *ngIf="organization">{{ 'COMMON.ORGANIZATION' | translate }}: {{ organization.orgName }}</span>
+    </div>
+  </div>
+  <div class="inline-block space-x-4">
+    <div class="flex items-center justify-center gap-4">
+      <button
+        class="flex rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+        (click)="openCreateDrawer()">
+        <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-4 w-4 mr-2'"></svg-icon>
+        <p>{{ 'PRODUCT_RETURN.CREATE_RETURN' | translate }}</p>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
+  <!-- Filters and Search Section -->
+  <div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
+    <h3 class="text-sm font-medium text-muted-foreground">
+      {{ 'COMMON.SHOWING' | translate }} <span>{{ startIndex }}-{{ endIndex }} {{ 'COMMON.OF' | translate }} {{ totalRows }}</span> {{ 'COMMON.RESULTS' | translate }}
+    </h3>
+    <div class="flex flex-wrap gap-2">
+      <!-- Page Size Selector -->
+      <div class="flex flex-wrap items-center justify-between gap-2 px-8 text-xs text-muted-foreground">
+        <div class="order-2 flex items-center gap-2 md:order-1">
+          {{ 'COMMON.SHOW' | translate }}
+          <select class="w-16 p-2" name="rowSize" (change)="onSelectChange($event)">
+            <option *ngFor="let option of getPageSizeOptions()"
+                    [value]="option.value"
+                    [selected]="option.value === selectedRows">
+              {{ option.label }}
+            </option>
+          </select>
+          {{ 'COMMON.PER_PAGE' | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-8">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+
+  <!-- Table Section -->
+  <div *ngIf="!loading"
+    class="scrollbar-thumb-rounded scrollbar-track-rounded grow overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted">
+    <table
+      class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+      <thead class="bg-black-100 border border-muted/20 text-xs text-muted-foreground text-gray-300">
+        <tr>
+          <th class="min-w-[130px]">{{ 'PRODUCT_RETURN.RETURN_NUMBER' | translate }}</th>
+          <th class="min-w-[110px]">{{ 'PRODUCT_RETURN.RETURN_DATE' | translate }}</th>
+          <th class="min-w-[130px]">{{ 'PRODUCT_RETURN.CUSTOMER_NAME' | translate }}</th>
+          <th class="min-w-[60px]">{{ 'PRODUCT_RETURN.ITEMS' | translate }}</th>
+          <th class="min-w-[110px]">{{ 'PRODUCT_RETURN.REFUND_AMOUNT' | translate }}</th>
+          <th class="min-w-[120px]">{{ 'PRODUCT_RETURN.REFUND_TYPE' | translate }}</th>
+          <th class="min-w-[100px]">{{ 'COMMON.STATUS' | translate }}</th>
+          <th class="min-w-[120px]">{{ 'COMMON.ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let ret of pageResponse?.content; let i = index">
+          <tr class="gap-4 cursor-pointer hover:bg-card/50"
+              [ngClass]="{'bg-muted/30': expandedReturnId === ret.id}"
+              (click)="toggleExpand(ret)">
+
+            <!-- Return Number -->
+            <td>
+              <div class="flex items-center gap-2">
+                <svg-icon [src]="expandedReturnId === ret.id ? './assets/icons/heroicons/solid/chevron-down.svg' : './assets/icons/heroicons/solid/chevron-right.svg'"
+                          [svgClass]="'h-4 w-4 text-muted-foreground'"></svg-icon>
+                <span class="font-mono text-sm font-semibold">{{ ret.returnNumber }}</span>
+              </div>
+            </td>
+
+            <!-- Return Date -->
+            <td>
+              <span class="text-sm">{{ ret.returnDate | date: 'dd-MM-yyyy' }}</span>
+            </td>
+
+            <!-- Customer Name -->
+            <td>
+              <span class="text-sm font-medium">{{ ret.customerName }}</span>
+            </td>
+
+            <!-- Items Count -->
+            <td>
+              <span class="text-sm">{{ ret.items.length || 0 }}</span>
+            </td>
+
+            <!-- Refund Amount -->
+            <td>
+              <span class="text-sm font-semibold text-blue-600">{{ formatCurrency(ret.refundAmount) }}</span>
+            </td>
+
+            <!-- Refund Type -->
+            <td>
+              <span
+                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                [ngClass]="[
+                  getRefundTypeBadge(ret.refundType).bg,
+                  getRefundTypeBadge(ret.refundType).text
+                ]">
+                {{ ret.refundType | word }}
+              </span>
+            </td>
+
+            <!-- Status -->
+            <td>
+              <span
+                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                [ngClass]="[
+                  getStatusBadge(ret.status).bg,
+                  getStatusBadge(ret.status).text
+                ]">
+                {{ ret.status | word }}
+              </span>
+            </td>
+
+            <!-- Actions -->
+            <td>
+              <div class="flex items-center gap-2" (click)="$event.stopPropagation()">
+                <!-- Approve (DRAFT only) -->
+                <button
+                  *ngIf="ret.status === 'DRAFT'"
+                  (click)="approveReturn(ret)"
+                  class="p-1 hover:text-green-600 transition-colors"
+                  [title]="'COMMON.APPROVE' | translate">
+                  <svg-icon src="./assets/icons/heroicons/outline/check-circle.svg" [svgClass]="'h-4 w-4'">
+                  </svg-icon>
+                </button>
+
+                <!-- Delete -->
+                <button
+                  (click)="deleteReturn(ret)"
+                  class="p-1 hover:text-red-600 transition-colors"
+                  [title]="'COMMON.DELETE' | translate">
+                  <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-4 w-4'">
+                  </svg-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Expanded Detail Row -->
+          <tr *ngIf="expandedReturnId === ret.id">
+            <td colspan="8" class="p-0">
+              <div class="bg-gray-50 border-t border-b border-gray-200 px-6 py-4">
+
+                <!-- Return Summary -->
+                <div class="flex items-center gap-2 mb-4">
+                  <div class="flex-1 p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
+                    <div class="text-lg font-bold text-blue-700">{{ formatCurrency(ret.subTotal) }}</div>
+                    <div class="text-xs text-blue-600 mt-1">{{ 'PRODUCT_RETURN.SUB_TOTAL' | translate }}</div>
+                  </div>
+                  <span class="text-xl font-bold text-gray-400">+</span>
+                  <div class="flex-1 p-3 bg-orange-50 border border-orange-200 rounded-lg text-center">
+                    <div class="text-lg font-bold text-orange-700">{{ formatCurrency(ret.taxAmount) }}</div>
+                    <div class="text-xs text-orange-600 mt-1">{{ 'PRODUCT_RETURN.TAX' | translate }} ({{ ret.taxPercent }}%)</div>
+                  </div>
+                  <span class="text-xl font-bold text-gray-400">+</span>
+                  <div class="flex-1 p-3 bg-purple-50 border border-purple-200 rounded-lg text-center">
+                    <div class="text-lg font-bold text-purple-700">{{ formatCurrency(ret.vatAmount) }}</div>
+                    <div class="text-xs text-purple-600 mt-1">{{ 'PRODUCT_RETURN.VAT' | translate }} ({{ ret.vatPercent }}%)</div>
+                  </div>
+                  <span class="text-xl font-bold text-gray-400">=</span>
+                  <div class="flex-1 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
+                    <div class="text-lg font-bold text-green-700">{{ formatCurrency(ret.refundAmount) }}</div>
+                    <div class="text-xs text-green-600 mt-1">{{ 'PRODUCT_RETURN.REFUND_AMOUNT' | translate }}</div>
+                  </div>
+                </div>
+
+                <!-- Reason -->
+                <div *ngIf="ret.reason" class="mb-4 p-2 bg-white border border-gray-200 rounded-lg text-sm">
+                  <span class="text-gray-500 font-medium">{{ 'PRODUCT_RETURN.REASON' | translate }}:</span>
+                  <span class="ml-2 text-gray-800">{{ ret.reason }}</span>
+                </div>
+
+                <!-- Items Section -->
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-sm font-semibold text-gray-800">{{ 'PRODUCT_RETURN.ITEMS' | translate }} ({{ ret.items.length || 0 }})</h4>
+                    <button
+                      *ngIf="ret.status === 'DRAFT'"
+                      (click)="toggleAddItemForm(); $event.stopPropagation()"
+                      class="px-3 py-1.5 text-xs font-medium text-primary bg-primary/10 border border-primary/20 rounded hover:bg-primary/20 transition-colors">
+                      <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-3 w-3 inline mr-1'"></svg-icon>
+                      {{ 'PRODUCT_RETURN.ADD_ITEM' | translate }}
+                    </button>
+                  </div>
+
+                  <!-- Add Item Form (DRAFT only) -->
+                  <div *ngIf="showAddItemForm && ret.status === 'DRAFT'" class="p-3 bg-white border border-primary/20 rounded-lg mb-3" (click)="$event.stopPropagation()">
+                    <form [formGroup]="addItemForm" class="space-y-3">
+                      <div class="grid grid-cols-2 gap-3">
+                        <div>
+                          <label class="block text-xs font-medium text-gray-600 mb-1">{{ 'PRODUCT_RETURN.PRODUCT_CODE' | translate }} *</label>
+                          <input type="text" formControlName="productCode" [placeholder]="'PRODUCT_RETURN.ENTER_PRODUCT_CODE' | translate"
+                                 class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <div>
+                          <label class="block text-xs font-medium text-gray-600 mb-1">{{ 'PRODUCT_RETURN.QUANTITY_RETURNED' | translate }} *</label>
+                          <input type="number" formControlName="quantityReturned" min="1"
+                                 class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                      </div>
+                      <div class="grid grid-cols-3 gap-3">
+                        <div>
+                          <label class="block text-xs font-medium text-gray-600 mb-1">{{ 'PRODUCT_RETURN.PRICE_PER_UNIT' | translate }} *</label>
+                          <input type="number" formControlName="pricePerUnit" min="0" step="0.01"
+                                 class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <div>
+                          <label class="block text-xs font-medium text-gray-600 mb-1">{{ 'PRODUCT_RETURN.DISCOUNT_PERCENT' | translate }}</label>
+                          <input type="number" formControlName="discountPercent" min="0" max="100" step="0.01"
+                                 class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <div>
+                          <label class="block text-xs font-medium text-gray-600 mb-1">{{ 'PRODUCT_RETURN.PRODUCT_CONDITION' | translate }} *</label>
+                          <select formControlName="productCondition"
+                                  class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="RESTORABLE">{{ 'PRODUCT_RETURN.RESTORABLE' | translate }}</option>
+                            <option value="BROKEN">{{ 'PRODUCT_RETURN.BROKEN' | translate }}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="flex justify-end gap-2">
+                        <button type="button" (click)="toggleAddItemForm()"
+                                class="px-3 py-1.5 text-xs font-medium text-gray-600 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+                          {{ 'COMMON.CANCEL' | translate }}
+                        </button>
+                        <button type="button"
+                                [disabled]="addItemForm.invalid || addingItem"
+                                (click)="addItemForm.valid && submitAddItem(ret.id)"
+                                class="px-3 py-1.5 text-xs font-medium text-white rounded transition-colors"
+                                [ngClass]="{
+                                  'bg-primary hover:bg-primary/90': addItemForm.valid && !addingItem,
+                                  'bg-gray-400 cursor-not-allowed': addItemForm.invalid || addingItem
+                                }">
+                          {{ addingItem ? ('COMMON.SUBMITTING' | translate) : ('PRODUCT_RETURN.ADD_ITEM' | translate) }}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+
+                  <!-- Items List -->
+                  <div *ngIf="!ret.items || ret.items.length === 0" class="text-sm text-gray-500 text-center py-4">
+                    {{ 'PRODUCT_RETURN.NO_ITEMS' | translate }}
+                  </div>
+                  <div *ngIf="ret.items && ret.items.length > 0" class="space-y-2">
+                    <div *ngFor="let item of ret.items"
+                         class="p-3 bg-white border border-gray-200 rounded-lg">
+                      <div class="flex items-center justify-between mb-2">
+                        <div>
+                          <span class="text-sm font-semibold text-gray-900">{{ item.productName }}</span>
+                          <span class="ml-2 font-mono text-xs text-gray-500">{{ item.productCode }}</span>
+                          <span *ngIf="item.batchNumber" class="ml-2 text-xs text-gray-400">({{ item.batchNumber }})</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <span
+                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                            [ngClass]="[getConditionBadge(item.productCondition).bg, getConditionBadge(item.productCondition).text]">
+                            {{ item.productCondition | word }}
+                          </span>
+                          <button
+                            *ngIf="ret.status === 'DRAFT'"
+                            (click)="removeItem(ret.id, item); $event.stopPropagation()"
+                            class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
+                            [title]="'COMMON.REMOVE' | translate">
+                            <svg-icon src="./assets/icons/heroicons/outline/trash.svg" [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between text-sm">
+                        <div class="space-x-4">
+                          <span class="text-gray-500">{{ 'PRODUCT_RETURN.QUANTITY_RETURNED' | translate }}: <span class="font-medium text-gray-800">{{ item.quantityReturned }}</span></span>
+                          <span class="text-gray-500">&#64; {{ formatCurrency(item.pricePerUnit) }}</span>
+                          <span *ngIf="item.discountPercent > 0" class="text-gray-500">- {{ item.discountPercent }}%</span>
+                        </div>
+                        <span class="font-semibold text-gray-900">{{ formatCurrency(item.lineTotal) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+
+        <!-- Empty State -->
+        <tr *ngIf="!hasData">
+          <td class="py-8 text-center text-sm" colspan="8">
+            <div class="flex flex-col items-center gap-2">
+              <svg-icon src="./assets/icons/heroicons/outline/document-text.svg" [svgClass]="'h-12 w-12 text-muted-foreground/50'">
+              </svg-icon>
+              <span>{{ 'PRODUCT_RETURN.EMPTY_STATE' | translate }}</span>
+              <button
+                class="mt-2 text-primary hover:text-primary/80 text-xs underline"
+                (click)="openCreateDrawer()">
+                {{ 'PRODUCT_RETURN.CREATE_RETURN' | translate }}
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Section -->
+  <div *ngIf="showPagination && !loading"
+       class="flex flex-wrap items-center justify-between gap-2 py-3 px-5 text-xs text-muted-foreground">
+    <div class="flex items-center gap-2">
+      <span>{{ 'COMMON.SHOWING' | translate }} {{ startIndex }} {{ 'COMMON.TO' | translate }} {{ endIndex }} {{ 'COMMON.OF' | translate }} {{ totalRows }}</span>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div class="inline-flex items-center gap-1">
+        <button
+          *ngIf="!first"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToFirstPage()"
+          [title]="'COMMON.FIRST_PAGE' | translate">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-left.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="first"
+          (click)="goToPreviousPage()"
+          [title]="'COMMON.PREVIOUS' | translate">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-left.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+
+        <ng-container *ngFor="let page of getVisiblePages()">
+          <button
+            *ngIf="isClickablePage(page)"
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm transition-colors"
+            [ngClass]="{
+              'bg-primary text-primary-foreground': isCurrentPage(page),
+              'hover:bg-muted-foreground/10': !isCurrentPage(page)
+            }"
+            (click)="goToPage(page)">
+            {{ getPageNumber(page) }}
+          </button>
+
+          <span
+            *ngIf="!isClickablePage(page)"
+            class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center text-sm">
+            ...
+          </span>
+        </ng-container>
+
+        <button
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm disabled:opacity-50 hover:bg-muted-foreground/10 transition-colors"
+          [disabled]="last"
+          (click)="goToNextPage()"
+          [title]="'COMMON.NEXT' | translate">
+          <svg-icon src="./assets/icons/heroicons/outline/arrow-long-right.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+
+        <button
+          *ngIf="!last"
+          class="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-sm hover:bg-muted-foreground/10 transition-colors"
+          (click)="goToLastPage()"
+          [title]="'COMMON.LAST_PAGE' | translate">
+          <svg-icon src="./assets/icons/heroicons/outline/chevron-double-right.svg" [svgClass]="'h-4 w-4'">
+          </svg-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Draft Return Drawer -->
+<div *ngIf="showCreateDrawer" class="fixed inset-0 z-50 flex justify-end">
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-black/50" (click)="closeCreateDrawer()"></div>
+
+  <!-- Drawer Panel -->
+  <div class="relative w-full max-w-lg bg-white shadow-xl dark:bg-gray-900">
+    <div class="flex flex-col h-full">
+      <!-- Sticky Header -->
+      <div class="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/30">
+            <svg-icon src="./assets/icons/heroicons/outline/document-text.svg" [svgClass]="'h-5 w-5 text-blue-600 dark:text-blue-400'"></svg-icon>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+              {{ 'PRODUCT_RETURN.CREATE_RETURN' | translate }}
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ 'PRODUCT_RETURN.CREATE_RETURN_DESC' | translate }}</p>
+          </div>
+        </div>
+        <button (click)="closeCreateDrawer()" class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors dark:hover:bg-gray-800 dark:hover:text-gray-300">
+          <svg-icon src="./assets/icons/heroicons/outline/x-mark.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        </button>
+      </div>
+
+      <!-- Form Body -->
+      <div class="flex-1 overflow-y-auto px-6 py-5">
+        <form [formGroup]="returnForm" class="space-y-6">
+
+          <!-- Organization Info -->
+          <div *ngIf="organization" class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+            <img [src]="organization.logoB64 || 'https://placehold.co/400'" alt="Org Logo"
+                 class="w-10 h-10 rounded-md border border-gray-200 object-cover">
+            <div>
+              <div class="text-sm font-semibold text-gray-900">{{ organization.orgName }}</div>
+              <div class="text-xs text-gray-500">{{ organization.orgEmail || organization.orgMobileNo }}</div>
+            </div>
+          </div>
+
+          <!-- Customer Selection -->
+          <div>
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">{{ 'PRODUCT_RETURN.SELECT_CUSTOMER' | translate }}</h4>
+            <div class="org-field">
+              <label class="org-label">{{ 'COMMON.CUSTOMER' | translate }} *</label>
+              <ng-select [items]="drawerCustomers"
+                         bindLabel="label"
+                         [placeholder]="'INVOICE.SEARCH_CUSTOMER' | translate"
+                         [loading]="drawerCustomerLoading"
+                         (scrollToEnd)="onDrawerCustomerScrollEnd()"
+                         (search)="onDrawerCustomerSearch($event)"
+                         (change)="onDrawerCustomerSelect($event)"
+                         (clear)="onDrawerCustomerSelect(null)"
+                         class="text-sm customer-select">
+              </ng-select>
+            </div>
+
+            <!-- Selected Customer Info -->
+            <div *ngIf="selectedCustomer" class="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+              <div class="space-y-1.5 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-gray-500">{{ 'COMMON.NAME' | translate }}</span>
+                  <span class="font-medium text-gray-800">{{ selectedCustomer.name }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-500">{{ 'COMMON.PHONE' | translate }}</span>
+                  <span class="font-medium text-gray-800">{{ selectedCustomer.mobile }}</span>
+                </div>
+                <div *ngIf="selectedCustomer.email" class="flex justify-between">
+                  <span class="text-gray-500">{{ 'COMMON.EMAIL' | translate }}</span>
+                  <span class="font-medium text-gray-800">{{ selectedCustomer.email }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Return Details -->
+          <div *ngIf="selectedCustomer">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">{{ 'PRODUCT_RETURN.RETURN_DETAILS' | translate }}</h4>
+            <div class="space-y-4">
+              <!-- Reason -->
+              <div class="org-field">
+                <label class="org-label">{{ 'PRODUCT_RETURN.REASON' | translate }}</label>
+                <textarea formControlName="reason"
+                          rows="2"
+                          [placeholder]="'PRODUCT_RETURN.REASON_PLACEHOLDER' | translate"
+                          class="org-input"></textarea>
+              </div>
+
+              <!-- Refund Type -->
+              <div class="org-field">
+                <label class="org-label">{{ 'PRODUCT_RETURN.REFUND_TYPE' | translate }} *</label>
+                <select formControlName="refundType" class="org-input">
+                  <option value="CASH_REFUND">{{ 'PRODUCT_RETURN.CASH_REFUND' | translate }}</option>
+                  <option value="CREDIT_TO_BALANCE" [disabled]="isPaymentOnInvoice">
+                    {{ 'PRODUCT_RETURN.CREDIT_TO_BALANCE' | translate }}
+                    <ng-container *ngIf="isPaymentOnInvoice"> ({{ 'PRODUCT_RETURN.CREDIT_NOT_AVAILABLE' | translate }})</ng-container>
+                  </option>
+                </select>
+              </div>
+
+              <!-- Tax & VAT -->
+              <div class="grid grid-cols-2 gap-4">
+                <div class="org-field">
+                  <label class="org-label">{{ 'PRODUCT_RETURN.TAX_PERCENT' | translate }}</label>
+                  <input type="number"
+                         formControlName="taxPercent"
+                         min="0"
+                         step="0.01"
+                         class="org-input">
+                </div>
+                <div class="org-field">
+                  <label class="org-label">{{ 'PRODUCT_RETURN.VAT_PERCENT' | translate }}</label>
+                  <input type="number"
+                         formControlName="vatPercent"
+                         min="0"
+                         step="0.01"
+                         class="org-input">
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Sticky Footer -->
+      <div class="sticky bottom-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700">
+        <button type="button"
+                (click)="closeCreateDrawer()"
+                class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors dark:text-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button type="button"
+                (click)="submitDraftReturn()"
+                [disabled]="!isDrawerValid || submitting"
+                class="px-4 py-2.5 text-sm font-medium text-white rounded-lg transition-colors"
+                [ngClass]="{
+                  'bg-primary hover:bg-primary/90': isDrawerValid && !submitting,
+                  'bg-gray-400 cursor-not-allowed': !isDrawerValid || submitting
+                }">
+          {{ submitting ? ('COMMON.SUBMITTING' | translate) : ('PRODUCT_RETURN.CREATE_DRAFT' | translate) }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -86,13 +86,6 @@
                         </div>
                         <div *ngIf="!isPaid" class="flex items-center gap-1">
                             <button type="button"
-                                    (click)="openNewCustomerDrawer()"
-                                    class="inline-flex items-center px-3 py-2 text-xs rounded-lg font-medium transition-colors text-indigo-600 bg-indigo-50 hover:bg-indigo-100 cursor-pointer"
-                                    [title]="'INVOICE.CUSTOMER_LIST.NEW_CUSTOMER' | translate">
-                                <svg-icon src="./assets/icons/heroicons/outline/plus.svg" [svgClass]="'h-3 w-3 mr-1'"></svg-icon>
-                                {{ 'INVOICE.CUSTOMER_LIST.NEW_CUSTOMER' | translate }}
-                            </button>
-                            <button type="button"
                                     (click)="createNewCustomer()"
                                     [disabled]="hasProducts"
                                     class="inline-flex items-center px-3 py-2 text-xs rounded-lg font-medium transition-colors"
