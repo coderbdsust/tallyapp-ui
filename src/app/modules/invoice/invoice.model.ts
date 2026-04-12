@@ -42,6 +42,7 @@ export interface Customer {
     totalAmount: number;
     totalDueAmount: number;
     totalPaidAmount: number;
+    totalReturnAmount?: number;
     balance?: number;
 }
 
@@ -66,9 +67,22 @@ export interface CustomerDetail {
     totalAmount: number;
     totalDueAmount: number;
     totalPaidAmount: number;
+    totalReturnAmount?: number;
     balance?: number;
     customerPayments?: CustomerPayment[];
     invoices: CustomerInvoice[];
+    saleReturns?: SaleReturn[];
+}
+
+export interface SaleReturn {
+    id: string;
+    returnNumber: string;
+    returnDate: string;
+    reason: string;
+    refundType: string;
+    refundAmount: number;
+    status: string;
+    itemCount: number;
 }
 
 export interface CustomerInvoice {

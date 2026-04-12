@@ -281,6 +281,8 @@
       "UNPAID_INVOICE": "Unpaid Invoice",
       "SELECT_UNPAID_INVOICE": "Select an unpaid invoice",
       "PAYMENT_DETAILS": "Payment Details",
+      "TOTAL_RETURN": "Total Return",
+      "SALE_RETURNS": "Sale Returns",
       "TOAST": {
         "UPDATED": "Customer updated successfully",
         "CREATED": "Customer created successfully"
@@ -317,6 +319,7 @@
     "TAX": "Tax",
     "VAT": "VAT",
     "CREDIT_NOT_AVAILABLE": "Not available in invoice-level mode",
+    "CASH_REFUND_NOT_AVAILABLE": "Not available in customer-level mode",
     "RETURN_DETAILS": "Return Details",
     "ADD_ITEM": "Add Item",
     "PRICE_PER_UNIT": "Price/Unit",
@@ -542,6 +545,7 @@
     "INVENTORY": "Inventory",
     "INITIAL_QTY": "Initial Quantity",
     "AVAILABLE_STOCK": "Available Stock",
+    "SOLD_QTY": "Sold Quantity",
     "RESTOREABLE_RETURN_QTY": "Restorable Return Qty",
     "BROKEN_RETURN_QTY": "Broken Return Qty",
     "ADD_QUANTITY": "Add Quantity",

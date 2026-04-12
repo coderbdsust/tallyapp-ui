@@ -26,6 +26,7 @@ export interface ProductStock {
   batchNumber: string;
   initialQuantity: number;
   availableQuantity: number;
+  soldQuantity: number;
   restorableReturnQuantity: number;
   brokenReturnQuantity: number;
   manufactureDate: string;

@@ -281,6 +281,8 @@
       "UNPAID_INVOICE": "অপরিশোধিত চালান",
       "SELECT_UNPAID_INVOICE": "একটি অপরিশোধিত চালান নির্বাচন করুন",
       "PAYMENT_DETAILS": "পেমেন্ট বিবরণ",
+      "TOTAL_RETURN": "মোট ফেরত",
+      "SALE_RETURNS": "বিক্রয় ফেরত",
       "TOAST": {
         "UPDATED": "গ্রাহক সফলভাবে আপডেট হয়েছে",
         "CREATED": "গ্রাহক সফলভাবে তৈরি হয়েছে"
@@ -317,6 +319,7 @@
     "TAX": "ট্যাক্স",
     "VAT": "ভ্যাট",
     "CREDIT_NOT_AVAILABLE": "চালান-স্তর মোডে উপলব্ধ নয়",
+    "CASH_REFUND_NOT_AVAILABLE": "গ্রাহক-স্তর মোডে উপলব্ধ নয়",
     "RETURN_DETAILS": "ফেরতের বিবরণ",
     "ADD_ITEM": "আইটেম যোগ করুন",
     "PRICE_PER_UNIT": "একক মূল্য",
@@ -542,6 +545,7 @@
     "INVENTORY": "ইনভেন্টরি",
     "INITIAL_QTY": "প্রাথমিক পরিমাণ",
     "AVAILABLE_STOCK": "উপলব্ধ স্টক",
+    "SOLD_QTY": "বিক্রিত পরিমাণ",
     "RESTOREABLE_RETURN_QTY": "ফেরতযোগ্য পরিমাণ",
     "BROKEN_RETURN_QTY": "ভাঙা ফেরত পরিমাণ",
     "ADD_QUANTITY": "পরিমাণ যোগ করুন",

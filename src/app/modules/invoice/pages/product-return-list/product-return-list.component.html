@@ -137,6 +137,7 @@
 
                 <!-- Delete -->
                 <button
+                  *ngIf="ret.status !== 'APPROVED'"
                   (click)="deleteReturn(ret)"
                   class="p-1 hover:text-red-600 transition-colors"
                   [title]="'COMMON.DELETE' | translate">
@@ -472,7 +473,10 @@
               <div class="org-field">
                 <label class="org-label">{{ 'PRODUCT_RETURN.REFUND_TYPE' | translate }} *</label>
                 <select formControlName="refundType" class="org-input">
-                  <option value="CASH_REFUND">{{ 'PRODUCT_RETURN.CASH_REFUND' | translate }}</option>
+                  <option value="CASH_REFUND" [disabled]="!isPaymentOnInvoice">
+                    {{ 'PRODUCT_RETURN.CASH_REFUND' | translate }}
+                    <ng-container *ngIf="!isPaymentOnInvoice"> ({{ 'PRODUCT_RETURN.CASH_REFUND_NOT_AVAILABLE' | translate }})</ng-container>
+                  </option>
                   <option value="CREDIT_TO_BALANCE" [disabled]="isPaymentOnInvoice">
                     {{ 'PRODUCT_RETURN.CREDIT_TO_BALANCE' | translate }}
                     <ng-container *ngIf="isPaymentOnInvoice"> ({{ 'PRODUCT_RETURN.CREDIT_NOT_AVAILABLE' | translate }})</ng-container>

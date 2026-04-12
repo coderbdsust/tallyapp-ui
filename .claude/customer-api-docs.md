@@ -129,8 +129,9 @@
   "paidInvoiceCount": 3,
   "unpaidInvoiceCount": 2,
   "totalAmount": 50000.0,
-  "totalDueAmount": 20000.0,
+  "totalDueAmount": 18000.0,
   "totalPaidAmount": 30000.0,
+  "totalReturnAmount": 2000.0,
   "balance": 15000.0,
   "openingDue": 5000.0,
   "effectiveBalance": 10000.0,
@@ -156,6 +157,18 @@
       "remainingAmount": 0.0,
       "payments": []
     }
+  ],
+  "saleReturns": [
+    {
+      "id": "uuid",
+      "returnNumber": "RET-A1B2C3D4",
+      "returnDate": "2026-04-01",
+      "reason": "Defective product",
+      "refundType": "CASH_REFUND",
+      "refundAmount": 2000.0,
+      "status": "APPROVED",
+      "itemCount": 3
+    }
   ]
 }
 ```
@@ -164,6 +177,9 @@
 
 - `customerPayments` is only populated when `paymentOnInvoice=false`.
 - `invoices[].totalPaid`, `remainingAmount`, and `payments` are only populated when `paymentOnInvoice=true`.
+- `saleReturns` lists only APPROVED, non-deleted returns.
+- `totalDueAmount = totalAmount - totalPaid - totalReturnAmount + openingDue` (openingDue added only in customer-level mode).
+- `totalReturnAmount` is the sum of all approved sale return refund amounts.
 
 ---
 

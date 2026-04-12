@@ -246,6 +246,7 @@ export class ProductReturnListComponent extends PaginatedComponent<ProductReturn
     this.initReturnForm();
     if (this.organization) {
       this.returnForm.patchValue({
+        refundType: this.isPaymentOnInvoice ? 'CASH_REFUND' : 'CREDIT_TO_BALANCE',
         taxPercent: this.organization.tax || 0,
         vatPercent: this.organization.vat || 0
       });
